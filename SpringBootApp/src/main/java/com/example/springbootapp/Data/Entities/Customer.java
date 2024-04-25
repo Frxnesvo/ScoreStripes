@@ -21,4 +21,5 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Address> addresses;
 
+
 }
