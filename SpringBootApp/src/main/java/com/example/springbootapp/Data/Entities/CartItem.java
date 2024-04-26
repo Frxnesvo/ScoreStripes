@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
-@Table(name = "order_items")
+@Table(name = "cart_items")
 @Data
 @NoArgsConstructor
-public class OrderItem {
+public class CartItem {
     @Id
     @UuidGenerator
     private String id;
@@ -20,14 +20,14 @@ public class OrderItem {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "PlayerName", column = @Column(name = "player_name")),
-        @AttributeOverride(name = "PlayerNumber", column = @Column(name = "player_number"))
+            @AttributeOverride(name = "PlayerName", column = @Column(name = "player_name")),
+            @AttributeOverride(name = "PlayerNumber", column = @Column(name = "player_number"))
     })
     private Personalization personalization;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)

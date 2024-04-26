@@ -21,5 +21,11 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Address> addresses;
 
+    @OneToOne
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
+
+    @OneToOne(mappedBy = "customer", fetch = FetchType.LAZY)
+    private Wishlist wishlist;
 
 }

@@ -2,10 +2,13 @@ package com.example.springbootapp.Data.Entities;
 
 import com.example.springbootapp.Data.Entities.Enums.Availability;
 import com.example.springbootapp.Data.Entities.Enums.Gender;
+import com.example.springbootapp.Data.Entities.Enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
+
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -36,7 +39,16 @@ public class Product {
     @Column(name = "gender", nullable = false)
     private Gender gender;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private ProductCategory category;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ProductPic> pics;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
 
 }
