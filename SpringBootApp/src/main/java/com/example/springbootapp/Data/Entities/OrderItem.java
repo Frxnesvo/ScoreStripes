@@ -31,9 +31,9 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private ProductWithVariant product;
 
     double getPrice(){
-        return (product.getPrice() + personalization.getPrice()) * quantity;
+        return (product.getProduct().getPrice() + personalization.getPrice()) * quantity;
     }
 }

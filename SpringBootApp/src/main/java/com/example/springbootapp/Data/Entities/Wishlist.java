@@ -20,9 +20,12 @@ public class Wishlist {
     @Enumerated
     private WishlistVisibility visibility;
 
-    @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY)   // Mantengo la bidirezionalità al momento perchè potrebbe servire
-    private Customer customer;
+    @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY) // Mantengo la bidirezionalità al momento perchè potrebbe servire
+    private Customer owner;
 
     @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<WishlistItem> items;
+
+    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<WishlistAccess> accesses;
 }

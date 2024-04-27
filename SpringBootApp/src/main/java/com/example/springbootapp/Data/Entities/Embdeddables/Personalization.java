@@ -12,8 +12,6 @@ public class Personalization {
     private static final Double PLAYER_NUMBER_PRICE = 5.0;
     private String PlayerName;
     private Integer PlayerNumber;
-    @Enumerated(EnumType.STRING)
-    private Size size;
 
     public double getPrice() {
         double price = 0.0;

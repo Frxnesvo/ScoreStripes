@@ -19,7 +19,7 @@ public class Product {
     @UuidGenerator
     private String id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "description", nullable = false)
@@ -30,10 +30,6 @@ public class Product {
 
     @Column(name = "brand")
     private String brand;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "availability", nullable = false)
-    private Availability availability;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
@@ -49,6 +45,9 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id", nullable = false)
     private Club club;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProductWithVariant> variants;
 
 
 }

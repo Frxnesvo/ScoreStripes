@@ -1,0 +1,30 @@
+package com.example.springbootapp.Data.Entities;
+
+import com.example.springbootapp.Data.Entities.Enums.Size;
+import jakarta.persistence.*;
+import jdk.jfr.Unsigned;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+
+@Entity
+@Table(name = "products_with_variant", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"product_id", "size"})
+})
+@Data
+@NoArgsConstructor
+public class ProductWithVariant {
+    @Id
+    @UuidGenerator
+    private String id;
+
+    @Enumerated(EnumType.STRING)
+    private Size size;
+
+    @Column(name = "availability", nullable = false)
+    private Integer availability;
+
+    @ManyToOne(fetch = FetchType.LAZY)  //devo caricare lazy perchè altrimenti dato che dal prodotto carico eager le varianti mi ritrovo in un loop
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+}

@@ -25,7 +25,7 @@ public class Customer extends User {
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @OneToOne(mappedBy = "customer", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
     private Wishlist wishlist;
 
 }
