@@ -8,7 +8,9 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "wishlist_items")
+@Table(name = "wishlist_items", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"wishlist_id", "product_id"})
+})
 @Data
 @NoArgsConstructor
 public class WishlistItem {

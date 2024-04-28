@@ -14,7 +14,7 @@ public class ProductPic {
     @UuidGenerator
     private String id;
 
-    @Column(name = "pic_url", nullable = false)
+    @Column(name = "pic_url", nullable = false, unique = true)
     private String picUrl;
 
     @Column(name = "principal", nullable = false)

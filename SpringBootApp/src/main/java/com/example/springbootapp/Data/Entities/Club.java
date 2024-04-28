@@ -16,7 +16,7 @@ public class Club {
     @UuidGenerator
     private String id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "pic_url", nullable = false)
