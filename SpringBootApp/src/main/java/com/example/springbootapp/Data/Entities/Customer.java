@@ -22,10 +22,11 @@ public class Customer extends User {
     private List<Address> addresses;
 
     @OneToOne
-    @JoinColumn(name = "cart_id", nullable = false)
+    @JoinColumn(name = "cart_id")  //vorrei mettere nullable = false ma da problemi con la singletable e admin
     private Cart cart;
 
-    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wishlist_id")  //vorrei mettere nullable = false ma da problemi con la singletable e admin
     private Wishlist wishlist;
 
 }

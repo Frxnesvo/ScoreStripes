@@ -17,7 +17,7 @@ public class Wishlist {
     @UuidGenerator
     private String id;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private WishlistVisibility visibility;
 
     @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY) // Mantengo la bidirezionalità al momento perchè potrebbe servire
