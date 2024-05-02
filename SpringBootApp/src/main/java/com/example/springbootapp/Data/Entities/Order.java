@@ -1,6 +1,7 @@
 package com.example.springbootapp.Data.Entities;
 
-import com.example.springbootapp.Data.Entities.Embdeddables.AddressEmbeddable;
+
+import com.example.springbootapp.Data.Entities.Embdeddables.OrderInformations;
 import com.example.springbootapp.Data.Entities.Enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,11 +25,7 @@ public class Order {
     private Double totalPrice;
 
     @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "zipCode", column = @Column(name = "zip_code")),
-        @AttributeOverride(name = "civicNumber", column = @Column(name = "civic_number"))
-})
-    private AddressEmbeddable address;     //Uso un indirizzo embeddable perchè se cancello l'indirizzo, voglio che comunque l'ordine abbia le informazioni sull'indirizzo
+    private OrderInformations resilient_infos;     //uso queste informazioni per evitare di perdere dati in caso di cancellazione di un account
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
