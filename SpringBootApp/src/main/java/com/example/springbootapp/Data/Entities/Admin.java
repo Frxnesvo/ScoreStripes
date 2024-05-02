@@ -13,7 +13,5 @@ import lombok.*;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Admin extends User{
-    @Column(name = "admin_role")
-    private String adminRole;
 
 }

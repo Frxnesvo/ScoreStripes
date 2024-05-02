@@ -1,6 +1,7 @@
 package com.example.springbootapp.Data.Entities;
 
 import com.example.springbootapp.Data.Entities.Enums.Gender;
+import com.example.springbootapp.Data.Entities.Enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,4 +44,8 @@ public class User {
     @Column(name = "gender", nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
