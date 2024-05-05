@@ -15,9 +15,8 @@ import java.time.Duration;
 public class AwsS3ServiceImpl implements AwsS3Service {
 
     private final S3Presigner s3Presigner;
-    private final int expirationMinutes = 5;
 
-    public String generatePresignedUrl(String url){
+    public String generatePresignedUrl(String url){  //Mi garantisce sicurezza e privacy per non mandare direttamente l'url dell'immagine al client
         String[] urlParts = url.replace("https://", "").split("/", 2);
         String bucketName = urlParts[0];
         String key = urlParts[1];
@@ -27,6 +26,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
                 .key(key)
                 .build();
 
+        int expirationMinutes = 5;
         GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(expirationMinutes))
                 .getObjectRequest(getObjectRequest)
