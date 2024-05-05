@@ -2,6 +2,7 @@ package com.example.clientadmin.activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -30,7 +32,6 @@ fun Addresses(user: User, navHostController: NavHostController){
         modifier = Modifier
             .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 80.dp)
             .fillMaxSize()
-            .verticalScroll(state = rememberScrollState())
             .background(Color.Transparent)
     ){
         Back { navHostController.popBackStack() }
@@ -43,16 +44,24 @@ fun Addresses(user: User, navHostController: NavHostController){
 
 @Composable
 fun AddressesList(addresses: List<Address>){
-    val listState = rememberLazyListState()
     if (addresses.isEmpty())
-        Text(text = "no address to show", color = colorResource(id = R.color.black), style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp))
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "no addresses to show",
+                color = colorResource(id = R.color.black),
+                style = TextStyle(fontSize = 16.sp)
+            )
+        }
     else
         LazyColumn(
-            state = listState,
+            state = rememberLazyListState(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(addresses){
-                AddressItem(address = it)
+                address -> AddressItem(address = address)
             }
         }
 }
