@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ClientAdmin</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_protuct">ProtuctActivity</string>
+    <string name="title_activity_users">UsersActivity</string>
+    <string name="title_activity_user">UserActivity</string>
+    <string name="title_activity_products">ProductsActivity</string>
+    <string name="title_activity_general_composables">GeneralComposablesActivity</string>
+</resources>
