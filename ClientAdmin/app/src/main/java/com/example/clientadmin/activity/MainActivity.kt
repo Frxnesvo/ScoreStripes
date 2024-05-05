@@ -23,7 +23,6 @@ import com.example.clientadmin.R
 import com.example.clientadmin.ui.theme.ClientAdminTheme
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -50,7 +49,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PreviewApp(){
     val globalIndex = remember { mutableIntStateOf(0)}
-
 
     when (globalIndex.intValue) {
         0 -> IndexPage(globalIndex)

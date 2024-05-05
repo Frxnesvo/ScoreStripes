@@ -1,6 +1,7 @@
 package com.example.clientadmin.activity
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -40,16 +42,20 @@ fun Orders(user: User, navHostController: NavHostController){
 @Composable
 fun OrdersList(orders: List<Order>?, navHostController: NavHostController){
     if (orders == null) {
-        Text(
-            text = "order list is empty",
-            color = colorResource(id = R.color.black),
-            style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp)
-        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "no orders to show",
+                color = colorResource(id = R.color.black),
+                style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp)
+            )
+        }
     }
     else {
-        val listState = rememberLazyListState()
         LazyColumn(
-            state = listState,
+            state = rememberLazyListState(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(orders) {

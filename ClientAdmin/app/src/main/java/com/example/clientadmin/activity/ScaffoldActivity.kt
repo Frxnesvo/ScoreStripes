@@ -99,7 +99,8 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             navHostController.navigate("users")
         }
         BottomBarButton(
-            indexColor = if (Screen.ADD == selectedScreen.value) R.color.secondary else R.color.black,
+            indexColor = R.color.white,
+            background = R.color.secondary,
             imageVector = Icons.Outlined.Add
         ) {
             setBottomSheet(true)
@@ -130,7 +131,7 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
             .width(40.dp)
             .height(40.dp)
             .clickable(onClick = function)
-            .background(if (background != null) colorResource(id = background) else Color.Transparent),
+            .background(if (background != null) colorResource(id = background) else Color.Transparent, RoundedCornerShape(20.dp)),
         contentAlignment = Alignment.Center
     ){
         if (imageVector != null)

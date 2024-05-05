@@ -57,7 +57,7 @@ class UserViewModel(): ViewModel() {//application: Application
             false
         )
 
-        val order= Order(
+        val order = Order(
             1,
             2,
             l,
