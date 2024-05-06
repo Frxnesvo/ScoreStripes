@@ -29,4 +29,7 @@ public class Customer extends User {
     @JoinColumn(name = "wishlist_id")  //vorrei mettere nullable = false ma da problemi con la singletable e admin
     private Wishlist wishlist;
 
+    @OneToMany(mappedBy = "customer", cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    private List<Order> orders;
+
 }

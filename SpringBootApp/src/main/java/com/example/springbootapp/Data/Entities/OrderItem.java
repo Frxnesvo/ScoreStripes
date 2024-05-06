@@ -18,6 +18,9 @@ public class OrderItem {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @Column(name = "price", nullable = false)
+    private Double price;
+
     @Embedded
     @AttributeOverrides({
         @AttributeOverride(name = "PlayerName", column = @Column(name = "player_name")),
@@ -33,7 +36,14 @@ public class OrderItem {
     @JoinColumn(name = "product_id", nullable = false)
     private ProductWithVariant product;
 
-    double getPrice(){
-        return (product.getProduct().getPrice() + personalization.getPrice()) * quantity;
+    private void calculatePrice() {
+        this.price = (product.getProduct().getPrice() + personalization.getPrice()) * quantity;
+    }
+
+    public double getPrice() {
+        if (this.price == 0.0) {
+            calculatePrice();
+        }
+        return this.price;
     }
 }

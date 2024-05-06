@@ -30,7 +30,7 @@ public class Address {
     private String state;
 
     @Column(name = "default_address")
-    private boolean defaultAddress;
+    private Boolean defaultAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)  //lazy perchè tanto non avrò bisogno del customer mai
     @JoinColumn(name = "customer_id", nullable = false)

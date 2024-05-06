@@ -30,7 +30,7 @@ public class Order {
     private Double totalPrice;
 
     @Embedded
-    private OrderInformations resilient_infos;     //uso queste informazioni per evitare di perdere dati in caso di cancellazione di un account
+    private OrderInformations resilientInfos;     //uso queste informazioni per evitare di perdere dati in caso di cancellazione di un account
 
     @Column(name = "date", nullable = false)
     private LocalDate date;

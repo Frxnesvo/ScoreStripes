@@ -9,9 +9,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.example.springbootapp.Data.DTO.ProductDto;
+import com.example.springbootapp.Data.Entities.Product;
 
 @Configuration
-@RequiredArgsConstructor
+@RequiredArgsConstructor                          //TODO: DA RIFATTORIZZARE
 public class ModelMapperConfig {
 
     private final AwsS3ServiceImpl awsS3Service;
@@ -19,11 +21,22 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        // Altre configurazioni generali qui
+
         Converter<String, String> profilePicUrlConverter = context -> {
             String profileImageUrl = context.getSource();
             return awsS3Service.generatePresignedUrl(profileImageUrl);
         };
+
+        // Convert Product to ProductDto
+        PropertyMap<Product, ProductDto> productMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setClub(source.getClub().getName());
+                using(profilePicUrlConverter)
+                        .map(source.getPics().get(0).getPicUrl(), destination.getPicUrl());
+            }
+        };
+
 
         modelMapper.addMappings(new PropertyMap<Customer, CustomerSummaryDto>() {
             @Override
@@ -31,6 +44,7 @@ public class ModelMapperConfig {
                 using(profilePicUrlConverter).map(source.getProfilePicUrl(), destination.getProfilePicUrl());
             }
         });
+        modelMapper.addMappings(productMap);
         return modelMapper;
     }
 }
