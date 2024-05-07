@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
@@ -45,6 +46,14 @@ public class AwsConfig {
     @Bean
     public S3Presigner s3Presigner(AwsSessionCredentials awsSessionCredentials) {
         return S3Presigner.builder()
+                .region(Region.of(region))
+                .credentialsProvider(StaticCredentialsProvider.create(awsSessionCredentials))
+                .build();
+    }
+
+    @Bean
+    public S3Client s3Client(AwsSessionCredentials awsSessionCredentials) {
+        return S3Client.builder()
                 .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(awsSessionCredentials))
                 .build();

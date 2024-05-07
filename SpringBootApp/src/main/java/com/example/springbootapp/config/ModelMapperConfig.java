@@ -1,7 +1,9 @@
 package com.example.springbootapp.config;
 
 import com.example.springbootapp.Data.DTO.CustomerSummaryDto;
+import com.example.springbootapp.Data.DTO.LeagueDto;
 import com.example.springbootapp.Data.Entities.Customer;
+import com.example.springbootapp.Data.Entities.League;
 import com.example.springbootapp.service.impl.AwsS3ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Converter;
@@ -36,6 +38,14 @@ public class ModelMapperConfig {
                         .map(source.getPics().get(0).getPicUrl(), destination.getPicUrl());
             }
         };
+        // Convert League to LeagueDto
+        PropertyMap<League, LeagueDto> leagueMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                using(profilePicUrlConverter)
+                        .map(source.getPicUrl(), destination.getPicUrl());
+            }
+        };
 
 
         modelMapper.addMappings(new PropertyMap<Customer, CustomerSummaryDto>() {
@@ -45,6 +55,7 @@ public class ModelMapperConfig {
             }
         });
         modelMapper.addMappings(productMap);
+        modelMapper.addMappings(leagueMap);
         return modelMapper;
     }
 }
