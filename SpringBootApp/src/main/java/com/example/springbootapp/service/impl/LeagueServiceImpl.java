@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class LeagueServiceImpl implements LeagueService {
@@ -29,5 +31,10 @@ public class LeagueServiceImpl implements LeagueService {
         league.setPicUrl(url);
         leagueDao.save(league);
         return modelMapper.map(league, LeagueDto.class);
+    }
+
+    @Override
+    public List<String> getLeagueNames() {
+        return leagueDao.getAllNames();
     }
 }

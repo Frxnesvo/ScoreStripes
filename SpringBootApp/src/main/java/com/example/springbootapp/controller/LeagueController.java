@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/leagues")
 @CrossOrigin(origins = "*")
@@ -23,5 +25,13 @@ public class LeagueController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdLeague);
+    }
+
+    @GetMapping("/names")
+    public ResponseEntity<List<String>> getLeagueNames(){
+        List<String> leagueNames = leagueService.getLeagueNames();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(leagueNames);
     }
 }
