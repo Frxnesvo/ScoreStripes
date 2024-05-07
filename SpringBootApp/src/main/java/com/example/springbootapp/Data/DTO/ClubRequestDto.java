@@ -9,9 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
-public class LeagueRequestDto {
+public class ClubRequestDto {
     @NotBlank
-    @Size(min = 3, max = 25)
+    @Size(min = 3, max = 40)
     private String name;
     @NotNull
     MultipartFile pic;

@@ -1,7 +1,9 @@
 package com.example.springbootapp.config;
 
+import com.example.springbootapp.Data.DTO.ClubDto;
 import com.example.springbootapp.Data.DTO.CustomerSummaryDto;
 import com.example.springbootapp.Data.DTO.LeagueDto;
+import com.example.springbootapp.Data.Entities.Club;
 import com.example.springbootapp.Data.Entities.Customer;
 import com.example.springbootapp.Data.Entities.League;
 import com.example.springbootapp.service.impl.AwsS3ServiceImpl;
@@ -46,6 +48,14 @@ public class ModelMapperConfig {
                         .map(source.getPicUrl(), destination.getPicUrl());
             }
         };
+        // Convert Club to ClubDto
+        PropertyMap<Club, ClubDto> clubMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                using(profilePicUrlConverter)
+                        .map(source.getPicUrl(), destination.getPicUrl());
+            }
+        };
 
 
         modelMapper.addMappings(new PropertyMap<Customer, CustomerSummaryDto>() {
@@ -56,6 +66,7 @@ public class ModelMapperConfig {
         });
         modelMapper.addMappings(productMap);
         modelMapper.addMappings(leagueMap);
+        modelMapper.addMappings(clubMap);
         return modelMapper;
     }
 }
