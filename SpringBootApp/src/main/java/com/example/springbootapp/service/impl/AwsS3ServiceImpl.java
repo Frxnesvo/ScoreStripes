@@ -21,7 +21,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
-    private final String bucketName="ScoreStripes";
+    private final String bucketName="scorestripespics";
 
     public String generatePresignedUrl(String url){  //Mi garantisce sicurezza e privacy per non mandare direttamente l'url dell'immagine al client
         String[] urlParts = url.replace("https://", "").split("/", 2);

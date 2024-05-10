@@ -30,14 +30,22 @@ public class ModelMapperConfig {
             String profileImageUrl = context.getSource();
             return awsS3Service.generatePresignedUrl(profileImageUrl);
         };
+         //converter personalizzato per gestire la conversione da una lista di pics a una stringa
+        Converter<Product,String> firstPicUrlConverter = context -> {
+            if(!context.getSource().getPics().isEmpty()){
+                return awsS3Service.generatePresignedUrl(context.getSource().getPics().get(0).getPicUrl());
+            }
+            return null;
+        };
 
-        // Convert Product to ProductDto
+
+
         PropertyMap<Product, ProductDto> productMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 map().setClub(source.getClub().getName());
-                using(profilePicUrlConverter)
-                        .map(source.getPics().get(0).getPicUrl(), destination.getPicUrl());
+                using(firstPicUrlConverter)
+                        .map(source, destination.getPicUrl());
             }
         };
         // Convert League to LeagueDto
@@ -57,13 +65,15 @@ public class ModelMapperConfig {
             }
         };
 
-
-        modelMapper.addMappings(new PropertyMap<Customer, CustomerSummaryDto>() {
+        PropertyMap<Customer, CustomerSummaryDto> customerMap = new PropertyMap<>() {
             @Override
             protected void configure() {
-                using(profilePicUrlConverter).map(source.getProfilePicUrl(), destination.getProfilePicUrl());
+                using(profilePicUrlConverter)
+                        .map(source.getProfilePicUrl(), destination.getProfilePicUrl());
             }
-        });
+        };
+//
+        modelMapper.addMappings(customerMap);
         modelMapper.addMappings(productMap);
         modelMapper.addMappings(leagueMap);
         modelMapper.addMappings(clubMap);
