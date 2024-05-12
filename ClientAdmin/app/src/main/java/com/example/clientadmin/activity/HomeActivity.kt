@@ -28,11 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Enum.Category
 import com.example.clientadmin.model.Product
-import com.example.clientadmin.model.Quantity
-import com.example.clientadmin.model.Season
-import com.example.clientadmin.model.Enum.Type
 import java.time.Year
 
 @Composable
@@ -69,29 +65,8 @@ fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostControl
             navHostController.navigate("products")
         }
 
-        /*TODO - get dei prodotti: 1. più venduti 2. meno venduti*/
-
-
-        val l : MutableList<Product> = mutableListOf()
-        repeat(5){
-            l.add(
-                Product(
-                    1,
-                    "arsenal",
-                    "Premier League",
-                    Season(Year.now(), Year.now().plusYears(1)),
-                    Type.MAN, Category.JERSEY,
-                    "maglia bella",
-                    null,
-                    null,
-                    15.00,
-                    false,
-                    Quantity()
-                ))
-        }
-
-        Section("I PIÙ VENDUTI", l)
-        Section("I MENO VENDUTI", l)
+        Section("I PIÙ VENDUTI", listOf())
+        Section("I MENO VENDUTI", listOf())
 
         /*TODO -  da vedere se aggiungere qualche altra sezione alla home*/
     }

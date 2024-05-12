@@ -1,8 +1,10 @@
 package com.example.clientadmin.activity
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -24,10 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.User
+import com.example.clientadmin.model.Customer
 
 @Composable
-fun UserProfile(user: User, navHostController: NavHostController){
+fun UserProfile(customer: Customer, navHostController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,30 +41,50 @@ fun UserProfile(user: User, navHostController: NavHostController){
     ) {
         Back { navHostController.popBackStack() }
 
-        Image(
-            painter = painterResource(id = R.drawable.united),
-            contentDescription = "userImg",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .clip(RoundedCornerShape(75.dp))
-                .size(150.dp)
-                .clickable {
-                    //TODO modifica immagine
-                }
-        )
+        BoxProfilePic(customer = customer)
 
-        Text(text = "${user.name} ${user.surname}", color = colorResource(id = R.color.black), style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal))
+        Text(text = customer.username, color = colorResource(id = R.color.black), style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal))
 
         BoxImage(boxTitle = "ORDINI", painter = painterResource(id = R.drawable.colombia)){
-            navHostController.navigate("userOrders/${user.id}")
+            navHostController.navigate("userOrders/${customer.id}")
         }
 
         BoxImage(boxTitle = "DATI PERSONALI", painter = painterResource(id = R.drawable.match)){
-            navHostController.navigate("userDetails/${user.id}")
+            navHostController.navigate("userDetails/${customer.id}")
         }
 
         BoxImage(boxTitle = "INDIRIZZI", painter = painterResource(id = R.drawable.united)){
-            navHostController.navigate("userAddresses/${user.id}")
+            navHostController.navigate("userAddresses/${customer.id}")
         }
     }
+}
+
+@Composable
+fun BoxProfilePic(customer: Customer){
+    val modifier = Modifier
+        .clip(RoundedCornerShape(75.dp))
+        .size(150.dp)
+        .clickable {
+            //TODO modifica immagine
+        }
+
+    if (customer.profilePic == null)
+        Box(
+            modifier = modifier
+                .background(color = colorResource(id = R.color.secondary)),
+            contentAlignment = Alignment.Center
+        ){
+            Text(
+                text = "${customer.username.first()}",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    else
+        Image(
+            bitmap = customer.profilePic.asImageBitmap(),
+            contentDescription = "userImg",
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+        )
 }

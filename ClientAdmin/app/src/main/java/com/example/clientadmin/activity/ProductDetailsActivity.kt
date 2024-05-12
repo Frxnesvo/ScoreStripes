@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,14 +36,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Enum.Category
-import com.example.clientadmin.model.Enum.Type
+import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.ProductFormViewModel
 import com.example.clientadmin.viewmodels.ProductState
 import com.example.clientadmin.viewmodels.ProductViewModel
+import com.example.clientuser.model.Enum.Gender
+import com.example.clientuser.model.Enum.ProductCategory
 
 @Composable
-fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: ProductFormViewModel, navHostController: NavHostController, isAdd: Boolean = false){
+fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: ProductFormViewModel, clubViewModel: ClubViewModel, navHostController: NavHostController, isAdd: Boolean = false){
     val productState by productFormViewModel.productState.collectAsState()
 
     Column(
@@ -70,27 +72,33 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
             ImagesProduct(productState)
 
             TextFieldString(
-                value = remember { mutableStateOf(productState.team) },
-                text = "TEAM",
-                onValueChange = { productFormViewModel.updateTeam(it)}
+                value = remember { mutableStateOf(productState.name) },
+                text = "NAME",
+                onValueChange = { productFormViewModel.updateName(it)}
+            )
+
+            ComboBox(
+                options = clubViewModel.getClubsNames(), //TODO fare la get di tutte le squadre
+                selectedOption = remember { mutableStateOf("${productState.club}") },
+                onValueChange = { TODO() }
+            )
+
+            ComboBox(
+                options = Gender.entries,
+                selectedOption = remember { mutableStateOf(productState.gender.toString()) },
+                onValueChange = { productFormViewModel.updateGender(Gender.valueOf(it))}
+            )
+
+            ComboBox(
+                options = ProductCategory.entries,
+                selectedOption = remember { mutableStateOf(productState.productCategory.toString()) },
+                onValueChange = { productFormViewModel.updateCategory(ProductCategory.valueOf(it))}
             )
 
             TextFieldString(
-                value = remember { mutableStateOf(productState.league) },
-                text = "LEAGUE",
-                onValueChange = { productFormViewModel.updateLeague(it)}
-            )
-
-            ComboBox(
-                options = Type.entries,
-                selectedOption = remember { mutableStateOf("${productState.type}") },
-                onValueChange = { productFormViewModel.updateType(Type.valueOf(it))}
-            )
-
-            ComboBox(
-                options = Category.entries,
-                selectedOption = remember { mutableStateOf("${productState.category}") },
-                onValueChange = { productFormViewModel.updateCategory(Category.valueOf(it))}
+                value = remember { mutableStateOf(productState.brand) },
+                text = "BRAND",
+                onValueChange = { productFormViewModel.updateBrand(it)}
             )
 
             TextFieldDouble(
@@ -115,10 +123,9 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
 
         ButtonCustom(text = if(isAdd) "ADD PRODUCT" else "UPDATE PRODUCT", background = R.color.secondary) {
             if(isAdd) {
-                productViewModel.addProduct(
-                    productState.team,
+                /*productViewModel.addProduct(
+                    productState.club,
                     productState.league,
-                    productState.season,
                     productState.type,
                     productState.category,
                     productState.description,
@@ -127,10 +134,10 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
                     productState.price,
                     productState.preferred,
                     productState.quantities
-                )
+                )*/
             }
             else {
-                productViewModel.updateProduct(
+                /*productViewModel.updateProduct(
                     productState.team,
                     productState.league,
                     productState.season,
@@ -142,7 +149,7 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
                     productState.price,
                     productState.preferred,
                     productState.quantities
-                )
+                )*/
             }
         }
     }
@@ -160,20 +167,20 @@ fun ImagesProduct(productState: ProductState){
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        BoxImage(productState = productState, fraction = .5f)
-        BoxImage(productState = productState)
+        BoxImage(pic = productState.pic1, fraction = .5f)
+        BoxImage(pic = productState.pic2)
     }
 }
 
 @Composable
-fun BoxImage(productState: ProductState, fraction: Float = 1f){
+fun BoxImage(pic: Bitmap?, fraction: Float = 1f){
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth(fraction)
             .fillMaxHeight()
     ){
-        productState.image1?.let {
+        pic?.let {
             Image(
                 bitmap = it.asImageBitmap(),
                 contentDescription = "",

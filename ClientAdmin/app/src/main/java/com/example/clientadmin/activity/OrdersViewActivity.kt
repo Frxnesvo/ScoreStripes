@@ -14,16 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.model.Customer
 import com.example.clientadmin.model.Order
-import com.example.clientadmin.model.User
 
 @Composable
-fun Orders(user: User, navHostController: NavHostController){
+fun Orders(customer: Customer, navHostController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -33,9 +32,9 @@ fun Orders(user: User, navHostController: NavHostController){
     ) {
         Back { navHostController.popBackStack() }
 
-        SubSectionUser(user = user, subSectionName = "ORDERS")
+        SubSectionUser(customer = customer, subSectionName = "ORDERS")
 
-        OrdersList(orders = user.orders, navHostController = navHostController)
+        OrdersList(orders = listOf(), navHostController = navHostController)
     }
 }
 

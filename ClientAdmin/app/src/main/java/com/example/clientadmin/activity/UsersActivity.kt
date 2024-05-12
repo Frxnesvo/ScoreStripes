@@ -12,12 +12,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.clientadmin.model.User
-import com.example.clientadmin.viewmodels.UserViewModel
+import com.example.clientadmin.model.Customer
+import com.example.clientadmin.viewmodels.CustomerViewModel
 
 @Composable
-fun Users(navHostController: NavHostController, userViewModel: UserViewModel) {
-    val users = userViewModel.users.collectAsState(initial = emptyList()) //lista degli utenti
+fun Users(navHostController: NavHostController, customerViewModel: CustomerViewModel) {
+    val users = customerViewModel.users.collectAsState(initial = emptyList()) //lista degli utenti
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
@@ -28,34 +28,19 @@ fun Users(navHostController: NavHostController, userViewModel: UserViewModel) {
 
         Search("USERS") {}
 
-        val l: MutableList<User> = mutableListOf() //TODO sostituire con la lista users
-
-        repeat(20){
-            l.add(
-                User(
-                    1,
-                "Gigi",
-                "Hadid",
-                "aldo@gmail.com",
-                "Aldo2002",
-                    listOf(),
-                    listOf(),
-                null)
-            )
-        }
-        UserList(users = l, navHostController)
+        UserList(customers = listOf(), navHostController)
     }
 }
 
 @Composable
-fun UserList(users: List<User>, navHostController: NavHostController){
+fun UserList(customers: List<Customer>, navHostController: NavHostController){
     val listState = rememberLazyListState()
     LazyColumn(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items(users){
-            UserItem(user = it){
+        items(customers){
+            UserItem(customer = it){
                 navHostController.navigate("user/${it.id}")
             }
         }

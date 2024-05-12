@@ -1,17 +1,18 @@
 package com.example.clientadmin.model
 
-class League(
+class Club(
     val id: String,
     val name: String,
     val picUrl: String,
-    val clubs: List<Club>
+    val league: League,
+    val products: List<Product>
 ){
     init {
         validateName(name)
     }
     companion object{
         fun validateName(name: String): Boolean{
-            return name.length in 1..30
+            return name.length in 3..40
         }
     }
 }

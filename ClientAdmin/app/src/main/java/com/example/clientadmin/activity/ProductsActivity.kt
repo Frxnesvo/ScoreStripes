@@ -13,11 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.clientadmin.model.Enum.Category
 import com.example.clientadmin.model.Product
-import com.example.clientadmin.model.Quantity
-import com.example.clientadmin.model.Season
-import com.example.clientadmin.model.Enum.Type
 import com.example.clientadmin.viewmodels.ProductViewModel
 import java.time.Year
 
@@ -35,29 +31,7 @@ fun Products(navHostController: NavHostController, productViewModel: ProductView
 
         Search(name = "Products") { }
 
-        val l : MutableList<Product> = mutableListOf() //TODO sostituire con la lista products
-        repeat(10){
-            l.add(
-                Product(
-                    1,
-                    "arsenal",
-                    "Premier League",
-                    Season(Year.now(), Year.now().plusYears(1)),
-                    Type.MAN, Category.JERSEY,
-                    "maglia bella",
-                    null,
-                    null,
-                    15.00,
-                    false,
-                    Quantity()
-                )
-            )
-        }
-
-        ProductList(
-            products = l,
-            navHostController = navHostController
-        )
+        ProductList(products = listOf(), navHostController = navHostController)
     }
 
 }

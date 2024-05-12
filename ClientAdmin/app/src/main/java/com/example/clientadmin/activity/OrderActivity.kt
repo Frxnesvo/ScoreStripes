@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Order
-import com.example.clientadmin.model.OrderProduct
+import com.example.clientadmin.model.OrderItem
 
 
 @Composable
@@ -54,13 +54,13 @@ fun OrderItem(order: Order, navHostController: NavHostController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "ORDER", color = colorResource(id = R.color.black), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = "${order.id}", style = style12)
+                Text(text = "${order.id}", style = style12) //TODO serve qualcosa di più sicuo?
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "AMOUNT: ", style = style8)
-                Text(text = "${order.amount}", color = colorResource(id = R.color.secondary), style = style12)
+                Text(text = "${order.totalPrice}", color = colorResource(id = R.color.secondary), style = style12)
             }
         }
 
@@ -68,7 +68,7 @@ fun OrderItem(order: Order, navHostController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "STREET: ", style = style8)
-            Text(text = "${order.address.street}, ${order.address.houseNumber}", color = colorResource(id = R.color.black), style = style12)
+            Text(text = "${order.address.street}, ${order.address.civicNumber}", color = colorResource(id = R.color.black), style = style12)
         }
 
         Row(
@@ -89,18 +89,18 @@ fun ProductOrdersList(order: Order, navHostController: NavHostController){
         state = rememberLazyListState(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items(order.products) {
+        items(order.items) {
             product ->
-            ProductOrderItem(orderProduct = product, navHostController = navHostController)
+            ProductOrderItem(orderItem = product, navHostController = navHostController)
         }
     }
 }
 
 @Composable
-fun ProductOrderItem(orderProduct: OrderProduct, navHostController: NavHostController) {
+fun ProductOrderItem(orderItem: OrderItem, navHostController: NavHostController) {
     Column(
         modifier = Modifier
-            .clickable { navHostController.navigate("product/${orderProduct.product.id}") },
+            .clickable { navHostController.navigate("product/${orderItem.product.id}") },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -113,19 +113,15 @@ fun ProductOrderItem(orderProduct: OrderProduct, navHostController: NavHostContr
                 .width(60.dp)
                 .clip(RoundedCornerShape(10.dp))
         )
-        Text(text = orderProduct.product.team,
-            color = colorResource(id = R.color.black),
-            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Normal)
-        )
-        Text(text = "${orderProduct.product.category} ${orderProduct.product.season.yearStart}/${orderProduct.product.season.yearEnd}",
+        Text(text = orderItem.product.product.name,
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Light)
         )
-        Text(text = "QUANTITY: ${orderProduct.quantity}",
+        Text(text = "QUANTITY: ${orderItem.quantity}",
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Light)
         )
-        Text(text = "SIZE: ${orderProduct.size}",
+        Text(text = "SIZE: ${orderItem.product.size}",
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Light)
         )

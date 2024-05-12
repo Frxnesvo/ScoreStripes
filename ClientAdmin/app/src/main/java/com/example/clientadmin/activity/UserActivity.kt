@@ -23,10 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientadmin.R
-import com.example.clientadmin.model.User
+import com.example.clientadmin.model.Customer
 
 @Composable
-fun UserItem(user: User, onClick: () -> Unit){
+fun UserItem(customer: Customer, onClick: () -> Unit){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,6 +44,6 @@ fun UserItem(user: User, onClick: () -> Unit){
                 .width(40.dp)
                 .clip(RoundedCornerShape(20.dp)),
             contentScale = ContentScale.FillBounds)
-        Text(text = "${user.name} ${user.surname}", style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, letterSpacing = 5.sp))
+        Text(text = customer.username, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, letterSpacing = 5.sp))
     }
 }

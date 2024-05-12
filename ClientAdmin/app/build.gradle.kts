@@ -50,6 +50,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.moshi)
+    implementation (libs.converter.moshi)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
