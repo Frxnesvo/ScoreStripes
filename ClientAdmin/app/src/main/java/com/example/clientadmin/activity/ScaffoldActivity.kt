@@ -215,7 +215,7 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
         composable(
             route = "addProduct"
         ){
-            ProductDetails(productViewModel = productViewModel, productFormViewModel = ProductFormViewModel(), navHostController = navHostController)
+            ProductDetails(productViewModel = productViewModel, clubViewModel = ClubViewModel(), productFormViewModel = ProductFormViewModel(), navHostController = navHostController)
         }
         composable(
             route = "addLeague"
@@ -225,7 +225,7 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
         composable(
             route = "addTeam"
         ){
-            TeamDetails(leagueViewModel = LeagueViewModel(), clubViewModel = ClubViewModel(), teamFormViewModel = ClubFormViewModel(), navHostController = navHostController)
+            ClubDetails(leagueViewModel = LeagueViewModel(), clubViewModel = ClubViewModel(), clubFormViewModel = ClubFormViewModel(), navHostController = navHostController)
         }
 
         //PRODUCTS
@@ -242,6 +242,7 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
                 id -> productViewModel.getProduct(id).collectAsState(initial = null).value?.let {
                     product-> ProductDetails(
                         productViewModel = ProductViewModel(),
+                        clubViewModel = ClubViewModel(),
                         productFormViewModel = ProductFormViewModel(product),
                         navHostController = navHostController,
                         isAdd = true
