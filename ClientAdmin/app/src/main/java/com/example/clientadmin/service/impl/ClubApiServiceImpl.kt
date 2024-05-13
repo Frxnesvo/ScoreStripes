@@ -8,13 +8,14 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ClubApiServiceImpl{
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://localhost:8080")
+        .baseUrl("http://10.0.2.2:8080")
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
     private val clubApi = retrofit.create(ClubApiService::class.java)
 
     suspend fun getClubSNames(): List<String> {
+        println("CIAO DEBUG")
         return withContext(Dispatchers.IO) {
             try {
                 val response = clubApi.getClubNames() // Chiamata API Retrofit
