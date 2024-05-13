@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +33,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerProfileDto getCustomerProfile(String id) {
         return modelMapper.map(customerDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer not found")), CustomerProfileDto.class);
+    }
+
+    @Override
+    public Long countNewAccounts() {
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
+        return customerDao.countAllByCreatedDateAfter(thirtyDaysAgo);
     }
 }
