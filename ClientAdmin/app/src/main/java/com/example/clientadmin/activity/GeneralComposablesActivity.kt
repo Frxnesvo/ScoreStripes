@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Customer
+import kotlinx.coroutines.flow.Flow
 
 
 @Composable
@@ -241,7 +243,7 @@ fun TextFieldDouble(value: MutableState<Double>, text: String, readOnly: Boolean
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComboBox(options: List<Any>, selectedOption: MutableState<String>, fraction: Float = 1f, onValueChange: (String) -> Unit) {
+fun ComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fraction: Float = 1f, onValueChange: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
@@ -276,7 +278,9 @@ fun ComboBox(options: List<Any>, selectedOption: MutableState<String>, fraction:
                     .fillMaxWidth()
                     .background(colorResource(id = R.color.white))
             ) {
-                options.forEach { option ->
+                val optionList by options.collectAsState(initial = null)
+
+                optionList?.forEach { option ->
                     DropdownMenuItem(
                         text = { Text(text = option.toString()) },
                         onClick = {

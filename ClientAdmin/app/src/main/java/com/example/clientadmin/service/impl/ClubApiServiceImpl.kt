@@ -1,38 +1,34 @@
 package com.example.clientadmin.service.impl
 
 import com.example.clientadmin.service.interfaces.ClubApiService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ClubApiServiceImpl{
     private val retrofit = Retrofit.Builder()
-        .baseUrl("http://localhost:8080/")
+        .baseUrl("https://localhost:8080")
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
     private val clubApi = retrofit.create(ClubApiService::class.java)
 
-    fun getClubSNames(): List<String>{
-        val call = clubApi.getClubNames()
-        var names = listOf<String>()
-        call.enqueue(object : Callback<List<String>> {
-            override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
+    suspend fun getClubSNames(): List<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = clubApi.getClubNames() // Chiamata API Retrofit
                 if (response.isSuccessful) {
-                    names = response.body()!!
+                    response.body() ?: emptyList() // Restituisci la lista dei nomi dei club se la risposta è riuscita, altrimenti restituisci una lista vuota
+                } else {
+                    emptyList() // Restituisci una lista vuota se la risposta non è riuscita
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emptyList() // Restituisci una lista vuota in caso di eccezione
             }
-
-            override fun onFailure(call: Call<List<String>>, t: Throwable) {
-                println("Error")
-                //gestire l'errore
-            }
-        })
-        return names
+        }
     }
-    fun addClub(name: String, image: String, league: String){
 
-    }
+
 }

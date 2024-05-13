@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import ClubViewModel
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,12 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.ProductFormViewModel
 import com.example.clientadmin.viewmodels.ProductState
 import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientuser.model.Enum.Gender
 import com.example.clientuser.model.Enum.ProductCategory
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: ProductFormViewModel, clubViewModel: ClubViewModel, navHostController: NavHostController, isAdd: Boolean = false){
@@ -78,19 +79,19 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
             )
 
             ComboBox(
-                options = clubViewModel.getClubsNames(), //TODO fare la get di tutte le squadre
+                options = clubViewModel.clubsNames, //TODO fare la get di tutte le squadre
                 selectedOption = remember { mutableStateOf("${productState.club}") },
                 onValueChange = { TODO() }
             )
 
             ComboBox(
-                options = Gender.entries,
+                options = flowOf(Gender.entries),
                 selectedOption = remember { mutableStateOf(productState.gender.toString()) },
                 onValueChange = { productFormViewModel.updateGender(Gender.valueOf(it))}
             )
 
             ComboBox(
-                options = ProductCategory.entries,
+                options = flowOf(ProductCategory.entries),
                 selectedOption = remember { mutableStateOf(productState.productCategory.toString()) },
                 onValueChange = { productFormViewModel.updateCategory(ProductCategory.valueOf(it))}
             )

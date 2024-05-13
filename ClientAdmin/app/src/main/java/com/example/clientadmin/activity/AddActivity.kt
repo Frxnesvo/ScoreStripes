@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import ClubViewModel
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,7 +39,6 @@ import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.ClubFormViewModel
 import com.example.clientadmin.viewmodels.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.ClubViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -145,13 +145,13 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
             name -> clubFormViewModel.updateNameClub(name)
         }
 
-        val leagues = listOf(leagueViewModel.leagues)
-        ComboBox(
-            options = leagues ,
-            selectedOption = remember { mutableStateOf("${leagues[0]}")})
+
+        /*ComboBox(
+            options = leagueViewModel.leagues ,
+            selectedOption = remember { mutableStateOf("${leagueViewModel.leagues}")}) //TODO
         {
             league -> clubFormViewModel.updateLeague(league)
-        }
+        }*/
 
         ButtonCustom(text = "ADD LEAGUE", background = R.color.secondary) {
             clubViewModel.addClub(
