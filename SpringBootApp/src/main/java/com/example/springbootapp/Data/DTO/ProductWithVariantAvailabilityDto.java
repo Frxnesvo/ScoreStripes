@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ProductWithVariantDto {
+public class ProductWithVariantAvailabilityDto {
     private String id;
     private Size size;
-    private BasicProductDto product;
+    private Integer availability;
 }

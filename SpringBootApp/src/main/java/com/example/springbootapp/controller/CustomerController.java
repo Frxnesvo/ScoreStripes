@@ -7,7 +7,6 @@ import com.example.springbootapp.Data.DTO.OrderDto;
 import com.example.springbootapp.service.interfaces.AddressService;
 import com.example.springbootapp.service.interfaces.CustomerService;
 import com.example.springbootapp.service.interfaces.OrderService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +26,7 @@ public class CustomerController {
     private final OrderService orderService;
 
     @GetMapping("/summary")
-    public ResponseEntity<Page<CustomerSummaryDto>> getCustomerSummaries(Pageable pageable){
+    public ResponseEntity<Page<CustomerSummaryDto>> getCustomersSummary(Pageable pageable){
         return ResponseEntity.ok(customerService.getCustomersSummary(pageable));
     }
 
