@@ -3,7 +3,9 @@ package com.example.springbootapp.service.impl;
 import com.example.springbootapp.Data.DTO.ClubDto;
 import com.example.springbootapp.Data.DTO.ClubRequestDto;
 import com.example.springbootapp.Data.Dao.ClubDao;
+import com.example.springbootapp.Data.Dao.LeagueDao;
 import com.example.springbootapp.Data.Entities.Club;
+import com.example.springbootapp.Data.Entities.League;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ClubService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class ClubServiceImpl implements ClubService {
 
     private final AwsS3Service awsS3Service;
     private final ClubDao clubDao;
+    private final LeagueDao leagueDao;
     private final ModelMapper modelMapper;
 
     @Override
@@ -29,6 +32,11 @@ public class ClubServiceImpl implements ClubService {
         club.setName(clubRequestDto.getName());
         String url = awsS3Service.uploadFile(clubRequestDto.getPic(), "clubs", clubRequestDto.getName());   //FIXME: NON MI PIACE PASSARE IL FOLDER COSI'
         club.setPicUrl(url);
+        League league = leagueDao.findByName(clubRequestDto.getLeagueName());
+        if(league == null){
+            throw new RuntimeException("League not found");   //TODO: DA CAMBIARE IN CUSTOM EXCEPTION
+        }
+        club.setLeague(league);
         clubDao.save(club);
         return modelMapper.map(club, ClubDto.class);
     }

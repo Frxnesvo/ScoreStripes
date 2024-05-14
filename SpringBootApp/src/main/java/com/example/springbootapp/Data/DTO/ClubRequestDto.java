@@ -15,4 +15,7 @@ public class ClubRequestDto {
     private String name;
     @NotNull
     MultipartFile pic;
+    @NotBlank
+    @Size(min = 3, max = 40)
+    private String leagueName;
 }

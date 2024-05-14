@@ -12,4 +12,5 @@ public interface LeagueDao extends JpaRepository<League, String> {
     Boolean existsByName(String name);
     @Query("SELECT l.name FROM League l")
     List<String> getAllNames();
+    League findByName(String name);
 }
