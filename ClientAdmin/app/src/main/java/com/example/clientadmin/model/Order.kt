@@ -1,6 +1,6 @@
 package com.example.clientadmin.model
 
-import com.example.clientuser.model.Enum.OrderStatus
+import com.example.clientadmin.model.enumerator.OrderStatus
 import java.time.LocalDate
 
 class Order(

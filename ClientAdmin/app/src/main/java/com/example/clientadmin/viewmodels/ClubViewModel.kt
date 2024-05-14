@@ -23,8 +23,10 @@ class ClubViewModel : ViewModel() {
         }
     }
 
-    fun addClub(name: String, image: Bitmap?, league: String) {
-        //TODO: Implementa l'aggiunta di un club
+    fun addClub(name: String, pic: Bitmap, league: String) {
+        viewModelScope.launch {
+            clubApiServiceImpl.createClub(name, pic)
+        }
     }
 
     fun updateClub(name: String, image: Bitmap) {

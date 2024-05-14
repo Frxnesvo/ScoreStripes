@@ -123,7 +123,7 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 
 @Composable
 fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController, isAdd: Boolean? = null) {
-    val clubState by clubFormViewModel.teamState.collectAsState()
+    val clubState by clubFormViewModel.clubState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -139,19 +139,19 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
 
         TextFieldString(
             value = remember { mutableStateOf(clubState.name) },
-            text = "TEAM LEAGUE",
+            text = "NAME CLUB",
             keyboardType = KeyboardType.Text,
         ){
             name -> clubFormViewModel.updateNameClub(name)
         }
 
 
-        /*ComboBox(
+        ComboBox(
             options = leagueViewModel.leagues ,
             selectedOption = remember { mutableStateOf("${leagueViewModel.leagues}")}) //TODO
         {
             league -> clubFormViewModel.updateLeague(league)
-        }*/
+        }
 
         ButtonCustom(text = "ADD LEAGUE", background = R.color.secondary) {
             clubViewModel.addClub(

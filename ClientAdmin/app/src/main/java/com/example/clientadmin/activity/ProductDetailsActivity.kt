@@ -40,8 +40,8 @@ import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.ProductFormViewModel
 import com.example.clientadmin.viewmodels.ProductState
 import com.example.clientadmin.viewmodels.ProductViewModel
-import com.example.clientuser.model.Enum.Gender
-import com.example.clientuser.model.Enum.ProductCategory
+import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.model.enumerator.ProductCategory
 import kotlinx.coroutines.flow.flowOf
 
 @Composable

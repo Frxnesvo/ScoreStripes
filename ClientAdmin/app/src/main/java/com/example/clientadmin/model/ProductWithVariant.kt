@@ -1,6 +1,6 @@
 package com.example.clientadmin.model
 
-import com.example.clientadmin.model.Enum.Size
+import com.example.clientadmin.model.enumerator.Size
 
 class ProductWithVariant(
     val id: String,

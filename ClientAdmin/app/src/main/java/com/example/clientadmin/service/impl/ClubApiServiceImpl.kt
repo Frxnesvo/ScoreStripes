@@ -1,5 +1,8 @@
 package com.example.clientadmin.service.impl
 
+import android.graphics.Bitmap
+import com.example.clientadmin.model.dto.ClubRequestDto
+import com.example.clientadmin.service.BitmapConverter
 import com.example.clientadmin.service.interfaces.ClubApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,18 +18,31 @@ class ClubApiServiceImpl{
     private val clubApi = retrofit.create(ClubApiService::class.java)
 
     suspend fun getClubSNames(): List<String> {
-        println("CIAO DEBUG")
         return withContext(Dispatchers.IO) {
             try {
-                val response = clubApi.getClubNames() // Chiamata API Retrofit
+                val response = clubApi.getClubNames()
                 if (response.isSuccessful) {
-                    response.body() ?: emptyList() // Restituisci la lista dei nomi dei club se la risposta è riuscita, altrimenti restituisci una lista vuota
+                    response.body() ?: emptyList()
                 } else {
-                    emptyList() // Restituisci una lista vuota se la risposta non è riuscita
+                    emptyList()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                emptyList() // Restituisci una lista vuota in caso di eccezione
+                emptyList()
+            }
+        }
+    }
+
+    suspend fun createClub(name: String, pic: Bitmap): Boolean{
+        val clubRequestDto = ClubRequestDto(name, BitmapConverter.bitmapToMultipartBodyPart(pic))
+
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = clubApi.createClub(clubRequestDto)
+                response.isExecuted
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
             }
         }
     }
