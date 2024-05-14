@@ -1,6 +1,6 @@
 package com.example.springbootapp.service.interfaces;
 
-import com.example.springbootapp.Data.DTO.OrderDto;
+import com.example.springbootapp.data.dto.OrderDto;
 import java.util.List;
 
 public interface OrderService {

@@ -1,6 +1,6 @@
 package com.example.springbootapp.handler;
 
-import com.example.springbootapp.Data.DTO.ErrorDto;
+import com.example.springbootapp.data.dto.ErrorDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;

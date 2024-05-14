@@ -1,7 +1,6 @@
 package com.example.springbootapp.service.interfaces;
 
-import com.example.springbootapp.Data.DTO.AddressDto;
-import com.example.springbootapp.Data.Entities.Address;
+import com.example.springbootapp.data.dto.AddressDto;
 
 import java.util.List;
 

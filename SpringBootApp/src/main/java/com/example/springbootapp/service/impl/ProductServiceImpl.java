@@ -1,8 +1,8 @@
 package com.example.springbootapp.service.impl;
 
-import com.example.springbootapp.Data.DTO.ProductDto;
-import com.example.springbootapp.Data.DTO.ProductSummaryDto;
-import com.example.springbootapp.Data.Dao.ProductDao;
+import com.example.springbootapp.data.dto.ProductDto;
+import com.example.springbootapp.data.dto.ProductSummaryDto;
+import com.example.springbootapp.data.dao.ProductDao;
 import com.example.springbootapp.service.interfaces.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

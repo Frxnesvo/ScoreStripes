@@ -1,7 +1,7 @@
 package com.example.springbootapp.service.impl;
 
-import com.example.springbootapp.Data.DTO.AddressDto;
-import com.example.springbootapp.Data.Dao.AddressDao;
+import com.example.springbootapp.data.dto.AddressDto;
+import com.example.springbootapp.data.dao.AddressDao;
 import com.example.springbootapp.service.interfaces.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

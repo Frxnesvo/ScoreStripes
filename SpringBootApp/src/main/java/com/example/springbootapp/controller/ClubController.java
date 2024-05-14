@@ -1,11 +1,8 @@
 package com.example.springbootapp.controller;
 
-import com.example.springbootapp.Data.DTO.ClubDto;
-import com.example.springbootapp.Data.DTO.ClubRequestDto;
-import com.example.springbootapp.Data.DTO.LeagueDto;
-import com.example.springbootapp.Data.DTO.LeagueRequestDto;
+import com.example.springbootapp.data.dto.ClubDto;
+import com.example.springbootapp.data.dto.ClubRequestDto;
 import com.example.springbootapp.service.interfaces.ClubService;
-import com.example.springbootapp.service.interfaces.LeagueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

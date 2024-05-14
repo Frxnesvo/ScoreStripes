@@ -1,7 +1,7 @@
 package com.example.springbootapp.controller;
 
-import com.example.springbootapp.Data.DTO.LeagueDto;
-import com.example.springbootapp.Data.DTO.LeagueRequestDto;
+import com.example.springbootapp.data.dto.LeagueDto;
+import com.example.springbootapp.data.dto.LeagueRequestDto;
 import com.example.springbootapp.service.interfaces.LeagueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

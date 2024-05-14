@@ -1,7 +1,7 @@
 package com.example.springbootapp.service.interfaces;
 
-import com.example.springbootapp.Data.DTO.ClubDto;
-import com.example.springbootapp.Data.DTO.ClubRequestDto;
+import com.example.springbootapp.data.dto.ClubDto;
+import com.example.springbootapp.data.dto.ClubRequestDto;
 
 import java.util.List;
 

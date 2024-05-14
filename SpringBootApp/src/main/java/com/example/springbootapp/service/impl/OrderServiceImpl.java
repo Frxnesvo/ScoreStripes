@@ -1,8 +1,8 @@
 package com.example.springbootapp.service.impl;
 
-import com.example.springbootapp.Data.DTO.OrderDto;
-import com.example.springbootapp.Data.Dao.OrderDao;
-import com.example.springbootapp.Data.Entities.Order;
+import com.example.springbootapp.data.dto.OrderDto;
+import com.example.springbootapp.data.dao.OrderDao;
+import com.example.springbootapp.data.entities.Order;
 import com.example.springbootapp.service.interfaces.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

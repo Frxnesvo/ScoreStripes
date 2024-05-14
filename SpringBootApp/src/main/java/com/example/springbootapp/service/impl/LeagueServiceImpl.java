@@ -1,9 +1,9 @@
 package com.example.springbootapp.service.impl;
 
-import com.example.springbootapp.Data.DTO.LeagueDto;
-import com.example.springbootapp.Data.DTO.LeagueRequestDto;
-import com.example.springbootapp.Data.Dao.LeagueDao;
-import com.example.springbootapp.Data.Entities.League;
+import com.example.springbootapp.data.dto.LeagueDto;
+import com.example.springbootapp.data.dto.LeagueRequestDto;
+import com.example.springbootapp.data.dao.LeagueDao;
+import com.example.springbootapp.data.entities.League;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.LeagueService;
 import lombok.RequiredArgsConstructor;

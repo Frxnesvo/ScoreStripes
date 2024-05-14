@@ -1,7 +1,7 @@
 package com.example.springbootapp.config;
 
-import com.example.springbootapp.Data.DTO.*;
-import com.example.springbootapp.Data.Entities.*;
+import com.example.springbootapp.data.dto.*;
+import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.service.impl.AwsS3ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Converter;

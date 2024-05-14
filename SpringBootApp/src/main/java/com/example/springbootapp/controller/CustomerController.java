@@ -1,9 +1,9 @@
 package com.example.springbootapp.controller;
 
-import com.example.springbootapp.Data.DTO.AddressDto;
-import com.example.springbootapp.Data.DTO.CustomerProfileDto;
-import com.example.springbootapp.Data.DTO.CustomerSummaryDto;
-import com.example.springbootapp.Data.DTO.OrderDto;
+import com.example.springbootapp.data.dto.AddressDto;
+import com.example.springbootapp.data.dto.CustomerProfileDto;
+import com.example.springbootapp.data.dto.CustomerSummaryDto;
+import com.example.springbootapp.data.dto.OrderDto;
 import com.example.springbootapp.service.interfaces.AddressService;
 import com.example.springbootapp.service.interfaces.CustomerService;
 import com.example.springbootapp.service.interfaces.OrderService;

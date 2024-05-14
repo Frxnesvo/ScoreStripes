@@ -1,11 +1,9 @@
 package com.example.springbootapp.service.interfaces;
 
-import com.example.springbootapp.Data.DTO.CustomerProfileDto;
-import com.example.springbootapp.Data.DTO.CustomerSummaryDto;
+import com.example.springbootapp.data.dto.CustomerProfileDto;
+import com.example.springbootapp.data.dto.CustomerSummaryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface CustomerService {
     public Page<CustomerSummaryDto> getCustomersSummary(Pageable pageable);

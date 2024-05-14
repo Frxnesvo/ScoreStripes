@@ -1,11 +1,11 @@
 package com.example.springbootapp.service.impl;
 
-import com.example.springbootapp.Data.DTO.ClubDto;
-import com.example.springbootapp.Data.DTO.ClubRequestDto;
-import com.example.springbootapp.Data.Dao.ClubDao;
-import com.example.springbootapp.Data.Dao.LeagueDao;
-import com.example.springbootapp.Data.Entities.Club;
-import com.example.springbootapp.Data.Entities.League;
+import com.example.springbootapp.data.dto.ClubDto;
+import com.example.springbootapp.data.dto.ClubRequestDto;
+import com.example.springbootapp.data.dao.ClubDao;
+import com.example.springbootapp.data.dao.LeagueDao;
+import com.example.springbootapp.data.entities.Club;
+import com.example.springbootapp.data.entities.League;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ClubService;
 import lombok.RequiredArgsConstructor;

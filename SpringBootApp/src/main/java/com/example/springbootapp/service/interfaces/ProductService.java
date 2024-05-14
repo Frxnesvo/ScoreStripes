@@ -1,7 +1,7 @@
 package com.example.springbootapp.service.interfaces;
 
-import com.example.springbootapp.Data.DTO.ProductDto;
-import com.example.springbootapp.Data.DTO.ProductSummaryDto;
+import com.example.springbootapp.data.dto.ProductDto;
+import com.example.springbootapp.data.dto.ProductSummaryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
