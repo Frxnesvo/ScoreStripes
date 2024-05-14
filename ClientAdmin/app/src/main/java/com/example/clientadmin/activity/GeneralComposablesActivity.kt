@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -47,7 +48,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientadmin.R
-import com.example.clientadmin.model.User
+import com.example.clientadmin.model.Customer
 
 
 @Composable
@@ -137,7 +138,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
 }
 
 @Composable
-fun SubSectionUser(user: User, subSectionName: String) {
+fun SubSectionUser(customer: Customer, subSectionName: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -149,20 +150,20 @@ fun SubSectionUser(user: User, subSectionName: String) {
         val style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
 
         Text(text = subSectionName, color = colorResource(id = R.color.black), style = style)
-        if (user.image == null)
+        if (customer.profilePic == null)
             Box(
                 modifier = modifier,
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = user.name.first().uppercase(),
+                    text = customer.username.first().uppercase(),
                     color = colorResource(id = R.color.white),
                     style = style
                 )
             }
         else
             Image(
-                painter = user.image,
+                bitmap = customer.profilePic.asImageBitmap(),
                 contentDescription = "userImg",
                 modifier = modifier
             )

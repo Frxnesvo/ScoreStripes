@@ -1,33 +1,33 @@
 package com.example.clientadmin.viewmodels
 
 import android.graphics.Bitmap
-import com.example.clientadmin.model.Enum.Category
+import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.Product
-import com.example.clientadmin.model.Quantity
-import com.example.clientadmin.model.Season
-import com.example.clientadmin.model.Enum.Type
+import com.example.clientadmin.model.ProductPic
+import com.example.clientadmin.model.ProductWithVariant
+import com.example.clientuser.model.Enum.Gender
+import com.example.clientuser.model.Enum.ProductCategory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 data class ProductState(
-    val team: String = "",
-    val league: String = "",
-    val season: Season? = null,
-    val type: Type = Type.entries[0],
-    val category: Category = Category.entries[0],
+    val name: String = "",
+    val club: Club? = null, //TODO get del primo club in ordine alfabetico
+    val gender: Gender = Gender.entries[0],
+    val pic1: Bitmap? = null,
+    val pic2: Bitmap? = null,
+    val brand: String = "",
+    val productCategory: ProductCategory = ProductCategory.entries[0],
     val description: String = "",
-    val image1: Bitmap? = null,
-    val image2: Bitmap? = null,
     val price: Double = 0.0,
-    var preferred: Boolean = false,
-    val quantities: Quantity = Quantity(),
+    val variants: ProductWithVariant? = null,
     //error
-    val isTeamError: Boolean = !Product.validateNameTeam(team),
-    val isLeagueError: Boolean = !Product.validateNameTeam(league),
-    val isSeasonError: Boolean = !Product.validateSeason(season),
+    val isNameError: Boolean = !Product.validateName(name),
+    val isLeagueError: Boolean = !Product.validateBrand(brand),
     val isPriceError: Boolean = !Product.validatePrice(price),
-    val isDescriptionError: Boolean = !Product.validateDescription(description),
+    val isBrandError: Boolean = !Product.validateBrand(brand),
+    val isDescriptionError: Boolean = !Product.validateDescription(description)
 )
 class ProductFormViewModel(product: Product? = null) {
     private val _productState = MutableStateFlow(ProductState())
@@ -35,83 +35,76 @@ class ProductFormViewModel(product: Product? = null) {
 
     init {
         if (product != null) {
-            updateTeam(product.team)
-            updateLeague(product.league)
-            updateSeason(product.season)
-            updateType(product.type)
-            updateCategory(product.category)
+            updateName(product.name)
+            updateClub(product.club)
+            updateGender(product.gender)
+            updateCategory(product.productCategory)
             updateDescription(product.description)
-            updateImage1(product.image1)
-            updateImage2(product.image2)
+            updateBrand(product.brand)
+            updatePic1(null) //TODO da vedere
+            updatePic2(null) //TODO da vedere
             updatePrice(product.price)
-            updatePreferred(product.preferred)
-            updateQuantities(product.quantities)
+            updateVariants(product.variants)
         }
     }
 
-    fun updateTeam(team: String) {
-        val hasError = !Product.validateNameTeam(team)
+    fun updateName(name: String) {
+        val hasError = !Product.validateName(name)
         _productState.value = _productState.value.copy(
-            team = team,
-            isTeamError = hasError
+            name = name,
+            isNameError = hasError
         )
     }
-    fun updateLeague(league: String) {
-        val hasError = !Product.validateLeague(league)
+
+    fun updateClub(club: Club) {
         _productState.value = _productState.value.copy(
-            league = league,
-            isTeamError = hasError
+            club = club
         )
     }
-    fun updateSeason(season: Season) {
-        val hasError = !Product.validateSeason(season)
+    fun updateGender(gender: Gender) {
         _productState.value = _productState.value.copy(
-            season = season,
-            isTeamError = hasError
+            gender = gender
         )
     }
-    fun updateType(type: Type) {
+    fun updateCategory(productCategory: ProductCategory) {
         _productState.value = _productState.value.copy(
-            type = type
-        )
-    }
-    fun updateCategory(category: Category) {
-        _productState.value = _productState.value.copy(
-            category = category
+            productCategory = productCategory
         )
     }
     fun updateDescription(description: String) {
         val hasError = !Product.validateDescription(description)
         _productState.value = _productState.value.copy(
             description = description,
-            isTeamError = hasError
+            isDescriptionError = hasError
         )
     }
-    fun updateImage1(img: Bitmap?) {
+    fun updateBrand(brand: String) {
+        val hasError = !Product.validateDescription(brand)
         _productState.value = _productState.value.copy(
-            image1 = img
+            description = brand,
+            isBrandError = hasError
         )
     }
-    fun updateImage2(img: Bitmap?) {
+    fun updatePic1(pic: Bitmap?) {
         _productState.value = _productState.value.copy(
-            image2 = img
+            pic1 = pic
+        )
+    }
+    fun updatePic2(pic: Bitmap?) {
+        _productState.value = _productState.value.copy(
+            pic2 = pic
         )
     }
     fun updatePrice(price: Double) {
         val hasError = !Product.validatePrice(price)
         _productState.value = _productState.value.copy(
             price = price,
-            isTeamError = hasError
+            isPriceError = hasError
         )
     }
-    fun updatePreferred(preferred: Boolean) {
+    fun updateVariants(variants: ProductWithVariant?) {
         _productState.value = _productState.value.copy(
-            preferred = preferred
-        )
-    }
-    fun updateQuantities(quantities: Quantity) {
-        _productState.value = _productState.value.copy(
-            quantities = quantities
+            variants = variants
         )
     }
 }

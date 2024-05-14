@@ -1,20 +1,18 @@
 package com.example.clientadmin.model
 
-import com.example.clientadmin.model.Enum.Size
+import com.example.clientuser.model.Enum.OrderStatus
 import java.time.LocalDate
 
-data class OrderProduct(
-    val product: Product,
-    val size: Size,
-    val quantity: Int
-)
-
-data class Order(
-    val id: Int,
-    val userID: Int,
-    val products: List<OrderProduct>,
+class Order(
+    val id: String,
+    var totalPrice: Double,     //TODO conviene renderlo private?
+    val address: AddressEmbeddable,
     val date: LocalDate,
-    val address: Address,
-    val amount: Double
-)
-
+    val status: OrderStatus,
+    val customer: Customer,
+    val items: List<OrderItem>,
+){
+    fun calculateTotalPrice(){
+        this.totalPrice = items.stream().mapToDouble { it.getPrice() }.sum()
+    }
+}

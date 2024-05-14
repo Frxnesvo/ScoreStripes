@@ -36,20 +36,20 @@ fun AddressItem(address: Address){
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = if(address.preferred) Arrangement.SpaceBetween else Arrangement.Start
+            horizontalArrangement = if(address.defaultAddress) Arrangement.SpaceBetween else Arrangement.Start
         ) {
             Text(
-                text = "${address.street}, ${address.postalNumber}",
+                text = "${address.street}, ${address.civicNumber}",
                 style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Light, color = colorResource(id = R.color.black))
             )
-            if(address.preferred)
+            if(address.defaultAddress)
                 Text(
                     text = "PRINCIPALE",
                     style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light, color = colorResource(id = R.color.secondary))
                 )
         }
         Text(
-            text = address.municipality,
+            text = address.state,
             style = style
         )
         Text(
@@ -57,7 +57,7 @@ fun AddressItem(address: Address){
             style = style
         )
         Text(
-            text = "${address.postalNumber}",
+            text = address.zipCode,
             style = style
         )
     }

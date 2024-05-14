@@ -49,12 +49,14 @@ fun ProductItemRow(product: Product, onClick: () -> Unit) {
                 .width(120.dp)
                 .clip(RoundedCornerShape(10.dp))
         )
-        Text(text = product.team,
+        Text(text = "${product.club}",
             color = colorResource(id = R.color.black),
-            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal))
-        Text(text = "${product.category} ${product.season.yearStart}/${product.season.yearEnd}",
+            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
+        )
+        Text(text = "${product.productCategory}",
             color = colorResource(id = R.color.black50),
-            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light))
+            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light)
+        )
     }
 }
 
@@ -76,8 +78,8 @@ fun ProductItemColumn(product: Product, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(text = product.team, color = Color.Black, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal))
-            Text(text = "${product.category} ${product.season.yearStart}/${product.season.yearEnd}", color = colorResource(id = R.color.black), style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light))
+            Text(text = "${product.club}", color = Color.Black, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal))
+            Text(text = "${product.productCategory}", color = colorResource(id = R.color.black), style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light))
         }
         Row(
             modifier = Modifier
@@ -103,7 +105,9 @@ fun ProductItemColumn(product: Product, onClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
-                for (quantity in product.quantities.quantities()) {
+
+                //TODO - gestire le quantità
+                /*for (quantity in product.) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
@@ -141,7 +145,7 @@ fun ProductItemColumn(product: Product, onClick: () -> Unit) {
                             )
                         }
                     }
-                }
+                }*/
             }
         }
     }

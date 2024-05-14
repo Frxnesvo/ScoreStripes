@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,10 +21,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Address
-import com.example.clientadmin.model.User
+import com.example.clientadmin.model.Customer
 
 @Composable
-fun Addresses(user: User, navHostController: NavHostController){
+fun Addresses(customer: Customer, navHostController: NavHostController){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
@@ -36,9 +34,9 @@ fun Addresses(user: User, navHostController: NavHostController){
     ){
         Back { navHostController.popBackStack() }
 
-        SubSectionUser(user = user, subSectionName = "ADDRESSES")
+        SubSectionUser(customer = customer, subSectionName = "ADDRESSES")
 
-        AddressesList(addresses = user.addresses)
+        AddressesList(addresses = customer.addresses)
     }
 }
 

@@ -51,7 +51,7 @@ public class Product {
     @JoinColumn(name = "club_id", nullable = false)
     private Club club;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ProductWithVariant> variants;
 
     @Column(name = "created_date")

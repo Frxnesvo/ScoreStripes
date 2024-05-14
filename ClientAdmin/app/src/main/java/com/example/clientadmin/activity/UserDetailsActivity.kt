@@ -20,11 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.User
+import com.example.clientadmin.model.Customer
 
 
 @Composable
-fun UserDetails(user: User, navHostController: NavHostController){
+fun UserDetails(customer: Customer, navHostController: NavHostController){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
@@ -34,16 +34,16 @@ fun UserDetails(user: User, navHostController: NavHostController){
     ){
         Back { navHostController.popBackStack() }
 
-        SubSectionUser(user = user, subSectionName = "PERSONAL DATA")
+        SubSectionUser(customer = customer, subSectionName = "PERSONAL DATA")
 
         //User(2, "aldo", "gioia", "aldo@gmail.com", "Aldo@021", listOf(), listOf(), null)
 
-        Details(user = user)
+        Details(customer = customer)
     }
 }
 
 @Composable
-fun Details(user: User){
+fun Details(customer: Customer){
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier
@@ -57,25 +57,48 @@ fun Details(user: User){
         )
 
         TextFieldString(
-            value = remember{ mutableStateOf(user.name) },
+            value = remember{ mutableStateOf(customer.firstName) },
             onValueChange = { },
-            text = "NAME",
+            text = "FIRST NAME",
             readOnly = true
         )
 
         TextFieldString(
-            value = remember{ mutableStateOf(user.surname) },
+            value = remember{ mutableStateOf(customer.lastName) },
             onValueChange = { },
-            text = "SURNAME",
+            text = "LAST NAME",
             readOnly = true
         )
 
         TextFieldString(
-            value = remember{ mutableStateOf(user.email) },
+            value = remember{ mutableStateOf(customer.email) },
             onValueChange = { },
             text = "EMAIL",
             readOnly = true
         )
+
+        TextFieldString(
+            value = remember{ mutableStateOf(customer.favouriteTeam) },
+            onValueChange = { },
+            text = "FAVOURITE TEAM",
+            readOnly = true
+        )
+
+        TextFieldString(
+            value = remember{ mutableStateOf(customer.gender.toString()) },
+            onValueChange = { },
+            text = "GENDER",
+            readOnly = true
+        )
+
+        TextFieldString(
+            value = remember{ mutableStateOf(customer.birthDate.toString()) },
+            onValueChange = { },
+            text = "BIRTH DATE",
+            readOnly = true
+        )
+
+        //TODO inserire tutti i dettagli mancanti
     }
 }
 

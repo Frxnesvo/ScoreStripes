@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 public class ProductWithVariantDto {
     private String id;
     private Size size;
-    private ProductDto product;
+    private BasicProductDto product;
 }

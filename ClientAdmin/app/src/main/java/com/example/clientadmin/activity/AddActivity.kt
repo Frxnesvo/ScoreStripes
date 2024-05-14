@@ -35,10 +35,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.viewmodels.ClubFormViewModel
 import com.example.clientadmin.viewmodels.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.TeamFormViewModel
-import com.example.clientadmin.viewmodels.TeamViewModel
+import com.example.clientadmin.viewmodels.ClubViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,7 +106,7 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
         BoxImage(image = leagueState.imageLeague)
 
         TextFieldString(
-            value = remember { mutableStateOf(leagueState.nameLeague) },
+            value = remember { mutableStateOf(leagueState.name) },
             text = "NAME LEAGUE",
             keyboardType = KeyboardType.Text,
             onValueChange = {  }
@@ -114,7 +114,7 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 
         ButtonCustom(text = "ADD LEAGUE", background = R.color.secondary) {
             leagueViewModel.addLeague(
-                leagueState.nameLeague,
+                leagueState.name,
                 leagueState.imageLeague
             )
         }
@@ -122,8 +122,8 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 }
 
 @Composable
-fun TeamDetails(leagueViewModel: LeagueViewModel, teamViewModel: TeamViewModel, teamFormViewModel: TeamFormViewModel, navHostController: NavHostController, isAdd: Boolean? = null) {
-    val teamState by teamFormViewModel.teamState.collectAsState()
+fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController, isAdd: Boolean? = null) {
+    val clubState by clubFormViewModel.teamState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -135,25 +135,29 @@ fun TeamDetails(leagueViewModel: LeagueViewModel, teamViewModel: TeamViewModel, 
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxImage(image = teamState.imageTeam)
+        BoxImage(image = clubState.imageClub)
 
         TextFieldString(
-            value = remember { mutableStateOf(teamState.nameTeam) },
+            value = remember { mutableStateOf(clubState.name) },
             text = "TEAM LEAGUE",
             keyboardType = KeyboardType.Text,
-            onValueChange = { teamFormViewModel.updateNameTeam(it) }
-        )
+        ){
+            name -> clubFormViewModel.updateNameClub(name)
+        }
 
         val leagues = listOf(leagueViewModel.leagues)
-        ComboBox(options = leagues , selectedOption = remember { mutableStateOf("${leagues[0]}")}) {
-            teamFormViewModel.updateNameTeam(it)
+        ComboBox(
+            options = leagues ,
+            selectedOption = remember { mutableStateOf("${leagues[0]}")})
+        {
+            league -> clubFormViewModel.updateLeague(league)
         }
 
         ButtonCustom(text = "ADD LEAGUE", background = R.color.secondary) {
-            teamViewModel.addTeam(
-                teamState.nameTeam,
-                teamState.imageTeam,
-                teamState.league
+            clubViewModel.addClub(
+                clubState.name,
+                clubState.imageClub,
+                clubState.league
             )
         }
     }

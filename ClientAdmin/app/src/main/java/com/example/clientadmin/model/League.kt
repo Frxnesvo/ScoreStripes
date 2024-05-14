@@ -1,19 +1,17 @@
 package com.example.clientadmin.model
 
-import android.graphics.Bitmap
-
 class League(
-    val nameLeague: String,
-    val imageLeague: Bitmap?
+    val id: String,
+    val name: String,
+    val picUrl: String,
+    val clubs: List<Club>
 ){
     init {
-        if (!validateNameLeague(nameLeague))
-            throw IllegalArgumentException("Name cannot be empty and greater than 20 characters")
+        validateName(name)
     }
-
     companion object{
-        fun validateNameLeague(nameLeague: String): Boolean{
-            return nameLeague.length in 1..20
+        fun validateName(name: String): Boolean{
+            return name.length in 1..30
         }
     }
 }
