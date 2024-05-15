@@ -12,8 +12,8 @@ import retrofit2.http.Part
 interface ClubApiService {
     @POST("/api/v1/clubs")
     @Multipart
-    fun createClub(@Part("clubRequestDto") clubRequestDto: ClubRequestDto): Call<ClubDto>
+    fun createClub(@Part("clubRequestDto") clubRequestDto: ClubRequestDto): Response<ClubDto>
 
     @GET("/api/v1/clubs/names")
-    suspend fun getClubNames(): Response<List<String>>
+    fun getClubNames(): Response<List<String>>
 }

@@ -11,6 +11,6 @@ object BitmapConverter {
         val bos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos)
         val data = bos.toByteArray()
-        return MultipartBody.Part.createFormData("image", "image.jpg", RequestBody.create(MediaType.parse("image/*"), data))
+        return MultipartBody.Part.createFormData("image", "image.jpeg", RequestBody.create(MediaType.parse("image/*"), data))
     }
 }

@@ -8,8 +8,8 @@ import com.example.clientadmin.service.impl.ClubApiServiceImpl
 import kotlinx.coroutines.launch
 
 class ClubViewModel : ViewModel() {
-    private val _clubsNames = MutableStateFlow<List<String>>(emptyList())
-    val clubsNames: Flow<List<String>> = _clubsNames.asStateFlow()
+    private val _list = MutableStateFlow<List<String>>(emptyList())
+    val clubsNames: Flow<List<String>> = _list.asStateFlow()
 
     private val clubApiServiceImpl = ClubApiServiceImpl()
 
@@ -19,7 +19,7 @@ class ClubViewModel : ViewModel() {
 
     private fun fetchClubsNames() {
         viewModelScope.launch {
-            _clubsNames.value = clubApiServiceImpl.getClubSNames()
+            _list.value = clubApiServiceImpl.getClubSNames()
         }
     }
 

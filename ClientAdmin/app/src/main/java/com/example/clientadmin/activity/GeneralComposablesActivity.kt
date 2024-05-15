@@ -278,17 +278,24 @@ fun ComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fra
                     .fillMaxWidth()
                     .background(colorResource(id = R.color.white))
             ) {
-                val optionList by options.collectAsState(initial = null)
 
-                optionList?.forEach { option ->
+                val optionList by options.collectAsState(initial = listOf())
+
+                if (optionList.isNotEmpty())
+                    optionList.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(text = "$option") },
+                            onClick = {
+                                selectedOption.value = "$option"
+                                expanded = false
+                            }
+                        )
+                    }
+                else
                     DropdownMenuItem(
-                        text = { Text(text = option.toString()) },
-                        onClick = {
-                            selectedOption.value = "$option"
-                            expanded = false
-                        }
+                        text = { Text(text = "No options available") },
+                        onClick = {expanded = false}
                     )
-                }
             }
         }
     }

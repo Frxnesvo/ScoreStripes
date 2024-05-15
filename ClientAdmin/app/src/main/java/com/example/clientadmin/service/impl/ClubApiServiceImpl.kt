@@ -1,26 +1,24 @@
 package com.example.clientadmin.service.impl
 
 import android.graphics.Bitmap
+import com.example.clientadmin.model.dto.ClubDto
 import com.example.clientadmin.model.dto.ClubRequestDto
 import com.example.clientadmin.service.BitmapConverter
+import com.example.clientadmin.service.RetrofitHandler
 import com.example.clientadmin.service.interfaces.ClubApiService
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ClubApiServiceImpl{
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:8080")
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
-
-    private val clubApi = retrofit.create(ClubApiService::class.java)
 
     suspend fun getClubSNames(): List<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = clubApi.getClubNames()
+                val response = RetrofitHandler.getClubApi().getClubNames()
                 if (response.isSuccessful) {
                     response.body() ?: emptyList()
                 } else {
@@ -38,8 +36,8 @@ class ClubApiServiceImpl{
 
         return withContext(Dispatchers.IO) {
             try {
-                val response = clubApi.createClub(clubRequestDto)
-                response.isExecuted
+                val response = RetrofitHandler.getClubApi().createClub(clubRequestDto)
+                response.isSuccessful
             } catch (e: Exception) {
                 e.printStackTrace()
                 false

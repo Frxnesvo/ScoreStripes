@@ -53,7 +53,7 @@ fun AddPanel(
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             ButtonCustom(text = "CREATE PRODUCT", background = R.color.secondary) {
@@ -147,8 +147,13 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
 
 
         ComboBox(
-            options = leagueViewModel.leagues ,
-            selectedOption = remember { mutableStateOf("${leagueViewModel.leagues}")}) //TODO
+            options = leagueViewModel.leaguesNames ,
+            selectedOption = remember {
+                if (leagueViewModel.leaguesNames.value.isNotEmpty())
+                    mutableStateOf(leagueViewModel.leaguesNames.value[0])
+                else
+                    mutableStateOf("")
+            })
         {
             league -> clubFormViewModel.updateLeague(league)
         }

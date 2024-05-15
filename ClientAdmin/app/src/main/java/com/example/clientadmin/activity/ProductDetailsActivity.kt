@@ -79,7 +79,7 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
             )
 
             ComboBox(
-                options = clubViewModel.clubsNames, //TODO fare la get di tutte le squadre
+                options = clubViewModel.clubsNames,
                 selectedOption = remember { mutableStateOf("${productState.club}") },
                 onValueChange = { TODO() }
             )
