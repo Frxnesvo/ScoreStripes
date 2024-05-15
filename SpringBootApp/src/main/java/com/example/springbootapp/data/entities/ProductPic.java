@@ -15,6 +15,7 @@ public class ProductPic {
     public ProductPic(String picUrl, Boolean principal, Product product) {
         this.picUrl = picUrl;
         this.principal = principal;
+        this.product = product;
     }
 
     @Id

@@ -13,8 +13,11 @@ import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ProductService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -52,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto createProduct(ProductCreateRequestDto productCreateRequestDto) {
         Product product = new Product();
         Club club = clubDao.findByName(productCreateRequestDto.getClubName()).orElseThrow(() -> new RequestValidationException("Club not found"));
@@ -73,7 +77,6 @@ public class ProductServiceImpl implements ProductService {
                 .map(entry -> new ProductWithVariant(entry.getKey(), entry.getValue(), product))
                 .collect(Collectors.toList());
         product.setVariants(variants);
-
         productDao.save(product);
         return modelMapper.map(product, ProductDto.class);
     }

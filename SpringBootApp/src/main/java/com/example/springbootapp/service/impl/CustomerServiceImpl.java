@@ -37,7 +37,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Long countNewAccounts() {
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        return customerDao.countAllByCreatedDateAfter(yesterday);
+        return customerDao.countAllByCreatedDateAfter(LocalDateTime.now().minusDays(1));
     }
 }

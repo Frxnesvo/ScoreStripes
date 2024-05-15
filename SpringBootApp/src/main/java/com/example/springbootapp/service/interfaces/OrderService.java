@@ -5,4 +5,7 @@ import java.util.List;
 
 public interface OrderService {
     List<OrderDto> getFullOrdersByCustomerId(String customerId);
+
+    Long countNewOrders();
+
 }

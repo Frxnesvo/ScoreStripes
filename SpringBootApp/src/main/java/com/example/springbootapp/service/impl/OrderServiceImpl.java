@@ -10,6 +10,7 @@ import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,15 @@ public class OrderServiceImpl implements OrderService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Long countNewOrders() {
+        return orderDao.countByDateAfter(LocalDateTime.now().minusDays(1));
+    }
+
+
+
+
     private OrderDto convertToDto(Order order) {
         //initialize the lazy loading fields
         Hibernate.initialize(order.getItems());

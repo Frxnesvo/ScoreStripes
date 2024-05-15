@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.util.List;
 @Table(name = "orders")
 @Data
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     @UuidGenerator
@@ -33,7 +35,7 @@ public class Order {
     private OrderInformations resilientInfos;     //uso queste informazioni per evitare di perdere dati in caso di cancellazione di un account
 
     @Column(name = "date", nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)

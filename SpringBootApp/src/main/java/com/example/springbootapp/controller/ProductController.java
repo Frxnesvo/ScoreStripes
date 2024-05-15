@@ -3,6 +3,7 @@ package com.example.springbootapp.controller;
 import com.example.springbootapp.data.dto.ProductCreateRequestDto;
 import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.dto.ProductSummaryDto;
+import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+//bindingResult
+import org.springframework.validation.BindingResult;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -31,7 +35,10 @@ public class ProductController {
     }
 
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<ProductDto> createProduct(@Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto){
+    public ResponseEntity<ProductDto> createProduct(@Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
+        if (bindingResult.hasErrors()) {
+            throw new RequestValidationException("Input validation failed");
+        }
         ProductDto createdProduct = productService.createProduct(productCreateRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

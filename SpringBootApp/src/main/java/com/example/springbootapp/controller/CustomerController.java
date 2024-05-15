@@ -46,7 +46,7 @@ public class CustomerController {
         return ResponseEntity.ok(orderService.getFullOrdersByCustomerId(id));
     }
 
-    @GetMapping("new-accounts") // conta il numero di custoemer account creati negli ultimi 30 giorni
+    @GetMapping("new-accounts") // conta il numero di custoemer account creati nelle ultime 24 ore
     public ResponseEntity<Long> countNewAccounts(){
         return ResponseEntity.ok(customerService.countNewAccounts());
     }
