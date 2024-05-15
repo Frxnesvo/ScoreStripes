@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductWithVariantDao extends JpaRepository<ProductWithVariant, String> {
+    Integer countAllByAvailabilityEquals(int availability);
 }
