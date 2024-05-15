@@ -1,5 +1,6 @@
 package com.example.springbootapp.service.interfaces;
 
+import com.example.springbootapp.data.dto.ProductCreateRequestDto;
 import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.dto.ProductSummaryDto;
 import org.springframework.data.domain.Page;
@@ -9,5 +10,8 @@ public interface ProductService {
     Page<ProductSummaryDto> getProductsSummary(Pageable pageable);
 
     ProductDto getProductById(String id);
+
+    ProductDto createProduct(ProductCreateRequestDto productCreateRequestDto);
 }
+
 

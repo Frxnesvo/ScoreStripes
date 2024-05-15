@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class ModelMapperConfig {
 
     private final AwsS3ServiceImpl awsS3Service;
+
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();

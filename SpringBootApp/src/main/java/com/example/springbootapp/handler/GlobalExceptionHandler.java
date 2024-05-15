@@ -1,6 +1,7 @@
 package com.example.springbootapp.handler;
 
 import com.example.springbootapp.data.dto.ErrorDto;
+import com.example.springbootapp.exceptions.RequestValidationException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto onMethodArgumentNotValidException(WebRequest req, MethodArgumentNotValidException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
+    @ExceptionHandler(RequestValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto onRequestValidationException(WebRequest req, RequestValidationException e) {
         return createErrorRespose(req, e.getMessage());
     }
 

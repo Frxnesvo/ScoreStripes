@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ClubDao extends JpaRepository<Club, String> {
     Boolean existsByName(String name);
     @Query("SELECT c.name FROM Club c")
     List<String> getAllNames();
+    Optional<Club> findByName(String name);
 }

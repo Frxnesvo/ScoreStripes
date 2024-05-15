@@ -3,6 +3,7 @@ package com.example.springbootapp.data.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
@@ -10,6 +11,12 @@ import org.hibernate.annotations.UuidGenerator;
 @Data
 @NoArgsConstructor
 public class ProductPic {
+
+    public ProductPic(String picUrl, Boolean principal, Product product) {
+        this.picUrl = picUrl;
+        this.principal = principal;
+    }
+
     @Id
     @UuidGenerator
     private String id;

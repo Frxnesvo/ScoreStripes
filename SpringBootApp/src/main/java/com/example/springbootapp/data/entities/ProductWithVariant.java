@@ -13,6 +13,13 @@ import org.hibernate.annotations.UuidGenerator;
 @Data
 @NoArgsConstructor
 public class ProductWithVariant {
+
+    public ProductWithVariant(Size size, Integer availability, Product product) {
+        this.size = size;
+        this.availability = availability;
+        this.product = product;
+    }
+
     @Id
     @UuidGenerator
     private String id;

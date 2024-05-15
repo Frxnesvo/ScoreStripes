@@ -1,11 +1,14 @@
 package com.example.springbootapp.controller;
 
+import com.example.springbootapp.data.dto.ProductCreateRequestDto;
 import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.dto.ProductSummaryDto;
 import com.example.springbootapp.service.interfaces.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,4 +29,13 @@ public class ProductController {
     public ResponseEntity<ProductDto> getProductById(@PathVariable String id){
         return ResponseEntity.ok(productService.getProductById(id));
     }
+
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<ProductDto> createProduct(@Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto){
+        ProductDto createdProduct = productService.createProduct(productCreateRequestDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(createdProduct);
+    }
+
 }
