@@ -1,6 +1,7 @@
 package com.example.clientadmin.service.impl
 
 import android.graphics.Bitmap
+import com.example.clientadmin.model.dto.LeagueDto
 import com.example.clientadmin.model.dto.LeagueRequestDto
 import com.example.clientadmin.service.BitmapConverter
 import com.example.clientadmin.service.RetrofitHandler
@@ -8,15 +9,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class LeagueApiServiceImpl {
-    suspend fun createLeague(name: String, pic: Bitmap): Boolean {
+    suspend fun createLeague(name: String, pic: Bitmap): LeagueDto? {
+        val leagueRequestDto = LeagueRequestDto(name, BitmapConverter.bitmapToMultipartBodyPart(pic))
+
         return withContext(Dispatchers.IO) {
             try {
-                val leagueRequestDto = LeagueRequestDto(name, BitmapConverter.bitmapToMultipartBodyPart(pic))
                 val response = RetrofitHandler.getLeagueApi().createLeague(leagueRequestDto)
-                response.isSuccessful
+                if (response.isSuccessful) response.body()
+                else {
+                    println("errore nella creazione della lega ${response.message()}")
+                    null
+                }
             } catch (e: Exception) {
+                println("eccezione nella creazione della lega")
                 e.printStackTrace()
-                false
+                null
             }
         }
     }

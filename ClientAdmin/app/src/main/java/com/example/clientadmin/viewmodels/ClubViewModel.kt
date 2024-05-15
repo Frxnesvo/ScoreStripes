@@ -25,7 +25,10 @@ class ClubViewModel : ViewModel() {
 
     fun addClub(name: String, pic: Bitmap, league: String) {
         viewModelScope.launch {
-            clubApiServiceImpl.createClub(name, pic)
+            val createdTeam = clubApiServiceImpl.createClub(name, pic)
+            createdTeam?.let {
+                club -> _list.value += club.name
+            }
         }
     }
 

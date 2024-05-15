@@ -31,16 +31,21 @@ class ClubApiServiceImpl{
         }
     }
 
-    suspend fun createClub(name: String, pic: Bitmap): Boolean{
+    suspend fun createClub(name: String, pic: Bitmap): ClubDto?{
         val clubRequestDto = ClubRequestDto(name, BitmapConverter.bitmapToMultipartBodyPart(pic))
 
         return withContext(Dispatchers.IO) {
             try {
                 val response = RetrofitHandler.getClubApi().createClub(clubRequestDto)
-                response.isSuccessful
+                if(response.isSuccessful) response.body()
+                else{
+                    println("errore nella creazione del club ${response.message()}")
+                    null
+                }
             } catch (e: Exception) {
+                println("eccezione nella creazione del club")
                 e.printStackTrace()
-                false
+                null
             }
         }
     }

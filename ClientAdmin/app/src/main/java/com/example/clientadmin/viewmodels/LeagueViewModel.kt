@@ -29,7 +29,10 @@ class LeagueViewModel(): ViewModel() {
 
     fun addLeague(name: String, pic: Bitmap){
         viewModelScope.launch {
-            leagueApiServiceImpl.createLeague(name, pic)
+            val createdLeague = leagueApiServiceImpl.createLeague(name, pic)
+            createdLeague?.let {
+                league -> _list.value += league.name
+            }
         }
     }
 
