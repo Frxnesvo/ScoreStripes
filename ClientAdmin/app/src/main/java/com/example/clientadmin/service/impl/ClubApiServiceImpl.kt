@@ -19,11 +19,8 @@ class ClubApiServiceImpl{
         return withContext(Dispatchers.IO) {
             try {
                 val response = RetrofitHandler.getClubApi().getClubNames()
-                if (response.isSuccessful) {
-                    response.body() ?: emptyList()
-                } else {
-                    emptyList()
-                }
+                if (response.isSuccessful) response.body() ?: emptyList()
+                else emptyList()
             } catch (e: Exception) {
                 e.printStackTrace()
                 emptyList()
@@ -49,6 +46,5 @@ class ClubApiServiceImpl{
             }
         }
     }
-
 
 }

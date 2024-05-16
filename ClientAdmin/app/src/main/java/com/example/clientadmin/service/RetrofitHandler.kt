@@ -1,11 +1,13 @@
 package com.example.clientadmin.service
 
 import com.example.clientadmin.service.interfaces.ClubApiService
+import com.example.clientadmin.service.interfaces.CustomerApiService
 import com.example.clientadmin.service.interfaces.LeagueApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 
 object RetrofitHandler {
     private val moshi = Moshi.Builder()
@@ -21,11 +23,17 @@ object RetrofitHandler {
 
     private val clubApi = retrofit.create(ClubApiService::class.java)
 
+    private  val customerApi = retrofit.create(CustomerApiService::class.java)
+
     fun getLeagueApi(): LeagueApiService {
         return leagueApi
     }
 
     fun getClubApi(): ClubApiService {
         return clubApi
+    }
+
+    fun getCustomerApi(): CustomerApiService {
+        return customerApi
     }
 }
