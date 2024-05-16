@@ -1,17 +1,13 @@
 package com.example.clientadmin.viewmodels
 
-import android.app.Application
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductPic
 import com.example.clientadmin.model.ProductWithVariant
-import com.example.clientuser.model.Enum.Gender
-import com.example.clientuser.model.Enum.ProductCategory
+import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.model.enumerator.ProductCategory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
-import java.time.Year
 
 class ProductViewModel(): ViewModel() { //application: Application
     //private val _application = application

@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import ClubViewModel
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,7 +39,6 @@ import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.ClubFormViewModel
 import com.example.clientadmin.viewmodels.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.ClubViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +53,7 @@ fun AddPanel(
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             ButtonCustom(text = "CREATE PRODUCT", background = R.color.secondary) {
@@ -123,7 +123,7 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 
 @Composable
 fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController, isAdd: Boolean? = null) {
-    val clubState by clubFormViewModel.teamState.collectAsState()
+    val clubState by clubFormViewModel.clubState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -139,16 +139,21 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
 
         TextFieldString(
             value = remember { mutableStateOf(clubState.name) },
-            text = "TEAM LEAGUE",
+            text = "NAME CLUB",
             keyboardType = KeyboardType.Text,
         ){
             name -> clubFormViewModel.updateNameClub(name)
         }
 
-        val leagues = listOf(leagueViewModel.leagues)
+
         ComboBox(
-            options = leagues ,
-            selectedOption = remember { mutableStateOf("${leagues[0]}")})
+            options = leagueViewModel.leaguesNames ,
+            selectedOption = remember {
+                if (leagueViewModel.leaguesNames.value.isNotEmpty())
+                    mutableStateOf(leagueViewModel.leaguesNames.value[0])
+                else
+                    mutableStateOf("")
+            })
         {
             league -> clubFormViewModel.updateLeague(league)
         }

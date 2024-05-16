@@ -1,20 +1,38 @@
-package com.example.clientadmin.viewmodels
-
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
-import com.example.clientadmin.model.Club
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import com.example.clientadmin.service.impl.ClubApiServiceImpl
-import retrofit2.Retrofit
+import kotlinx.coroutines.launch
 
-class ClubViewModel(): ViewModel() {
+class ClubViewModel : ViewModel() {
+    private val _list = MutableStateFlow<List<String>>(emptyList())
+    val clubsNames: Flow<List<String>> = _list.asStateFlow()
+
     private val clubApiServiceImpl = ClubApiServiceImpl()
-    fun addClub(name: String, image: Bitmap?, league: String){
-        //TODO
+
+    init {
+        fetchClubsNames()
     }
-    fun getClubsNames(): List<String>{
-        return clubApiServiceImpl.getClubSNames()
+
+    private fun fetchClubsNames() {
+        viewModelScope.launch {
+            _list.value = clubApiServiceImpl.getClubSNames()
+        }
     }
-    fun updateClub(name: String, image: Bitmap){
-        //TODO
+
+    fun addClub(name: String, pic: Bitmap, league: String) {
+        viewModelScope.launch {
+            val createdTeam = clubApiServiceImpl.createClub(name, pic)
+            createdTeam?.let {
+                club -> _list.value += club.name
+            }
+        }
+    }
+
+    fun updateClub(name: String, image: Bitmap) {
+        //TODO: Implementa l'aggiornamento di un club
     }
 }

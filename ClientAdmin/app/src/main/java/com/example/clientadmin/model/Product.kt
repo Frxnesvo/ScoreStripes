@@ -1,7 +1,7 @@
 package com.example.clientadmin.model
 
-import com.example.clientuser.model.Enum.Gender
-import com.example.clientuser.model.Enum.ProductCategory
+import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.model.enumerator.ProductCategory
 
 
 class Product (

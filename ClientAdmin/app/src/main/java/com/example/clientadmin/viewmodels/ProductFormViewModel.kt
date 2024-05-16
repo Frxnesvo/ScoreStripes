@@ -3,10 +3,9 @@ package com.example.clientadmin.viewmodels
 import android.graphics.Bitmap
 import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.Product
-import com.example.clientadmin.model.ProductPic
 import com.example.clientadmin.model.ProductWithVariant
-import com.example.clientuser.model.Enum.Gender
-import com.example.clientuser.model.Enum.ProductCategory
+import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.model.enumerator.ProductCategory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

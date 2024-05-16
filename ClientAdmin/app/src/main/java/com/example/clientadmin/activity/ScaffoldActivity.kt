@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import ClubViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +44,6 @@ import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductFormViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.ClubFormViewModel
-import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
 
 enum class Screen{ HOME, USERS, ADD, PRODUCTS, SETTINGS }
