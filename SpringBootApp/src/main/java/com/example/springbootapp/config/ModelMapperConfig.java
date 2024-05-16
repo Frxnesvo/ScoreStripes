@@ -28,7 +28,8 @@ public class ModelMapperConfig {
 
         Converter<String, String> profilePicUrlConverter = context -> {
             String profileImageUrl = context.getSource();
-            return awsS3Service.generatePresignedUrl(profileImageUrl);
+            return profileImageUrl;
+            //return awsS3Service.generatePresignedUrl(profileImageUrl);
         };
          //converter personalizzato per gestire la conversione da una lista di pics a una stringa
         Converter<Product,String> firstPicUrlConverter = context -> {

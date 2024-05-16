@@ -4,12 +4,15 @@ import com.example.springbootapp.data.dto.AddressDto;
 import com.example.springbootapp.data.dto.CustomerProfileDto;
 import com.example.springbootapp.data.dto.CustomerSummaryDto;
 import com.example.springbootapp.data.dto.OrderDto;
+import com.example.springbootapp.data.entities.Customer;
+import com.example.springbootapp.data.specification.CustomerSpecification;
 import com.example.springbootapp.service.interfaces.AddressService;
 import com.example.springbootapp.service.interfaces.CustomerService;
 import com.example.springbootapp.service.interfaces.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +29,8 @@ public class CustomerController {
     private final OrderService orderService;
 
     @GetMapping("/summary")
-    public ResponseEntity<Page<CustomerSummaryDto>> getCustomersSummary(Pageable pageable){
-        return ResponseEntity.ok(customerService.getCustomersSummary(pageable));
+    public ResponseEntity<Page<CustomerSummaryDto>> getCustomersSummary(Pageable pageable, @RequestParam(required = false) String username){
+        return ResponseEntity.ok(customerService.getCustomersSummary(username,pageable));
     }
 
     @GetMapping("/{id}/profile")
