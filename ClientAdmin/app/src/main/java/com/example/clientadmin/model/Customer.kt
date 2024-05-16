@@ -1,7 +1,7 @@
 package com.example.clientadmin.model
 
 import android.graphics.Bitmap
-import com.example.clientuser.model.Enum.Gender
+import com.example.clientadmin.model.enumerator.Gender
 import java.time.LocalDate
 
 class Customer(

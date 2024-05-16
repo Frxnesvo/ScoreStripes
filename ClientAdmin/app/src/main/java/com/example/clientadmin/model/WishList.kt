@@ -1,6 +1,6 @@
 package com.example.clientadmin.model
 
-import com.example.clientadmin.model.Enum.WishListVisibility
+import com.example.clientadmin.model.enumerator.WishListVisibility
 
 data class WishList(
     val id: String,

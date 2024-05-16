@@ -1,38 +1,50 @@
 package com.example.clientadmin.service.impl
 
+import android.graphics.Bitmap
+import com.example.clientadmin.model.dto.ClubDto
+import com.example.clientadmin.model.dto.ClubRequestDto
+import com.example.clientadmin.service.BitmapConverter
+import com.example.clientadmin.service.RetrofitHandler
 import com.example.clientadmin.service.interfaces.ClubApiService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ClubApiServiceImpl{
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("http://localhost:8080/")
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
 
-    private val clubApi = retrofit.create(ClubApiService::class.java)
+    suspend fun getClubSNames(): List<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = RetrofitHandler.getClubApi().getClubNames()
+                if (response.isSuccessful) response.body() ?: emptyList()
+                else emptyList()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emptyList()
+            }
+        }
+    }
 
-    fun getClubSNames(): List<String>{
-        val call = clubApi.getClubNames()
-        var names = listOf<String>()
-        call.enqueue(object : Callback<List<String>> {
-            override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
-                if (response.isSuccessful) {
-                    names = response.body()!!
+    suspend fun createClub(name: String, pic: Bitmap): ClubDto?{
+        val clubRequestDto = ClubRequestDto(name, BitmapConverter.bitmapToMultipartBodyPart(pic))
+
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = RetrofitHandler.getClubApi().createClub(clubRequestDto)
+                if(response.isSuccessful) response.body()
+                else{
+                    println("errore nella creazione del club ${response.message()}")
+                    null
                 }
+            } catch (e: Exception) {
+                println("eccezione nella creazione del club")
+                e.printStackTrace()
+                null
             }
-
-            override fun onFailure(call: Call<List<String>>, t: Throwable) {
-                println("Error")
-                //gestire l'errore
-            }
-        })
-        return names
+        }
     }
-    fun addClub(name: String, image: String, league: String){
 
-    }
 }

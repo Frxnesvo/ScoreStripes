@@ -96,10 +96,19 @@ fun Stat(text: String, value: Int) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier
+            .padding(10.dp)
     ) {
-        Text(text = text, style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Light))
-        Text(text = "$value", color = Color.Red, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp))
+        Text(
+            text = text,
+            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Light),
+            //modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = "$value",
+            color = Color.Red,
+            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
+        )
     }
 }
 

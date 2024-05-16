@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class LeagueState(
     val name: String = "",
-    val imageLeague: Bitmap? = null,
+    val imageLeague: Bitmap = Bitmap.createBitmap(100, 100 , Bitmap.Config.ARGB_8888),
     val clubs: List<Club> = listOf(),
     //error
     val isNameLeagueError: Boolean = !League.validateName(name)
@@ -26,7 +26,7 @@ class LeagueFormViewModel{
             isNameLeagueError = hasError
         )
     }
-    fun updateImage(img: Bitmap?) {
+    fun updateImage(img: Bitmap) {
         _leagueState.value = _leagueState.value.copy(
             imageLeague = img
         )

@@ -1,4 +1,4 @@
-package com.example.clientadmin.model.Enum
+package com.example.clientadmin.model.enumerator
 
 enum class Size {
     XS,
