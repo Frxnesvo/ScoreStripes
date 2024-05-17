@@ -1,5 +1,8 @@
 package com.example.clientadmin.activity
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,19 +17,24 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.authentication.GoogleAuth
 import com.example.clientadmin.model.enumerator.Gender
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
 @Composable
-fun Login(globalIndex: MutableIntState) {
+fun Login(navController : NavHostController, firstname : String, lastname : String, email : String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,7 +42,7 @@ fun Login(globalIndex: MutableIntState) {
             .padding(10.dp),
     ) {
         Back {
-            globalIndex.intValue = 0
+            navController.navigate("index")
         }
 
         Column(
@@ -55,7 +63,10 @@ fun Login(globalIndex: MutableIntState) {
                     .clickable {
                         //TODO
                     }
-                    .background(colorResource(id = R.color.white), shape = RoundedCornerShape(40.dp)),
+                    .background(
+                        colorResource(id = R.color.white),
+                        shape = RoundedCornerShape(40.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ){
                 Icon(Icons.Filled.AddCircle, contentDescription = "add", tint = colorResource(id = R.color.secondary))
@@ -79,9 +90,11 @@ fun Login(globalIndex: MutableIntState) {
                 gender.value = it
             }
 
-            ButtonCustom(text = "LOGIN", background = R.color.secondary){
-                globalIndex.intValue = 2
+            ButtonCustom(text = "REGISTER", background = R.color.secondary) {
+                //TODO: controlli checkbox non vuote ecc
+                navController.navigate("scaffold")
             }
         }
+
     }
 }

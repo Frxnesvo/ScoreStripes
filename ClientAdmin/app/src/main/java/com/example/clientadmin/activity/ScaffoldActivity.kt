@@ -49,17 +49,17 @@ import com.example.clientadmin.viewmodels.CustomerViewModel
 enum class Screen{ HOME, USERS, ADD, PRODUCTS, SETTINGS }
 
 @Composable
-fun Scaffold(globalIndex: MutableIntState) {
+fun Scaffold() {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
-    val userNavHostController = rememberNavController()
+    val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomBar(userNavHostController, selectedScreen) },
+        bottomBar = { BottomBar(navController, selectedScreen) },
     ) {
         it.calculateTopPadding()
 
         NavigationUser(
-            navHostController = userNavHostController,
+            navHostController = navController,
             customerViewModel = CustomerViewModel(),
             productViewModel = ProductViewModel(),
             selectedScreen = selectedScreen
@@ -131,7 +131,10 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
             .width(40.dp)
             .height(40.dp)
             .clickable(onClick = function)
-            .background(if (background != null) colorResource(id = background) else Color.Transparent, RoundedCornerShape(20.dp)),
+            .background(
+                if (background != null) colorResource(id = background) else Color.Transparent,
+                RoundedCornerShape(20.dp)
+            ),
         contentAlignment = Alignment.Center
     ){
         if (imageVector != null)
