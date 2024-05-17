@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class ProductState(
     val name: String = "",
-    val club: Club? = null, //TODO get del primo club in ordine alfabetico
+    val club: String = "", //TODO get del primo club in ordine alfabetico
     val gender: Gender = Gender.entries[0],
     val pic1: Bitmap? = null,
     val pic2: Bitmap? = null,
@@ -20,7 +20,7 @@ data class ProductState(
     val productCategory: ProductCategory = ProductCategory.entries[0],
     val description: String = "",
     val price: Double = 0.0,
-    val variants: ProductWithVariant? = null,
+    val variants: List<ProductWithVariant> = listOf(),
     //error
     val isNameError: Boolean = !Product.validateName(name),
     val isLeagueError: Boolean = !Product.validateBrand(brand),
@@ -28,6 +28,8 @@ data class ProductState(
     val isBrandError: Boolean = !Product.validateBrand(brand),
     val isDescriptionError: Boolean = !Product.validateDescription(description)
 )
+
+
 class ProductFormViewModel(product: Product? = null) {
     private val _productState = MutableStateFlow(ProductState())
     val productState: StateFlow<ProductState> = _productState.asStateFlow()
@@ -55,7 +57,7 @@ class ProductFormViewModel(product: Product? = null) {
         )
     }
 
-    fun updateClub(club: Club) {
+    fun updateClub(club: String) {
         _productState.value = _productState.value.copy(
             club = club
         )
@@ -101,7 +103,7 @@ class ProductFormViewModel(product: Product? = null) {
             isPriceError = hasError
         )
     }
-    fun updateVariants(variants: ProductWithVariant?) {
+    fun updateVariants(variants: List<ProductWithVariant>) {
         _productState.value = _productState.value.copy(
             variants = variants
         )

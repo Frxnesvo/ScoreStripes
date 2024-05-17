@@ -4,25 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.clientadmin.R
 import com.example.clientadmin.ui.theme.ClientAdminTheme
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +28,7 @@ class MainActivity : ComponentActivity() {
                     when (globalIndex.intValue) {
                         0 -> IndexPage(globalIndex)
                         1 -> Login(globalIndex)
-                        //2 -> Register()
-                        3 -> Scaffold(globalIndex)
+                        2 -> Scaffold(globalIndex)
                     }
                 }
             }
@@ -55,7 +44,6 @@ fun PreviewApp(){
     when (globalIndex.intValue) {
         0 -> IndexPage(globalIndex)
         1 -> Login(globalIndex)
-        //2 -> Register()
-        3 -> Scaffold(globalIndex)
+        2 -> Scaffold(globalIndex)
     }
 }

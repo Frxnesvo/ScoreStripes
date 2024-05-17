@@ -13,8 +13,8 @@ class Product (
     val gender: Gender,
     val productCategory: ProductCategory,
     val pics: List<ProductPic?> = listOf(),
-    val club: Club,
-    val variants: ProductWithVariant? = null
+    val club: String,
+    val variants: List<ProductWithVariant> = listOf()
 ){
     init {
         validateName(name)

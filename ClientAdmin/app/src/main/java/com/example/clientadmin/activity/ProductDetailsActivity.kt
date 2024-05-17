@@ -80,8 +80,8 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
 
             ComboBox(
                 options = clubViewModel.clubsNames,
-                selectedOption = remember { mutableStateOf("${productState.club}") },
-                onValueChange = { TODO() }
+                selectedOption = remember { mutableStateOf(productState.club) },
+                onValueChange = { productFormViewModel.updateClub(it) }
             )
 
             ComboBox(
@@ -120,6 +120,26 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "QUANTITIES", style = style)
+
+            TextFieldInt(value = remember { mutableStateOf(0) }, text = "XS") {
+
+            }
+
+            TextFieldInt(value = remember { mutableStateOf(0) }, text = "S") {
+
+            }
+
+            TextFieldInt(value = remember { mutableStateOf(0) }, text = "M") {
+
+            }
+
+            TextFieldInt(value = remember { mutableStateOf(0) }, text = "L") {
+
+            }
+
+            TextFieldInt(value = remember { mutableStateOf(0) }, text = "XL") {
+
+            }
         }
 
         ButtonCustom(text = if(isAdd) "ADD PRODUCT" else "UPDATE PRODUCT", background = R.color.secondary) {

@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 class Order(
     val id: String,
-    var totalPrice: Double,     //TODO conviene renderlo private?
+    var totalPrice: Double,
     val address: AddressEmbeddable,
     val date: LocalDate,
     val status: OrderStatus,

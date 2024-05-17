@@ -29,7 +29,7 @@ fun Products(navHostController: NavHostController, productViewModel: ProductView
     ) {
         Title()
 
-        Search(name = "Products") { }
+        Search(name = "PRODUCTS") { }
 
         ProductList(products = listOf(), navHostController = navHostController)
     }

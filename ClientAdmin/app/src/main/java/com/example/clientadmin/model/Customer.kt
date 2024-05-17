@@ -15,7 +15,7 @@ class Customer(
     profilePicUrl: String,
     gender: Gender,
     val profilePic: Bitmap?,
-    val favouriteTeam: String,
+    val favouriteClub: String,
     val addresses: List<Address>,
     val cart: Cart,
     val wishlist: WishList

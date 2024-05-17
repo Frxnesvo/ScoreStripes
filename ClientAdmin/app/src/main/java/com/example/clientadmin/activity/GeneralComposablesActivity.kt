@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -140,7 +141,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
 }
 
 @Composable
-fun SubSectionUser(customer: Customer, subSectionName: String) {
+fun SubSectionUser(username: String, subSectionName: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -152,23 +153,7 @@ fun SubSectionUser(customer: Customer, subSectionName: String) {
         val style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
 
         Text(text = subSectionName, color = colorResource(id = R.color.black), style = style)
-        if (customer.profilePic == null)
-            Box(
-                modifier = modifier,
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = customer.username.first().uppercase(),
-                    color = colorResource(id = R.color.white),
-                    style = style
-                )
-            }
-        else
-            Image(
-                bitmap = customer.profilePic.asImageBitmap(),
-                contentDescription = "userImg",
-                modifier = modifier
-            )
+        Text(text = username, color = colorResource(id = R.color.secondary), style = style)
     }
 }
 
@@ -236,6 +221,39 @@ fun TextFieldDouble(value: MutableState<Double>, text: String, readOnly: Boolean
         colors = colors,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Decimal
+        )
+    )
+}
+
+@Composable
+fun TextFieldInt(value: MutableState<Int>, text: String, readOnly: Boolean = false, onValueChange: (String) -> Unit){
+    val colors = OutlinedTextFieldDefaults.colors(
+        unfocusedContainerColor = colorResource(id = R.color.white),
+        focusedTextColor = colorResource(id = R.color.black),
+        unfocusedTextColor = colorResource(id = R.color.black50),
+        focusedBorderColor = colorResource(id = R.color.secondary),
+        unfocusedBorderColor = colorResource(id = R.color.white),
+        focusedLabelColor = colorResource(id = R.color.secondary),
+        unfocusedLabelColor = colorResource(id = R.color.black),
+        errorContainerColor = colorResource(id = R.color.secondary50)
+    )
+
+    OutlinedTextField(
+        readOnly = readOnly,
+        value = value.value.toString(),
+        onValueChange = onValueChange,
+        label = {
+            Text(
+                text = text,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(30.dp),
+        colors = colors,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Number
         )
     )
 }

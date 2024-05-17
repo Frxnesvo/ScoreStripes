@@ -30,10 +30,12 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.OrderItem
+import com.example.clientadmin.model.dto.OrderDto
+import com.example.clientadmin.model.dto.OrderItemDto
 
 
 @Composable
-fun OrderItem(order: Order, navHostController: NavHostController) {
+fun OrderItem(order: OrderDto, navHostController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,7 +56,7 @@ fun OrderItem(order: Order, navHostController: NavHostController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "ORDER", color = colorResource(id = R.color.black), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = "${order.id}", style = style12) //TODO serve qualcosa di più sicuo?
+                Text(text = order.id, style = style12) //TODO serve qualcosa di più sicuo?
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -68,7 +70,7 @@ fun OrderItem(order: Order, navHostController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "STREET: ", style = style8)
-            Text(text = "${order.address.street}, ${order.address.civicNumber}", color = colorResource(id = R.color.black), style = style12)
+            Text(text = "${order.resilientInfos.street}, ${order.resilientInfos.civicNumber}", color = colorResource(id = R.color.black), style = style12)
         }
 
         Row(
@@ -78,26 +80,24 @@ fun OrderItem(order: Order, navHostController: NavHostController) {
             Text(text = "${order.date}", color = colorResource(id = R.color.black), style = style12)
         }
 
-        ProductOrdersList(order = order, navHostController = navHostController)
-
+        ProductOrdersList(orderItems = order.items, navHostController = navHostController)
     }
 }
 
 @Composable
-fun ProductOrdersList(order: Order, navHostController: NavHostController){
+fun ProductOrdersList(orderItems: List<OrderItemDto>, navHostController: NavHostController){
     LazyRow(
         state = rememberLazyListState(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items(order.items) {
-            product ->
-            ProductOrderItem(orderItem = product, navHostController = navHostController)
+        items(orderItems) {
+            product -> ProductOrderItem(orderItem = product, navHostController = navHostController)
         }
     }
 }
 
 @Composable
-fun ProductOrderItem(orderItem: OrderItem, navHostController: NavHostController) {
+fun ProductOrderItem(orderItem: OrderItemDto, navHostController: NavHostController) {
     Column(
         modifier = Modifier
             .clickable { navHostController.navigate("product/${orderItem.product.id}") },
@@ -105,7 +105,7 @@ fun ProductOrderItem(orderItem: OrderItem, navHostController: NavHostController)
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painterResource(R.drawable.arsenal), // TODO prendere da product
+            painter = painterResource(R.drawable.arsenal), // TODO prendere da product
             contentDescription = "img",
             contentScale = ContentScale.Crop,
             modifier = Modifier

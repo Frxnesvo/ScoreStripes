@@ -11,7 +11,7 @@ class CustomerApiServiceImpl {
     suspend fun getCustomerDetails(id: String): CustomerProfileDto?{
         return withContext(Dispatchers.IO){
              try {
-                 val response = RetrofitHandler.getCustomerApi().getCustomerProfile()
+                 val response = RetrofitHandler.getCustomerApi().getCustomerProfile(id)
                  if (response.isSuccessful) response.body()
                  else null
              }
@@ -25,7 +25,7 @@ class CustomerApiServiceImpl {
     suspend fun getCustomerAddresses(id: String): List<AddressDto>{
         return withContext(Dispatchers.IO){
             try {
-                val response = RetrofitHandler.getCustomerApi().getCustomerAddresses()
+                val response = RetrofitHandler.getCustomerApi().getCustomerAddresses(id)
                 if (response.isSuccessful) response.body() ?: emptyList()
                 else emptyList()
             }
@@ -39,7 +39,7 @@ class CustomerApiServiceImpl {
     suspend fun getCustomerOrders(id: String): List<OrderDto>{
         return withContext(Dispatchers.IO){
             try {
-                val response = RetrofitHandler.getCustomerApi().getCustomerOrders()
+                val response = RetrofitHandler.getCustomerApi().getCustomerOrders(id)
                 if (response.isSuccessful) response.body() ?: emptyList()
                 else emptyList()
             }

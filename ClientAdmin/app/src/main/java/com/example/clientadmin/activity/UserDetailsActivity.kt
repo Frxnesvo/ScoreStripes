@@ -21,10 +21,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Customer
+import com.example.clientadmin.model.dto.CustomerProfileDto
 
 
 @Composable
-fun UserDetails(customer: Customer, navHostController: NavHostController){
+fun UserDetails(customer: CustomerProfileDto, navHostController: NavHostController){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
@@ -34,16 +35,12 @@ fun UserDetails(customer: Customer, navHostController: NavHostController){
     ){
         Back { navHostController.popBackStack() }
 
-        SubSectionUser(customer = customer, subSectionName = "PERSONAL DATA")
-
-        //User(2, "aldo", "gioia", "aldo@gmail.com", "Aldo@021", listOf(), listOf(), null)
-
         Details(customer = customer)
     }
 }
 
 @Composable
-fun Details(customer: Customer){
+fun Details(customer: CustomerProfileDto){
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier
@@ -78,9 +75,9 @@ fun Details(customer: Customer){
         )
 
         TextFieldString(
-            value = remember{ mutableStateOf(customer.favouriteTeam) },
+            value = remember{ mutableStateOf(customer.favoriteClub) },
             onValueChange = { },
-            text = "FAVOURITE TEAM",
+            text = "FAVORITE CLUB",
             readOnly = true
         )
 

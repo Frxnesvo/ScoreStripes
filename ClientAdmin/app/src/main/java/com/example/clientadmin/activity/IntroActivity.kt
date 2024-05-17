@@ -50,15 +50,15 @@ fun IndexPage(globalIndex: MutableIntState) {
                 verticalArrangement = Arrangement.spacedBy(25.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ButtonCustom(background = R.color.secondary50, text = "SIGN IN") {
+                ButtonCustom(background = R.color.secondary50, text = "SIGN IN WITH GOOGLE") {
                     globalIndex.intValue = 1
                 }
 
-                ButtonCustom(background = R.color.black50, text = "SIGN UP") {
+                /*ButtonCustom(background = R.color.black50, text = "SIGN UP") {
                     globalIndex.intValue = 2
-                }
+                }*/
 
-                TextButton(onClick = { globalIndex.intValue = 3 }) {
+                /*TextButton(onClick = { globalIndex.intValue = 3 }) {
                     Text(
                         text = "enter as guest",
                         color = colorResource(id = R.color.white50),
@@ -68,7 +68,7 @@ fun IndexPage(globalIndex: MutableIntState) {
                             letterSpacing = 5.sp
                         )
                     )
-                }
+                }*/
             }
         }
     }

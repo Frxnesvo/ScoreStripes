@@ -168,14 +168,14 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
         composable(
             route = "users"
         ){
-            Users(navHostController = navHostController, customerViewModel)
+            Users(navHostController = navHostController, customerViewModel =  customerViewModel)
         }
         composable(
             route = "user/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.IntType })
         ){
-            it.arguments?.getInt("id")?.let {
-                id -> customerViewModel.getCustomer(id).collectAsState(initial = null).value?.let {
+            it.arguments?.getString("id")?.let {
+                id -> customerViewModel.getCustomerDetails(id).collectAsState(initial = null).value?.let {
                     customer -> UserProfile(customer = customer, navHostController = navHostController)
                 }
             }
@@ -184,9 +184,9 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
             route = "userOrders/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.IntType })
         ){
-            it.arguments?.getInt("id")?.let {
-                id -> customerViewModel.getCustomer(id).collectAsState(initial = null).value?.let {
-                    customer -> Orders(customer = customer, navHostController = navHostController)
+            it.arguments?.getString("id")?.let {
+                id -> customerViewModel.getCustomerOrders(id).collectAsState(initial = null).value?.let {
+                    orders -> Orders(orders = orders, navHostController = navHostController)
                 }
             }
         }
@@ -194,8 +194,8 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
             route = "userDetails/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.IntType })
         ){
-            it.arguments?.getInt("id")?.let {
-                id -> customerViewModel.getCustomer(id).collectAsState(initial = null).value?.let {
+            it.arguments?.getString("id")?.let {
+                id -> customerViewModel.getCustomerDetails(id).collectAsState(initial = null).value?.let {
                     customer -> UserDetails(customer = customer, navHostController = navHostController)
                 }
             }
@@ -204,9 +204,9 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
             route = "userAddresses/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.IntType })
         ){
-            it.arguments?.getInt("id")?.let {
-                id -> customerViewModel.getCustomer(id).collectAsState(initial = null).value?.let {
-                    customer -> Addresses(customer = customer, navHostController = navHostController)
+            it.arguments?.getString("id")?.let {
+                id -> customerViewModel.getCustomerAddresses(id).collectAsState(initial = null).value?.let {
+                    addresses -> Addresses(addresses = addresses, navHostController = navHostController)
                 }
             }
         }
@@ -215,7 +215,7 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
         composable(
             route = "addProduct"
         ){
-            ProductDetails(productViewModel = productViewModel, clubViewModel = ClubViewModel(), productFormViewModel = ProductFormViewModel(), navHostController = navHostController)
+            ProductDetails(productViewModel = productViewModel, clubViewModel = ClubViewModel(), productFormViewModel = ProductFormViewModel(), navHostController = navHostController, isAdd = true)
         }
         composable(
             route = "addLeague"
@@ -244,8 +244,7 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
                         productViewModel = ProductViewModel(),
                         clubViewModel = ClubViewModel(),
                         productFormViewModel = ProductFormViewModel(product),
-                        navHostController = navHostController,
-                        isAdd = true
+                        navHostController = navHostController
                     )
                 }
             }

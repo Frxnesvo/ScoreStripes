@@ -18,10 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Address
+import com.example.clientadmin.model.dto.AddressDto
 
 
 @Composable
-fun AddressItem(address: Address){
+fun AddressItem(address: AddressDto){
     Column(
         modifier = Modifier
             .fillMaxWidth()
