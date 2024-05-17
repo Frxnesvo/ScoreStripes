@@ -3,6 +3,8 @@ package com.example.springbootapp.service.impl;
 import com.example.springbootapp.data.dto.CustomerProfileDto;
 import com.example.springbootapp.data.dto.CustomerSummaryDto;
 import com.example.springbootapp.data.dao.CustomerDao;
+import com.example.springbootapp.data.entities.Customer;
+import com.example.springbootapp.data.specification.CustomerSpecification;
 import com.example.springbootapp.service.interfaces.CustomerService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
@@ -22,12 +25,16 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerDao customerDao;
 
     @Override
-    public Page<CustomerSummaryDto> getCustomersSummary(Pageable pageable) {
+    public Page<CustomerSummaryDto> getCustomersSummary(String username, Pageable pageable) {
         if(pageable.getSort().isUnsorted()) {
             Sort sort = Sort.by(Sort.Direction.ASC, "username");
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         }
-        return customerDao.findAll(pageable).map(customer -> modelMapper.map(customer, CustomerSummaryDto.class));
+        Specification<Customer> spec = Specification.where(null);
+        if(username != null) {
+            spec = spec.and(CustomerSpecification.usernameContains(username));
+        }
+        return customerDao.findAll(spec,pageable).map(customer -> modelMapper.map(customer, CustomerSummaryDto.class));
     }
 
     @Override
