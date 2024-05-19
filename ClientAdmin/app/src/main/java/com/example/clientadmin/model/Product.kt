@@ -1,7 +1,9 @@
 package com.example.clientadmin.model
 
+import android.graphics.Bitmap
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
+import com.example.clientadmin.model.enumerator.Size
 
 
 class Product (
@@ -12,9 +14,9 @@ class Product (
     val brand: String = "",
     val gender: Gender,
     val productCategory: ProductCategory,
-    val pics: List<ProductPic?> = listOf(),
-    val club: Club,
-    val variants: ProductWithVariant? = null
+    private val pics: List<Bitmap> = listOf(),
+    val club: String,
+    val variants: Map<Size, Int> = mapOf()
 ){
     init {
         validateName(name)
@@ -22,10 +24,10 @@ class Product (
         validatePrice(price)
         validateDescription(description)
     }
-    fun getPic1(): ProductPic?{
+    fun getPic1(): Bitmap{
         return pics[0]
     }
-    fun getPic2(): ProductPic?{
+    fun getPic2(): Bitmap{
         return pics[1]
     }
 
@@ -41,6 +43,9 @@ class Product (
         }
         fun validateBrand(brand: String): Boolean{
             return brand.length in 1..20
+        }
+        fun validateBrand(pics: List<Bitmap>): Boolean{
+            return pics.size == 2
         }
     }
 }

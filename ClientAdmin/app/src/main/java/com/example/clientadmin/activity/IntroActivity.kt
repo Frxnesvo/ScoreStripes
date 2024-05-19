@@ -8,23 +8,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.authentication.GoogleAuth
+import kotlinx.coroutines.launch
 
 @Composable
-fun IndexPage(globalIndex: MutableIntState) {
+fun IndexPage(navController : NavHostController) {
+    val coroutineScope = rememberCoroutineScope()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -50,15 +52,21 @@ fun IndexPage(globalIndex: MutableIntState) {
                 verticalArrangement = Arrangement.spacedBy(25.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ButtonCustom(background = R.color.secondary50, text = "SIGN IN") {
-                    globalIndex.intValue = 1
+                val context = LocalContext.current
+
+                ButtonCustom(background = R.color.secondary50, text = stringResource(id = R.string.sign_in)) {
+                    val auth = GoogleAuth(context)
+                    coroutineScope.launch {
+                        val googleUserDto = auth.getGoogleCredential()
+                        navController.navigate("register/${googleUserDto?.firstName}/${googleUserDto?.lastName}/${googleUserDto?.email}")
+                    }
                 }
 
-                ButtonCustom(background = R.color.black50, text = "SIGN UP") {
+                /*ButtonCustom(background = R.color.black50, text = "SIGN UP") {
                     globalIndex.intValue = 2
-                }
+                }*/
 
-                TextButton(onClick = { globalIndex.intValue = 3 }) {
+                /*TextButton(onClick = { globalIndex.intValue = 3 }) {
                     Text(
                         text = "enter as guest",
                         color = colorResource(id = R.color.white50),
@@ -68,7 +76,7 @@ fun IndexPage(globalIndex: MutableIntState) {
                             letterSpacing = 5.sp
                         )
                     )
-                }
+                }*/
             }
         }
     }

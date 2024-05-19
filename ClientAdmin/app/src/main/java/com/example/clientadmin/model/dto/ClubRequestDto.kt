@@ -4,6 +4,6 @@ import okhttp3.MultipartBody
 
 data class ClubRequestDto(
     val name: String,
-
-    val pic: MultipartBody.Part
+    val pic: MultipartBody.Part,
+    val league: String
 )

@@ -6,13 +6,14 @@ import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductWithVariant
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
+import com.example.clientadmin.model.enumerator.Size
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 data class ProductState(
     val name: String = "",
-    val club: Club? = null, //TODO get del primo club in ordine alfabetico
+    val club: String = "", //TODO get del primo club in ordine alfabetico
     val gender: Gender = Gender.entries[0],
     val pic1: Bitmap? = null,
     val pic2: Bitmap? = null,
@@ -20,7 +21,7 @@ data class ProductState(
     val productCategory: ProductCategory = ProductCategory.entries[0],
     val description: String = "",
     val price: Double = 0.0,
-    val variants: ProductWithVariant? = null,
+    val variants: Map<Size, Int> = mapOf(),
     //error
     val isNameError: Boolean = !Product.validateName(name),
     val isLeagueError: Boolean = !Product.validateBrand(brand),
@@ -28,6 +29,8 @@ data class ProductState(
     val isBrandError: Boolean = !Product.validateBrand(brand),
     val isDescriptionError: Boolean = !Product.validateDescription(description)
 )
+
+
 class ProductFormViewModel(product: Product? = null) {
     private val _productState = MutableStateFlow(ProductState())
     val productState: StateFlow<ProductState> = _productState.asStateFlow()
@@ -40,11 +43,12 @@ class ProductFormViewModel(product: Product? = null) {
             updateCategory(product.productCategory)
             updateDescription(product.description)
             updateBrand(product.brand)
-            updatePic1(null) //TODO da vedere
-            updatePic2(null) //TODO da vedere
+            updatePic1(product.getPic1())
+            updatePic2(product.getPic2())
             updatePrice(product.price)
             updateVariants(product.variants)
         }
+        val variants: Map<Size, Int> = Size.entries.associateWith { 0 }
     }
 
     fun updateName(name: String) {
@@ -55,7 +59,7 @@ class ProductFormViewModel(product: Product? = null) {
         )
     }
 
-    fun updateClub(club: Club) {
+    fun updateClub(club: String) {
         _productState.value = _productState.value.copy(
             club = club
         )
@@ -84,12 +88,12 @@ class ProductFormViewModel(product: Product? = null) {
             isBrandError = hasError
         )
     }
-    fun updatePic1(pic: Bitmap?) {
+    fun updatePic1(pic: Bitmap) {
         _productState.value = _productState.value.copy(
             pic1 = pic
         )
     }
-    fun updatePic2(pic: Bitmap?) {
+    fun updatePic2(pic: Bitmap) {
         _productState.value = _productState.value.copy(
             pic2 = pic
         )
@@ -101,9 +105,14 @@ class ProductFormViewModel(product: Product? = null) {
             isPriceError = hasError
         )
     }
-    fun updateVariants(variants: ProductWithVariant?) {
+    private fun updateVariants(variants: Map<Size, Int>) {
         _productState.value = _productState.value.copy(
             variants = variants
         )
+    }
+    fun updateVariant(size: Size, quantity: Int) {
+        val variantsUpdate = productState.value.variants.toMutableMap()
+        variantsUpdate[size] = quantity
+        updateVariants(variantsUpdate)
     }
 }

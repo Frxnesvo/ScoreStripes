@@ -1,30 +1,40 @@
 package com.example.clientadmin.activity
 
-import androidx.compose.foundation.BorderStroke
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.authentication.GoogleAuth
+import com.example.clientadmin.model.enumerator.Gender
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
 @Composable
-fun Login(globalIndex: MutableIntState) {
+fun Login(navController : NavHostController, firstname : String, lastname : String, email : String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -32,7 +42,7 @@ fun Login(globalIndex: MutableIntState) {
             .padding(10.dp),
     ) {
         Back {
-            globalIndex.intValue = 0
+            navController.navigate("index")
         }
 
         Column(
@@ -40,54 +50,51 @@ fun Login(globalIndex: MutableIntState) {
             verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val email = remember { mutableStateOf("") }
-            val password = remember { mutableStateOf("") }
+            //TODO fare il form view model
+            val username = remember { mutableStateOf("") }
+            val birthDate = remember { mutableStateOf("") }
+            val gender = remember { mutableStateOf("${Gender.entries[0]}") }
 
             Title()
 
-            TextFieldString(
-                value = email,
-                text = "email",
-                keyboardType = KeyboardType.Email,
-                onValueChange = {email.value = it}
-            )
-
-            TextFieldString(
-                value = password,
-                text = "password",
-                keyboardType = KeyboardType.Password,
-                onValueChange = {email.value = it}
-            )
-
-            ButtonCustom(text = "LOGIN", background = R.color.secondary){
-                //TODO
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clickable {
+                        //TODO
+                    }
+                    .background(
+                        colorResource(id = R.color.white),
+                        shape = RoundedCornerShape(40.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(Icons.Filled.AddCircle, contentDescription = "add", tint = colorResource(id = R.color.secondary))
             }
 
-            Text(
-                text = "or",
-                color = colorResource(id = R.color.black50),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    letterSpacing = 5.sp
-                )
+            TextFieldString(
+                value = username,
+                text = "USERNAME",
+                keyboardType = KeyboardType.Text,
+                onValueChange = {username.value = it}
             )
 
-            TextButton(
-                onClick = { /*TODO*/ },
-                border = BorderStroke(2.dp, color = colorResource(id = R.color.black)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "WITH GOOGLE",
-                    color = colorResource(id = R.color.black),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 5.sp
-                    )
-                )
+            TextFieldString(
+                value = birthDate,
+                text = "BIRTH DATE",
+                keyboardType = KeyboardType.Text,
+                onValueChange = {birthDate.value = it}
+            )
+
+            ComboBox(options = flowOf(Gender.entries), selectedOption = gender) {
+                gender.value = it
+            }
+
+            ButtonCustom(text = "REGISTER", background = R.color.secondary) {
+                //TODO: controlli checkbox non vuote ecc
+                navController.navigate("scaffold")
             }
         }
+
     }
 }

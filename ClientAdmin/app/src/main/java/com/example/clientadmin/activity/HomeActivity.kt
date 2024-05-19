@@ -1,6 +1,7 @@
 package com.example.clientadmin.activity
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,19 +35,18 @@ import java.time.Year
 
 @Composable
 fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostController) {
+    //TODO prendere i dati dal server
     val numNewOrders = 200
     val numProductOutOfStoke = 120
     val numNewUser = 88
-
-    val scrollState = rememberScrollState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 80.dp)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 10.dp)
     ) {
         Title()
 
@@ -55,20 +56,33 @@ fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostControl
             numNewUser = numNewUser
         )
 
-        BoxImage(boxTitle = "UTENTI", painterResource(id = R.drawable.match)){
+        BoxImage(
+            boxTitle = stringResource(id = R.string.list_all_user),
+            painter = painterResource(id = R.drawable.match)
+        ){
             selectedScreen.value = Screen.USERS
             navHostController.navigate("users")
         }
 
-        BoxImage(boxTitle = "PRODOTTI", painterResource(id = R.drawable.psg)){
+        BoxImage(
+            boxTitle = stringResource(id = R.string.list_all_products),
+            painter = painterResource(id = R.drawable.psg)
+        ){
             selectedScreen.value = Screen.PRODUCTS
             navHostController.navigate("products")
         }
 
-        Section("I PIÙ VENDUTI", listOf())
-        Section("I MENO VENDUTI", listOf())
+        Section(
+            nameSection = stringResource(id = R.string.best_sellers),
+            products = listOf(),
+            navHostController = navHostController
+        )
 
-        /*TODO -  da vedere se aggiungere qualche altra sezione alla home*/
+        Section(
+            nameSection = stringResource(id = R.string.least_sold),
+            products = listOf(),
+            navHostController = navHostController
+        )
     }
 }
 
@@ -83,26 +97,41 @@ fun Stats(numNewOrders: Int, numProductOutOfStoke: Int, numNewUser: Int){
             .background(colorResource(id = R.color.white), shape = RoundedCornerShape(30.dp))
             .padding(10.dp))
     {
-        Stat(text = "new orders", value = numNewOrders)
+        Stat(
+            text = stringResource(id = R.string.list_new_orders),
+            value = numNewOrders
+        ){
+            TODO()
+        }
 
-        Stat(text = "out of stoke", value = numProductOutOfStoke)
+        Stat(
+            text = stringResource(id = R.string.list_out_of_stock),
+            value = numProductOutOfStoke
+        ){
+            TODO()
+        }
 
-        Stat(text = "new users", value = numNewUser)
+        Stat(
+            text = stringResource(id = R.string.list_new_users),
+            value = numNewUser
+        ){
+            TODO()
+        }
     }
 }
 
 @Composable
-fun Stat(text: String, value: Int) {
+fun Stat(text: String, value: Int, onClick: () -> Unit){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
         modifier = Modifier
             .padding(10.dp)
+            .clickable(onClick = onClick)
     ) {
         Text(
             text = text,
-            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Light),
-            //modifier = Modifier.weight(1f)
+            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Light)
         )
         Text(
             text = "$value",
@@ -113,7 +142,7 @@ fun Stat(text: String, value: Int) {
 }
 
 @Composable
-fun Section(nameSection: String, products: List<Product>) {
+fun Section(nameSection: String, products: List<Product>, navHostController: NavHostController) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
         modifier = Modifier
@@ -130,13 +159,12 @@ fun Section(nameSection: String, products: List<Product>) {
             )
         )
 
-        val listState = rememberLazyListState()
         LazyRow(
-            state = listState,
+            state = rememberLazyListState(),
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(products){
-                ProductItemRow(it) {  }
+                product -> ProductItemRow(product) { navHostController.navigate("product/${product.id}") }
             }
         }
     }

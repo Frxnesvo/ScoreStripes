@@ -6,4 +6,41 @@
     <string name="title_activity_user">UserActivity</string>
     <string name="title_activity_products">ProductsActivity</string>
     <string name="title_activity_general_composables">GeneralComposablesActivity</string>
+
+    <string name="score">SCORE</string>
+    <string name="stripes">STRIPES</string>
+
+    <string name="sign_in">SIGN IN WITH GOOGLE</string>
+
+    <string name="list_all_user">USERS</string>
+    <string name="list_all_user_empty">no user to show</string>
+    <string name="list_all_products">PRODUCTS</string>
+    <string name="list_all_products_empty">no product to show</string>
+
+    <string name="list_orders">ORDERS</string>
+    <string name="list_orders_empty">no order to show</string>
+    <string name="list_addresses">ADDRESSES</string>
+    <string name="list_addresses_empty">no address to show</string>
+
+    <string name="list_out_of_stock">OUT OF STOCK</string>
+    <string name="list_new_users">NEW USERS</string>
+    <string name="list_new_orders">NEW ORDERS</string>
+    <string name="best_sellers">BEST SELLER</string>
+    <string name="least_sold">LEAST SOLD</string>
+
+    <string name="details">DETAILS</string>
+    <string name="quantities">QUANTITIES</string>
+
+    <string name="name">NAME</string>
+    <string name="brand">BRAND</string>
+    <string name="price">PRICE</string>
+    <string name="description">DESCRIPTION</string>
+    <string name="username">USERNAME</string>
+    <string name="first_name">FIRST NAME</string>
+    <string name="last_name">LAST NAME</string>
+    <string name="email">EMAIL</string>
+    <string name="birth_date">EMAIL</string>
+
+    <string name="create">create</string>
+    <string name="update">update</string>
 </resources>

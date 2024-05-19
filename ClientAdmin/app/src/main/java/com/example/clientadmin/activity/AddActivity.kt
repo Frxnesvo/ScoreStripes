@@ -1,23 +1,15 @@
 package com.example.clientadmin.activity
 
-import ClubViewModel
-import android.graphics.Bitmap
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -26,17 +18,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.ClubFormViewModel
+import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import kotlinx.coroutines.launch
@@ -90,20 +81,28 @@ fun AddPanel(
 }
 
 @Composable
-fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueFormViewModel, navHostController: NavHostController, isAdd: Boolean? = null) {
+fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueFormViewModel, navHostController: NavHostController, isAdd: Boolean = false) {
     val leagueState by leagueFormViewModel.leagueState.collectAsState()
+
+    val context = LocalContext.current
+    var imageUri by remember { mutableStateOf(leagueState.image) }
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? -> if (uri != null) imageUri = uri }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 60.dp)
+            .padding(horizontal = 10.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxImage(image = leagueState.imageLeague)
+        BoxImage(
+            imageUri = imageUri,
+            onImageUriChange = { if (it != null) imageUri = it },
+            launcher = { launcher.launch("image/*") }
+        )
 
         TextFieldString(
             value = remember { mutableStateOf(leagueState.name) },
@@ -114,28 +113,37 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 
         ButtonCustom(text = "ADD LEAGUE", background = R.color.secondary) {
             leagueViewModel.addLeague(
+                context,
                 leagueState.name,
-                leagueState.imageLeague
+                leagueState.image
             )
         }
     }
 }
 
 @Composable
-fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController, isAdd: Boolean? = null) {
+fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController, isAdd: Boolean = false) {
     val clubState by clubFormViewModel.clubState.collectAsState()
+
+    val context = LocalContext.current
+    var imageUri by remember { mutableStateOf(clubState.image) }
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? -> if (uri != null) imageUri = uri }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 60.dp)
+            .padding(horizontal = 10.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxImage(image = clubState.imageClub)
+        BoxImage(
+            imageUri = imageUri,
+            onImageUriChange = { if (it != null) imageUri = it },
+            launcher = { launcher.launch("image/*") }
+        )
 
         TextFieldString(
             value = remember { mutableStateOf(clubState.name) },
@@ -160,37 +168,12 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
 
         ButtonCustom(text = "ADD LEAGUE", background = R.color.secondary) {
             clubViewModel.addClub(
+                context,
                 clubState.name,
-                clubState.imageClub,
+                imageUri,
                 clubState.league
             )
         }
-    }
-}
-@Composable
-fun BoxImage(image: Bitmap?){
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .height(150.dp)
-            .width(150.dp)
-            .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
-    ){
-        image?.let {
-            Image(
-                bitmap = it.asImageBitmap(),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(30.dp))
-            )
-        } ?:
-        Icon(
-            imageVector = Icons.Outlined.AddCircle,
-            contentDescription = "addImage",
-            tint = colorResource(id = R.color.secondary)
-        )
     }
 }
 

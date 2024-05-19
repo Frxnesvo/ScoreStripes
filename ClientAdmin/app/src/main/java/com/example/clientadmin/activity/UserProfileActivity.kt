@@ -1,8 +1,8 @@
 package com.example.clientadmin.activity
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,10 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Customer
+import com.example.clientadmin.model.dto.CustomerProfileDto
 
 @Composable
-fun UserProfile(customer: Customer, navHostController: NavHostController){
+fun UserProfile(customer: CustomerProfileDto, navHostController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,48 +41,45 @@ fun UserProfile(customer: Customer, navHostController: NavHostController){
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxProfilePic(customer = customer)
+        BoxProfilePic(name = customer.firstName, profilePic = null) //TODO profilePic
 
         Text(text = customer.username, color = colorResource(id = R.color.black), style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal))
 
-        BoxImage(boxTitle = "ORDINI", painter = painterResource(id = R.drawable.colombia)){
+        BoxImage(boxTitle = "ORDERS", painter = painterResource(id = R.drawable.colombia)){
             navHostController.navigate("userOrders/${customer.id}")
         }
 
-        BoxImage(boxTitle = "DATI PERSONALI", painter = painterResource(id = R.drawable.match)){
+        BoxImage(boxTitle = "PERSONAL DATA", painter = painterResource(id = R.drawable.match)){
             navHostController.navigate("userDetails/${customer.id}")
         }
 
-        BoxImage(boxTitle = "INDIRIZZI", painter = painterResource(id = R.drawable.united)){
+        BoxImage(boxTitle = "ADDRESSES", painter = painterResource(id = R.drawable.united)){
             navHostController.navigate("userAddresses/${customer.id}")
         }
     }
 }
 
 @Composable
-fun BoxProfilePic(customer: Customer){
+fun BoxProfilePic(name: String, profilePic: Bitmap?){
     val modifier = Modifier
         .clip(RoundedCornerShape(75.dp))
         .size(150.dp)
-        .clickable {
-            //TODO modifica immagine
-        }
 
-    if (customer.profilePic == null)
+    if (profilePic == null)
         Box(
             modifier = modifier
                 .background(color = colorResource(id = R.color.secondary)),
             contentAlignment = Alignment.Center
         ){
             Text(
-                text = "${customer.username.first()}",
+                text = "${name.first()}",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
         }
     else
         Image(
-            bitmap = customer.profilePic.asImageBitmap(),
+            bitmap = profilePic.asImageBitmap(),
             contentDescription = "userImg",
             contentScale = ContentScale.Crop,
             modifier = modifier

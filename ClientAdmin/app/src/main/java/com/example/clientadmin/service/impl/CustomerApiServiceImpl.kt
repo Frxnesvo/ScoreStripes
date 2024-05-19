@@ -2,51 +2,26 @@ package com.example.clientadmin.service.impl
 
 import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
+import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.model.dto.OrderDto
 import com.example.clientadmin.service.RetrofitHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.example.clientadmin.service.interfaces.CustomerApiService
+import retrofit2.Response
 
-class CustomerApiServiceImpl {
-    suspend fun getCustomerDetails(id: String): CustomerProfileDto?{
-        return withContext(Dispatchers.IO){
-             try {
-                 val response = RetrofitHandler.getCustomerApi().getCustomerProfile()
-                 if (response.isSuccessful) response.body()
-                 else null
-             }
-             catch (e: Exception) {
-                 e.printStackTrace()
-                 null
-             }
-        }
+class CustomerApiServiceImpl : CustomerApiService {
+    override fun getCustomerProfile(id: String): Response<CustomerProfileDto> {
+        return RetrofitHandler.getCustomerApi().getCustomerProfile(id)
     }
 
-    suspend fun getCustomerAddresses(id: String): List<AddressDto>{
-        return withContext(Dispatchers.IO){
-            try {
-                val response = RetrofitHandler.getCustomerApi().getCustomerAddresses()
-                if (response.isSuccessful) response.body() ?: emptyList()
-                else emptyList()
-            }
-            catch (e: Exception) {
-                e.printStackTrace()
-                emptyList()
-            }
-        }
+    override fun getCustomerAddresses(id: String): Response<List<AddressDto>> {
+        return RetrofitHandler.getCustomerApi().getCustomerAddresses(id)
     }
 
-    suspend fun getCustomerOrders(id: String): List<OrderDto>{
-        return withContext(Dispatchers.IO){
-            try {
-                val response = RetrofitHandler.getCustomerApi().getCustomerOrders()
-                if (response.isSuccessful) response.body() ?: emptyList()
-                else emptyList()
-            }
-            catch (e: Exception) {
-                e.printStackTrace()
-                emptyList()
-            }
-        }
+    override fun getCustomerOrders(id: String): Response<List<OrderDto>> {
+        return RetrofitHandler.getCustomerApi().getCustomerOrders(id)
+    }
+
+    override fun getCustomersSummary(page: Int, size: Int, username: String?): Response<List<CustomerSummaryDto>> {
+        return RetrofitHandler.getCustomerApi().getCustomersSummary(page, size, username)
     }
 }

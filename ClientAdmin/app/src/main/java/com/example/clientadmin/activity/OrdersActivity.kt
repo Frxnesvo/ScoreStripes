@@ -1,7 +1,7 @@
 package com.example.clientadmin.activity
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -19,32 +18,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Product
-import com.example.clientadmin.viewmodels.ProductViewModel
-import java.time.Year
+import com.example.clientadmin.model.dto.OrderDto
 
 @Composable
-fun Products(navHostController: NavHostController, productViewModel: ProductViewModel) {
-    val products = productViewModel.products.collectAsState(initial = emptyList()).value
+fun Orders(orders: List<OrderDto>, navHostController: NavHostController){
     LazyColumn(
-        state = rememberLazyListState(),
-        verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),
+        modifier = Modifier.padding(horizontal = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(25.dp),
+        state = rememberLazyListState()
     ) {
-        item { Title() }
+        item { Back { navHostController.popBackStack() } }
 
-        item { Search(name = stringResource(R.string.list_all_products)) { } }
-
-        if(products.isEmpty())
+        if (orders.isEmpty())
             item{
                 Text(
-                    text = stringResource(id = R.string.list_all_products_empty),
+                    text = stringResource(id = R.string.list_orders_empty),
                     color = colorResource(id = R.color.black),
                     style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp)
                 )
             }
         else
-            items(products){
-                product -> ProductItemColumn(product = product) { navHostController.navigate("product/${product.id}") }
+            items(orders) {
+                order -> OrderItem(order = order, navHostController = navHostController)
             }
     }
 }

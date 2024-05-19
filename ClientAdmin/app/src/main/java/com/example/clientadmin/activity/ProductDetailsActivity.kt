@@ -1,6 +1,5 @@
 package com.example.clientadmin.activity
 
-import ClubViewModel
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -42,6 +42,7 @@ import com.example.clientadmin.viewmodels.ProductState
 import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
+import com.example.clientadmin.viewmodels.ClubViewModel
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -51,7 +52,7 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 80.dp)
+            .padding(horizontal = 10.dp)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ){
@@ -68,20 +69,20 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
             modifier = Modifier.fillMaxWidth()
         ) {
 
-            Text(text = "DETAILS", style = style)
+            Text(text = stringResource(id = R.string.details), style = style)
 
             ImagesProduct(productState)
 
             TextFieldString(
                 value = remember { mutableStateOf(productState.name) },
-                text = "NAME",
+                text = stringResource(id = R.string.name),
                 onValueChange = { productFormViewModel.updateName(it)}
             )
 
             ComboBox(
-                options = clubViewModel.clubsNames,
-                selectedOption = remember { mutableStateOf("${productState.club}") },
-                onValueChange = { TODO() }
+                options = clubViewModel.clubNames,
+                selectedOption = remember { mutableStateOf(productState.club) },
+                onValueChange = { productFormViewModel.updateClub(it) }
             )
 
             ComboBox(
@@ -98,19 +99,20 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
 
             TextFieldString(
                 value = remember { mutableStateOf(productState.brand) },
-                text = "BRAND",
+                text = stringResource(id = R.string.brand),
                 onValueChange = { productFormViewModel.updateBrand(it)}
             )
 
             TextFieldDouble(
                 value = remember { mutableStateOf(productState.price) },
-                text = "PRICE",
+                text = stringResource(id = R.string.price),
                 onValueChange = { productFormViewModel.updatePrice(it.toDouble())}
             )
 
             TextFieldString(
                 value = remember { mutableStateOf(productState.description) },
-                text = "DESCRIPTION", lines = 5,
+                text = stringResource(id = R.string.description),
+                lines = 10,
                 onValueChange = { productFormViewModel.updateDescription(it)}
             )
         }
@@ -119,38 +121,44 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "QUANTITIES", style = style)
+            Text(text = stringResource(id = R.string.quantities), style = style)
+
+            productState.variants.forEach{
+                variant -> TextFieldInt(value = remember { mutableStateOf(variant.value) }, text = variant.key.name) {
+                    productFormViewModel.updateVariant(variant.key, it.toInt())
+                }
+            }
+
         }
 
-        ButtonCustom(text = if(isAdd) "ADD PRODUCT" else "UPDATE PRODUCT", background = R.color.secondary) {
-            if(isAdd) {
-                /*productViewModel.addProduct(
+        ButtonCustom(
+            text = if(isAdd) stringResource(id = R.string.create) else stringResource(id = R.string.update),
+            background = R.color.secondary
+        ) {
+            if (isAdd) {
+                productViewModel.addProduct(
+                    productState.name,
                     productState.club,
-                    productState.league,
-                    productState.type,
-                    productState.category,
+                    productState.gender,
+                    productState.productCategory,
                     productState.description,
-                    productState.image1,
-                    productState.image2,
+                    productState.pic1!!,
+                    productState.pic2!!,
                     productState.price,
-                    productState.preferred,
-                    productState.quantities
-                )*/
-            }
-            else {
-                /*productViewModel.updateProduct(
-                    productState.team,
-                    productState.league,
-                    productState.season,
-                    productState.type,
-                    productState.category,
+                    productState.variants
+                )
+            } else {
+                productViewModel.updateProduct(
+                    productState.name,
+                    productState.club,
+                    productState.gender,
+                    productState.productCategory,
                     productState.description,
-                    productState.image1,
-                    productState.image2,
+                    productState.pic1!!,
+                    productState.pic2!!,
                     productState.price,
-                    productState.preferred,
-                    productState.quantities
-                )*/
+                    productState.variants
+                )
             }
         }
     }
