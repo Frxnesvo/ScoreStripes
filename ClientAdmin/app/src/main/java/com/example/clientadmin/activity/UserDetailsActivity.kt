@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Customer
 import com.example.clientadmin.model.dto.CustomerProfileDto
 
 
@@ -31,7 +30,7 @@ fun UserDetails(customer: CustomerProfileDto, navHostController: NavHostControll
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(state = rememberScrollState())
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 80.dp)
+            .padding(horizontal = 10.dp)
     ){
         Back { navHostController.popBackStack() }
 

@@ -1,6 +1,5 @@
 package com.example.clientadmin.activity
 
-import ClubViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -39,14 +38,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientadmin.R
+import com.example.clientadmin.model.Admin
+import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.viewmodels.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductFormViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.ClubFormViewModel
+import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
+import java.time.LocalDate
 
-enum class Screen{ HOME, USERS, ADD, PRODUCTS, SETTINGS }
+enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
 @Composable
 fun Scaffold() {
@@ -56,16 +59,16 @@ fun Scaffold() {
     Scaffold(
         bottomBar = { BottomBar(navController, selectedScreen) },
     ) {
-        it.calculateTopPadding()
-
-        NavigationUser(
-            navHostController = navController,
-            customerViewModel = CustomerViewModel(),
-            productViewModel = ProductViewModel(),
-            selectedScreen = selectedScreen
-        )
-
-        it.calculateBottomPadding()
+        Box(modifier = Modifier.padding(it)){
+            NavigationScaffold(
+                navHostController = navController,
+                customerViewModel = CustomerViewModel(),
+                productViewModel = ProductViewModel(),
+                clubViewModel = ClubViewModel(),
+                leagueViewModel = LeagueViewModel(),
+                selectedScreen = selectedScreen
+            )
+        }
     }
 }
 
@@ -154,7 +157,7 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
 }
 
 @Composable
-fun NavigationUser(navHostController: NavHostController, customerViewModel: CustomerViewModel, productViewModel: ProductViewModel, selectedScreen: MutableState<Screen>) {
+fun NavigationScaffold(navHostController: NavHostController, customerViewModel: CustomerViewModel, productViewModel: ProductViewModel, clubViewModel: ClubViewModel, leagueViewModel: LeagueViewModel, selectedScreen: MutableState<Screen>) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
         navController = navHostController,
@@ -218,17 +221,17 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
         composable(
             route = "addProduct"
         ){
-            ProductDetails(productViewModel = productViewModel, clubViewModel = ClubViewModel(), productFormViewModel = ProductFormViewModel(), navHostController = navHostController, isAdd = true)
+            ProductDetails(productViewModel = productViewModel, clubViewModel = clubViewModel, productFormViewModel = ProductFormViewModel(), navHostController = navHostController, isAdd = true)
         }
         composable(
             route = "addLeague"
         ){
-            LeagueDetails(leagueViewModel = LeagueViewModel(), leagueFormViewModel = LeagueFormViewModel(), navHostController = navHostController)
+            LeagueDetails(leagueViewModel = leagueViewModel, leagueFormViewModel = LeagueFormViewModel(), navHostController = navHostController)
         }
         composable(
             route = "addTeam"
         ){
-            ClubDetails(leagueViewModel = LeagueViewModel(), clubViewModel = ClubViewModel(), clubFormViewModel = ClubFormViewModel(), navHostController = navHostController)
+            ClubDetails(leagueViewModel = leagueViewModel, clubViewModel = clubViewModel, clubFormViewModel = ClubFormViewModel(), navHostController = navHostController)
         }
 
         //PRODUCTS
@@ -257,7 +260,17 @@ fun NavigationUser(navHostController: NavHostController, customerViewModel: Cust
         composable(
             route = "settings"
         ){
-            //TODO fare la pagina dei settings
+            Settings(
+                admin = Admin(
+                    username = "adolfinoSS",
+                    firstName = "Adolf",
+                    lastName = "Hitler",
+                    email = "vivagesù@germania.com",
+                    birthDate = LocalDate.of(1889, 4, 20),
+                    gender = Gender.MALE,
+                    picUrl = ""
+                )
+            )
         }
     }
 }

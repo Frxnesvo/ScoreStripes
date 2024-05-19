@@ -1,17 +1,22 @@
 package com.example.clientadmin.model
 
+import android.net.Uri
+
 class League(
-    val id: String,
     val name: String,
-    val picUrl: String,
-    val clubs: List<Club>
+    val image: Uri
 ){
     init {
         validateName(name)
+        validateImage(image)
     }
     companion object{
         fun validateName(name: String): Boolean{
             return name.length in 1..30
+        }
+
+        fun validateImage(image: Uri): Boolean{
+            return image != Uri.EMPTY
         }
     }
 }

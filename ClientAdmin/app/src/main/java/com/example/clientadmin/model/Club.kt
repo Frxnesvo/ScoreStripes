@@ -1,11 +1,11 @@
 package com.example.clientadmin.model
 
+import android.net.Uri
+
 class Club(
-    val id: String,
     val name: String,
-    val picUrl: String,
-    val league: League,
-    val products: List<Product>
+    val image: Uri,
+    val league: String
 ){
     init {
         validateName(name)
@@ -13,6 +13,9 @@ class Club(
     companion object{
         fun validateName(name: String): Boolean{
             return name.length in 3..40
+        }
+        fun validateImage(image: Uri): Boolean{
+            return image != Uri.EMPTY
         }
     }
 }

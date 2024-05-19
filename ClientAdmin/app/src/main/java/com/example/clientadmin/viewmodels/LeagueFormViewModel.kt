@@ -1,6 +1,6 @@
 package com.example.clientadmin.viewmodels
 
-import android.graphics.Bitmap
+import android.net.Uri
 import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.League
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,25 +10,27 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class LeagueState(
     val name: String = "",
-    val imageLeague: Bitmap = Bitmap.createBitmap(100, 100 , Bitmap.Config.ARGB_8888),
-    val clubs: List<Club> = listOf(),
+    val image: Uri = Uri.EMPTY,
     //error
-    val isNameLeagueError: Boolean = !League.validateName(name)
+    val isNameError: Boolean = !League.validateName(name),
+    val isImageError: Boolean = !League.validateImage(image)
 )
 class LeagueFormViewModel{
     private val _leagueState = MutableStateFlow(LeagueState())
     val leagueState: StateFlow<LeagueState> = _leagueState.asStateFlow()
 
-    fun updateTeam(name: String) {
+    fun updateName(name: String) {
         val hasError = !League.validateName(name)
         _leagueState.value = _leagueState.value.copy(
             name = name,
-            isNameLeagueError = hasError
+            isNameError = hasError
         )
     }
-    fun updateImage(img: Bitmap) {
+    fun updateImage(image: Uri) {
+        val hasError = !Club.validateImage(image)
         _leagueState.value = _leagueState.value.copy(
-            imageLeague = img
+            image = image,
+            isImageError = hasError
         )
     }
 }

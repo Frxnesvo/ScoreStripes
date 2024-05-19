@@ -1,6 +1,6 @@
 package com.example.clientadmin.activity
 
-import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
@@ -39,18 +40,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Customer
 import kotlinx.coroutines.flow.Flow
 
 
@@ -61,8 +63,18 @@ fun Title(colorStripes: Color = colorResource(id = R.color.black)){
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(40.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-        Text(text = "SCORE", color = colorResource(id = R.color.secondary), fontWeight = FontWeight.SemiBold, style = style)
-        Text(text = "STRIPES", color = colorStripes, fontWeight = FontWeight.Light, style = style)
+        Text(
+            text = stringResource(id = R.string.score),
+            color = colorResource(id = R.color.secondary),
+            fontWeight = FontWeight.SemiBold,
+            style = style
+        )
+        Text(
+            text = stringResource(id = R.string.stripes),
+            color = colorStripes,
+            fontWeight = FontWeight.Light,
+            style = style
+        )
     }
 }
 
@@ -261,7 +273,7 @@ fun TextFieldInt(value: MutableState<Int>, text: String, readOnly: Boolean = fal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fraction: Float = 1f, onValueChange: (String) -> Unit) {
+fun ComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fraction: Float = 1f, readOnly: Boolean = false, onValueChange: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
@@ -275,7 +287,7 @@ fun ComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fra
                 value = selectedOption.value,
                 onValueChange = onValueChange,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
-                readOnly = false,
+                readOnly = readOnly,
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
@@ -343,6 +355,38 @@ fun ButtonCustom(text: String, background: Int, onClick: () -> Unit) {
                 fontWeight = FontWeight.SemiBold,
                 letterSpacing = 5.sp
             )
+        )
+    }
+}
+
+@Composable
+fun BoxImage(
+    imageUri: Uri?,
+    onImageUriChange: (Uri?) -> Unit,
+    launcher: () -> Unit,
+    modifier: Modifier = Modifier
+        .height(150.dp)
+        .width(150.dp)
+        .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
+        .clickable { launcher() }
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+    ) {
+        imageUri?.let {
+            Image(
+                painter = rememberAsyncImagePainter(it),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(30.dp))
+            )
+        } ?: Icon(
+            imageVector = Icons.Outlined.AddCircle,
+            contentDescription = "addImage",
+            tint = colorResource(id = R.color.secondary)
         )
     }
 }

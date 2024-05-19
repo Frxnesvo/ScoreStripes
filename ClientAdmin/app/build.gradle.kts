@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation (libs.converter.moshi)
 
+    implementation ("io.coil-kt:coil-compose:2.0.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

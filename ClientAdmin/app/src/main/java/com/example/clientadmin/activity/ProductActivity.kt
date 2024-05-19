@@ -49,7 +49,7 @@ fun ProductItemRow(product: Product, onClick: () -> Unit) {
                 .width(120.dp)
                 .clip(RoundedCornerShape(10.dp))
         )
-        Text(text = "${product.club}",
+        Text(text = product.club,
             color = colorResource(id = R.color.black),
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
         )
@@ -78,7 +78,7 @@ fun ProductItemColumn(product: Product, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(text = "${product.club}", color = Color.Black, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal))
+            Text(text = product.club, color = Color.Black, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal))
             Text(text = "${product.productCategory}", color = colorResource(id = R.color.black), style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light))
         }
         Row(

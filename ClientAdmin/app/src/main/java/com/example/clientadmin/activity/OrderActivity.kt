@@ -28,8 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Order
-import com.example.clientadmin.model.OrderItem
 import com.example.clientadmin.model.dto.OrderDto
 import com.example.clientadmin.model.dto.OrderItemDto
 

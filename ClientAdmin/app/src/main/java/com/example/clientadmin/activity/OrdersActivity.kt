@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,31 +23,24 @@ import com.example.clientadmin.model.dto.OrderDto
 @Composable
 fun Orders(orders: List<OrderDto>, navHostController: NavHostController){
     LazyColumn(
-        modifier = Modifier.padding(10.dp), //start = 10.dp, end = 10.dp, top = 10.dp, bottom = 80.dp
+        modifier = Modifier.padding(horizontal = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp),
         state = rememberLazyListState()
     ) {
         item { Back { navHostController.popBackStack() } }
 
-        if (orders.isEmpty()) {
-            item {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "no orders to show",
-                        color = colorResource(id = R.color.black),
-                        style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp)
-                    )
-                }
+        if (orders.isEmpty())
+            item{
+                Text(
+                    text = stringResource(id = R.string.list_orders_empty),
+                    color = colorResource(id = R.color.black),
+                    style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp)
+                )
             }
-        }
-        else {
+        else
             items(orders) {
                 order -> OrderItem(order = order, navHostController = navHostController)
             }
-        }
     }
 }

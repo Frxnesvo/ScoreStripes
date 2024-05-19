@@ -1,6 +1,5 @@
 package com.example.clientadmin.activity
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,11 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,15 +16,11 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
 import com.example.clientadmin.authentication.GoogleAuth
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -63,7 +54,7 @@ fun IndexPage(navController : NavHostController) {
             ) {
                 val context = LocalContext.current
 
-                ButtonCustom(background = R.color.secondary50, text = "SIGN IN WITH GOOGLE") {
+                ButtonCustom(background = R.color.secondary50, text = stringResource(id = R.string.sign_in)) {
                     val auth = GoogleAuth(context)
                     coroutineScope.launch {
                         val googleUserDto = auth.getGoogleCredential()

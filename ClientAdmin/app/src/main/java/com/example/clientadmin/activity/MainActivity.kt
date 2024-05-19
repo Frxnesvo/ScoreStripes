@@ -36,37 +36,19 @@ class MainActivity : ComponentActivity() {
                     color = colorResource(id = R.color.primary)
                 ) {
                     Navigation(navController = navHostController)
-                    /*
-                    val globalIndex = remember { mutableIntStateOf(0)}
-
-
-                    when (globalIndex.intValue) {
-                        0 -> IndexPage(globalIndex)
-                        1 -> Login(globalIndex)
-                        2 -> Scaffold(globalIndex)
-                    }
-
-                     */
                 }
             }
         }
     }
 }
 
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewApp(){
-    val globalIndex = remember { mutableIntStateOf(0)}
-
-    when (globalIndex.intValue) {
-        0 -> IndexPage(globalIndex)
-        1 -> Login(globalIndex)
-        2 -> Scaffold(globalIndex)
-    }
+    Navigation(navController = rememberNavController())
 }
 
- */
 
 @Composable
 fun Navigation(navController: NavHostController){

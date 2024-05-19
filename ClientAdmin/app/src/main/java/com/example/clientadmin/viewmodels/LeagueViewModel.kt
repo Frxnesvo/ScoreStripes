@@ -1,6 +1,8 @@
 package com.example.clientadmin.viewmodels
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clientadmin.model.League
@@ -27,9 +29,9 @@ class LeagueViewModel(): ViewModel() {
         }
     }
 
-    fun addLeague(name: String, pic: Bitmap){
+    fun addLeague(context: Context, name: String, pic: Uri){
         viewModelScope.launch {
-            val createdLeague = leagueApiServiceImpl.createLeague(name, pic)
+            val createdLeague = leagueApiServiceImpl.createLeague(context , name, pic)
             createdLeague?.let {
                 league -> _list.value += league.name
             }
