@@ -10,9 +10,7 @@ import com.example.clientadmin.service.impl.ClubApiServiceImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import retrofit2.Response
+import retrofit2.awaitResponse
 
 class ClubViewModel : ViewModel() {
     private val _clubNames = MutableStateFlow<List<String>>(emptyList())
@@ -26,38 +24,47 @@ class ClubViewModel : ViewModel() {
 
     private fun fetchClubNames() {
         viewModelScope.launch {
-            val response = withContext(Dispatchers.IO) { clubApiService.getClubNames() }
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    _clubNames.value = it
+            try {
+                val response = clubApiService.getClubNames().awaitResponse()
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _clubNames.value = it
+                    }
+                } else {
+                    handleApiError(response.message())
                 }
-            } else {
-                handleApiError(response)
+            } catch (e: Exception) {
+                handleApiError(e.message ?: "Unknown error")
             }
         }
     }
 
     fun addClub(context: Context, name: String, pic: Uri, league: String) {
         viewModelScope.launch {
-            val multipart = withContext(Dispatchers.IO) { ConverterUri.convert(context, pic, "image") }
+            val multipart = ConverterUri.convert(context, pic, "image")
             if (multipart == null) {
                 println("Errore nella conversione dell'Uri in MultipartBody.Part")
                 return@launch
             }
 
             val clubRequestDto = ClubRequestDto(name, multipart, league)
-            val response = withContext(Dispatchers.IO) { clubApiService.createClub(clubRequestDto) }
-            if (response.isSuccessful) {
-                response.body()?.let { club -> _clubNames.value += club.name }
-            } else {
-                handleApiError(response)
+            try {
+                val response = clubApiService.createClub(clubRequestDto).awaitResponse()
+                if (response.isSuccessful) {
+                    response.body()?.let { club ->
+                        _clubNames.value += club.name
+                    }
+                } else {
+                    handleApiError(response.message())
+                }
+            } catch (e: Exception) {
+                handleApiError(e.message ?: "Unknown error")
             }
         }
     }
 
-    private fun handleApiError(response: Response<*>) {
-        //TODO Vedere come gestire l'errore
-
-        println("Errore nella chiamata API: ${response.message()}")
+    private fun handleApiError(response: String) {
+        //TODO
+        println("Errore nella chiamata API: $response")
     }
 }

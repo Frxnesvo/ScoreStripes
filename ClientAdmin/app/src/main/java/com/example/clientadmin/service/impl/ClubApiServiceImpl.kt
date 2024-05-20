@@ -10,14 +10,14 @@ import com.example.clientadmin.service.RetrofitHandler
 import com.example.clientadmin.service.interfaces.ClubApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Call
 import retrofit2.Response
 
 class ClubApiServiceImpl: ClubApiService {
-    override fun createClub(clubRequestDto: ClubRequestDto): Response<ClubDto> {
+    override fun createClub(clubRequestDto: ClubRequestDto): Call<ClubDto> {
         return RetrofitHandler.getClubApi().createClub(clubRequestDto)
     }
-    override fun getClubNames(): Response<List<String>> {
+    override fun getClubNames(): Call<List<String>> {
         return RetrofitHandler.getClubApi().getClubNames()
     }
-
 }
