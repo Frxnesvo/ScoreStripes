@@ -52,3 +52,5 @@ public class WishlistItem {
     @LastModifiedBy
     private String lastModifiedBy;
 }
+
+//TODO: EQUALS AND HASHCODE

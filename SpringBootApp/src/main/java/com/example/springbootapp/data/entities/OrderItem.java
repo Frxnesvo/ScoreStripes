@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "order_items")
 @Data
@@ -45,5 +47,20 @@ public class OrderItem {
             calculatePrice();
         }
         return this.price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderItem orderItem = (OrderItem) o;
+        return Objects.equals(order, orderItem.order) &&
+                Objects.equals(product, orderItem.product) &&
+                Objects.equals(personalization, orderItem.personalization);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(order, product, personalization);
     }
 }

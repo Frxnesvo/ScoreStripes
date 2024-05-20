@@ -39,4 +39,12 @@ public class ClubController {
                 .status(HttpStatus.OK)
                 .body(clubNames);
     }
+
+    @GetMapping()
+    public ResponseEntity<List<ClubDto>> getClubs(@RequestParam(required = false) String leagueName) {
+        List<ClubDto> clubs = clubService.getClubs(leagueName);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clubs);
+    }
 }

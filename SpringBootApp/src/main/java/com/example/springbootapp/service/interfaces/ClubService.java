@@ -8,4 +8,6 @@ import java.util.List;
 public interface ClubService {
     ClubDto createClub(ClubRequestDto clubRequestDto);
     List<String> getClubNames();
+    List<ClubDto> getClubs(String leagueName);
 }
+
