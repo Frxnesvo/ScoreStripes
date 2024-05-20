@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDto onResourceNotFoundExcpetion(WebRequest req, EntityNotFoundException e) {
+    public ErrorDto onResourceNotFoundException(WebRequest req, EntityNotFoundException e) {
         return createErrorRespose(req, e.getMessage());
     }
 
