@@ -1,6 +1,7 @@
 package com.example.clientadmin.model
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
@@ -14,7 +15,7 @@ class Product (
     val brand: String = "",
     val gender: Gender,
     val productCategory: ProductCategory,
-    private val pics: List<Bitmap> = listOf(),
+    private val pics: List<Uri> = listOf(),
     val club: String,
     val variants: Map<Size, Int> = mapOf()
 ){
@@ -24,10 +25,10 @@ class Product (
         validatePrice(price)
         validateDescription(description)
     }
-    fun getPic1(): Bitmap{
+    fun getPic1(): Uri{
         return pics[0]
     }
-    fun getPic2(): Bitmap{
+    fun getPic2(): Uri{
         return pics[1]
     }
 

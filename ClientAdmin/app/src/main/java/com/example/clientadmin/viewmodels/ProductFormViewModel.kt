@@ -1,6 +1,7 @@
 package com.example.clientadmin.viewmodels
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductWithVariant
@@ -15,8 +16,8 @@ data class ProductState(
     val name: String = "",
     val club: String = "", //TODO get del primo club in ordine alfabetico
     val gender: Gender = Gender.entries[0],
-    val pic1: Bitmap? = null,
-    val pic2: Bitmap? = null,
+    val pic1: Uri = Uri.EMPTY,
+    val pic2: Uri = Uri.EMPTY,
     val brand: String = "",
     val productCategory: ProductCategory = ProductCategory.entries[0],
     val description: String = "",
@@ -88,12 +89,12 @@ class ProductFormViewModel(product: Product? = null) {
             isBrandError = hasError
         )
     }
-    fun updatePic1(pic: Bitmap) {
+    fun updatePic1(pic: Uri) {
         _productState.value = _productState.value.copy(
             pic1 = pic
         )
     }
-    fun updatePic2(pic: Bitmap) {
+    fun updatePic2(pic: Uri) {
         _productState.value = _productState.value.copy(
             pic2 = pic
         )

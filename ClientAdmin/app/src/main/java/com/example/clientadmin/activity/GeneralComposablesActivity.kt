@@ -49,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -159,9 +160,6 @@ fun SubSectionUser(username: String, subSectionName: String) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        val modifier = Modifier
-            .size(40.dp)
-            .background(colorResource(id = R.color.secondary), RoundedCornerShape(20.dp))
         val style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
 
         Text(text = subSectionName, color = colorResource(id = R.color.black), style = style)
@@ -185,7 +183,7 @@ fun TextFieldString(value: MutableState<String>, text: String, readOnly: Boolean
     OutlinedTextField(
         readOnly = readOnly,
         value = value.value,
-        onValueChange = {value.value = it },
+        onValueChange = onValueChange,
         label = {
             Text(
                 text = text,
@@ -360,30 +358,30 @@ fun ButtonCustom(text: String, background: Int, onClick: () -> Unit) {
 }
 
 @Composable
-fun BoxImage(
-    imageUri: Uri?,
+fun ImagePicker(
+    imageUri: Uri,
     onImageUriChange: (Uri?) -> Unit,
     launcher: () -> Unit,
-    modifier: Modifier = Modifier
-        .height(150.dp)
-        .width(150.dp)
-        .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
-        .clickable { launcher() }
+    size: Dp
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
+        modifier = Modifier
+            .size(size)
+            .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
+            .clickable { launcher() }
     ) {
-        imageUri?.let {
+        if (imageUri != Uri.EMPTY)
             Image(
-                painter = rememberAsyncImagePainter(it),
+                painter = rememberAsyncImagePainter(imageUri),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(30.dp))
             )
-        } ?: Icon(
+        else
+            Icon(
             imageVector = Icons.Outlined.AddCircle,
             contentDescription = "addImage",
             tint = colorResource(id = R.color.secondary)
