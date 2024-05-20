@@ -59,7 +59,13 @@ fun Scaffold() {
     Scaffold(
         bottomBar = { BottomBar(navController, selectedScreen) },
     ) {
-        Box(modifier = Modifier.padding(it)){
+        Box(modifier = Modifier
+            .padding(
+                top = it.calculateTopPadding() + 10.dp,
+                bottom = it.calculateBottomPadding(),
+                start = 10.dp,
+                end = 10.dp)
+        ){
             NavigationScaffold(
                 navHostController = navController,
                 customerViewModel = CustomerViewModel(),

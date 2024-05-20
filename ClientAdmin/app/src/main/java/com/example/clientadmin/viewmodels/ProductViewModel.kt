@@ -1,6 +1,7 @@
 package com.example.clientadmin.viewmodels
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.enumerator.Gender
@@ -18,11 +19,11 @@ class ProductViewModel(): ViewModel() { //application: Application
         //TODO
         return flowOf()
     }
-    fun addProduct(name: String, team: String, gender: Gender, productCategory: ProductCategory, description: String, pic1: Bitmap, pic2: Bitmap, price: Double, variant: Map<Size, Int>){
+    fun addProduct(name: String, team: String, gender: Gender, productCategory: ProductCategory, description: String, pic1: Uri, pic2: Uri, price: Double, variant: Map<Size, Int>){
         //TODO
         println("product added")
     }
-    fun updateProduct(name: String, team: String, gender: Gender, productCategory: ProductCategory, description: String, pic1: Bitmap, pic2: Bitmap, price: Double, variant: Map<Size, Int>){
+    fun updateProduct(name: String, team: String, gender: Gender, productCategory: ProductCategory, description: String, pic1: Uri, pic2: Uri, price: Double, variant: Map<Size, Int>){
         //TODO
     }
 }

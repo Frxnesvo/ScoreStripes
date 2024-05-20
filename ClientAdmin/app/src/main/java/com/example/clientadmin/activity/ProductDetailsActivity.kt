@@ -1,34 +1,27 @@
 package com.example.clientadmin.activity
 
-import android.graphics.Bitmap
-import androidx.compose.foundation.Image
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -142,8 +135,8 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
                     productState.gender,
                     productState.productCategory,
                     productState.description,
-                    productState.pic1!!,
-                    productState.pic2!!,
+                    productState.pic1,
+                    productState.pic2,
                     productState.price,
                     productState.variants
                 )
@@ -154,8 +147,8 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
                     productState.gender,
                     productState.productCategory,
                     productState.description,
-                    productState.pic1!!,
-                    productState.pic2!!,
+                    productState.pic1,
+                    productState.pic2,
                     productState.price,
                     productState.variants
                 )
@@ -174,35 +167,26 @@ fun ImagesProduct(productState: ProductState){
             )
             .height(100.dp)
             .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        BoxImage(pic = productState.pic1, fraction = .5f)
-        BoxImage(pic = productState.pic2)
-    }
-}
+            .padding(10.dp),
+        horizontalArrangement = Arrangement.SpaceAround
 
-@Composable
-fun BoxImage(pic: Bitmap?, fraction: Float = 1f){
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxWidth(fraction)
-            .fillMaxHeight()
-    ){
-        pic?.let {
-            Image(
-                bitmap = it.asImageBitmap(),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(80.dp)
-                    .width(80.dp)
-            )
-        } ?:
-        Icon(
-            imageVector = Icons.Outlined.AddCircle,
-            contentDescription = "addImage",
-            tint = colorResource(id = R.color.secondary)
+    ) {
+        var imageUri1 by remember { mutableStateOf(productState.pic1) }
+        val launcher1 = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? -> if (uri != null) imageUri1 = uri }
+        ImagePicker(
+            imageUri = imageUri1,
+            onImageUriChange = { if (it != null) imageUri1 = it },
+            launcher = { launcher1.launch("image/*") },
+            size = 80.dp
+        )
+
+        var imageUri2 by remember { mutableStateOf(productState.pic2) }
+        val launcher2 = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? -> if (uri != null) imageUri2 = uri }
+        ImagePicker(
+            imageUri = imageUri2,
+            onImageUriChange = { if (it != null) imageUri2 = it },
+            launcher = { launcher2.launch("image/*") },
+            size = 80.dp
         )
     }
 }

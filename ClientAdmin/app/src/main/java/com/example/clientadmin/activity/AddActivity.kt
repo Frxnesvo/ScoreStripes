@@ -98,10 +98,11 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxImage(
+        ImagePicker(
             imageUri = imageUri,
             onImageUriChange = { if (it != null) imageUri = it },
-            launcher = { launcher.launch("image/*") }
+            launcher = { launcher.launch("image/*") },
+            size = 150.dp
         )
 
         TextFieldString(
@@ -139,10 +140,11 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxImage(
+        ImagePicker(
             imageUri = imageUri,
             onImageUriChange = { if (it != null) imageUri = it },
-            launcher = { launcher.launch("image/*") }
+            launcher = { launcher.launch("image/*") },
+            size = 150.dp
         )
 
         TextFieldString(
