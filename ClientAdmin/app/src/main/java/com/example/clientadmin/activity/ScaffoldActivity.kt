@@ -39,7 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Admin
-import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.model.CustomerSummary
 import com.example.clientadmin.viewmodels.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductFormViewModel
@@ -47,12 +47,11 @@ import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
-import java.time.LocalDate
 
 enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
 @Composable
-fun Scaffold() {
+fun Scaffold(admin: Admin) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
@@ -72,7 +71,8 @@ fun Scaffold() {
                 productViewModel = ProductViewModel(),
                 clubViewModel = ClubViewModel(),
                 leagueViewModel = LeagueViewModel(),
-                selectedScreen = selectedScreen
+                selectedScreen = selectedScreen,
+                admin = admin
             )
         }
     }
@@ -163,7 +163,15 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
 }
 
 @Composable
-fun NavigationScaffold(navHostController: NavHostController, customerViewModel: CustomerViewModel, productViewModel: ProductViewModel, clubViewModel: ClubViewModel, leagueViewModel: LeagueViewModel, selectedScreen: MutableState<Screen>) {
+fun NavigationScaffold(
+    navHostController: NavHostController,
+    customerViewModel: CustomerViewModel,
+    productViewModel: ProductViewModel,
+    clubViewModel: ClubViewModel,
+    leagueViewModel: LeagueViewModel,
+    selectedScreen: MutableState<Screen>,
+    admin: Admin
+) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
         navController = navHostController,
@@ -183,18 +191,18 @@ fun NavigationScaffold(navHostController: NavHostController, customerViewModel: 
             Users(navHostController = navHostController, customerViewModel =  customerViewModel)
         }
         composable(
-            route = "user/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.IntType })
+            route = "user/{costumer}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
-            it.arguments?.getString("id")?.let {
-                id -> customerViewModel.getCustomerDetails(id).collectAsState(initial = null).value?.let {
-                    customer -> UserProfile(customer = customer, navHostController = navHostController)
-                }
+            it.arguments?.getString("costumer")?.let {
+                customerString ->
+                val customer = CustomerSummary.fromQueryString(customerString)
+                UserProfile(customer = customer, navHostController = navHostController)
             }
         }
         composable(
             route = "userOrders/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.IntType })
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
                 id -> customerViewModel.getCustomerOrders(id).collectAsState(initial = null).value?.let {
@@ -204,7 +212,7 @@ fun NavigationScaffold(navHostController: NavHostController, customerViewModel: 
         }
         composable(
             route = "userDetails/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.IntType })
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
                 id -> customerViewModel.getCustomerDetails(id).collectAsState(initial = null).value?.let {
@@ -214,7 +222,7 @@ fun NavigationScaffold(navHostController: NavHostController, customerViewModel: 
         }
         composable(
             route = "userAddresses/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.IntType })
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
                 id -> customerViewModel.getCustomerAddresses(id).collectAsState(initial = null).value?.let {
@@ -248,7 +256,7 @@ fun NavigationScaffold(navHostController: NavHostController, customerViewModel: 
         }
         composable(
             route= "product/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.IntType })
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getInt("id")?.let {
                 id -> productViewModel.getProduct(id).collectAsState(initial = null).value?.let {
@@ -267,15 +275,7 @@ fun NavigationScaffold(navHostController: NavHostController, customerViewModel: 
             route = "settings"
         ){
             Settings(
-                admin = Admin(
-                    username = "adolfinoSS",
-                    firstName = "Adolf",
-                    lastName = "Hitler",
-                    email = "vivagesù@germania.com",
-                    birthDate = LocalDate.of(1889, 4, 20),
-                    gender = Gender.MALE,
-                    picUrl = ""
-                )
+                admin = admin
             )
         }
     }

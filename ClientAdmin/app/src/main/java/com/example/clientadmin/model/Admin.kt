@@ -12,19 +12,24 @@ class Admin(
     val email: String,
     val birthDate: LocalDate,
     val gender: Gender,
-    private val picUrl: String,
     val pic: Uri = Uri.EMPTY
 ) {
     init {
-        //Prendere l'immagine dal bucket
-        validateUsername(username)
-        validateFirstName(firstName)
-        validateLastName(lastName)
-        validateEmail(email)
-        validateBirthdate(birthDate)
+        //TODO Prendere l'immagine dal bucket
+
+        require(validateUsername(username)) { "Invalid username: must be between 3 and 20 characters" }
+        require(validateFirstName(firstName)) { "Invalid first name: must be between 3 and 20 characters" }
+        require(validateLastName(lastName)) { "Invalid last name: must be between 3 and 20 characters" }
+        require(validateEmail(email)) { "Invalid email format" }
+        require(validateBirthdate(birthDate)) { "Invalid birthdate: must be before the current date" }
+    }
+
+    fun toQueryString(): String {
+        return "$username,$firstName,$lastName,$email,$birthDate,$gender"
     }
 
     companion object {
+        //TODO matchare i controlli di validazione con quelli del backend
         fun validateUsername(username: String): Boolean {
             return username.length in 3..20
         }
@@ -39,6 +44,18 @@ class Admin(
         }
         fun validateBirthdate(birthdate: LocalDate): Boolean {
             return birthdate.isBefore(LocalDate.now())
+        }
+        fun fromQueryString(query: String): Admin {
+            val parts = query.split(",")
+            return Admin(
+                username = parts[0],
+                firstName = parts[1],
+                lastName = parts[2],
+                email = parts[3],
+                birthDate = LocalDate.parse(parts[4]),
+                gender = Gender.valueOf(parts[5])
+                //picUrl = parts[6]
+            )
         }
     }
 }

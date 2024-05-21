@@ -54,17 +54,16 @@ fun IndexPage(navController : NavHostController) {
             ) {
                 val context = LocalContext.current
 
-                ButtonCustom(background = R.color.secondary50, text = stringResource(id = R.string.sign_in)) {
+                ButtonCustom(
+                    background = R.color.secondary50,
+                    text = stringResource(id = R.string.sign_in)
+                ) {
                     val auth = GoogleAuth(context)
                     coroutineScope.launch {
                         val googleUserDto = auth.getGoogleCredential()
                         navController.navigate("register/${googleUserDto?.firstName}/${googleUserDto?.lastName}/${googleUserDto?.email}")
                     }
                 }
-
-                /*ButtonCustom(background = R.color.black50, text = "SIGN UP") {
-                    globalIndex.intValue = 2
-                }*/
 
                 /*TextButton(onClick = { globalIndex.intValue = 3 }) {
                     Text(

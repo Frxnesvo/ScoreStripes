@@ -23,10 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientadmin.R
-import com.example.clientadmin.model.dto.CustomerSummaryDto
+import com.example.clientadmin.model.CustomerSummary
 
 @Composable
-fun UserItem(customer: CustomerSummaryDto, onClick: () -> Unit){
+fun UserItem(customer: CustomerSummary, onClick: () -> Unit){
     Row(
         modifier = Modifier
             .fillMaxWidth()

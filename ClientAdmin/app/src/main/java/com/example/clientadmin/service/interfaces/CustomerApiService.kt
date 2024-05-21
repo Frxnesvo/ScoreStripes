@@ -2,10 +2,9 @@ package com.example.clientadmin.service.interfaces
 
 import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
-import com.example.clientadmin.model.dto.CustomerSummaryDto
+import com.example.clientadmin.model.CustomerSummary
 import com.example.clientadmin.model.dto.OrderDto
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -25,5 +24,5 @@ interface CustomerApiService {
         @Query("page") page: Int,
         @Query("size") size: Int,
         @Query("username") username: String? = null
-    ): Call<List<CustomerSummaryDto>>
+    ): Call<List<CustomerSummary>>
 }

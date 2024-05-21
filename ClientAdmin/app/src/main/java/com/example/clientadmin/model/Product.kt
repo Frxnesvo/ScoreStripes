@@ -20,10 +20,10 @@ class Product (
     val variants: Map<Size, Int> = mapOf()
 ){
     init {
-        validateName(name)
-        validateBrand(brand)
-        validatePrice(price)
-        validateDescription(description)
+        require(validateName(name)) { "Invalid name: must be between 1 and 30 characters" }
+        require(validatePrice(price)) { "Invalid price: must be greater than 0" }
+        require(validateDescription(description)) { "Invalid description: must be between 1 and 50 characters" }
+        require(validateBrand(brand)) { "Invalid brand: must be between 1 and 20 characters" }
     }
     fun getPic1(): Uri{
         return pics[0]
@@ -44,9 +44,6 @@ class Product (
         }
         fun validateBrand(brand: String): Boolean{
             return brand.length in 1..20
-        }
-        fun validateBrand(pics: List<Bitmap>): Boolean{
-            return pics.size == 2
         }
     }
 }

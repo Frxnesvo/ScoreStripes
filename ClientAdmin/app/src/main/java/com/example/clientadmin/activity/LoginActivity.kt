@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDate
 
 @Composable
-fun Login(navController : NavHostController, loginFormViewModel: LoginFormViewModel) {
+fun Login(firstName: String, lastName: String, navController : NavHostController, loginFormViewModel: LoginFormViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,7 +43,7 @@ fun Login(navController : NavHostController, loginFormViewModel: LoginFormViewMo
 
             Title()
 
-            ImagePicker(
+            /*ImagePicker(
                 imageUri = adminState.profilePic,
                 size = 80.dp
             ){
@@ -51,19 +51,39 @@ fun Login(navController : NavHostController, loginFormViewModel: LoginFormViewMo
                 if (uri != null) {
                     loginFormViewModel.updateProfilePic(uri)
                 }
-            }
+            }*/
 
             TextFieldString(
                 value = mutableStateOf(adminState.username),
-                text = "USERNAME",
+                text = stringResource(id = R.string.username),
                 keyboardType = KeyboardType.Text
             ){
                 loginFormViewModel.updateUsername(it)
             }
 
+            if(firstName != ""){
+                TextFieldString(
+                    value = mutableStateOf(adminState.firstName),
+                    text = stringResource(id = R.string.first_name),
+                    keyboardType = KeyboardType.Text
+                ){
+                    loginFormViewModel.updateFirstName(it)
+                }
+            } else loginFormViewModel.updateFirstName(firstName)
+
+            if(lastName != ""){
+                TextFieldString(
+                    value = mutableStateOf(adminState.lastName),
+                    text = stringResource(id = R.string.last_name),
+                    keyboardType = KeyboardType.Text
+                ){
+                    loginFormViewModel.updateLastName(it)
+                }
+            } else loginFormViewModel.updateLastName(lastName)
+
             TextFieldString( //TODO
                 value = mutableStateOf(adminState.birthdate.toString()),
-                text = "BIRTH DATE",
+                text = stringResource(id = R.string.birth_date),
                 keyboardType = KeyboardType.Text
             ){
                 loginFormViewModel.updateBirthdate(LocalDate.now())
@@ -78,7 +98,8 @@ fun Login(navController : NavHostController, loginFormViewModel: LoginFormViewMo
 
             ButtonCustom(
                 text = stringResource(id = R.string.sign_up),
-                background = R.color.secondary) {
+                background = R.color.secondary
+            ) {
                 navController.navigate("scaffold")
             }
         }

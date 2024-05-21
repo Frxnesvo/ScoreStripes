@@ -18,8 +18,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
+import com.example.clientadmin.model.Admin
 import com.example.clientadmin.ui.theme.ClientAdminTheme
-
+import com.example.clientadmin.viewmodels.LoginFormViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -64,17 +65,28 @@ fun Navigation(navController: NavHostController){
         }
 
         //REGISTER
-        composable(route = "register/{firstname}/{lastname}/{email}"){backStackEntry ->
-            val firstname = backStackEntry.arguments?.getString("firstname") ?: ""
-            val lastname = backStackEntry.arguments?.getString("lastname") ?: ""
+        composable(route = "register/{firstname}/{lastname}/{email}"){
+            backStackEntry ->
+            val firstName = backStackEntry.arguments?.getString("firstname") ?: ""
+            val lastName = backStackEntry.arguments?.getString("lastname") ?: ""
             val email = backStackEntry.arguments?.getString("email") ?: ""
 
-            Login(navController = navController, firstname, lastname, email)
+            Login(
+                firstName = firstName,
+                lastName = lastName,
+                navController = navController,
+                loginFormViewModel = LoginFormViewModel(email)
+            )
         }
 
         //SCAFFOLD
-        composable(route = "scaffold"){
-            Scaffold()
+        composable(route = "scaffold/{admin}"){
+            it.arguments?.getString("admin").let {
+                if (it != null) {
+                    val admin = Admin.fromQueryString(it)
+                    Scaffold(admin = admin)
+                }
+            }
         }
     }
 }
