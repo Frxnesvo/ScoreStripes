@@ -69,4 +69,3 @@ public class WishlistItem {
     }
 }
 
-//TODO: EQUALS AND HASHCODE

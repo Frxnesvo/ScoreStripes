@@ -1,10 +1,14 @@
 package com.example.springbootapp.data.entities.Embdeddables;
 
 import jakarta.persistence.Embeddable;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @Embeddable
+@Data
+@NoArgsConstructor
 public class Personalization {
 
     private static final Double PLAYER_NAME_PRICE = 10.0;
