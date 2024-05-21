@@ -9,6 +9,7 @@ class Club(
 ){
     init {
         validateName(name)
+        validateImage(image)
     }
     companion object{
         fun validateName(name: String): Boolean{

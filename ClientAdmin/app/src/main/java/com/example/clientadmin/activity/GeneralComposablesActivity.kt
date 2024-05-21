@@ -1,6 +1,8 @@
 package com.example.clientadmin.activity
 
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -360,16 +362,17 @@ fun ButtonCustom(text: String, background: Int, onClick: () -> Unit) {
 @Composable
 fun ImagePicker(
     imageUri: Uri,
-    onImageUriChange: (Uri?) -> Unit,
-    launcher: () -> Unit,
-    size: Dp
+    size: Dp,
+    onLaunch: (Uri?) -> Unit
 ) {
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { onLaunch(it) }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(size)
             .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
-            .clickable { launcher() }
+            .clickable { launcher.launch("image/*") }
     ) {
         if (imageUri != Uri.EMPTY)
             Image(

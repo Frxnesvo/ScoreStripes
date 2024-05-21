@@ -64,7 +64,10 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
 
             Text(text = stringResource(id = R.string.details), style = style)
 
-            ImagesProduct(productState)
+            ImagesProduct(
+                productFormViewModel = productFormViewModel,
+                productState = productState
+            )
 
             TextFieldString(
                 value = remember { mutableStateOf(productState.name) },
@@ -158,7 +161,7 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
 }
 
 @Composable
-fun ImagesProduct(productState: ProductState){
+fun ImagesProduct(productFormViewModel: ProductFormViewModel, productState: ProductState){
     Row(
         modifier = Modifier
             .background(
@@ -171,22 +174,20 @@ fun ImagesProduct(productState: ProductState){
         horizontalArrangement = Arrangement.SpaceAround
 
     ) {
-        var imageUri1 by remember { mutableStateOf(productState.pic1) }
-        val launcher1 = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? -> if (uri != null) imageUri1 = uri }
         ImagePicker(
-            imageUri = imageUri1,
-            onImageUriChange = { if (it != null) imageUri1 = it },
-            launcher = { launcher1.launch("image/*") },
+            imageUri = productState.pic1,
             size = 80.dp
-        )
+        ){
+            uri ->
+            if(uri != null) productFormViewModel.updatePic1(uri)
+        }
 
-        var imageUri2 by remember { mutableStateOf(productState.pic2) }
-        val launcher2 = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? -> if (uri != null) imageUri2 = uri }
         ImagePicker(
-            imageUri = imageUri2,
-            onImageUriChange = { if (it != null) imageUri2 = it },
-            launcher = { launcher2.launch("image/*") },
+            imageUri = productState.pic2,
             size = 80.dp
-        )
+        ){
+            uri ->
+            if(uri != null) productFormViewModel.updatePic2(uri)
+        }
     }
 }

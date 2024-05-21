@@ -1,4 +1,4 @@
-package com.example.clientadmin.model.DTO
+package com.example.clientadmin.model.dto
 
 data class GoogleUserDto(
     val firstName : String?,

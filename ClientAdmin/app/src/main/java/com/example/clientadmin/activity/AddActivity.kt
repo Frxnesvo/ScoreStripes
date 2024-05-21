@@ -85,8 +85,6 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
     val leagueState by leagueFormViewModel.leagueState.collectAsState()
 
     val context = LocalContext.current
-    var imageUri by remember { mutableStateOf(leagueState.image) }
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? -> if (uri != null) imageUri = uri }
 
     Column(
         modifier = Modifier
@@ -99,11 +97,12 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
         Back { navHostController.popBackStack() }
 
         ImagePicker(
-            imageUri = imageUri,
-            onImageUriChange = { if (it != null) imageUri = it },
-            launcher = { launcher.launch("image/*") },
+            imageUri = leagueState.image,
             size = 150.dp
-        )
+        ){
+            uri ->
+            if(uri != null) leagueFormViewModel.updateImage(uri)
+        }
 
         TextFieldString(
             value = remember { mutableStateOf(leagueState.name) },
@@ -127,8 +126,6 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
     val clubState by clubFormViewModel.clubState.collectAsState()
 
     val context = LocalContext.current
-    var imageUri by remember { mutableStateOf(clubState.image) }
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? -> if (uri != null) imageUri = uri }
 
     Column(
         modifier = Modifier
@@ -141,11 +138,12 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
         Back { navHostController.popBackStack() }
 
         ImagePicker(
-            imageUri = imageUri,
-            onImageUriChange = { if (it != null) imageUri = it },
-            launcher = { launcher.launch("image/*") },
+            imageUri = clubState.image,
             size = 150.dp
-        )
+        ){
+            uri ->
+            if(uri != null) clubFormViewModel.updateImage(uri)
+        }
 
         TextFieldString(
             value = remember { mutableStateOf(clubState.name) },
@@ -172,7 +170,7 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
             clubViewModel.addClub(
                 context,
                 clubState.name,
-                imageUri,
+                clubState.image,
                 clubState.league
             )
         }

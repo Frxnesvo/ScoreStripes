@@ -11,6 +11,7 @@
     <string name="stripes">STRIPES</string>
 
     <string name="sign_in">SIGN IN WITH GOOGLE</string>
+    <string name="sign_up">SIGN UP</string>
 
     <string name="list_all_user">USERS</string>
     <string name="list_all_user_empty">no user to show</string>
