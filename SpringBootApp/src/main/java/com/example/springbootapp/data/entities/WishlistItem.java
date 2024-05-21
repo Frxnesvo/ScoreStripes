@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "wishlist_items", uniqueConstraints = {
@@ -51,6 +52,21 @@ public class WishlistItem {
     @Column(name = "last_modified_by")
     @LastModifiedBy
     private String lastModifiedBy;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WishlistItem that = (WishlistItem) o;
+        return Objects.equals(product, that.getProduct()) &&
+                Objects.equals(wishlist, that.getWishlist());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(product, wishlist);
+    }
 }
 
 //TODO: EQUALS AND HASHCODE
