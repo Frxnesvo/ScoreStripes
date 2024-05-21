@@ -5,6 +5,8 @@ import com.example.springbootapp.data.entities.User;
 import com.example.springbootapp.security.CustomUserDetails;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,5 +34,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserDetails createUserDetails(User user) {
         return new CustomUserDetails(user);
+    }
+
+    public User getCurrentUser(){
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails= (CustomUserDetails) authentication.getPrincipal();
+        return userDao.findById(userDetails.getID()).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 }
