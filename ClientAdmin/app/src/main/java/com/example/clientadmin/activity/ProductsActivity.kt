@@ -1,17 +1,14 @@
 package com.example.clientadmin.activity
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -19,9 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Product
 import com.example.clientadmin.viewmodels.ProductViewModel
-import java.time.Year
 
 @Composable
 fun Products(navHostController: NavHostController, productViewModel: ProductViewModel) {
@@ -44,7 +39,10 @@ fun Products(navHostController: NavHostController, productViewModel: ProductView
             }
         else
             items(products){
-                product -> ProductItemColumn(product = product) { navHostController.navigate("product/${product.id}") }
+                product ->
+                key(product.id) {
+                    ProductItemColumn(product = product) { navHostController.navigate("product/${product.id}") }
+                }
             }
     }
 }
