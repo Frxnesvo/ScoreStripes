@@ -11,13 +11,15 @@ import com.example.clientadmin.model.dto.LeagueRequestDto
 import com.example.clientadmin.service.ConverterUri
 import com.example.clientadmin.service.impl.ClubApiServiceImpl
 import com.example.clientadmin.service.impl.LeagueApiServiceImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
-class LeagueViewModel(): ViewModel() {
+class LeagueViewModel: ViewModel() {
     private val _leaguesNames = MutableStateFlow<List<String>>(emptyList())
     val leaguesNames = _leaguesNames
 
@@ -28,7 +30,7 @@ class LeagueViewModel(): ViewModel() {
     }
 
     private fun fetchLeaguesNames(){
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = leagueApiService.getLeagueNames().awaitResponse()
                 if (response.isSuccessful) {
@@ -45,7 +47,7 @@ class LeagueViewModel(): ViewModel() {
     }
 
     fun addLeague(context: Context, name: String, pic: Uri){
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val multipart = ConverterUri.convert(context, pic, "image")
             if (multipart == null) {
                 println("Errore nella conversione dell'Uri in MultipartBody.Part")

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -40,7 +41,10 @@ fun Orders(orders: List<OrderDto>, navHostController: NavHostController){
             }
         else
             items(orders) {
-                order -> OrderItem(order = order, navHostController = navHostController)
+                order ->
+                key(order.id) {
+                    OrderItem(order = order, navHostController = navHostController)
+                }
             }
     }
 }

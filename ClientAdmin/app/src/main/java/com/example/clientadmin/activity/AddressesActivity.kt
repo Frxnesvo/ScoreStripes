@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -38,7 +39,10 @@ fun Addresses(addresses: List<AddressDto>, navHostController: NavHostController)
             }
         else
             items(addresses){
-                    address -> AddressItem(address = address)
+                address ->
+                key(address.id) {
+                    AddressItem(address = address)
+                }
             }
     }
 }

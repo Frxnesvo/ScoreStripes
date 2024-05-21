@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,7 +55,7 @@ fun OrderItem(order: OrderDto, navHostController: NavHostController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "ORDER", color = colorResource(id = R.color.black), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = order.id, style = style12) //TODO serve qualcosa di più sicuo?
+                Text(text = order.id, style = style12) //TODO serve qualcosa di più sicuo
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -89,7 +90,10 @@ fun ProductOrdersList(orderItems: List<OrderItemDto>, navHostController: NavHost
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         items(orderItems) {
-            product -> ProductOrderItem(orderItem = product, navHostController = navHostController)
+            orderItem ->
+            key(orderItem.id) {
+                ProductOrderItem(orderItem = orderItem, navHostController = navHostController)
+            }
         }
     }
 }

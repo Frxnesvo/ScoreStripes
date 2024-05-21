@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class ProductState(
     val name: String = "",
-    val club: String = "", //TODO get del primo club in ordine alfabetico
+    val club: String = "",
     val gender: Gender = Gender.entries[0],
     val pic1: Uri = Uri.EMPTY,
     val pic2: Uri = Uri.EMPTY,
@@ -30,7 +30,6 @@ data class ProductState(
     val isBrandError: Boolean = !Product.validateBrand(brand),
     val isDescriptionError: Boolean = !Product.validateDescription(description)
 )
-
 
 class ProductFormViewModel(product: Product? = null) {
     private val _productState = MutableStateFlow(ProductState())
