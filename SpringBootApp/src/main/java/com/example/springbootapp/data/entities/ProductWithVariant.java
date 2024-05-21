@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "products_with_variant", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"product_id", "size"})
@@ -33,4 +35,18 @@ public class ProductWithVariant {
     @ManyToOne(fetch = FetchType.LAZY)  //devo caricare lazy perchè altrimenti dato che dal prodotto carico eager le varianti mi ritrovo in un loop
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductWithVariant that = (ProductWithVariant) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

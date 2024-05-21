@@ -6,10 +6,12 @@ import com.example.springbootapp.data.dao.ClubDao;
 import com.example.springbootapp.data.dao.LeagueDao;
 import com.example.springbootapp.data.entities.Club;
 import com.example.springbootapp.data.entities.League;
+import com.example.springbootapp.data.specification.ClubSpecification;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ClubService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,5 +46,17 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public List<String> getClubNames() {
         return clubDao.getAllNames();
+    }
+
+    @Override
+    public List<ClubDto> getClubs(String leagueName) {
+        Specification<Club> spec = Specification.where(null);
+        if(leagueName != null){
+            spec = spec.and(ClubSpecification.leagueNameEquals(leagueName));
+        }
+        List<Club> clubs = clubDao.findAll(spec);
+        return clubs.stream()
+                .map(club -> modelMapper.map(club, ClubDto.class))
+                .toList();
     }
 }

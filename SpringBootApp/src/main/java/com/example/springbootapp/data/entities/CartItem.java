@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "cart_items")
@@ -59,5 +60,20 @@ public class CartItem {
 
     double getPrice(){
         return (product.getProduct().getPrice() + personalization.getPrice()) * quantity;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        CartItem cartItem = (CartItem) o;
+        return Objects.equals(cart, cartItem.cart) &&
+                Objects.equals(product, cartItem.product) &&
+                Objects.equals(personalization, cartItem.personalization);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(cart, product, personalization);
     }
 }

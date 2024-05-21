@@ -28,4 +28,16 @@ public class Cart {
         return cartItems.stream().mapToDouble(CartItem::getPrice).sum();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cart cart = (Cart) o;
+        return getId().equals(cart.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }
