@@ -1,6 +1,7 @@
 package com.example.springbootapp.handler;
 
 import com.example.springbootapp.data.dto.ErrorDto;
+import com.example.springbootapp.exceptions.RateLimitExceededException;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +37,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RequestValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto onRequestValidationException(WebRequest req, RequestValidationException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public ErrorDto onRateLimitExceededException(WebRequest req, RateLimitExceededException e) {
         return createErrorRespose(req, e.getMessage());
     }
 

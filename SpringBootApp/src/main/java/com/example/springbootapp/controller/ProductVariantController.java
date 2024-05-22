@@ -1,5 +1,6 @@
 package com.example.springbootapp.controller;
 
+import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.ProductWithVariantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RateLimited(permitsPerSecond = 10)
 @RestController
 @RequestMapping("/api/v1/product-variants")
 @CrossOrigin(origins = "*")

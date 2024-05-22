@@ -6,6 +6,7 @@ import com.example.springbootapp.data.dto.CustomerSummaryDto;
 import com.example.springbootapp.data.dto.OrderDto;
 import com.example.springbootapp.data.entities.Customer;
 import com.example.springbootapp.data.specification.CustomerSpecification;
+import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.AddressService;
 import com.example.springbootapp.service.interfaces.CustomerService;
 import com.example.springbootapp.service.interfaces.OrderService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RateLimited(permitsPerSecond = 10)
 @RestController
 @RequestMapping("/api/v1/customers")
 @CrossOrigin(origins ="*")
