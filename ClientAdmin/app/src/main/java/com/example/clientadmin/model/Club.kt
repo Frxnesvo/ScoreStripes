@@ -8,8 +8,8 @@ class Club(
     val league: String
 ){
     init {
-        validateName(name)
-        validateImage(image)
+        require(validateName(name)) { "Invalid name: must be between 3 and 40 characters" }
+        require(validateImage(image)) { "Invalid image: cannot be empty" }
     }
     companion object{
         fun validateName(name: String): Boolean{

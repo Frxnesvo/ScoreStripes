@@ -1,4 +1,6 @@
 package com.example.clientadmin.viewmodels
 
-class LoginViewModel {
+import androidx.lifecycle.ViewModel
+
+class LoginViewModel: ViewModel() {
 }

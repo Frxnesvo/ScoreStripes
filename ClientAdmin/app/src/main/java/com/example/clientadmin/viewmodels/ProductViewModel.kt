@@ -10,8 +10,7 @@ import com.example.clientadmin.model.enumerator.Size
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class ProductViewModel(): ViewModel() { //application: Application
-    //private val _application = application
+class ProductViewModel(): ViewModel() {
     private val _list : Flow<List<Product>> = flowOf() //TODO allProducts
     val products = _list
 

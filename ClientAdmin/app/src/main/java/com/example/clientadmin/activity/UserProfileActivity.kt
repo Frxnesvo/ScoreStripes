@@ -1,6 +1,6 @@
 package com.example.clientadmin.activity
 
-import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -26,11 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.clientadmin.R
-import com.example.clientadmin.model.dto.CustomerProfileDto
+import com.example.clientadmin.model.CustomerSummary
 
 @Composable
-fun UserProfile(customer: CustomerProfileDto, navHostController: NavHostController){
+fun UserProfile(customer: CustomerSummary, navHostController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +41,7 @@ fun UserProfile(customer: CustomerProfileDto, navHostController: NavHostControll
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxProfilePic(name = customer.firstName, profilePic = null) //TODO profilePic
+        BoxProfilePic(name = customer.username, picUri = customer.pic) //TODO profilePic
 
         Text(text = customer.username, color = colorResource(id = R.color.black), style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal))
 
@@ -60,12 +60,12 @@ fun UserProfile(customer: CustomerProfileDto, navHostController: NavHostControll
 }
 
 @Composable
-fun BoxProfilePic(name: String, profilePic: Bitmap?){
+fun BoxProfilePic(name: String, picUri: Uri){
     val modifier = Modifier
         .clip(RoundedCornerShape(75.dp))
         .size(150.dp)
 
-    if (profilePic == null)
+    if (picUri == Uri.EMPTY)
         Box(
             modifier = modifier
                 .background(color = colorResource(id = R.color.secondary)),
@@ -79,7 +79,7 @@ fun BoxProfilePic(name: String, profilePic: Bitmap?){
         }
     else
         Image(
-            bitmap = profilePic.asImageBitmap(),
+            painter = rememberAsyncImagePainter(picUri),
             contentDescription = "userImg",
             contentScale = ContentScale.Crop,
             modifier = modifier

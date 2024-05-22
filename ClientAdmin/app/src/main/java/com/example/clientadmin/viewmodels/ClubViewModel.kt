@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.clientadmin.model.dto.ClubRequestDto
 import com.example.clientadmin.service.ConverterUri
 import com.example.clientadmin.service.impl.ClubApiServiceImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,7 +25,7 @@ class ClubViewModel : ViewModel() {
     }
 
     private fun fetchClubNames() {
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = clubApiService.getClubNames().awaitResponse()
                 if (response.isSuccessful) {
@@ -40,13 +42,13 @@ class ClubViewModel : ViewModel() {
     }
 
     fun addClub(context: Context, name: String, pic: Uri, league: String) {
-        viewModelScope.launch {
-            val multipart = ConverterUri.convert(context, pic, "image")
-            if (multipart == null) {
-                println("Errore nella conversione dell'Uri in MultipartBody.Part")
-                return@launch
-            }
+        val multipart = ConverterUri.convert(context, pic, "image")
+        if (multipart == null) {
+            println("Errore nella conversione dell'Uri in MultipartBody.Part")
+            return
+        }
 
+        CoroutineScope(Dispatchers.IO).launch {
             val clubRequestDto = ClubRequestDto(name, multipart, league)
             try {
                 val response = clubApiService.createClub(clubRequestDto).awaitResponse()

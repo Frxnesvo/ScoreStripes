@@ -23,6 +23,7 @@
             <option value="$PROJECT_DIR$/ClientUser/app" />
           </set>
         </option>
+        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/ClientUser/app" />
@@ -32,6 +33,7 @@
             <option value="$PROJECT_DIR$/ClientUser/app" />
           </set>
         </option>
+        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
