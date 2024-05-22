@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 //bindingResult
 import org.springframework.validation.BindingResult;
 
+import java.util.List;
+
 @RateLimited(permitsPerSecond = 10)
 @RestController
 @RequestMapping("/api/v1/products")
@@ -47,5 +49,9 @@ public class ProductController {
                 .body(createdProduct);
     }
 
+    @GetMapping()
+    public ResponseEntity<List<ProductDto>> getProductsByClub(@RequestParam() String clubName){
+        return ResponseEntity.ok(productService.getProductsByClub(clubName));
+    }
 
 }
