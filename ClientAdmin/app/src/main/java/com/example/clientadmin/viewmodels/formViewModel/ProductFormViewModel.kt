@@ -45,7 +45,6 @@ class ProductFormViewModel(product: Product? = null) {
             updatePrice(product.price)
             updateVariants(product.variants)
         }
-        val variants: Map<Size, Int> = Size.entries.associateWith { 0 }
     }
 
     fun updateName(name: String) {

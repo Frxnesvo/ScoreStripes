@@ -11,7 +11,7 @@ class ProductSummary(
     val picUrl: String,
     val variants: Map<Size, Int>
 ) {
-    private val pic = Uri.EMPTY
+    private var pic = Uri.EMPTY
     init{
         TODO( "get a pic from bucket")
     }

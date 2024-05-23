@@ -7,9 +7,13 @@ class CustomerSummary (
     val username: String,
     private val picUrl: String
 ){
-    private val pic = Uri.EMPTY
+    private var pic = Uri.EMPTY
     init{
         //TODO prendere immagine dal bucket
+    }
+
+    fun getPic(): Uri{
+        return pic
     }
 
     fun toQueryString(): String {

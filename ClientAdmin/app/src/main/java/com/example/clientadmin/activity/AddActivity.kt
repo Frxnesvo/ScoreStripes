@@ -78,7 +78,7 @@ fun AddPanel(
 }
 
 @Composable
-fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueFormViewModel, navHostController: NavHostController, isAdd: Boolean = false) {
+fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueFormViewModel, navHostController: NavHostController) {
     val leagueState by leagueFormViewModel.leagueState.collectAsState()
 
     val context = LocalContext.current
@@ -119,7 +119,7 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 }
 
 @Composable
-fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController, isAdd: Boolean = false) {
+fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController) {
     val clubState by clubFormViewModel.clubState.collectAsState()
 
     val context = LocalContext.current
