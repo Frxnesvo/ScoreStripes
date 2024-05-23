@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -54,7 +55,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
             }*/
 
             TextFieldString(
-                value = mutableStateOf(adminState.username),
+                value = remember { mutableStateOf(adminState.username) },
                 text = stringResource(id = R.string.username),
                 keyboardType = KeyboardType.Text
             ){
@@ -63,7 +64,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
 
             if(firstName != ""){
                 TextFieldString(
-                    value = mutableStateOf(adminState.firstName),
+                    value = remember { mutableStateOf(adminState.firstName) },
                     text = stringResource(id = R.string.first_name),
                     keyboardType = KeyboardType.Text
                 ){
@@ -73,7 +74,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
 
             if(lastName != ""){
                 TextFieldString(
-                    value = mutableStateOf(adminState.lastName),
+                    value = remember { mutableStateOf(adminState.lastName) },
                     text = stringResource(id = R.string.last_name),
                     keyboardType = KeyboardType.Text
                 ){
@@ -82,7 +83,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
             } else loginFormViewModel.updateLastName(lastName)
 
             TextFieldString( //TODO
-                value = mutableStateOf(adminState.birthdate.toString()),
+                value = remember { mutableStateOf(adminState.birthdate.toString()) },
                 text = stringResource(id = R.string.birth_date),
                 keyboardType = KeyboardType.Text
             ){
@@ -91,7 +92,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
 
             ComboBox(
                 options = flowOf(Gender.entries),
-                selectedOption = mutableStateOf(adminState.gender.toString())
+                selectedOption = remember { mutableStateOf(adminState.gender.toString()) }
             ) {
                 loginFormViewModel.updateGender(Gender.valueOf(it))
             }

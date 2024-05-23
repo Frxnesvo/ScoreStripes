@@ -60,6 +60,8 @@ fun IndexPage(navController : NavHostController) {
                 ) {
                     val auth = GoogleAuth(context)
                     coroutineScope.launch {
+                        //TODO fare la chiamate al controller rest per la login
+                        //TODO aggiungere il ruolo di admin
                         val googleUserDto = auth.getGoogleCredential()
                         navController.navigate("register/${googleUserDto?.firstName}/${googleUserDto?.lastName}/${googleUserDto?.email}")
                     }
