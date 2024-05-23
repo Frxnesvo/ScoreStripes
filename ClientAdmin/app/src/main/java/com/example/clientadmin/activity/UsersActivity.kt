@@ -50,7 +50,7 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
             item {
                 TextButton(onClick = { customerViewModel.incrementPage() }) {
                     Text(
-                        text = "enter as guest",
+                        text = stringResource(id = R.string.more),
                         color = colorResource(id = R.color.white50),
                         style = TextStyle(
                             fontSize = 16.sp,

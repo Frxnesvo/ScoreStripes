@@ -1,10 +1,7 @@
-package com.example.clientadmin.viewmodels
+package com.example.clientadmin.viewmodels.formViewModel
 
-import android.graphics.Bitmap
 import android.net.Uri
-import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.Product
-import com.example.clientadmin.model.ProductWithVariant
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
@@ -43,12 +40,11 @@ class ProductFormViewModel(product: Product? = null) {
             updateCategory(product.productCategory)
             updateDescription(product.description)
             updateBrand(product.brand)
-            updatePic1(product.getPic1())
-            updatePic2(product.getPic2())
+            updatePic1(product.pic1)
+            updatePic2(product.pic2)
             updatePrice(product.price)
             updateVariants(product.variants)
         }
-        val variants: Map<Size, Int> = Size.entries.associateWith { 0 }
     }
 
     fun updateName(name: String) {

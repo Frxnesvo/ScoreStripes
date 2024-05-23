@@ -40,11 +40,12 @@ import androidx.navigation.navArgument
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.CustomerSummary
-import com.example.clientadmin.viewmodels.LeagueFormViewModel
+import com.example.clientadmin.model.Product
+import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.ProductFormViewModel
+import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
-import com.example.clientadmin.viewmodels.ClubFormViewModel
+import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
 
@@ -258,12 +259,12 @@ fun NavigationScaffold(
             route= "product/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
-            it.arguments?.getInt("id")?.let {
+            it.arguments?.getString("id")?.let {
                 id -> productViewModel.getProduct(id).collectAsState(initial = null).value?.let {
                     product-> ProductDetails(
-                        productViewModel = ProductViewModel(),
-                        clubViewModel = ClubViewModel(),
-                        productFormViewModel = ProductFormViewModel(product),
+                        productViewModel = productViewModel,
+                        clubViewModel = clubViewModel,
+                        productFormViewModel = ProductFormViewModel(Product.fromDto(product)),
                         navHostController = navHostController
                     )
                 }

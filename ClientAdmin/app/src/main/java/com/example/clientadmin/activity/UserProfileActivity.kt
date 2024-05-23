@@ -41,7 +41,7 @@ fun UserProfile(customer: CustomerSummary, navHostController: NavHostController)
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxProfilePic(name = customer.username, picUri = customer.pic) //TODO profilePic
+        BoxProfilePic(name = customer.username, picUri = customer.getPic())
 
         Text(text = customer.username, color = colorResource(id = R.color.black), style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal))
 

@@ -5,11 +5,15 @@ import android.net.Uri
 class CustomerSummary (
     val id: String,
     val username: String,
-    private val picUrl: String,
-    val pic: Uri = Uri.EMPTY
+    private val picUrl: String
 ){
+    private var pic = Uri.EMPTY
     init{
         //TODO prendere immagine dal bucket
+    }
+
+    fun getPic(): Uri{
+        return pic
     }
 
     fun toQueryString(): String {

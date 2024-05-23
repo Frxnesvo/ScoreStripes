@@ -1,8 +1,5 @@
 package com.example.clientadmin.activity
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,8 +17,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -30,8 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.viewmodels.ProductFormViewModel
-import com.example.clientadmin.viewmodels.ProductState
+import com.example.clientadmin.model.Product
+import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
+import com.example.clientadmin.viewmodels.formViewModel.ProductState
 import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
@@ -41,6 +39,7 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: ProductFormViewModel, clubViewModel: ClubViewModel, navHostController: NavHostController, isAdd: Boolean = false){
     val productState by productFormViewModel.productState.collectAsState()
+    val context = LocalContext.current
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -132,29 +131,22 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
             background = R.color.secondary
         ) {
             if (isAdd) {
-                productViewModel.addProduct(
-                    productState.name,
-                    productState.club,
-                    productState.gender,
-                    productState.productCategory,
-                    productState.description,
-                    productState.pic1,
-                    productState.pic2,
-                    productState.price,
-                    productState.variants
-                )
+                val product = Product(
+                    name = productState.name,
+                    club = productState.club,
+                    brand = productState.brand,
+                    gender = productState.gender,
+                    productCategory = productState.productCategory,
+                    description =  productState.description,
+                    pic1 =  productState.pic1,
+                    pic2 =  productState.pic2,
+                    price = productState.price,
+                    variants = productState.variants
+                ).createRequest(context)
+
+                productViewModel.addProduct(product)
             } else {
-                productViewModel.updateProduct(
-                    productState.name,
-                    productState.club,
-                    productState.gender,
-                    productState.productCategory,
-                    productState.description,
-                    productState.pic1,
-                    productState.pic2,
-                    productState.price,
-                    productState.variants
-                )
+                TODO("serve il ")
             }
         }
     }

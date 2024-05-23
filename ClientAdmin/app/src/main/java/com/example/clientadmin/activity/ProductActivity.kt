@@ -26,11 +26,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
+import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Product
+import com.example.clientadmin.model.ProductSummary
+import com.example.clientadmin.model.dto.ProductDto
 
 @Composable
-fun ProductItemRow(product: Product, onClick: () -> Unit) {
+fun ProductItemRow(product: ProductDto, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .width(150.dp)
@@ -49,7 +52,7 @@ fun ProductItemRow(product: Product, onClick: () -> Unit) {
                 .width(120.dp)
                 .clip(RoundedCornerShape(10.dp))
         )
-        Text(text = product.club,
+        Text(text = product.clubName,
             color = colorResource(id = R.color.black),
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
         )
@@ -61,7 +64,7 @@ fun ProductItemRow(product: Product, onClick: () -> Unit) {
 }
 
 @Composable
-fun ProductItemColumn(product: Product, onClick: () -> Unit) {
+fun ProductItemColumn(product: ProductSummary, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -78,8 +81,17 @@ fun ProductItemColumn(product: Product, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(text = product.club, color = Color.Black, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal))
-            Text(text = "${product.productCategory}", color = colorResource(id = R.color.black), style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light))
+            Text(
+                text = product.clubName,
+                color = colorResource(id = R.color.black),
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
+            )
+
+            Text(
+                text = product.name,
+                color = colorResource(id = R.color.black),
+                style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light)
+            )
         }
         Row(
             modifier = Modifier
@@ -89,7 +101,7 @@ fun ProductItemColumn(product: Product, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Image(
-                painterResource(R.drawable.arsenal), // TODO prendere da product
+                painter = rememberAsyncImagePainter(product.getPic()),
                 contentDescription = "img",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -105,48 +117,45 @@ fun ProductItemColumn(product: Product, onClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
-
-                //TODO - gestire le quantità
-                /*for (quantity in product.) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .height(25.dp)
-                                .width(25.dp)
-                                .background(Color.Red, RoundedCornerShape(12.5.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "${quantity.first}",
-                                color = Color.White,
-                                style = TextStyle(
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .height(25.dp)
-                                .width(25.dp)
-                                .background(Color.White, RoundedCornerShape(12.5.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "${quantity.second}",
-                                color = Color.Red,
-                                style = TextStyle(
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            )
-                        }
-                    }
-                }*/
+                for (size in Size.entries) {
+                    ColumnAvailability(size = size, availability = product.variants[size])
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun ColumnAvailability(size: Size, availability: Int? = 0){
+    val style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+    val modifier = Modifier
+        .height(25.dp)
+        .width(25.dp)
+        .background(Color.White, RoundedCornerShape(12.5.dp))
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Box(
+            modifier = modifier,
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "$size",
+                color = Color.White,
+                style = style
+            )
+        }
+
+        Box(
+            modifier = modifier,
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "$availability",
+                color = Color.Red,
+                style = style
+            )
         }
     }
 }

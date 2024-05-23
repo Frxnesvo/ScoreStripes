@@ -22,6 +22,7 @@
     <string name="list_orders_empty">no order to show</string>
     <string name="list_addresses">ADDRESSES</string>
     <string name="list_addresses_empty">no address to show</string>
+    <string name="more">more</string>
 
     <string name="list_out_of_stock">OUT OF STOCK</string>
     <string name="list_new_users">NEW USERS</string>
