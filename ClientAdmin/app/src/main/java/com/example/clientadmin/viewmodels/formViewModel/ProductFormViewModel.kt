@@ -40,8 +40,8 @@ class ProductFormViewModel(product: Product? = null) {
             updateCategory(product.productCategory)
             updateDescription(product.description)
             updateBrand(product.brand)
-            updatePic1(product.getPic1())
-            updatePic2(product.getPic2())
+            updatePic1(product.pic1)
+            updatePic2(product.pic2)
             updatePrice(product.price)
             updateVariants(product.variants)
         }

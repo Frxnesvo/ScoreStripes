@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
+import com.example.clientadmin.model.dto.ProductDto
+import com.example.clientadmin.model.dto.ProductWithVariantAvailabilityDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
@@ -18,8 +20,8 @@ class Product (
     val brand: String,
     val gender: Gender,
     val productCategory: ProductCategory,
-    private val pic1: Uri,
-    private val pic2: Uri,
+    val pic1: Uri,
+    val pic2: Uri,
     val club: String,
     val variants: Map<Size, Int>
 ){
@@ -28,6 +30,8 @@ class Product (
         require(validatePrice(price)) { "Invalid price: must be greater than 0" }
         require(validateDescription(description)) { "Invalid description: must be between 1 and 50 characters" }
         require(validateBrand(brand)) { "Invalid brand: must be between 1 and 20 characters" }
+        require(validatePic(pic1)) { "Invalid brand: must be between 1 and 20 characters" }
+        require(validatePic(pic2)) { "Invalid brand: must be between 1 and 20 characters" }
     }
 
     fun createRequest(context: Context): ProductCreateRequestDto{
@@ -64,8 +68,23 @@ class Product (
         fun validateBrand(brand: String): Boolean{
             return brand.length in 1..20
         }
-        fun validatePic(brand: String): Boolean{
-            return brand.length in 1..20
+        fun validatePic(pic: Uri): Boolean{
+            return pic != Uri.EMPTY
+        }
+
+        fun fromDto(productDto: ProductDto): Product{
+            return Product(
+                name = productDto.name,
+                description = productDto.description,
+                price = productDto.price,
+                brand = productDto.brand,
+                gender = productDto.gender,
+                productCategory = productDto.productCategory,
+                pic1 = productDto.pics[0],
+                pic2 = productDto.pics[1],
+                club = productDto.clubName,
+                variants = productDto.variants.associate { it.size to it.availability }
+            )
         }
     }
 }
