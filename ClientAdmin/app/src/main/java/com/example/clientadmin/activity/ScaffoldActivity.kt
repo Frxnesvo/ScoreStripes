@@ -40,11 +40,11 @@ import androidx.navigation.navArgument
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.CustomerSummary
-import com.example.clientadmin.viewmodels.LeagueFormViewModel
+import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.ProductFormViewModel
+import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
-import com.example.clientadmin.viewmodels.ClubFormViewModel
+import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
 

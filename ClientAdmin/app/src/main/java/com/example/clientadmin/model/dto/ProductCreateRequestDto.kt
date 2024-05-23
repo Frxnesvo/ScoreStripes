@@ -6,7 +6,6 @@ import com.example.clientadmin.model.enumerator.Size
 import okhttp3.MultipartBody
 
 data class ProductCreateRequestDto (
-    val id: String,
     val name: String,
     val description: String,
     val price: Double,

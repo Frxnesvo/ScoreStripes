@@ -1,4 +1,4 @@
-package com.example.clientadmin.viewmodels
+package com.example.clientadmin.viewmodels.formViewModel
 
 import android.net.Uri
 import com.example.clientadmin.model.Club

@@ -10,8 +10,8 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface ClubApiService {
-    @POST("/api/v1/clubs")
     @Multipart
+    @POST("/api/v1/clubs")
     fun createClub(@Part("clubRequestDto") clubRequestDto: ClubRequestDto): Call<ClubDto>
 
     @GET("/api/v1/clubs/names")

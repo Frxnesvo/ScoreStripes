@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Product
+import com.example.clientadmin.model.dto.ProductDto
 
 @Composable
 fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostController) {
@@ -142,7 +143,7 @@ fun Stat(text: String, value: Int, onClick: () -> Unit){
 }
 
 @Composable
-fun Section(nameSection: String, products: List<Product>, navHostController: NavHostController) {
+fun Section(nameSection: String, products: List<ProductDto>, navHostController: NavHostController) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
         modifier = Modifier

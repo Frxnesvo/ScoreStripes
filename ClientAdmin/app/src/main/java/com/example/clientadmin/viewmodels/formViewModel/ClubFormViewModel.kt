@@ -1,12 +1,6 @@
-package com.example.clientadmin.viewmodels
+package com.example.clientadmin.viewmodels.formViewModel
 
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.League
 import kotlinx.coroutines.flow.MutableStateFlow

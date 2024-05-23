@@ -4,18 +4,13 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.clientadmin.model.League
-import com.example.clientadmin.model.dto.ClubRequestDto
 import com.example.clientadmin.model.dto.LeagueRequestDto
 import com.example.clientadmin.service.ConverterUri
-import com.example.clientadmin.service.impl.ClubApiServiceImpl
 import com.example.clientadmin.service.impl.LeagueApiServiceImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
@@ -47,26 +42,17 @@ class LeagueViewModel: ViewModel() {
     }
 
     fun addLeague(context: Context, name: String, pic: Uri){
-        CoroutineScope(Dispatchers.IO).launch {
-            val multipart = ConverterUri.convert(context, pic, "image")
-            if (multipart == null) {
-                println("Errore nella conversione dell'Uri in MultipartBody.Part")
-                return@launch
-            }
+        try {
+            val leagueRequestDto = League(name, pic).request(context)
 
-            val leagueRequestDto = LeagueRequestDto(name, multipart)
-            try {
+            CoroutineScope(Dispatchers.IO).launch {
                 val response = leagueApiService.createLeague(leagueRequestDto).awaitResponse()
-                if (response.isSuccessful) {
-                    response.body()?.let { club ->
-                        _leaguesNames.value += club.name
-                    }
-                } else {
-                    handleApiError(response.message())
-                }
-            } catch (e: Exception) {
-                handleApiError(e.message ?: "Unknown error")
+                if (response.isSuccessful)
+                    response.body()?.let { club -> _leaguesNames.value += club.name }
+                else handleApiError(response.message())
             }
+        } catch (e: Exception) {
+            handleApiError(e.message ?: "Unknown error")
         }
     }
 

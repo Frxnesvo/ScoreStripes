@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.enumerator.Gender
-import com.example.clientadmin.viewmodels.LoginFormViewModel
+import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDate
 

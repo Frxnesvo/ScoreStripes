@@ -3,9 +3,7 @@ package com.example.clientadmin.viewmodels
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.clientadmin.model.dto.ClubRequestDto
-import com.example.clientadmin.service.ConverterUri
+import com.example.clientadmin.model.Club
 import com.example.clientadmin.service.impl.ClubApiServiceImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,12 +27,8 @@ class ClubViewModel : ViewModel() {
             try {
                 val response = clubApiService.getClubNames().awaitResponse()
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        _clubNames.value = it
-                    }
-                } else {
-                    handleApiError(response.message())
-                }
+                    response.body()?.let { _clubNames.value = it }
+                } else handleApiError(response.message())
             } catch (e: Exception) {
                 handleApiError(e.message ?: "Unknown error")
             }
@@ -42,27 +36,20 @@ class ClubViewModel : ViewModel() {
     }
 
     fun addClub(context: Context, name: String, pic: Uri, league: String) {
-        val multipart = ConverterUri.convert(context, pic, "image")
-        if (multipart == null) {
-            println("Errore nella conversione dell'Uri in MultipartBody.Part")
-            return
-        }
+        try {
+            val clubRequestDto = Club(name, pic, league).request(context)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val clubRequestDto = ClubRequestDto(name, multipart, league)
-            try {
+            CoroutineScope(Dispatchers.IO).launch {
                 val response = clubApiService.createClub(clubRequestDto).awaitResponse()
-                if (response.isSuccessful) {
-                    response.body()?.let { club ->
-                        _clubNames.value += club.name
-                    }
-                } else {
-                    handleApiError(response.message())
-                }
-            } catch (e: Exception) {
-                handleApiError(e.message ?: "Unknown error")
+                if (response.isSuccessful)
+                    response.body()?.let { club -> _clubNames.value += club.name }
+                else handleApiError(response.message())
             }
         }
+        catch (e: Exception) {
+            handleApiError(e.message ?: "Unknown error")
+        }
+
     }
 
     private fun handleApiError(response: String) {

@@ -1,10 +1,7 @@
-package com.example.clientadmin.viewmodels
+package com.example.clientadmin.viewmodels.formViewModel
 
-import android.graphics.Bitmap
 import android.net.Uri
-import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.Product
-import com.example.clientadmin.model.ProductWithVariant
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
