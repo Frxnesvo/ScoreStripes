@@ -80,4 +80,11 @@ public class ProductServiceImpl implements ProductService {
         productDao.save(product);
         return modelMapper.map(product, ProductDto.class);
     }
+
+    @Override
+    public List<ProductDto> getProductsByClub(String clubName) {
+        return productDao.findByClubName(clubName).stream()
+                .map(product -> modelMapper.map(product, ProductDto.class))
+                .collect(Collectors.toList());
+    }
 }
