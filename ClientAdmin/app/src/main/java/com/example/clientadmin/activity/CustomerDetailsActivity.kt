@@ -4,14 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
@@ -30,7 +27,6 @@ fun UserDetails(customer: CustomerProfileDto, navHostController: NavHostControll
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(state = rememberScrollState())
-            .padding(horizontal = 10.dp)
     ){
         Back { navHostController.popBackStack() }
 
@@ -52,49 +48,37 @@ fun Details(customer: CustomerProfileDto){
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal, letterSpacing = 5.sp)
         )
 
-        TextFieldString(
-            value = remember{ mutableStateOf(customer.firstName) },
-            onValueChange = { },
+        CustomTextField(
+            value = customer.firstName,
             text = "FIRST NAME",
             readOnly = true
-        )
+        ){}
 
-        TextFieldString(
-            value = remember{ mutableStateOf(customer.lastName) },
-            onValueChange = { },
+        CustomTextField(
+            value = customer.lastName,
             text = "LAST NAME",
             readOnly = true
-        )
+        ){}
 
-        TextFieldString(
-            value = remember{ mutableStateOf(customer.email) },
-            onValueChange = { },
+        CustomTextField(
+            value = customer.email,
             text = "EMAIL",
             readOnly = true
-        )
+        ){}
 
-        TextFieldString(
-            value = remember{ mutableStateOf(customer.favoriteClub) },
-            onValueChange = { },
+        CustomTextField(
+            value = customer.favoriteClub,
             text = "FAVORITE CLUB",
             readOnly = true
-        )
+        ){}
 
-        TextFieldString(
-            value = remember{ mutableStateOf(customer.gender.toString()) },
-            onValueChange = { },
+        CustomTextField(
+            value = customer.gender,
             text = "GENDER",
             readOnly = true
-        )
+        ){}
 
-        TextFieldString(
-            value = remember{ mutableStateOf(customer.birthDate.toString()) },
-            onValueChange = { },
-            text = "BIRTH DATE",
-            readOnly = true
-        )
-
-        //TODO inserire tutti i dettagli mancanti
+        //TODO inserire la data di nascita
     }
 }
 

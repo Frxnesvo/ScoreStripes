@@ -22,7 +22,6 @@ import com.example.clientadmin.model.dto.AddressDto
 @Composable
 fun Addresses(addresses: List<AddressDto>, navHostController: NavHostController){
     LazyColumn(
-        modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp),
         state = rememberLazyListState()

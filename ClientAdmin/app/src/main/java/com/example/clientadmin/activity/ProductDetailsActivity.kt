@@ -23,6 +23,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -37,14 +38,20 @@ import com.example.clientadmin.viewmodels.ClubViewModel
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: ProductFormViewModel, clubViewModel: ClubViewModel, navHostController: NavHostController, isAdd: Boolean = false){
+fun ProductDetails(
+    productViewModel: ProductViewModel,
+    productFormViewModel: ProductFormViewModel,
+    clubViewModel: ClubViewModel,
+    navHostController: NavHostController,
+
+    isAdd: Boolean = false
+){
     val productState by productFormViewModel.productState.collectAsState()
     val context = LocalContext.current
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
-            .padding(horizontal = 10.dp)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ){
@@ -68,48 +75,42 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
                 productState = productState
             )
 
-            TextFieldString(
+            CustomTextField(
                 value = remember { mutableStateOf(productState.name) },
-                text = stringResource(id = R.string.name),
-                onValueChange = { productFormViewModel.updateName(it)}
-            )
+                text = stringResource(id = R.string.name)
+            ){ productFormViewModel.updateName(it) }
 
-            ComboBox(
+            CustomComboBox(
                 options = clubViewModel.clubNames,
-                selectedOption = remember { mutableStateOf(productState.club) },
-                onValueChange = { productFormViewModel.updateClub(it) }
-            )
+                selectedOption = remember { mutableStateOf(productState.club) }
+            ){ productFormViewModel.updateClub(it) }
 
-            ComboBox(
+            CustomComboBox(
                 options = flowOf(Gender.entries),
-                selectedOption = remember { mutableStateOf(productState.gender.toString()) },
-                onValueChange = { productFormViewModel.updateGender(Gender.valueOf(it))}
-            )
+                selectedOption = remember { mutableStateOf(productState.gender.toString()) }
+            ){ productFormViewModel.updateGender(Gender.valueOf(it)) }
 
-            ComboBox(
+            CustomComboBox(
                 options = flowOf(ProductCategory.entries),
-                selectedOption = remember { mutableStateOf(productState.productCategory.toString()) },
-                onValueChange = { productFormViewModel.updateCategory(ProductCategory.valueOf(it))}
-            )
+                selectedOption = remember { mutableStateOf(productState.productCategory.toString()) }
+            ){ productFormViewModel.updateCategory(ProductCategory.valueOf(it)) }
 
-            TextFieldString(
-                value = remember { mutableStateOf(productState.brand) },
-                text = stringResource(id = R.string.brand),
-                onValueChange = { productFormViewModel.updateBrand(it)}
-            )
+            CustomTextField(
+                value = productState.brand,
+                text = stringResource(id = R.string.brand)
+            ){ productFormViewModel.updateBrand(it) }
 
-            TextFieldDouble(
+            CustomTextField(
                 value = remember { mutableStateOf(productState.price) },
                 text = stringResource(id = R.string.price),
-                onValueChange = { productFormViewModel.updatePrice(it.toDouble())}
-            )
+                keyboardType = KeyboardType.Decimal
+            ){ productFormViewModel.updatePrice(it.toDouble()) }
 
-            TextFieldString(
+            CustomTextField(
                 value = remember { mutableStateOf(productState.description) },
                 text = stringResource(id = R.string.description),
-                lines = 10,
-                onValueChange = { productFormViewModel.updateDescription(it)}
-            )
+                lines = 10
+            ){ productFormViewModel.updateDescription(it) }
         }
 
         Column(
@@ -119,14 +120,15 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
             Text(text = stringResource(id = R.string.quantities), style = style)
 
             productState.variants.forEach{
-                variant -> TextFieldInt(value = remember { mutableStateOf(variant.value) }, text = variant.key.name) {
-                    productFormViewModel.updateVariant(variant.key, it.toInt())
-                }
+                variant ->
+                CustomTextField(
+                    value = variant.value,
+                    text = variant.key.name
+                ) { productFormViewModel.updateVariant(variant.key, it.toInt()) }
             }
-
         }
 
-        ButtonCustom(
+        CustomButton(
             text = if(isAdd) stringResource(id = R.string.create) else stringResource(id = R.string.update),
             background = R.color.secondary
         ) {
@@ -146,7 +148,7 @@ fun ProductDetails(productViewModel: ProductViewModel, productFormViewModel: Pro
 
                 productViewModel.addProduct(product)
             } else {
-                TODO("serve il ")
+                TODO("serve il controller per l'update")
             }
         }
     }

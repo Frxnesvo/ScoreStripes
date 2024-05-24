@@ -53,7 +53,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 }
             }*/
 
-            TextFieldString(
+            CustomTextField(
                 value = mutableStateOf(adminState.username),
                 text = stringResource(id = R.string.username),
                 keyboardType = KeyboardType.Text
@@ -62,7 +62,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
             }
 
             if(firstName != ""){
-                TextFieldString(
+                CustomTextField(
                     value = mutableStateOf(adminState.firstName),
                     text = stringResource(id = R.string.first_name),
                     keyboardType = KeyboardType.Text
@@ -72,7 +72,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
             } else loginFormViewModel.updateFirstName(firstName)
 
             if(lastName != ""){
-                TextFieldString(
+                CustomTextField(
                     value = mutableStateOf(adminState.lastName),
                     text = stringResource(id = R.string.last_name),
                     keyboardType = KeyboardType.Text
@@ -81,7 +81,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 }
             } else loginFormViewModel.updateLastName(lastName)
 
-            TextFieldString( //TODO
+            CustomTextField( //TODO
                 value = mutableStateOf(adminState.birthdate.toString()),
                 text = stringResource(id = R.string.birth_date),
                 keyboardType = KeyboardType.Text
@@ -89,14 +89,14 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 loginFormViewModel.updateBirthdate(LocalDate.now())
             }
 
-            ComboBox(
+            CustomComboBox(
                 options = flowOf(Gender.entries),
                 selectedOption = mutableStateOf(adminState.gender.toString())
             ) {
                 loginFormViewModel.updateGender(Gender.valueOf(it))
             }
 
-            ButtonCustom(
+            CustomButton(
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {

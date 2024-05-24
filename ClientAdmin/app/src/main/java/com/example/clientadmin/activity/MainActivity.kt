@@ -54,7 +54,7 @@ fun Navigation(navController: NavHostController){
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
         navController = navController,
-        startDestination = "index"
+        startDestination = "scaffold"
     ){
         //INDEX
         composable(route = "index"){

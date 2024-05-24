@@ -47,7 +47,6 @@ fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostControl
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 10.dp)
     ) {
         Title()
 

@@ -24,7 +24,6 @@ import com.example.clientadmin.model.dto.OrderDto
 @Composable
 fun Orders(orders: List<OrderDto>, navHostController: NavHostController){
     LazyColumn(
-        modifier = Modifier.padding(horizontal = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp),
         state = rememberLazyListState()

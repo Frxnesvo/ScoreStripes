@@ -64,7 +64,8 @@ fun Scaffold(admin: Admin) {
                 top = it.calculateTopPadding() + 10.dp,
                 bottom = it.calculateBottomPadding(),
                 start = 10.dp,
-                end = 10.dp)
+                end = 10.dp
+            )
         ){
             NavigationScaffold(
                 navHostController = navController,
@@ -253,7 +254,7 @@ fun NavigationScaffold(
         composable(
             route = "products"
         ){
-            Products(navHostController = navHostController, productViewModel = productViewModel)
+            Products(navHostController = navHostController, productViewModel = productViewModel, leagueViewModel = leagueViewModel)
         }
         composable(
             route= "product/{id}",
@@ -275,9 +276,7 @@ fun NavigationScaffold(
         composable(
             route = "settings"
         ){
-            Settings(
-                admin = admin
-            )
+            Settings(admin = admin)
         }
     }
 }
