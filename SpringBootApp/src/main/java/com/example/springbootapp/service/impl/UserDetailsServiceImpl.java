@@ -26,6 +26,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return createUserDetails(user);
     }
 
+    public UserDetails loadUserByEmail(String email){
+        User user = userDao.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return createUserDetails(user);
+    }
+
     public UserDetails loadUserById(String id){
         User user= userDao.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         return createUserDetails(user);

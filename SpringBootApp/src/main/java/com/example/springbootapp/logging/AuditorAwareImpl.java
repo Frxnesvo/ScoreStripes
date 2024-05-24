@@ -1,6 +1,7 @@
 package com.example.springbootapp.logging;
 
 import com.example.springbootapp.service.impl.UserDetailsServiceImpl;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
