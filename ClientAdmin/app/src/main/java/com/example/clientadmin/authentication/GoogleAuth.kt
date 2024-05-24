@@ -53,7 +53,6 @@ class GoogleAuth(private val context: Context){
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 val idToken = googleIdTokenCredential.idToken
                 //TODO: salvare l'id token con accountManager
-
                 val firstName = googleIdTokenCredential.givenName
                 val lastName = googleIdTokenCredential.familyName
                 val email = googleIdTokenCredential.id

@@ -26,6 +26,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return createUserDetails(user);
     }
 
+    public UserDetails loadUserByEmail(String email){
+        User user = userDao.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return createUserDetails(user);
+    }
+
     public UserDetails loadUserById(String id){
         User user= userDao.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         return createUserDetails(user);
@@ -40,5 +45,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails= (CustomUserDetails) authentication.getPrincipal();
         return userDao.findById(userDetails.getID()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
+    public String getCurrentUserId(){
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails= (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getID();
     }
 }
