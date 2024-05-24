@@ -1,5 +1,6 @@
 package com.example.springbootapp.controller;
 
+import com.example.springbootapp.data.dto.AddToWishlistRequestDto;
 import com.example.springbootapp.data.dto.WishlistShareTokenDto;
 import com.example.springbootapp.data.dto.WishlistVisibilityDto;
 import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
@@ -35,6 +36,12 @@ public class WishlistController {
     @PostMapping("/validateShareAccess")
     public ResponseEntity<String> validateShareAccess(@RequestBody String token){  //TODO: Ha senso inglobare il token in un Dto e validarlo per evitare query?
         return ResponseEntity.ok(wishlistShareTokenService.validateShareAccess(token));
+    }
+
+    @PostMapping("/add-Item")
+    public ResponseEntity<String> addItemToWishlist(@Valid @RequestBody AddToWishlistRequestDto requestDto){
+        wishlistService.addItemToWishlist(requestDto);
+        return ResponseEntity.ok("Item added to wishlist");
     }
 
 

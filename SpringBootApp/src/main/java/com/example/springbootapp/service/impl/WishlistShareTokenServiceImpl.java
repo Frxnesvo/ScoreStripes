@@ -5,7 +5,6 @@ import com.example.springbootapp.data.dao.WishlistDao;
 import com.example.springbootapp.data.dao.WishlistShareTokenDao;
 import com.example.springbootapp.data.dto.WishlistShareTokenDto;
 import com.example.springbootapp.data.entities.Customer;
-import com.example.springbootapp.data.entities.Wishlist;
 import com.example.springbootapp.data.entities.WishlistAccess;
 import com.example.springbootapp.data.entities.WishlistShareToken;
 import com.example.springbootapp.exceptions.TokenExpiredException;

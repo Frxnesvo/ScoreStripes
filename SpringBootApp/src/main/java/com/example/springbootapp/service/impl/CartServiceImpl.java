@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class CartServiceImpl implements CartService {
 
     private final ProductDao productDao;
-    private final CustomerDao customerDao;
     private final CartDao cartDao;
     private final UserDetailsServiceImpl userDetailsService;
     //FIXME: Ho centralizzato sia la logica per aggiungere sia per aumentare la quantità di un prodotto nel carrello. Dovrei fare 2 metodi separati?
