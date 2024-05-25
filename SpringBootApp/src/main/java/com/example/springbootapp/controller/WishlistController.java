@@ -1,9 +1,6 @@
 package com.example.springbootapp.controller;
 
-import com.example.springbootapp.data.dto.AddToWishlistRequestDto;
-import com.example.springbootapp.data.dto.WishlistShareTokenDto;
-import com.example.springbootapp.data.dto.WishlistVisibilityDto;
-import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
+import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.WishlistService;
 import com.example.springbootapp.service.interfaces.WishlistShareTokenService;
@@ -11,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RateLimited(permitsPerSecond = 10)
 @RestController
@@ -44,7 +43,19 @@ public class WishlistController {
         return ResponseEntity.ok("Item added to wishlist");
     }
 
+    @GetMapping("/shared-with-me")
+    public ResponseEntity<List<WishlistDto>> getSharedWithMeWishlists(){
+        return ResponseEntity.ok(wishlistService.getSharedWithMeWishlists());
+    }
 
+    @GetMapping("/public")
+    public ResponseEntity<List<WishlistDto>> getPublicWishlists(){
+        return ResponseEntity.ok(wishlistService.getPublicWishlists());
+    }
 
+    @GetMapping("/my-wishlist")
+    public ResponseEntity<List<WishlistItemDto>> getMyWishlist(){
+        return ResponseEntity.ok(wishlistService.getMyWishlist());
+    }
 
 }

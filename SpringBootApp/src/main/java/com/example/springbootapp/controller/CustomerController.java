@@ -35,18 +35,18 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomersSummary(username,pageable));
     }
 
-    @GetMapping("/{id}/profile")
+    @GetMapping("/{id}/profile")  //da mettere in sicurezza in modo tale che qui può accedere solo l'utente loggato o un admin
     public ResponseEntity<CustomerProfileDto> getCustomerProfile(@PathVariable String id){
         CustomerProfileDto c= customerService.getCustomerProfile(id);
         return ResponseEntity.ok(c);
     }
 
-    @GetMapping("/{id}/addresses")
+    @GetMapping("/{id}/addresses")    //da mettere in sicurezza in modo tale che qui può accedere solo l'utente loggato o un admin
     public ResponseEntity<List<AddressDto>> getCustomerAddresses(@PathVariable String id){
         return ResponseEntity.ok(addressService.getAddressesByCustomerId(id));
     }
 
-    @GetMapping("/{id}/orders")
+    @GetMapping("/{id}/orders")    //da mettere in sicurezza in modo tale che qui può accedere solo l'utente loggato o un admin
     public ResponseEntity<List<OrderDto>> getFullCustomerOrders(@PathVariable String id){
         return ResponseEntity.ok(orderService.getFullOrdersByCustomerId(id));
     }

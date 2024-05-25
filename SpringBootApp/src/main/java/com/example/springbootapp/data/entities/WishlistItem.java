@@ -1,6 +1,6 @@
 package com.example.springbootapp.data.entities;
 
-import jakarta.persistence.*;
+import  jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;

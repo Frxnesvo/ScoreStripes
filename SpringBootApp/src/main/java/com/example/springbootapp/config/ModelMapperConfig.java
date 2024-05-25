@@ -62,6 +62,13 @@ public class ModelMapperConfig {
                     .map(variant -> modelMapper.map(variant, ProductWithVariantAvailabilityDto.class))
                     .collect(Collectors.toList());
         };
+        //convert personalizzato per gestire la conversione da una lista di WishlistItem a una lista di WishlistItemDto
+        Converter<List<WishlistItem>, List<WishlistItemDto>> wishlistItemConverter = context -> {
+            List<WishlistItem> source = context.getSource();
+            return source.stream()
+                    .map(item -> modelMapper.map(item, WishlistItemDto.class))
+                    .collect(Collectors.toList());
+        };
 
 
         // Convert Product to ProductDto
@@ -129,6 +136,16 @@ public class ModelMapperConfig {
             }
         };
 
+        // Convert Wishlist to WishlistDto
+        PropertyMap<Wishlist, WishlistDto> wishlistMap = new PropertyMap<>() {
+            @Override
+            protected void configure(){
+                using(wishlistItemConverter)
+                        .map(source.getItems(), destination.getItems());
+                map().setOwnerUsername(source.getOwner().getUsername());
+            }
+        };
+
         modelMapper.addMappings(customerMap);
         modelMapper.addMappings(productMap);
         modelMapper.addMappings(leagueMap);
@@ -136,6 +153,7 @@ public class ModelMapperConfig {
         modelMapper.addMappings(productSummaryMap);
         modelMapper.addMappings(productPicMap);
         modelMapper.addMappings(productDtoMap);
+        modelMapper.addMappings(wishlistMap);
         return modelMapper;
     }
 }

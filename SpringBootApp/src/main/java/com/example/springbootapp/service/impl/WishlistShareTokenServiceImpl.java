@@ -5,11 +5,15 @@ import com.example.springbootapp.data.dao.WishlistDao;
 import com.example.springbootapp.data.dao.WishlistShareTokenDao;
 import com.example.springbootapp.data.dto.WishlistShareTokenDto;
 import com.example.springbootapp.data.entities.Customer;
+import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
+import com.example.springbootapp.data.entities.Wishlist;
 import com.example.springbootapp.data.entities.WishlistAccess;
 import com.example.springbootapp.data.entities.WishlistShareToken;
+import com.example.springbootapp.exceptions.IllegalWishlistVisibility;
 import com.example.springbootapp.exceptions.TokenExpiredException;
 import com.example.springbootapp.service.interfaces.WishlistShareTokenService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,10 +33,14 @@ public class WishlistShareTokenServiceImpl implements WishlistShareTokenService 
 
     @Override  //TODO: proteggere da admin
     public WishlistShareTokenDto createShareToken() {
+        Wishlist wishlist = wishlistDao.findById(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId()).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
+        if(wishlist.getVisibility()== WishlistVisibility.PRIVATE){
+            throw new IllegalWishlistVisibility("Cannot share a private wishlist");
+        }
         WishlistShareToken wishlistShareToken = new WishlistShareToken();
         wishlistShareToken.setToken(UUID.randomUUID().toString());
         wishlistShareToken.setExpirationDate(LocalDateTime.now().plusHours(24));
-        wishlistShareToken.setWishlist(wishlistDao.findById(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId()).orElseThrow(() -> new EntityNotFoundException("Wishlist not found")));
+        wishlistShareToken.setWishlist(wishlist);
         //salvo e returno il map dall'entità al dto WishlistShareTokenDto
         wishlistShareToken= wishlistShareTokenDao.save(wishlistShareToken);
         return modelMapper.map(wishlistShareToken, WishlistShareTokenDto.class);
@@ -40,6 +48,7 @@ public class WishlistShareTokenServiceImpl implements WishlistShareTokenService 
 
 
     @Override    //TODO: proteggere da admin
+    @Transactional
     public String validateShareAccess(String token) {
         WishlistShareToken wishlistShareToken = wishlistShareTokenDao.findByToken(token).orElseThrow(() -> new EntityNotFoundException("Token not found"));
         if(wishlistShareToken.getExpirationDate().isBefore(LocalDateTime.now())) {
@@ -49,6 +58,7 @@ public class WishlistShareTokenServiceImpl implements WishlistShareTokenService 
         wishlistAccess.setGuest((Customer) userDetailsService.getCurrentUser());
         wishlistAccess.setWishlist(wishlistShareToken.getWishlist());
         wishlistAccessDao.save(wishlistAccess);
+        wishlistShareTokenDao.delete(wishlistShareToken);
         return "Access granted";
     }
 }
