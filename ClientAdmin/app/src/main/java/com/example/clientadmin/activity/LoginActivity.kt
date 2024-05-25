@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -54,8 +53,8 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 }
             }*/
 
-            TextFieldString(
-                value = remember { mutableStateOf(adminState.username) },
+            CustomTextField(
+                value = mutableStateOf(adminState.username),
                 text = stringResource(id = R.string.username),
                 keyboardType = KeyboardType.Text
             ){
@@ -63,8 +62,8 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
             }
 
             if(firstName != ""){
-                TextFieldString(
-                    value = remember { mutableStateOf(adminState.firstName) },
+                CustomTextField(
+                    value = mutableStateOf(adminState.firstName),
                     text = stringResource(id = R.string.first_name),
                     keyboardType = KeyboardType.Text
                 ){
@@ -73,8 +72,8 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
             } else loginFormViewModel.updateFirstName(firstName)
 
             if(lastName != ""){
-                TextFieldString(
-                    value = remember { mutableStateOf(adminState.lastName) },
+                CustomTextField(
+                    value = mutableStateOf(adminState.lastName),
                     text = stringResource(id = R.string.last_name),
                     keyboardType = KeyboardType.Text
                 ){
@@ -82,22 +81,22 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 }
             } else loginFormViewModel.updateLastName(lastName)
 
-            TextFieldString( //TODO
-                value = remember { mutableStateOf(adminState.birthdate.toString()) },
+            CustomTextField( //TODO
+                value = mutableStateOf(adminState.birthdate.toString()),
                 text = stringResource(id = R.string.birth_date),
                 keyboardType = KeyboardType.Text
             ){
                 loginFormViewModel.updateBirthdate(LocalDate.now())
             }
 
-            ComboBox(
+            CustomComboBox(
                 options = flowOf(Gender.entries),
-                selectedOption = remember { mutableStateOf(adminState.gender.toString()) }
+                selectedOption = mutableStateOf(adminState.gender.toString())
             ) {
                 loginFormViewModel.updateGender(Gender.valueOf(it))
             }
 
-            ButtonCustom(
+            CustomButton(
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {

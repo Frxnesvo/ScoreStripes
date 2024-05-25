@@ -1,18 +1,15 @@
 package com.example.clientadmin.activity
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -25,14 +22,19 @@ import com.example.clientadmin.viewmodels.CustomerViewModel
 
 @Composable
 fun Users(navHostController: NavHostController, customerViewModel: CustomerViewModel) {
-    val customers = customerViewModel.customerSummaries.collectAsState(initial = emptyList())
+    val customers = customerViewModel.customerSummaries.value
+    val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
+    val usernameToSearch = remember { mutableStateOf("") }
 
     LazyColumn(
         state = rememberLazyListState(),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        modifier = Modifier.padding(horizontal = 10.dp)
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        if(customers.value.isEmpty())
+        item { Title() }
+
+        item { Search(name = stringResource(R.string.list_all_user)) { setBottomSheet(true) } }
+
+        if(customers.isEmpty())
             item{
                 Text(
                     text = stringResource(id = R.string.list_all_user_empty),
@@ -41,14 +43,15 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
                 )
             }
         else {
-            items(customers.value) { customer ->
+            items(customers) {
+                customer ->
                 key(customer.id) {
                     UserItem(customer = customer) { navHostController.navigate("user/${customer.id}") }
                 }
             }
 
             item {
-                TextButton(onClick = { customerViewModel.incrementPage() }) {
+                TextButton(onClick = { customerViewModel.incrementAll() }) {
                     Text(
                         text = stringResource(id = R.string.more),
                         color = colorResource(id = R.color.white50),
@@ -62,4 +65,11 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
             }
         }
     }
+
+    if (isOpenSheet)
+        SearchPanelCostumers(
+            onDismissRequest = { setBottomSheet(false) },
+            setBottomSheet = setBottomSheet,
+            customerViewModel = customerViewModel
+        )
 }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
@@ -45,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -88,7 +90,11 @@ fun Search(name: String, onClick: () -> Unit){
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = name, color = colorResource(id = R.color.black), style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp))
+        Text(
+            text = name,
+            color = colorResource(id = R.color.black),
+            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
+        )
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -169,111 +175,9 @@ fun SubSectionUser(username: String, subSectionName: String) {
     }
 }
 
-@Composable
-fun TextFieldString(value: MutableState<String>, text: String, readOnly: Boolean = false, lines: Int = 1, keyboardType: KeyboardType = KeyboardType.Text, onValueChange: (String) -> Unit){
-    val colors = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = colorResource(id = R.color.white),
-        focusedTextColor = colorResource(id = R.color.black),
-        unfocusedTextColor = colorResource(id = R.color.black50),
-        focusedBorderColor = colorResource(id = R.color.secondary),
-        unfocusedBorderColor = colorResource(id = R.color.white),
-        focusedLabelColor = colorResource(id = R.color.secondary),
-        unfocusedLabelColor = colorResource(id = R.color.black),
-        errorContainerColor = colorResource(id = R.color.secondary50)
-    )
-
-    OutlinedTextField(
-        readOnly = readOnly,
-        value = value.value,
-        onValueChange = onValueChange,
-        label = {
-            Text(
-                text = text,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        },
-        maxLines = lines,
-        singleLine = lines <= 1,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(30.dp),
-        colors = colors,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = keyboardType
-        )
-    )
-}
-
-@Composable
-fun TextFieldDouble(value: MutableState<Double>, text: String, readOnly: Boolean = false, onValueChange: (String) -> Unit){
-    val colors = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = colorResource(id = R.color.white),
-        focusedTextColor = colorResource(id = R.color.black),
-        unfocusedTextColor = colorResource(id = R.color.black50),
-        focusedBorderColor = colorResource(id = R.color.secondary),
-        unfocusedBorderColor = colorResource(id = R.color.white),
-        focusedLabelColor = colorResource(id = R.color.secondary),
-        unfocusedLabelColor = colorResource(id = R.color.black),
-        errorContainerColor = colorResource(id = R.color.secondary50)
-    )
-
-    OutlinedTextField(
-        readOnly = readOnly,
-        value = value.value.toString(),
-        onValueChange = onValueChange,
-        label = {
-            Text(
-                text = text,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        },
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(30.dp),
-        colors = colors,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Decimal
-        )
-    )
-}
-
-@Composable
-fun TextFieldInt(value: MutableState<Int>, text: String, readOnly: Boolean = false, onValueChange: (String) -> Unit){
-    val colors = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = colorResource(id = R.color.white),
-        focusedTextColor = colorResource(id = R.color.black),
-        unfocusedTextColor = colorResource(id = R.color.black50),
-        focusedBorderColor = colorResource(id = R.color.secondary),
-        unfocusedBorderColor = colorResource(id = R.color.white),
-        focusedLabelColor = colorResource(id = R.color.secondary),
-        unfocusedLabelColor = colorResource(id = R.color.black),
-        errorContainerColor = colorResource(id = R.color.secondary50)
-    )
-
-    OutlinedTextField(
-        readOnly = readOnly,
-        value = value.value.toString(),
-        onValueChange = onValueChange,
-        label = {
-            Text(
-                text = text,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        },
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(30.dp),
-        colors = colors,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        )
-    )
-}
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fraction: Float = 1f, readOnly: Boolean = false, onValueChange: (String) -> Unit) {
+fun CustomComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fraction: Float = 1f, readOnly: Boolean = false, onValueChange: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
@@ -281,7 +185,9 @@ fun ComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fra
     ){
         ExposedDropdownMenuBox(
             expanded = expanded,
-            onExpandedChange = { expanded = !expanded},
+            onExpandedChange = {
+                expanded = if (readOnly) false else !expanded
+            }
         ) {
             OutlinedTextField(
                 value = selectedOption.value,
@@ -332,7 +238,7 @@ fun ComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fra
 }
 
 @Composable
-fun ButtonCustom(text: String, background: Int, onClick: () -> Unit) {
+fun CustomButton(text: String, background: Int, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = Modifier
@@ -390,4 +296,50 @@ fun ImagePicker(
             tint = colorResource(id = R.color.secondary)
         )
     }
+}
+
+@Composable
+fun CustomTextField(
+    value: Any,
+    text: String,
+    readOnly: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    lines: Int = 1,
+    leadingIcon: ImageVector? = null,
+    onValueChange: (String) -> Unit
+){
+    val colors = OutlinedTextFieldDefaults.colors(
+        unfocusedContainerColor = colorResource(id = R.color.white),
+        focusedTextColor = colorResource(id = R.color.black),
+        unfocusedTextColor = colorResource(id = R.color.black50),
+        focusedBorderColor = colorResource(id = R.color.secondary),
+        unfocusedBorderColor = colorResource(id = R.color.white),
+        focusedLabelColor = colorResource(id = R.color.secondary),
+        unfocusedLabelColor = colorResource(id = R.color.black),
+        errorContainerColor = colorResource(id = R.color.secondary50)
+    )
+
+    OutlinedTextField(
+        readOnly = readOnly,
+        value = value.toString(),
+        onValueChange = onValueChange,
+        label = {
+            Text(
+                text = text,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        },
+        leadingIcon = leadingIcon?.let {
+            { Icon(imageVector = it, contentDescription = null) }
+        },
+        maxLines = lines,
+        singleLine = lines <= 1,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(30.dp),
+        colors = colors,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = keyboardType
+        )
+    )
 }

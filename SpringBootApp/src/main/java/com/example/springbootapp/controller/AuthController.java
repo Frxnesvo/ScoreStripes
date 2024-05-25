@@ -1,7 +1,5 @@
 package com.example.springbootapp.controller;
 
-import com.example.springbootapp.data.dao.UserDao;
-import com.example.springbootapp.data.entities.Admin;
 import com.example.springbootapp.data.entities.User;
 import com.example.springbootapp.security.GoogleTokenUtils;
 import com.example.springbootapp.security.RateLimited;

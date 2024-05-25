@@ -1,54 +1,62 @@
 package com.example.clientadmin.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.clientadmin.model.ProductSummary
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductDto
 import com.example.clientadmin.service.impl.ProductApiServiceImpl
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class ProductViewModel: ViewModel() {
     private val productApiService = ProductApiServiceImpl()
 
-    private val page = MutableStateFlow(0)
+    private var nameToSearch = ""
+    private var page = 0
 
     private val _productSummaries = MutableStateFlow<List<ProductSummary>>(emptyList())
     val productSummaries: StateFlow<List<ProductSummary>> = _productSummaries
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            page.collect { currentPage ->
-                fetchProductSummaries(currentPage, 2)
-            }
-        }
-    }
+    private val sizePage = 2
 
     fun incrementPage() {
-        page.value += 1
+        page += 1
+        loadMoreProductSummaries()
     }
 
-    private fun fetchProductSummaries(page: Int, size: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = productApiService.getProductsSummary(page, size).awaitResponse()
-                if (response.isSuccessful) {
-                    response.body()?.let { _productSummaries.value += it }
-                } else {
-                    println("Error fetching product summaries: ${response.message()}")
-                }
-            } catch (e: Exception) {
-                println("Exception fetching product summaries: ${e.message}")
+    fun setNameToSearch(name: String) {
+        nameToSearch = name
+        page = 0
+        _productSummaries.value = emptyList()
+        loadMoreProductSummaries()
+    }
+
+    private fun loadMoreProductSummaries() {
+        viewModelScope.launch {
+            getProductSummaries(page).collect { newSummaries ->
+                _productSummaries.value += newSummaries
             }
         }
     }
+
+    private fun getProductSummaries(page: Int): Flow<List<ProductSummary>> = flow {
+        try {
+            val response = productApiService
+                .getProductsSummary(page, sizePage)
+                .awaitResponse()
+
+            if (response.isSuccessful) {
+                response.body()?.let { emit(it) }
+            } else {
+                println("Error fetching product summaries: ${response.message()}")
+            }
+        } catch (e: Exception) {
+            println("Exception fetching product summaries: ${e.message}")
+        }
+    }.flowOn(Dispatchers.IO)
 
     fun getProduct(id: String): Flow<ProductDto> = flow {
         try {

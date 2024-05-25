@@ -41,10 +41,9 @@ fun AddPanel(
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            ButtonCustom(text = "CREATE PRODUCT", background = R.color.secondary) {
+            CustomButton(text = "CREATE PRODUCT", background = R.color.secondary) {
                 if(sheetState.isVisible) {
                     scope.launch {
                         sheetState.hide()
@@ -54,7 +53,7 @@ fun AddPanel(
                 }
             }
 
-            ButtonCustom(text = "CREATE LEAGUE", background = R.color.transparent) {
+            CustomButton(text = "CREATE LEAGUE", background = R.color.transparent) {
                 if(sheetState.isVisible) {
                     scope.launch {
                         sheetState.hide()
@@ -64,7 +63,7 @@ fun AddPanel(
                 }
             }
 
-            ButtonCustom(text = "CREATE TEAM", background = R.color.transparent) {
+            CustomButton(text = "CREATE TEAM", background = R.color.transparent) {
                 if(sheetState.isVisible) {
                     scope.launch {
                         sheetState.hide()
@@ -96,19 +95,15 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
         ImagePicker(
             imageUri = leagueState.image,
             size = 150.dp
-        ){
-            uri ->
-            if(uri != null) leagueFormViewModel.updateImage(uri)
-        }
+        ){ if(it != null) leagueFormViewModel.updateImage(it) }
 
-        TextFieldString(
+        CustomTextField(
             value = remember { mutableStateOf(leagueState.name) },
-            text = "NAME LEAGUE",
-            keyboardType = KeyboardType.Text,
-            onValueChange = {  }
-        )
+            text = stringResource(id = R.string.league),
+            keyboardType = KeyboardType.Text
+        ){ leagueFormViewModel.updateName(it) }
 
-        ButtonCustom(text = stringResource(id = R.string.create), background = R.color.secondary) {
+        CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
             leagueViewModel.addLeague(
                 context,
                 leagueState.name,
@@ -137,33 +132,26 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
         ImagePicker(
             imageUri = clubState.image,
             size = 150.dp
-        ){
-            uri ->
-            if(uri != null) clubFormViewModel.updateImage(uri)
-        }
+        ){if(it != null) clubFormViewModel.updateImage(it) }
 
-        TextFieldString(
-            value = remember { mutableStateOf(clubState.name) },
+        CustomTextField(
+            value = clubState.name,
             text = "NAME CLUB",
             keyboardType = KeyboardType.Text,
-        ){
-            name -> clubFormViewModel.updateNameClub(name)
-        }
+        ){ clubFormViewModel.updateNameClub(it) }
 
 
-        ComboBox(
+        CustomComboBox(
             options = leagueViewModel.leaguesNames ,
             selectedOption = remember {
                 if (leagueViewModel.leaguesNames.value.isNotEmpty())
                     mutableStateOf(leagueViewModel.leaguesNames.value[0])
                 else
                     mutableStateOf("")
-            })
-        {
-            league -> clubFormViewModel.updateLeague(league)
-        }
+            }
+        ) { clubFormViewModel.updateLeague(it) }
 
-        ButtonCustom(text = stringResource(id = R.string.create), background = R.color.secondary) {
+        CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
             clubViewModel.addClub(
                 context,
                 clubState.name,

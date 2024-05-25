@@ -54,7 +54,7 @@ fun IndexPage(navController : NavHostController) {
             ) {
                 val context = LocalContext.current
 
-                ButtonCustom(
+                CustomButton(
                     background = R.color.secondary50,
                     text = stringResource(id = R.string.sign_in)
                 ) {
