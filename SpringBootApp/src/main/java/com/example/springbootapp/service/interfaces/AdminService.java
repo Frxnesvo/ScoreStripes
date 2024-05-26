@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface AdminService {
 
     Optional<User> findByEmail(String email);
+    void save(User user);
 }

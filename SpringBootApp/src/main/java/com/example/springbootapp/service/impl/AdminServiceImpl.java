@@ -19,4 +19,7 @@ public class AdminServiceImpl implements AdminService {
     public Optional<User> findByEmail(String email) {
         return userDao.findByEmail(email);
     }
+
+    @Override
+    public void save(User user) { userDao.save(user); }
 }
