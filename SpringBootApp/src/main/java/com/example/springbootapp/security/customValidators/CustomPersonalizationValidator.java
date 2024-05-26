@@ -12,7 +12,7 @@ public class CustomPersonalizationValidator implements ConstraintValidator<Valid
     @Override
     public boolean isValid(AddToCartRequestDto addToCartRequestDto, ConstraintValidatorContext context){
         if(addToCartRequestDto.getCategory() == ProductCategory.SHORTS && addToCartRequestDto.getPersonalization().getPlayerName() != null){
-            throw new RequestValidationException("Gli shorts non possono avere personalizzazioni con il nome del giocatore");
+            throw new RequestValidationException("Shorts cannot be personalized with player name");
         }
         return true;
     }

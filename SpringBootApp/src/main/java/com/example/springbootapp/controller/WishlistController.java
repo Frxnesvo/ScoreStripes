@@ -21,18 +21,18 @@ public class WishlistController {
     private final WishlistService wishlistService;
     private final WishlistShareTokenService wishlistShareTokenService;
 
-    @PatchMapping("/visibility")
+    @PatchMapping("/change-visibility")
     public ResponseEntity<String> changeVisibility(@Valid @RequestBody WishlistVisibilityDto visibilityDto){
         wishlistService.changeVisibility(visibilityDto);
         return ResponseEntity.ok("Visibility changed");
     }
 
-    @PostMapping("/createShareToken")
+    @PostMapping("/create-shareToken")
     public ResponseEntity<WishlistShareTokenDto> createShareToken(){
         return ResponseEntity.ok(wishlistShareTokenService.createShareToken());
     }
 
-    @PostMapping("/validateShareAccess")
+    @PostMapping("/validate-shareAccess")
     public ResponseEntity<String> validateShareAccess(@RequestBody String token){  //TODO: Ha senso inglobare il token in un Dto e validarlo per evitare query?
         return ResponseEntity.ok(wishlistShareTokenService.validateShareAccess(token));
     }

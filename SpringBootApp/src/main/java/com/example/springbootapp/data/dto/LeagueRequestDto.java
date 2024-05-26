@@ -1,5 +1,6 @@
 package com.example.springbootapp.data.dto;
 
+import com.example.springbootapp.security.customValidators.ValidImageExtension;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,5 +15,6 @@ public class LeagueRequestDto {
     @Size(min = 3, max = 25)
     private String name;
     @NotNull
+    @ValidImageExtension
     MultipartFile pic;
 }
