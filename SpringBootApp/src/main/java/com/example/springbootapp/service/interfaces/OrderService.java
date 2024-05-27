@@ -11,4 +11,6 @@ public interface OrderService {
     Long countNewOrders();
 
     String createOrderFromCart(OrderInfosRequestDto orderInfos);
+
+    String validateOrder(String sessionId);
 }

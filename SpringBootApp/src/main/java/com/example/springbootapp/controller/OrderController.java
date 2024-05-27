@@ -27,4 +27,9 @@ public class OrderController {
         public ResponseEntity<Map<String,String>> createOrder(@RequestBody OrderInfosRequestDto orderInfos){
             return ResponseEntity.ok(Map.of("url", orderService.createOrderFromCart(orderInfos)));
     }
+
+    @PostMapping("/validate-transaction")
+    public ResponseEntity<String> validateTransaction(@RequestParam String sessionId) {
+        return ResponseEntity.ok(orderService.validateOrder(sessionId));
+    }
 }

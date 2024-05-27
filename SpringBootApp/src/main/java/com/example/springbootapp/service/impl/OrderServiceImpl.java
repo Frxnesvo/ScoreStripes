@@ -7,8 +7,12 @@ import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Embdeddables.OrderInformations;
 import com.example.springbootapp.data.entities.Enums.OrderStatus;
 import com.example.springbootapp.exceptions.RequestValidationException;
+import com.example.springbootapp.exceptions.StripeSessionException;
 import com.example.springbootapp.handler.PaymentHandler;
 import com.example.springbootapp.service.interfaces.OrderService;
+import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -63,16 +67,41 @@ public class OrderServiceImpl implements OrderService {
         order.setCustomer(loggedCustomer);
         order.setDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
+        order= orderDao.save(order);  //salvo l'ordine per avere l'id
+        Order finalOrder = order;  //finalOrder è usata solo per la lambda (non può essere modificata)
         List<OrderItem> items= cart.getCartItems().stream()
                 .map(cartItem -> modelMapper.map(cartItem, OrderItem.class))
-                .peek(orderItem -> orderItem.setOrder(order))
+                .peek(orderItem -> orderItem.setOrder(finalOrder))
                 .collect(Collectors.toList());
         order.setItems(items);
-        orderDao.save(order);
+        order= orderDao.save(order);  //salvo l'ordine con gli item
 
-        //TODO: gestire il pagamento
+        try{
+            return paymentHandler.startCheckoutProcess(order);
+        }
+        catch (Exception e) {
+            throw new StripeSessionException(e.getMessage());
+        }
+    }
 
-
+    public String validateOrder (String sessionId) {        //TODO: forse voglio ritornare un dto
+        try {
+            Session session = Session.retrieve(sessionId);
+            String orderId = session.getMetadata().get("orderId");
+            Order order = orderDao.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found"));
+            if (session.getPaymentStatus().equals("paid")) {
+                order.setStatus(OrderStatus.COMPLETED);
+                orderDao.save(order);
+                return "Order paid";
+            }
+            else {
+                order.setStatus(OrderStatus.CANCELLED);
+                orderDao.save(order);
+                return "Order cancelled";
+            }
+        } catch (StripeException e) {
+            throw new StripeSessionException(e.getMessage());
+        }
     }
 
 
