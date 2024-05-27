@@ -29,40 +29,46 @@ class GoogleAuth(private val context: Context){
             .build()
     }
 
-    suspend fun getGoogleCredential() : GoogleUserDto?{
+    suspend fun getGoogleCredential() : String?{
         val googleIdOption = buildGoogleIdOption()
         val request = buildRequest(googleIdOption)
 
         try {
             val result = credentialManager.getCredential(context, request)
-            return handleSignIn(result)
+            if(result.credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+                try {
+                    return GoogleIdTokenCredential.createFrom(result.credential.data).idToken
+                }catch (e: GoogleIdTokenParsingException) {
+                    Log.e("INVALID GOOGLE ID TOKEN", "Received an invalid google id token response", e)
+                }
+            }
 
         } catch (e: GetCredentialException) {
             Log.e("Authentication", "GetCredentialException", e)
         }
-
         return null
     }
 
-    private fun handleSignIn(result: GetCredentialResponse) : GoogleUserDto? {
-        //Implementazione per gestire il risultato del login
-        val credential = result.credential
+//    private fun handleSignIn(result: GetCredentialResponse) : GoogleUserDto? {
+//        //Implementazione per gestire il risultato del login
+//        val credential = result.credential
+//
+//        if(credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+//            try {
+//                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+//                val idToken = googleIdTokenCredential.idToken
 
-        if(credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
-            try {
-                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                val idToken = googleIdTokenCredential.idToken
-                //TODO: salvare l'id token con accountManager
-                val firstName = googleIdTokenCredential.givenName
-                val lastName = googleIdTokenCredential.familyName
-                val email = googleIdTokenCredential.id
 
-                return GoogleUserDto(firstName, lastName, email)
-            }catch (e: GoogleIdTokenParsingException) {
-                Log.e("INVALID GOOGLE ID TOKEN", "Received an invalid google id token response", e)
-            }
-        }
-
-        return null
-    }
+//                val firstName = googleIdTokenCredential.givenName
+//                val lastName = googleIdTokenCredential.familyName
+//                val email = googleIdTokenCredential.id
+//
+//                return GoogleUserDto(firstName, lastName, email)
+//            }catch (e: GoogleIdTokenParsingException) {
+//                Log.e("INVALID GOOGLE ID TOKEN", "Received an invalid google id token response", e)
+//            }
+//        }
+//
+//        return null
+//    }
 }
