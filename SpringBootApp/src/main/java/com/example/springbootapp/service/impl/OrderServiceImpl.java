@@ -86,10 +86,9 @@ public class OrderServiceImpl implements OrderService {
 
     public String validateOrder (String sessionId) {        //TODO: forse voglio ritornare un dto
         try {
-            Session session = Session.retrieve(sessionId);
-            String orderId = session.getMetadata().get("orderId");
+            String orderId = paymentHandler.getOrderIdFromSession(sessionId);
             Order order = orderDao.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found"));
-            if (session.getPaymentStatus().equals("paid")) {
+            if (paymentHandler.checkTransactionStatus(sessionId)) {
                 order.setStatus(OrderStatus.COMPLETED);
                 orderDao.save(order);
                 return "Order paid";
