@@ -2,6 +2,7 @@ package com.example.springbootapp.data.dto;
 
 import com.example.springbootapp.data.entities.Enums.Gender;
 import com.example.springbootapp.data.entities.Enums.ProductCategory;
+import com.example.springbootapp.security.customValidators.ValidImageExtension;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -39,8 +40,10 @@ public class ProductCreateRequestDto {
     private ProductCategory category;
 
     @NotNull
+    @ValidImageExtension
     private MultipartFile picPrincipal;
 
+    @ValidImageExtension
     private MultipartFile pic2;
 
     @NotBlank

@@ -70,6 +70,12 @@ public class ModelMapperConfig {
                     .collect(Collectors.toList());
         };
 
+        // Convert ProductPic to String
+        Converter<ProductPic, String> productPicUrlConverter = context -> {
+            String picUrl = context.getSource().getPicUrl();
+            return awsS3Service.generatePresignedUrl(picUrl);
+        };
+
 
         // Convert Product to ProductDto
         PropertyMap<Product, BasicProductDto> productMap = new PropertyMap<>() {
@@ -124,6 +130,7 @@ public class ModelMapperConfig {
                         .map(source.getPicUrl(), destination.getPicUrl());
             }
         };
+
         // Convert Product to ProductDto
         PropertyMap<Product, ProductDto> productDtoMap = new PropertyMap<>() {
             @Override
@@ -146,6 +153,13 @@ public class ModelMapperConfig {
             }
         };
 
+        PropertyMap<CartItem, OrderItem> cartItemMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setPrice(source.getPrice());
+            }
+        };
+
         modelMapper.addMappings(customerMap);
         modelMapper.addMappings(productMap);
         modelMapper.addMappings(leagueMap);
@@ -154,6 +168,10 @@ public class ModelMapperConfig {
         modelMapper.addMappings(productPicMap);
         modelMapper.addMappings(productDtoMap);
         modelMapper.addMappings(wishlistMap);
+        modelMapper.addMappings(cartItemMap);
+
+        modelMapper.addConverter(productPicUrlConverter);
+
         return modelMapper;
     }
 }

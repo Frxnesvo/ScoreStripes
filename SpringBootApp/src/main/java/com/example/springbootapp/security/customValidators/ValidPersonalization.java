@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPersonalization {
-    String message() default "Invalid personalization";
+    String message() default "Invalid personalization";   //messaggio inutile perchè lancio un'eccezione personalizzata
 
     Class<?>[] groups() default {};
 

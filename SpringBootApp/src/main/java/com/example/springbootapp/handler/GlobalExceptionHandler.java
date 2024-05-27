@@ -3,6 +3,7 @@ package com.example.springbootapp.handler;
 import com.example.springbootapp.data.dto.ErrorDto;
 import com.example.springbootapp.exceptions.RateLimitExceededException;
 import com.example.springbootapp.exceptions.RequestValidationException;
+import com.example.springbootapp.exceptions.StripeSessionException;
 import com.example.springbootapp.exceptions.TokenExpiredException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,6 +51,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TokenExpiredException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDto onTokenExpiredException(WebRequest req, TokenExpiredException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
+    @ExceptionHandler(StripeSessionException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto onStripeSessionException(WebRequest req, StripeSessionException e) {
         return createErrorRespose(req, e.getMessage());
     }
 
