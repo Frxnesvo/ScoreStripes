@@ -1,18 +1,23 @@
 package com.example.springbootapp.controller;
 
+import com.example.springbootapp.data.dto.AdminCreateDto;
 import com.example.springbootapp.data.entities.Admin;
+import com.example.springbootapp.data.entities.Enums.Role;
 import com.example.springbootapp.data.entities.User;
-import com.example.springbootapp.security.GoogleTokenUtils;
+import com.example.springbootapp.security.CustomUserDetails;
+import com.example.springbootapp.security.JwtUtils;
 import com.example.springbootapp.security.RateLimited;
+import com.example.springbootapp.security.SecurityConstants;
 import com.example.springbootapp.service.impl.AdminServiceImpl;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Optional;
 
 @RateLimited(permitsPerSecond = 10)
@@ -24,59 +29,39 @@ public class AuthController {
     private final AdminServiceImpl adminService;
 
     @GetMapping("/admin-login")
-    public ResponseEntity<?> checkAdminLogin(@RequestHeader("Authorization") String authorizationHeader){
+    public ResponseEntity<?> checkAdminLogin(@AuthenticationPrincipal OAuth2User oauth2User, HttpServletResponse response){
 
-        String bearer = "Bearer ";
-        if (authorizationHeader == null || !authorizationHeader.startsWith(bearer))
-            return ResponseEntity.status(400).body("Invalid authorization header");
-
-        String tokenString = authorizationHeader.substring(bearer.length());
-
-        try{
-            GoogleIdToken idToken = GoogleTokenUtils.verifyIdToken(tokenString);
-
-            if(idToken != null){
-                String email = GoogleTokenUtils.getEmailFromToken(idToken);
-                Optional<User> admin = adminService.findByEmail(email);
-                if(admin.isPresent()){
-                    //TODO creazione access token
-                    //TODO controllare che il ruolo si admin
-                    return ResponseEntity.ok(admin.get());
-                }
-                return ResponseEntity.notFound().build();
+        String email = oauth2User.getAttributes().get("email").toString();
+        Optional<User> user = adminService.findByEmail(email);
+        if(user.isPresent()){
+            User admin = user.get();
+            CustomUserDetails userDetails = new CustomUserDetails(admin);
+            if(admin.getRole().equals(Role.ADMIN)){
+                //TODO gestire le authorities, in quanto createAccessToken richiede List<String>
+                //String accessToken = JwtUtils.createAccessToken(userDetails.getID(), "", userDetails.getAuthorities());
+                //response.setHeader(HttpHeaders.AUTHORIZATION, SecurityConstants.BEARER_TOKEN_PREFIX + accessToken);
+                return ResponseEntity.ok(admin);
             }
-            return ResponseEntity.status(401).body("Invalid token");
+            return ResponseEntity.status(403).body("Access denied");
 
-        } catch (GeneralSecurityException | IOException e) {
-            return ResponseEntity.status(500).body("error during the token processing");
         }
+        return ResponseEntity.notFound().build();
     }
 
 
     @PostMapping("/admin-register")
     @ResponseStatus(HttpStatus.CREATED)
-    //todo mettere il dto
-    public ResponseEntity<String> adminRegister(@RequestHeader("Authorization") String authorizationHeader, @RequestBody User user){
-        String bearer = "Bearer ";
-        if (authorizationHeader == null || !authorizationHeader.startsWith(bearer))
-            return ResponseEntity.status(400).body("Invalid authorization header");
+    //TODO mettere il dto
+    public ResponseEntity<?> adminRegister(@AuthenticationPrincipal OAuth2User oauth2User, @RequestBody AdminCreateDto userDto) {
 
-        String tokenString = authorizationHeader.substring(bearer.length());
+        User user = adminService.createAdmin(oauth2User, userDto);
+        //TODO gestire immagine profilo
+        CustomUserDetails userDetails = new CustomUserDetails(user);
 
-        try{
-            GoogleIdToken idToken = GoogleTokenUtils.verifyIdToken(tokenString);
+        //String accessToken = JwtUtils.createAccessToken(userDetails.getID(), "", userDetails.getAuthorities());
+        //response.setHeader(HttpHeaders.AUTHORIZATION, SecurityConstants.BEARER_TOKEN_PREFIX + accessToken);
 
-            if(idToken != null) {
-                if (user != null) {
-                    adminService.save(user);    //todo, da fare tutti i controlli per i campi non null
-                    return ResponseEntity.ok("Successfully registered");
-                }
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("user data is missing");
-            }
-            return ResponseEntity.status(401).body("Invalid token");
-
-        } catch (GeneralSecurityException | IOException e) {
-            return ResponseEntity.status(500).body("error during the token processing");
-        }
+        adminService.save(user);
+        return ResponseEntity.ok(user);
     }
 }

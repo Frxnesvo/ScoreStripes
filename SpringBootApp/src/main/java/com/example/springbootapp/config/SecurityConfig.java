@@ -27,13 +27,17 @@ public class SecurityConfig{
 
     @Bean   //TODO: TUTTO DA FARE
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()));
+        //http.csrf(AbstractHttpConfigurer::disable)
+        //        .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(HttpMethod.GET, "/api/v1/auth/**").permitAll()
-                .anyRequest().fullyAuthenticated());
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .anyRequest().permitAll()
+                );
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
+
+        http.oauth2Login(Customizer.withDefaults());
+        http.oauth2ResourceServer(AbstractHttpConfigurer::disable);     //disabilita la configurazione del resource server OAuth2
         //http.oauth2ResourceServer(oauth2 -> oauth2
         //        .jwt(Customizer.withDefaults()));
 

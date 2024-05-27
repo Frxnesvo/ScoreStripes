@@ -104,7 +104,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-
     private OrderDto convertToDto(Order order) {
         //initialize the lazy loading fields
         Hibernate.initialize(order.getItems());
