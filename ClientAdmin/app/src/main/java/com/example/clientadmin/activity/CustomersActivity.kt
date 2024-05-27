@@ -24,7 +24,6 @@ import com.example.clientadmin.viewmodels.CustomerViewModel
 fun Users(navHostController: NavHostController, customerViewModel: CustomerViewModel) {
     val customers = customerViewModel.customerSummaries.value
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val usernameToSearch = remember { mutableStateOf("") }
 
     LazyColumn(
         state = rememberLazyListState(),
@@ -46,7 +45,7 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
             items(customers) {
                 customer ->
                 key(customer.id) {
-                    UserItem(customer = customer) { navHostController.navigate("user/${customer.id}") }
+                    UserItem(customer = customer) { navHostController.navigate("user/${customer.toQueryString()}") }
                 }
             }
 

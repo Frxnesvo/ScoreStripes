@@ -48,6 +48,7 @@ import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
+import com.example.clientadmin.viewmodels.HomeViewModel
 
 enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
@@ -183,14 +184,14 @@ fun NavigationScaffold(
         composable(
             route = "home"
         ){
-            Home(selectedScreen = selectedScreen, navHostController = navHostController)
+            Home(selectedScreen = selectedScreen, navHostController = navHostController, homeViewModel = HomeViewModel())
         }
 
         //USERS
         composable(
             route = "users"
         ){
-            Users(navHostController = navHostController, customerViewModel =  customerViewModel)
+            Users(navHostController = navHostController, customerViewModel = customerViewModel)
         }
         composable(
             route = "user/{costumer}",
