@@ -20,7 +20,6 @@ import com.example.clientadmin.R
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import kotlinx.coroutines.flow.flowOf
-import java.time.LocalDate
 
 @Composable
 fun Login(firstName: String, lastName: String, navController : NavHostController, loginFormViewModel: LoginFormViewModel) {
@@ -81,12 +80,12 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 }
             } else loginFormViewModel.updateLastName(lastName)
 
-            CustomTextField( //TODO
-                value = mutableStateOf(adminState.birthdate.toString()),
-                text = stringResource(id = R.string.birth_date),
-                keyboardType = KeyboardType.Text
+
+            CustomDatePicker(
+                date = mutableStateOf(adminState.birthdate),
+                text = stringResource(id = R.string.birth_date)
             ){
-                loginFormViewModel.updateBirthdate(LocalDate.now())
+                loginFormViewModel.updateBirthdate(it)
             }
 
             CustomComboBox(

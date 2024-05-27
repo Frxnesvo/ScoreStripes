@@ -6,7 +6,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.InputStream
 
 object ConverterUri {
@@ -33,7 +33,8 @@ object ConverterUri {
         val inputStream: InputStream? = contentResolver.openInputStream(uri)
         inputStream?.use { stream ->
             val fileBytes = stream.readBytes()
-            val requestBody = RequestBody.create(mimeType?.toMediaTypeOrNull(), fileBytes)
+            val requestBody =
+                fileBytes.toRequestBody(mimeType?.toMediaTypeOrNull(), 0)
             return MultipartBody.Part.createFormData(fieldName, fileName, requestBody)
         }
         return null

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,42 +44,46 @@ fun Details(customer: CustomerProfileDto){
             .wrapContentHeight()
     ){
         Text(
-            text = "Details",
+            text = stringResource(id = R.string.details),
             color = colorResource(id = R.color.black),
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal, letterSpacing = 5.sp)
         )
 
         CustomTextField(
             value = customer.firstName,
-            text = "FIRST NAME",
+            text = stringResource(id = R.string.first_name),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.lastName,
-            text = "LAST NAME",
+            text = stringResource(id = R.string.last_name),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.email,
-            text = "EMAIL",
+            text = stringResource(id = R.string.email),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.favoriteClub,
-            text = "FAVORITE CLUB",
+            text = stringResource(id = R.string.favorite_club),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.gender,
-            text = "GENDER",
+            text = stringResource(id = R.string.gender),
             readOnly = true
         ){}
 
-        //TODO inserire la data di nascita
+        CustomTextField(
+            value = customer.birthDate,
+            text = "GENDER",
+            readOnly = true
+        ){}
     }
 }
 

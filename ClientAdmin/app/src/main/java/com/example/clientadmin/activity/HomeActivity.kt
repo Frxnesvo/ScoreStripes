@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,15 +32,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.dto.ProductDto
+import com.example.clientadmin.viewmodels.CustomerViewModel
+import com.example.clientadmin.viewmodels.HomeViewModel
 
 @Composable
-fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostController) {
-    //TODO prendere i dati dal server
-    val numNewOrders = 200
-    val numProductOutOfStoke = 120
-    val numNewUser = 88
+fun Home(selectedScreen: MutableState<Screen>, homeViewModel: HomeViewModel, navHostController: NavHostController) {
+    val numNewOrders = homeViewModel.countNewOrders().collectAsState(initial = 0).value
+    val numProductOutOfStoke = homeViewModel.countVariantsOutOfStock().collectAsState(initial = 0).value
+    val numNewUser = homeViewModel.countNewAccounts().collectAsState(initial = 0).value
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),
@@ -52,7 +53,7 @@ fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostControl
 
         Stats(
             numNewOrders = numNewOrders,
-            numProductOutOfStoke = numProductOutOfStoke,
+            numProductOutOfStoke = numProductOutOfStoke.toLong(),
             numNewUser = numNewUser
         )
 
@@ -87,7 +88,7 @@ fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostControl
 }
 
 @Composable
-fun Stats(numNewOrders: Int, numProductOutOfStoke: Int, numNewUser: Int){
+fun Stats(numNewOrders: Long, numProductOutOfStoke: Long, numNewUser: Long){
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -100,28 +101,22 @@ fun Stats(numNewOrders: Int, numProductOutOfStoke: Int, numNewUser: Int){
         Stat(
             text = stringResource(id = R.string.list_new_orders),
             value = numNewOrders
-        ){
-            TODO()
-        }
+        ){}
 
         Stat(
             text = stringResource(id = R.string.list_out_of_stock),
             value = numProductOutOfStoke
-        ){
-            TODO()
-        }
+        ){}
 
         Stat(
             text = stringResource(id = R.string.list_new_users),
             value = numNewUser
-        ){
-            TODO()
-        }
+        ){}
     }
 }
 
 @Composable
-fun Stat(text: String, value: Int, onClick: () -> Unit){
+fun Stat(text: String, value: Long, onClick: () -> Unit){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),

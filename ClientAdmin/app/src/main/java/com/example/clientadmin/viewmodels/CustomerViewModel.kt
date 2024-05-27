@@ -15,7 +15,7 @@ import retrofit2.awaitResponse
 class CustomerViewModel : ViewModel() {
     private val customerApiService = CustomerApiServiceImpl()
 
-    private var usernameToSearch = ""
+    private var filter: Map<String, String?> = mapOf()
     private var page = 0
 
     private val _customerSummaries = MutableStateFlow<List<CustomerSummary>>(emptyList())
@@ -28,8 +28,8 @@ class CustomerViewModel : ViewModel() {
         loadMoreCustomerSummaries()
     }
 
-    fun setUsernameToSearch(username: String) {
-        usernameToSearch = username
+    fun setFilters(filter: Map<String, String?>) {
+        this.filter = filter
         page = 0
         _customerSummaries.value = emptyList()
         loadMoreCustomerSummaries()
@@ -49,7 +49,7 @@ class CustomerViewModel : ViewModel() {
                 .getCustomersSummary(
                     page = page,
                     size = sizePage,
-                    username = if (usernameToSearch == "") null else usernameToSearch
+                    filters = filter
                 )
                 .awaitResponse()
 
@@ -77,11 +77,8 @@ class CustomerViewModel : ViewModel() {
     fun getCustomerAddresses(id: String): Flow<List<AddressDto>> = flow {
         try {
             val response = customerApiService.getCustomerAddresses(id).awaitResponse()
-            if (response.isSuccessful) {
-                response.body()?.let { emit(it) }
-            } else {
-                println("Error fetching customer addresses: ${response.message()}")
-            }
+            if (response.isSuccessful) response.body()?.let { emit(it) }
+            else println("Error fetching customer addresses: ${response.message()}")
         } catch (e: Exception) {
             println("Exception fetching customer addresses: ${e.message}")
         }
@@ -90,11 +87,8 @@ class CustomerViewModel : ViewModel() {
     fun getCustomerOrders(id: String): Flow<List<OrderDto>> = flow {
         try {
             val response = customerApiService.getCustomerOrders(id).awaitResponse()
-            if (response.isSuccessful) {
-                response.body()?.let { emit(it) }
-            } else {
-                println("Error fetching customer orders: ${response.message()}")
-            }
+            if (response.isSuccessful) response.body()?.let { emit(it) }
+            else println("Error fetching customer orders: ${response.message()}")
         } catch (e: Exception) {
             println("Exception fetching customer orders: ${e.message}")
         }

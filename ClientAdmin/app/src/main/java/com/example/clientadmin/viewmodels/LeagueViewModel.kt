@@ -1,12 +1,9 @@
 package com.example.clientadmin.viewmodels
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.League
-import com.example.clientadmin.model.dto.LeagueRequestDto
-import com.example.clientadmin.service.ConverterUri
 import com.example.clientadmin.service.impl.LeagueApiServiceImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,7 +54,6 @@ class LeagueViewModel: ViewModel() {
     }
 
     private fun handleApiError(response: String) {
-        //TODO
         println("Errore nella chiamata API: $response")
     }
 }

@@ -42,8 +42,10 @@
     <string name="last_name">LAST NAME</string>
     <string name="email">EMAIL</string>
     <string name="birth_date">BIRTH DAY</string>
+    <string name="gender">GENDER</string>
     <string name="league">NAME LEAGUE</string>
     <string name="club">NAME CLUB</string>
+    <string name="favorite_club">FAVORITE CLUB</string>
 
     <string name="create">CREATE</string>
     <string name="update">UPDATE</string>

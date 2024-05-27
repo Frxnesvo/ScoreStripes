@@ -3,7 +3,9 @@ package com.example.clientadmin.service
 import com.example.clientadmin.service.interfaces.ClubApiService
 import com.example.clientadmin.service.interfaces.CustomerApiService
 import com.example.clientadmin.service.interfaces.LeagueApiService
+import com.example.clientadmin.service.interfaces.OrdersApiService
 import com.example.clientadmin.service.interfaces.ProductApiService
+import com.example.clientadmin.service.interfaces.ProductVariantApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -23,6 +25,8 @@ object RetrofitHandler {
     private val clubApi = retrofit.create(ClubApiService::class.java)
     private  val customerApi = retrofit.create(CustomerApiService::class.java)
     private val productApi = retrofit.create(ProductApiService::class.java)
+    private val ordersApi = retrofit.create(OrdersApiService::class.java)
+    private val productVariantApi = retrofit.create(ProductVariantApiService::class.java)
 
     fun getLeagueApi(): LeagueApiService {
         return leagueApi
@@ -35,5 +39,11 @@ object RetrofitHandler {
     }
     fun getProductApi(): ProductApiService {
         return productApi
+    }
+    fun getOrdersApi(): OrdersApiService {
+        return ordersApi
+    }
+    fun getProductVariantApi() : ProductVariantApiService {
+        return productVariantApi
     }
 }

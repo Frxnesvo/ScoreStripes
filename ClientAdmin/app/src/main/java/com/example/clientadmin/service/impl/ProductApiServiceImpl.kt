@@ -8,8 +8,8 @@ import com.example.clientadmin.service.interfaces.ProductApiService
 import retrofit2.Call
 
 class ProductApiServiceImpl: ProductApiService {
-    override fun getProductsSummary(page: Int, size: Int): Call<List<ProductSummary>> {
-        return RetrofitHandler.getProductApi().getProductsSummary(page, size)
+    override fun getProductsSummary(page: Int, size: Int, filters: Map<String, String?>): Call<List<ProductSummary>> {
+        return RetrofitHandler.getProductApi().getProductsSummary(page, size, filters)
     }
 
     override fun getProductById(id: String): Call<ProductDto> {

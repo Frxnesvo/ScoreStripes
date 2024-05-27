@@ -21,7 +21,11 @@ class CustomerApiServiceImpl : CustomerApiService {
         return RetrofitHandler.getCustomerApi().getCustomerOrders(id)
     }
 
-    override fun getCustomersSummary(page: Int, size: Int, username: String?): Call<List<CustomerSummary>> {
-        return RetrofitHandler.getCustomerApi().getCustomersSummary(page, size, username)
+    override fun countNewAccounts(): Call<Long> {
+        return RetrofitHandler.getCustomerApi().countNewAccounts()
+    }
+
+    override fun getCustomersSummary(page: Int, size: Int, filters: Map<String, String?>): Call<List<CustomerSummary>> {
+        return RetrofitHandler.getCustomerApi().getCustomersSummary(page, size, filters)
     }
 }

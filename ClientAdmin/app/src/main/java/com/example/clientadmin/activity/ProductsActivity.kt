@@ -27,7 +27,6 @@ import com.example.clientadmin.viewmodels.ProductViewModel
 fun Products(navHostController: NavHostController, productViewModel: ProductViewModel, leagueViewModel: LeagueViewModel) {
     val products = productViewModel.productSummaries.value
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val usernameToSearch = remember { mutableStateOf("") }
 
     LazyColumn(
         state = rememberLazyListState(),
