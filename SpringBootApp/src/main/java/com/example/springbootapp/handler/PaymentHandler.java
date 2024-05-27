@@ -6,6 +6,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +25,13 @@ public class PaymentHandler {
     @Value("${stripe.apikey}")
     private String stripeApiKey;
 
+    @PostConstruct
+    public void init() {
+        Stripe.apiKey = stripeApiKey;
+    }
+
 
     public String startCheckoutProcess(Order order) throws StripeException {
-        Stripe.apiKey = stripeApiKey;
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
         for (OrderItem item : order.getItems()) {
             lineItems.add(createLineItem(item));
@@ -44,10 +49,14 @@ public class PaymentHandler {
         return session.getUrl();
     }
 
-    public Boolean checkPaymentStatus(String sessionId) throws StripeException {
-        Stripe.apiKey = stripeApiKey;
+    public Boolean checkTransactionStatus(String sessionId) throws StripeException {
         Session session = Session.retrieve(sessionId);
         return session.getPaymentStatus().equals("paid");
+    }
+
+    public String getOrderIdFromSession(String sessionId) throws StripeException {
+        Session session = Session.retrieve(sessionId);
+        return session.getMetadata().get("orderId");
     }
 
 
