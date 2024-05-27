@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
@@ -59,6 +59,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientadmin.R
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import java.time.LocalDate
 
 
 @Composable
@@ -141,7 +143,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
         Box{
             Image(
                 painter = painter,
-                contentDescription = "image description",
+                contentDescription = null,
                 contentScale = ContentScale.Crop
             )
             Box(modifier = Modifier
@@ -342,4 +344,29 @@ fun CustomTextField(
             keyboardType = keyboardType
         )
     )
+}
+
+@Composable
+fun CustomDatePicker(
+    date: MutableState<LocalDate> = mutableStateOf(LocalDate.now()),
+    text: String,
+    onValueChange: (LocalDate) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ){
+        Text(text = text)
+        CustomComboBox(
+            options = flowOf((1..31).toList()),
+            selectedOption = mutableStateOf(date.value.dayOfMonth.toString())
+        ) { onValueChange(LocalDate.of(date.value.year, date.value.month, it.toInt())) }
+        CustomComboBox(
+            options = flowOf(listOf(1..12).toList()),
+            selectedOption = mutableStateOf(date.value.monthValue.toString())
+        ) { onValueChange(LocalDate.of(date.value.year, it.toInt(), date.value.dayOfMonth)) }
+        CustomComboBox(
+            options = flowOf((1900..LocalDate.now().year).toList() ),
+            selectedOption = mutableStateOf(date.value.year.toString())
+        ) { onValueChange(LocalDate.of(it.toInt(), date.value.month, date.value.dayOfMonth)) }
+    }
 }

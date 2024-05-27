@@ -21,36 +21,37 @@ fun Settings(admin: Admin){
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ){
         CustomTextField(
-            value = remember { mutableStateOf(admin.username) },
+            value = admin.username,
             text = stringResource(id = R.string.username),
             readOnly = true
         ) { }
 
         CustomTextField(
-            value = remember { mutableStateOf(admin.firstName) },
+            value = admin.firstName,
             text = stringResource(id = R.string.first_name),
             readOnly = true
         ) { }
 
         CustomTextField(
-            value = remember { mutableStateOf(admin.lastName) },
+            value = admin.lastName,
             text = stringResource(id = R.string.last_name)
         ) { }
 
         CustomTextField(
-            value = remember { mutableStateOf(admin.email) },
+            value = admin.email,
             text = stringResource(id = R.string.email)
         ) { }
 
         CustomTextField(
-            value = remember { mutableStateOf("${admin.birthDate}") }, //TODO vedere come gestire le date, probabilmente con un date picker
+            value = "${admin.birthDate}",
             text = stringResource(id = R.string.birth_date),
             readOnly = true
         ) { }
 
-        CustomComboBox(
-            options = flowOf(listOf(admin.gender)),
-            selectedOption = remember { mutableStateOf("${admin.gender}") }
+        CustomTextField(
+            value = "${admin.birthDate.dayOfWeek} ${admin.birthDate.month} ${admin.birthDate.year}",
+            text = stringResource(id = R.string.gender),
+            readOnly = true
         ) { }
     }
 }

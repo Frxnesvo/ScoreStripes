@@ -41,6 +41,7 @@ fun AddPanel(
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomButton(text = "CREATE PRODUCT", background = R.color.secondary) {

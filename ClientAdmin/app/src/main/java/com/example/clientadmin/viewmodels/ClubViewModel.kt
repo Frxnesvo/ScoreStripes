@@ -53,7 +53,6 @@ class ClubViewModel : ViewModel() {
     }
 
     private fun handleApiError(response: String) {
-        //TODO
         println("Errore nella chiamata API: $response")
     }
 }

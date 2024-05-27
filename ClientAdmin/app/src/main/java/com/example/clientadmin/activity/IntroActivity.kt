@@ -33,7 +33,7 @@ fun IndexPage(navController : NavHostController) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.collection),
-            contentDescription = "collection image",
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
                 .blur(10.dp)

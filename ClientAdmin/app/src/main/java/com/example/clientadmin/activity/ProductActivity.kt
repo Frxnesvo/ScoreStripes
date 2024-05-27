@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,11 +28,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.R
+import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductSummary
 import com.example.clientadmin.model.dto.ProductDto
 
 @Composable
-fun ProductItemRow(product: ProductDto, onClick: () -> Unit) {
+fun ProductItemRow(productDto: ProductDto, onClick: () -> Unit) {
+    val product = Product.fromDto(productDto)
     Column(
         modifier = Modifier
             .width(150.dp)
@@ -44,15 +45,14 @@ fun ProductItemRow(product: ProductDto, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painterResource(R.drawable.arsenal), // TODO prendere da product
-            contentDescription = "img",
+            painter = rememberAsyncImagePainter(product.pic1),
+            contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .height(120.dp)
-                .width(120.dp)
+                .size(120.dp)
                 .clip(RoundedCornerShape(10.dp))
         )
-        Text(text = product.clubName,
+        Text(text = product.club,
             color = colorResource(id = R.color.black),
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
         )
@@ -102,11 +102,10 @@ fun ProductItemColumn(product: ProductSummary, onClick: () -> Unit) {
         ) {
             Image(
                 painter = rememberAsyncImagePainter(product.getPic()),
-                contentDescription = "img",
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(80.dp)
-                    .width(80.dp)
+                    .size(80.dp)
                     .clip(RoundedCornerShape(10.dp))
             )
             Row(
@@ -129,8 +128,7 @@ fun ProductItemColumn(product: ProductSummary, onClick: () -> Unit) {
 fun ColumnAvailability(size: Size, availability: Int? = 0){
     val style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
     val modifier = Modifier
-        .height(25.dp)
-        .width(25.dp)
+        .size(25.dp)
         .background(Color.White, RoundedCornerShape(12.5.dp))
 
     Column(

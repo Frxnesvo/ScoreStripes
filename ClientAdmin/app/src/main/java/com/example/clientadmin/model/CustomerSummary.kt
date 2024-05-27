@@ -9,7 +9,7 @@ class CustomerSummary (
 ){
     private var pic = Uri.EMPTY
     init{
-        //TODO prendere immagine dal bucket
+        TODO( "get a pic from bucket")
     }
 
     fun getPic(): Uri{

@@ -1,11 +1,11 @@
 package com.example.clientadmin.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.clientadmin.model.ProductSummary
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductDto
 import com.example.clientadmin.service.impl.ProductApiServiceImpl
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -14,7 +14,7 @@ import retrofit2.awaitResponse
 class ProductViewModel: ViewModel() {
     private val productApiService = ProductApiServiceImpl()
 
-    private var nameToSearch = ""
+    private var filter: Map<String, String?> = mapOf()
     private var page = 0
 
     private val _productSummaries = MutableStateFlow<List<ProductSummary>>(emptyList())
@@ -27,15 +27,15 @@ class ProductViewModel: ViewModel() {
         loadMoreProductSummaries()
     }
 
-    fun setNameToSearch(name: String) {
-        nameToSearch = name
+    fun setFilter(filter: Map<String, String?>) {
+        this.filter = filter
         page = 0
         _productSummaries.value = emptyList()
         loadMoreProductSummaries()
     }
 
     private fun loadMoreProductSummaries() {
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             getProductSummaries(page).collect { newSummaries ->
                 _productSummaries.value += newSummaries
             }
@@ -45,7 +45,7 @@ class ProductViewModel: ViewModel() {
     private fun getProductSummaries(page: Int): Flow<List<ProductSummary>> = flow {
         try {
             val response = productApiService
-                .getProductsSummary(page, sizePage)
+                .getProductsSummary(page, sizePage, filter)
                 .awaitResponse()
 
             if (response.isSuccessful) {

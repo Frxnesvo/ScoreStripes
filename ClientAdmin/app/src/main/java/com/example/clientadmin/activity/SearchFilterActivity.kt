@@ -2,6 +2,7 @@ package com.example.clientadmin.activity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,6 +13,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.clientadmin.model.enumerator.Size
@@ -37,6 +39,7 @@ fun SearchPanelCostumers(
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
@@ -53,9 +56,7 @@ fun SearchPanelCostumers(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        filterBuilder.build()["name"]?.let {
-                            customerViewModel.setUsernameToSearch(it)
-                        }
+                        customerViewModel.setFilters(filterBuilder.build())
                     }
                 }
             }
@@ -78,6 +79,7 @@ fun SearchPanelProducts(
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
@@ -109,7 +111,7 @@ fun SearchPanelProducts(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        TODO("fare la chiamata all'api")
+                        productViewModel.setFilter(filterBuilder.build())
                     }
                 }
             }

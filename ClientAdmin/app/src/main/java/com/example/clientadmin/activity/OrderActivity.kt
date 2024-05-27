@@ -7,9 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,13 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.clientadmin.R
+import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.dto.OrderDto
 import com.example.clientadmin.model.dto.OrderItemDto
 
@@ -92,38 +92,43 @@ fun ProductOrdersList(orderItems: List<OrderItemDto>, navHostController: NavHost
         items(orderItems) {
             orderItem ->
             key(orderItem.id) {
-                ProductOrderItem(orderItem = orderItem, navHostController = navHostController)
+                ProductOrderItem(orderItem = orderItem){
+                    navHostController.navigate("product/${orderItem.product.product.id}")
+                }
             }
         }
     }
 }
 
 @Composable
-fun ProductOrderItem(orderItem: OrderItemDto, navHostController: NavHostController) {
+fun ProductOrderItem(orderItem: OrderItemDto, onClick: () -> Unit) {
+    val product = Product.fromDto(orderItem.product.product)
     Column(
         modifier = Modifier
-            .clickable { navHostController.navigate("product/${orderItem.product.id}") },
+            .clickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(R.drawable.arsenal), // TODO prendere da product
-            contentDescription = "img",
+            painter = rememberAsyncImagePainter(product.pic1),
+            contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .height(60.dp)
-                .width(60.dp)
+                .size(60.dp)
                 .clip(RoundedCornerShape(10.dp))
         )
-        Text(text = orderItem.product.product.name,
+        Text(
+            text = product.name,
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Light)
         )
-        Text(text = "QUANTITY: ${orderItem.quantity}",
+        Text(
+            text = "QUANTITY: ${orderItem.quantity}",
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Light)
         )
-        Text(text = "SIZE: ${orderItem.product.size}",
+        Text(
+            text = "SIZE: ${orderItem.product.size}",
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Light)
         )
