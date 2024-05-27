@@ -11,5 +11,5 @@ import java.time.LocalDate;
 public class WishlistItemDto {
     private String id;
     private LocalDate dateAdded;
-    private Product product;
+    private ProductDto product;
 }

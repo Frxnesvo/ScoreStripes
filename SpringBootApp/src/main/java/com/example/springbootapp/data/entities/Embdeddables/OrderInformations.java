@@ -9,9 +9,9 @@ public class OrderInformations {
     private String street;
     private String city;
     private String state;
-    private String zip_code;
-    private String civic_number;
-    private String customer_email;
-    private String customer_firstName;
-    private String customer_lastName;
+    private String zipCode;
+    private String civicNumber;
+    private String customerEmail;
+    private String customerFirstName;
+    private String customerLastName;
 }

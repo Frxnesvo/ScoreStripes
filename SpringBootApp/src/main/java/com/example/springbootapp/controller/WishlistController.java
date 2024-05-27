@@ -48,7 +48,7 @@ public class WishlistController {
         return ResponseEntity.ok(wishlistService.getSharedWithMeWishlists());
     }
 
-    @GetMapping("/public")
+    @GetMapping("/public")    //TODO: Farla paginata
     public ResponseEntity<List<WishlistDto>> getPublicWishlists(){
         return ResponseEntity.ok(wishlistService.getPublicWishlists());
     }

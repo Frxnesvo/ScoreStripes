@@ -38,16 +38,6 @@ public class OrderItem {
     @JoinColumn(name = "product_id", nullable = false)
     private ProductWithVariant product;
 
-    private void calculatePrice() {
-        this.price = (product.getProduct().getPrice() + personalization.getPrice()) * quantity;
-    }
-
-    public double getPrice() {
-        if (this.price == 0.0) {
-            calculatePrice();
-        }
-        return this.price;
-    }
 
     @Override
     public boolean equals(Object o) {

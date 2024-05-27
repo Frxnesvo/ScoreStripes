@@ -146,6 +146,13 @@ public class ModelMapperConfig {
             }
         };
 
+        PropertyMap<CartItem, OrderItem> cartItemMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setPrice(source.getPrice());
+            }
+        };
+
         modelMapper.addMappings(customerMap);
         modelMapper.addMappings(productMap);
         modelMapper.addMappings(leagueMap);
@@ -154,6 +161,7 @@ public class ModelMapperConfig {
         modelMapper.addMappings(productPicMap);
         modelMapper.addMappings(productDtoMap);
         modelMapper.addMappings(wishlistMap);
+        modelMapper.addMappings(cartItemMap);
         return modelMapper;
     }
 }

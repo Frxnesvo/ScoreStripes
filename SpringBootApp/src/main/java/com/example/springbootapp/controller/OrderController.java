@@ -1,13 +1,13 @@
 package com.example.springbootapp.controller;
 
+import com.example.springbootapp.data.dto.OrderInfosRequestDto;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RateLimited(permitsPerSecond = 10)
 @RestController
@@ -21,5 +21,10 @@ public class OrderController {
     @GetMapping("/new-orders") // conta il numero di ordini creati nelle ultime 24 ore
     public ResponseEntity<Long> countNewOrders(){
         return ResponseEntity.ok(orderService.countNewOrders());
+    }
+
+    @PostMapping("/create-cart-order")
+        public ResponseEntity<Map<String,String>> createOrder(@RequestBody OrderInfosRequestDto orderInfos){
+            return ResponseEntity.ok(Map.of("url", orderService.createOrderFromCart(orderInfos)));
     }
 }

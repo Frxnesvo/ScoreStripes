@@ -58,7 +58,7 @@ public class CartItem {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    double getPrice(){
+    public Double getPrice(){
         return (product.getProduct().getPrice() + personalization.getPrice()) * quantity;
     }
 
