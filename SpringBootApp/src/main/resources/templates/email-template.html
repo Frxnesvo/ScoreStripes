@@ -3,58 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
+    <style type="text/css">
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
-        *{
+        body {
             font-family: "Lexend", sans-serif;
-            font-optical-sizing: auto;
             letter-spacing: 1px;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            color: #000;
-        }
-
-        body {
-            height: 100vh;
-            width: 100%;
             background-color: #f8f8f8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #000;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: none;
         }
-
-        .container {
+        table {
+            border-spacing: 0;
             width: 100%;
+        }
+        .container {
             max-width: 600px;
+            margin: 0 auto;
             background-color: #fff;
             border-radius: 30px;
             padding: 20px;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 50px;
         }
-        .container > h1 {
+        .header {
             text-transform: uppercase;
             font-size: 30px;
             font-weight: 300;
         }
-        .container > h1 > span {
+        .header span {
             font-weight: 500;
             color: #E31515;
         }
-        .container > p {
+        .footer {
             text-transform: uppercase;
             font-size: 12px;
             font-weight: 300;
             color: #00000080;
         }
-
         .content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            text-align: left;
             margin: 0 auto;
             max-width: 400px;
         }
@@ -68,22 +57,26 @@
             color: #00000080;
             font-weight: 400;
         }
-
-
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1><span>Score</span>Stripes</h1>
-
-        <div class="content">
-            <h2>Ordine confermato!</h2>
-            <p th:text="'Ciao ' + ${name} + ', il tuo ordine #' + ${orderId} + ' effettuato in data ' + ${orderDate} + ', dal costo di '+ ${totalCost} + ' EUR, è stato confermato con successo.' ">
-                Ciao [Nome], il tuo ordine #[OrderId] effettuato in data [OrderDate], dal costo di [TotalCost] EUR, è stato confermato con successo.
-            </p>
-        </div>
-        
-        <p>&copy; 2024 ScoreStripes. All rights reserved.</p>
-    </div>
+<table role="presentation" class="container">
+    <tr>
+        <td>
+            <div class="header">
+                <span>Score</span>Stripes
+            </div>
+            <div class="content">
+                <h2>Ordine confermato!</h2>
+                <p th:text="'Ciao ' + ${name} + ', il tuo ordine #' + ${orderId} + ' effettuato in data ' + ${orderDate} + ', dal costo di '+ ${totalCost} + ' EUR, è stato confermato con successo.' ">
+                    Ciao [Nome], il tuo ordine #[OrderId] effettuato in data [OrderDate], dal costo di [TotalCost] EUR, è stato confermato con successo.
+                </p>
+            </div>
+            <div class="footer">
+                &copy; 2024 ScoreStripes. All rights reserved.
+            </div>
+        </td>
+    </tr>
+</table>
 </body>
 </html>
