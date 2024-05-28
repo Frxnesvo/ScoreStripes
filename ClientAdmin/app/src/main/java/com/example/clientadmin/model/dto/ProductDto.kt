@@ -1,6 +1,5 @@
 package com.example.clientadmin.model.dto
 
-import android.net.Uri
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 

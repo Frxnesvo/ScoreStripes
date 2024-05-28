@@ -31,6 +31,7 @@ import com.example.clientadmin.R
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.dto.OrderDto
 import com.example.clientadmin.model.dto.OrderItemDto
+import com.example.clientadmin.model.enumerator.OrderStatus
 
 
 @Composable
@@ -55,7 +56,7 @@ fun OrderItem(order: OrderDto, navHostController: NavHostController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "ORDER", color = colorResource(id = R.color.black), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = order.id, style = style12) //TODO serve qualcosa di più sicuo
+                Text(text = order.id.substring(0,6), style = style12)
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -70,6 +71,21 @@ fun OrderItem(order: OrderDto, navHostController: NavHostController) {
         ) {
             Text(text = "STREET: ", style = style8)
             Text(text = "${order.resilientInfos.street}, ${order.resilientInfos.civicNumber}", color = colorResource(id = R.color.black), style = style12)
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "STATUS: ", style = style8)
+            Text(text = "${order.status}",
+                color = colorResource(
+                    id = when(order.status){
+                        OrderStatus.CANCELLED -> R.color.red
+                        OrderStatus.PENDING -> R.color.yellow
+                        OrderStatus.COMPLETED -> R.color.green
+                    }),
+                style = style12
+            )
         }
 
         Row(
