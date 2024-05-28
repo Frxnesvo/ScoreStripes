@@ -9,13 +9,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Admin
 import com.example.clientadmin.ui.theme.ClientAdminTheme
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
@@ -39,20 +37,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewApp(){
-    Navigation(navController = rememberNavController())
-}
-
-
 @Composable
 fun Navigation(navController: NavHostController){
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
         navController = navController,
-        startDestination = "scaffold"
+        startDestination = "index"
     ){
         val loginViewModel = LoginViewModel()
         //INDEX

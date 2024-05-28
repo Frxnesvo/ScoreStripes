@@ -16,34 +16,8 @@
         android:theme="@style/Theme.ClientAdmin"
         tools:targetApi="31" >
         <activity
-            android:name=".GeneralComposablesActivity"
-            android:exported="false"
-            android:label="@string/title_activity_general_composables"
-            android:theme="@style/Theme.ClientAdmin" />
-        <activity
-            android:name=".ProductsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_products"
-            android:theme="@style/Theme.ClientAdmin" />
-        <activity
-            android:name=".UserActivity"
-            android:exported="false"
-            android:label="@string/title_activity_user"
-            android:theme="@style/Theme.ClientAdmin" />
-        <activity
-            android:name=".UsersActivity"
-            android:exported="false"
-            android:label="@string/title_activity_users"
-            android:theme="@style/Theme.ClientAdmin" />
-        <activity
-            android:name=".ProductActivity"
-            android:exported="false"
-            android:label="@string/title_activity_protuct"
-            android:theme="@style/Theme.ClientAdmin" />
-        <activity
             android:name=".activity.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.ClientAdmin" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

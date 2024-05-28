@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -58,7 +59,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             }
 
             CustomTextField(
-                value = mutableStateOf(adminState.username),
+                value = remember { mutableStateOf(adminState.username) },
                 text = stringResource(id = R.string.username),
                 keyboardType = KeyboardType.Text
             ){
@@ -66,7 +67,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             }
 
             CustomTextField(
-                value = mutableStateOf(adminState.firstName),
+                value = remember { mutableStateOf(adminState.firstName) },
                 text = stringResource(id = R.string.first_name),
                 keyboardType = KeyboardType.Text
             ){
@@ -74,7 +75,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             }
 
             CustomTextField(
-                value = mutableStateOf(adminState.lastName),
+                value = remember { mutableStateOf(adminState.lastName) },
                 text = stringResource(id = R.string.last_name),
                 keyboardType = KeyboardType.Text
             ){
@@ -82,7 +83,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             }
 
             CustomDatePicker(
-                date = mutableStateOf(adminState.birthdate),
+                date = remember { mutableStateOf(adminState.birthdate) },
                 text = stringResource(id = R.string.birth_date)
             ){
                 loginFormViewModel.updateBirthdate(it)
@@ -90,7 +91,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
 
             CustomComboBox(
                 options = flowOf(Gender.entries),
-                selectedOption = mutableStateOf(adminState.gender.toString())
+                selectedOption = remember { mutableStateOf(adminState.gender.toString()) }
             ) {
                 loginFormViewModel.updateGender(Gender.valueOf(it))
             }
