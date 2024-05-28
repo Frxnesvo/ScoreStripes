@@ -163,7 +163,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
     }
 }
 
-@Composable
+/*@Composable
 fun SubSectionUser(username: String, subSectionName: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -175,7 +175,7 @@ fun SubSectionUser(username: String, subSectionName: String) {
         Text(text = subSectionName, color = colorResource(id = R.color.black), style = style)
         Text(text = username, color = colorResource(id = R.color.secondary), style = style)
     }
-}
+}*/
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -302,7 +302,7 @@ fun ImagePicker(
 
 @Composable
 fun CustomTextField(
-    value: Any,
+    value: MutableState<Any>,
     text: String,
     readOnly: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -323,7 +323,7 @@ fun CustomTextField(
 
     OutlinedTextField(
         readOnly = readOnly,
-        value = value.toString(),
+        value = value.value.toString(),
         onValueChange = onValueChange,
         label = {
             Text(
@@ -358,15 +358,15 @@ fun CustomDatePicker(
         Text(text = text)
         CustomComboBox(
             options = flowOf((1..31).toList()),
-            selectedOption = mutableStateOf(date.value.dayOfMonth.toString())
+            selectedOption = remember { mutableStateOf(date.value.dayOfMonth.toString()) }
         ) { onValueChange(LocalDate.of(date.value.year, date.value.month, it.toInt())) }
         CustomComboBox(
             options = flowOf(listOf(1..12).toList()),
-            selectedOption = mutableStateOf(date.value.monthValue.toString())
+            selectedOption = remember { mutableStateOf(date.value.monthValue.toString()) }
         ) { onValueChange(LocalDate.of(date.value.year, it.toInt(), date.value.dayOfMonth)) }
         CustomComboBox(
             options = flowOf((1900..LocalDate.now().year).toList() ),
-            selectedOption = mutableStateOf(date.value.year.toString())
+            selectedOption = remember { mutableStateOf(date.value.year.toString()) }
         ) { onValueChange(LocalDate.of(it.toInt(), date.value.month, date.value.dayOfMonth)) }
     }
 }
