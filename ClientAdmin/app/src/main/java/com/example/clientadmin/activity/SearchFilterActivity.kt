@@ -9,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,7 +42,7 @@ fun SearchPanelCostumers(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = "",
+                value = remember { mutableStateOf("") },
                 text = stringResource(id = R.string.search_for_username),
                 leadingIcon = Icons.Outlined.Search
             ) { filterBuilder.setName(it) }
@@ -83,24 +82,24 @@ fun SearchPanelProducts(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = "",
+                value = remember { mutableStateOf("") },
                 text = stringResource(id = R.string.search_for_username),
                 leadingIcon = Icons.Outlined.Search
             ) { filterBuilder.setName(it) }
 
             CustomComboBox(
-                options = flowOf(leagueViewModel.leaguesNames.value),
-                selectedOption = mutableStateOf("")
+                options = leagueViewModel.leaguesNames,
+                selectedOption = remember { mutableStateOf("") }
             ) { filterBuilder.setLeague(it) }
 
             CustomComboBox(
                 options = flowOf(ProductCategory.entries),
-                selectedOption = mutableStateOf("")
+                selectedOption = remember { mutableStateOf("") }
             ) { filterBuilder.setCategory(it) }
 
             CustomComboBox(
                 options = flowOf(Size.entries),
-                selectedOption = mutableStateOf("")
+                selectedOption = remember { mutableStateOf("") }
             ) { filterBuilder.setSize(it) }
 
             CustomButton(

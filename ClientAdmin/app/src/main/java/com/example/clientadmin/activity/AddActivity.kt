@@ -117,7 +117,6 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 @Composable
 fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController) {
     val clubState by clubFormViewModel.clubState.collectAsState()
-
     val context = LocalContext.current
 
     Column(
@@ -133,10 +132,10 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
         ImagePicker(
             imageUri = clubState.image,
             size = 150.dp
-        ){if(it != null) clubFormViewModel.updateImage(it) }
+        ){ if(it != null) clubFormViewModel.updateImage(it) }
 
         CustomTextField(
-            value = clubState.name,
+            value = remember { mutableStateOf(clubState.name) },
             text = "NAME CLUB",
             keyboardType = KeyboardType.Text,
         ){ clubFormViewModel.updateNameClub(it) }

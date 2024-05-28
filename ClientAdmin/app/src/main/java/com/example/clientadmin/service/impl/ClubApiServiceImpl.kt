@@ -8,9 +8,9 @@ import retrofit2.Call
 
 class ClubApiServiceImpl: ClubApiService {
     override fun createClub(clubRequestDto: ClubRequestDto): Call<ClubDto> {
-        return RetrofitHandler.getClubApi().createClub(clubRequestDto)
+        return RetrofitHandler.clubApi.createClub(clubRequestDto)
     }
     override fun getClubNames(): Call<List<String>> {
-        return RetrofitHandler.getClubApi().getClubNames()
+        return RetrofitHandler.clubApi.getClubNames()
     }
 }

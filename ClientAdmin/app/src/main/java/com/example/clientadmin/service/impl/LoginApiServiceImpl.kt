@@ -8,9 +8,9 @@ import retrofit2.Call
 
 class LoginApiServiceImpl: LoginApiService {
     override fun checkAdminLogin(token: String): Call<AdminDto> {
-        return RetrofitHandler.getLoginApi().checkAdminLogin(token)
+        return RetrofitHandler.loginApi.checkAdminLogin(token)
     }
     override fun adminRegister(adminCreateRequestDto: AdminCreateRequestDto): Call<AdminDto> {
-        return RetrofitHandler.getLoginApi().adminRegister(adminCreateRequestDto)
+        return RetrofitHandler.loginApi.adminRegister(adminCreateRequestDto)
     }
 }

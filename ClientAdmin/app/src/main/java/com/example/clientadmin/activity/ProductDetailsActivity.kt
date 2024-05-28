@@ -96,7 +96,7 @@ fun ProductDetails(
             ){ productFormViewModel.updateCategory(ProductCategory.valueOf(it)) }
 
             CustomTextField(
-                value = productState.brand,
+                value = remember { mutableStateOf(productState.brand) },
                 text = stringResource(id = R.string.brand)
             ){ productFormViewModel.updateBrand(it) }
 
@@ -122,7 +122,7 @@ fun ProductDetails(
             productState.variants.forEach{
                 variant ->
                 CustomTextField(
-                    value = variant.value,
+                    value = remember {mutableStateOf(variant.value) },
                     text = variant.key.name
                 ) { productFormViewModel.updateVariant(variant.key, it.toInt()) }
             }

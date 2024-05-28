@@ -6,6 +6,6 @@ import retrofit2.Call
 
 class OrdersApiServiceImpl: OrdersApiService {
     override fun countNewOrders(): Call<Long> {
-        return RetrofitHandler.getOrdersApi().countNewOrders()
+        return RetrofitHandler.ordersApi.countNewOrders()
     }
 }
