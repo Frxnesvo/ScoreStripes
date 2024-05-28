@@ -1,5 +1,6 @@
 package com.example.springbootapp.service.impl;
 
+import com.example.springbootapp.data.dto.EmailInfosDto;
 import com.example.springbootapp.data.dto.OrderDto;
 import com.example.springbootapp.data.dao.OrderDao;
 import com.example.springbootapp.data.dto.OrderInfosRequestDto;
@@ -9,9 +10,11 @@ import com.example.springbootapp.data.entities.Enums.OrderStatus;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.exceptions.StripeSessionException;
 import com.example.springbootapp.handler.PaymentHandler;
+import com.example.springbootapp.service.interfaces.EmailService;
 import com.example.springbootapp.service.interfaces.OrderService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private final ModelMapper modelMapper;
     private final UserDetailsServiceImpl userDetailsService;
     private final PaymentHandler paymentHandler;
+    private final EmailService emailService;
 
 
     @Override
@@ -91,6 +95,13 @@ public class OrderServiceImpl implements OrderService {
             if (paymentHandler.checkTransactionStatus(sessionId)) {
                 order.setStatus(OrderStatus.COMPLETED);
                 orderDao.save(order);
+                EmailInfosDto emailInfos = new EmailInfosDto();          //TODO: maybe potrei usare il modelMapper per fare il mapping
+                emailInfos.setTo(order.getResilientInfos().getCustomerEmail());
+                emailInfos.setName(order.getResilientInfos().getCustomerFirstName());
+                emailInfos.setOrderId(order.getId());
+                emailInfos.setTotalCost(order.getTotalPrice());
+                emailInfos.setOrderDate(order.getDate().toString());
+                emailService.sendOrderConfirmationEmail(emailInfos);
                 return "Order paid";
             }
             else {
@@ -100,6 +111,8 @@ public class OrderServiceImpl implements OrderService {
             }
         } catch (StripeException e) {
             throw new StripeSessionException(e.getMessage());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);    //TODO: farla custom
         }
     }
 
