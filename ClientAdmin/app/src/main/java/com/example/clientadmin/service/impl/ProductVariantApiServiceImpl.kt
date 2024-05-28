@@ -6,6 +6,6 @@ import retrofit2.Call
 
 class ProductVariantApiServiceImpl: ProductVariantApiService {
     override fun countVariantsOutOfStock(): Call<Int> {
-        return RetrofitHandler.getProductVariantApi().countVariantsOutOfStock()
+        return RetrofitHandler.productVariantApi.countVariantsOutOfStock()
     }
 }

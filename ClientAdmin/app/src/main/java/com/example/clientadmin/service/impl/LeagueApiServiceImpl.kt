@@ -8,9 +8,9 @@ import retrofit2.Call
 
 class LeagueApiServiceImpl: LeagueApiService {
     override fun createLeague(leagueRequestDto: LeagueRequestDto): Call<LeagueDto> {
-        return RetrofitHandler.getLeagueApi().createLeague(leagueRequestDto)
+        return RetrofitHandler.leagueApi.createLeague(leagueRequestDto)
     }
     override fun getLeagueNames(): Call<List<String>> {
-        return RetrofitHandler.getLeagueApi().getLeagueNames()
+        return RetrofitHandler.leagueApi.getLeagueNames()
     }
 }
