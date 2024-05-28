@@ -17,7 +17,7 @@ class CustomerSummary (
     }
 
     fun toQueryString(): String {
-        return "$id,$username,$pic"
+        return "$id,$username,$picUrl"
     }
     companion object{
         fun fromQueryString(queryString: String): CustomerSummary {

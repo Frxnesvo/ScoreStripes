@@ -1,8 +1,11 @@
 package com.example.clientadmin.model
 
+import android.content.Context
 import android.net.Uri
-import androidx.compose.ui.graphics.painter.Painter
+import com.example.clientadmin.model.dto.AdminCreateRequestDto
+import com.example.clientadmin.model.dto.AdminDto
 import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.service.ConverterUri
 import java.time.LocalDate
 
 class Admin(
@@ -12,10 +15,9 @@ class Admin(
     val email: String,
     val birthDate: LocalDate,
     val gender: Gender,
-    val pic: Uri = Uri.EMPTY
+    val pic: Uri
 ) {
     init {
-        TODO( "get a pic from bucket")
         require(validateUsername(username)) { "Invalid username: must be between 3 and 20 characters" }
         require(validateFirstName(firstName)) { "Invalid first name: must be between 3 and 20 characters" }
         require(validateLastName(lastName)) { "Invalid last name: must be between 3 and 20 characters" }
@@ -23,8 +25,12 @@ class Admin(
         require(validateBirthdate(birthDate)) { "Invalid birthdate: must be before the current date" }
     }
 
-    fun toQueryString(): String {
-        return "$username,$firstName,$lastName,$email,$birthDate,$gender"
+    fun request(context: Context): AdminCreateRequestDto {
+        try {
+            val multipart = ConverterUri.convert(context, pic, "pic")
+            return AdminCreateRequestDto(username, firstName, lastName, birthDate, multipart!!, gender)
+        }
+        catch (e: Exception) { throw e }
     }
 
     companion object {
@@ -44,16 +50,17 @@ class Admin(
         fun validateBirthdate(birthdate: LocalDate): Boolean {
             return birthdate.isBefore(LocalDate.now())
         }
-        fun fromQueryString(query: String): Admin {
-            val parts = query.split(",")
+
+        fun fromDto(adminDto: AdminDto): Admin{
+            //TODO settare l'immagine
             return Admin(
-                username = parts[0],
-                firstName = parts[1],
-                lastName = parts[2],
-                email = parts[3],
-                birthDate = LocalDate.parse(parts[4]),
-                gender = Gender.valueOf(parts[5])
-                //picUrl = parts[6]
+                username = adminDto.username,
+                firstName = adminDto.firstName,
+                lastName = adminDto.lastName,
+                email = adminDto.email,
+                birthDate = adminDto.birthDate,
+                gender = adminDto.gender,
+                pic = Uri.EMPTY
             )
         }
     }

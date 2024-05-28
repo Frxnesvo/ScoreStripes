@@ -25,13 +25,10 @@ class LeagueViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = leagueApiService.getLeagueNames().awaitResponse()
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        _leaguesNames.value = it
-                    }
-                } else {
+                if (response.isSuccessful)
+                    response.body()?.let { _leaguesNames.value = it }
+                else
                     handleApiError(response.message())
-                }
             } catch (e: Exception) {
                 handleApiError(e.message ?: "Unknown error")
             }

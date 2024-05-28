@@ -49,11 +49,12 @@ import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
 import com.example.clientadmin.viewmodels.HomeViewModel
+import com.example.clientadmin.viewmodels.LoginViewModel
 
 enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
 @Composable
-fun Scaffold(admin: Admin) {
+fun Scaffold(loginViewModel: LoginViewModel, token: String) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
@@ -68,15 +69,18 @@ fun Scaffold(admin: Admin) {
                 end = 10.dp
             )
         ){
-            NavigationScaffold(
-                navHostController = navController,
-                customerViewModel = CustomerViewModel(),
-                productViewModel = ProductViewModel(),
-                clubViewModel = ClubViewModel(),
-                leagueViewModel = LeagueViewModel(),
-                selectedScreen = selectedScreen,
-                admin = admin
-            )
+            loginViewModel.user.value?.let {
+                admin ->
+                NavigationScaffold(
+                    navHostController = navController,
+                    customerViewModel = CustomerViewModel(),
+                    productViewModel = ProductViewModel(),
+                    clubViewModel = ClubViewModel(),
+                    leagueViewModel = LeagueViewModel(),
+                    selectedScreen = selectedScreen,
+                    admin = admin
+                )
+            }
         }
     }
 }

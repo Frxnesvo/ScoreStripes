@@ -1,5 +1,6 @@
 package com.example.clientadmin.viewmodels.formViewModel
 
+import android.net.Uri
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.enumerator.Gender
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ data class AdminState(
     val username : String = "",
     val birthdate : LocalDate = LocalDate.now(),
     val gender : Gender = Gender.entries[0],
-    //val profilePic : Uri = Uri.EMPTY,
+    val profilePic : Uri = Uri.EMPTY,
 
     //error
     val isUsernameError: Boolean = !Admin.validateUsername(username),
@@ -25,15 +26,9 @@ data class AdminState(
     val isBirthdateError: Boolean = !Admin.validateBirthdate(birthdate)
 )
 
-class LoginFormViewModel(email: String) {
+class LoginFormViewModel() {
     private val _adminState = MutableStateFlow(AdminState())
     val adminState: StateFlow<AdminState> = _adminState.asStateFlow()
-
-    init {
-        _adminState.value = _adminState.value.copy(
-            email = email
-        )
-    }
 
     /*fun setUserGoogleData(googleUserDto : GoogleUserDto){
         _adminState.value = _adminState.value.copy(
@@ -43,11 +38,11 @@ class LoginFormViewModel(email: String) {
         )
     }*/
 
-    /*fun updateProfilePic(uri: Uri){
+    fun updateProfilePic(uri: Uri){
         _adminState.value = _adminState.value.copy(
             profilePic = uri
         )
-    }*/
+    }
 
     fun updateUsername(username: String){
         _adminState.value = _adminState.value.copy(

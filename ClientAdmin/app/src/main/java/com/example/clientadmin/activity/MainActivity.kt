@@ -17,12 +17,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.ui.theme.ClientAdminTheme
+import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 
 
 class MainActivity : ComponentActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -50,38 +49,40 @@ fun PreviewApp(){
 
 @Composable
 fun Navigation(navController: NavHostController){
-
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
         navController = navController,
         startDestination = "scaffold"
     ){
+        val loginViewModel = LoginViewModel()
         //INDEX
         composable(route = "index"){
-            IndexPage(navController = navController)
-        }
-
-        //REGISTER
-        composable(route = "register/{firstname}/{lastname}/{email}"){
-            backStackEntry ->
-            val firstName = backStackEntry.arguments?.getString("firstname") ?: ""
-            val lastName = backStackEntry.arguments?.getString("lastname") ?: ""
-            val email = backStackEntry.arguments?.getString("email") ?: ""
-
-            Login(
-                firstName = firstName,
-                lastName = lastName,
+            IndexPage(
                 navController = navController,
-                loginFormViewModel = LoginFormViewModel(email)
+                loginViewModel = loginViewModel
             )
         }
 
+        //REGISTER
+        composable(route = "register/{token}"){
+            it.arguments?.getString("token").let {
+                token ->
+                if (token != null)
+                    Login(
+                        token = token,
+                        navController = navController,
+                        loginViewModel = loginViewModel,
+                        loginFormViewModel = LoginFormViewModel()
+                    )
+            }
+        }
+
         //SCAFFOLD
-        composable(route = "scaffold/{admin}"){
-            it.arguments?.getString("admin").let {
-                if (it != null) {
-                    val admin = Admin.fromQueryString(it)
-                    Scaffold(admin = admin)
+        composable(route = "scaffold/{token}"){
+            it.arguments?.getString("token").let {
+                token ->
+                if (token != null) {
+                    Scaffold(loginViewModel = loginViewModel, token = token)
                 }
             }
         }

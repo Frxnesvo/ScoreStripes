@@ -11,24 +11,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.service.ConverterUri
+import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun Login(firstName: String, lastName: String, navController : NavHostController, loginFormViewModel: LoginFormViewModel) {
+fun Login(token: String, navController : NavHostController, loginViewModel: LoginViewModel, loginFormViewModel: LoginFormViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.primary))
             .padding(10.dp),
     ) {
+        val adminState by loginFormViewModel.adminState.collectAsState()
+        val context = LocalContext.current
+
         Back {
             navController.navigate("index")
         }
@@ -38,11 +45,9 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
             verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val adminState by loginFormViewModel.adminState.collectAsState()
-
             Title()
 
-            /*ImagePicker(
+            ImagePicker(
                 imageUri = adminState.profilePic,
                 size = 80.dp
             ){
@@ -50,7 +55,7 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 if (uri != null) {
                     loginFormViewModel.updateProfilePic(uri)
                 }
-            }*/
+            }
 
             CustomTextField(
                 value = mutableStateOf(adminState.username),
@@ -60,26 +65,21 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 loginFormViewModel.updateUsername(it)
             }
 
-            if(firstName != ""){
-                CustomTextField(
-                    value = mutableStateOf(adminState.firstName),
-                    text = stringResource(id = R.string.first_name),
-                    keyboardType = KeyboardType.Text
-                ){
-                    loginFormViewModel.updateFirstName(it)
-                }
-            } else loginFormViewModel.updateFirstName(firstName)
+            CustomTextField(
+                value = mutableStateOf(adminState.firstName),
+                text = stringResource(id = R.string.first_name),
+                keyboardType = KeyboardType.Text
+            ){
+                loginFormViewModel.updateFirstName(it)
+            }
 
-            if(lastName != ""){
-                CustomTextField(
-                    value = mutableStateOf(adminState.lastName),
-                    text = stringResource(id = R.string.last_name),
-                    keyboardType = KeyboardType.Text
-                ){
-                    loginFormViewModel.updateLastName(it)
-                }
-            } else loginFormViewModel.updateLastName(lastName)
-
+            CustomTextField(
+                value = mutableStateOf(adminState.lastName),
+                text = stringResource(id = R.string.last_name),
+                keyboardType = KeyboardType.Text
+            ){
+                loginFormViewModel.updateLastName(it)
+            }
 
             CustomDatePicker(
                 date = mutableStateOf(adminState.birthdate),
@@ -99,7 +99,21 @@ fun Login(firstName: String, lastName: String, navController : NavHostController
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {
-                navController.navigate("scaffold")
+                loginViewModel.register(
+                    //TODO vedere se fare la richiesta da .request
+                    AdminCreateRequestDto(
+                        username = adminState.username,
+                        firstName = adminState.firstName,
+                        lastName = adminState.lastName,
+                        birthDate = adminState.birthdate,
+                        pic = ConverterUri.convert(context, adminState.profilePic, "pic")!!,
+                        gender = adminState.gender
+                    )
+                )
+                if (loginViewModel.user.value != null){
+                    navController.navigate("scaffold/${token}")
+                }
+
             }
         }
     }

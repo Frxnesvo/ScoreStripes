@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,10 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.authentication.GoogleAuth
+import com.example.clientadmin.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun IndexPage(navController : NavHostController) {
+fun IndexPage(navController : NavHostController, loginViewModel: LoginViewModel) {
     val coroutineScope = rememberCoroutineScope()
 
     Box(
@@ -60,10 +62,13 @@ fun IndexPage(navController : NavHostController) {
                 ) {
                     val auth = GoogleAuth(context)
                     coroutineScope.launch {
-                        //TODO fare la chiamate al controller rest per la login
-                        //TODO aggiungere il ruolo di admin
-                        val googleUserDto = auth.getGoogleCredential()
-                        navController.navigate("register/${googleUserDto?.firstName}/${googleUserDto?.lastName}/${googleUserDto?.email}")
+                        val token = auth.getGoogleCredential()
+                        if (token != null) {
+                            loginViewModel.getAdminFromToken(token)
+                            val admin = loginViewModel.user.value
+                            if (admin != null) navController.navigate("scaffold")
+                            else navController.navigate("register/${token}")
+                        }
                     }
                 }
 

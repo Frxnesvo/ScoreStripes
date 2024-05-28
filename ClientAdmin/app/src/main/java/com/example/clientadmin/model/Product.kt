@@ -80,8 +80,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.productCategory,
-                pic1 = productDto.pics[0],
-                pic2 = productDto.pics[1],
+                pic1 = Uri.EMPTY,//productDto.pics[0]
+                pic2 = Uri.EMPTY,//productDto.pics[1]
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

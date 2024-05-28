@@ -3,6 +3,7 @@ package com.example.clientadmin.service
 import com.example.clientadmin.service.interfaces.ClubApiService
 import com.example.clientadmin.service.interfaces.CustomerApiService
 import com.example.clientadmin.service.interfaces.LeagueApiService
+import com.example.clientadmin.service.interfaces.LoginApiService
 import com.example.clientadmin.service.interfaces.OrdersApiService
 import com.example.clientadmin.service.interfaces.ProductApiService
 import com.example.clientadmin.service.interfaces.ProductVariantApiService
@@ -27,7 +28,11 @@ object RetrofitHandler {
     private val productApi = retrofit.create(ProductApiService::class.java)
     private val ordersApi = retrofit.create(OrdersApiService::class.java)
     private val productVariantApi = retrofit.create(ProductVariantApiService::class.java)
+    private val loginApi = retrofit.create(LoginApiService::class.java)
 
+    fun getLoginApi(): LoginApiService {
+        return loginApi
+    }
     fun getLeagueApi(): LeagueApiService {
         return leagueApi
     }
