@@ -3,6 +3,7 @@ package com.example.clientadmin.service.interfaces
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductDto
 import com.example.clientadmin.model.ProductSummary
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -18,7 +19,11 @@ interface ProductApiService {
 
     @Multipart
     @POST("/api/v1/products")
-    fun createProduct(@Part("productCreateRequestDto") productCreateRequestDto: ProductCreateRequestDto): Call<ProductDto>
+    fun createProduct(
+        @Part("productCreateRequestDto") productCreateRequestDto: ProductCreateRequestDto,
+        @Part pic1: MultipartBody.Part,
+        @Part pic2: MultipartBody.Part
+    ): Call<ProductDto>
 
     @GET("/api/v1/products/summary")
     fun getProductsSummary(

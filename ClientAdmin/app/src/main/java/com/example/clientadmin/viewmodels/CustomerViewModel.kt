@@ -5,7 +5,7 @@ import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
 import com.example.clientadmin.model.CustomerSummary
 import com.example.clientadmin.model.dto.OrderDto
-import com.example.clientadmin.service.impl.CustomerApiServiceImpl
+import com.example.clientadmin.service.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -13,8 +13,6 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class CustomerViewModel : ViewModel() {
-    private val customerApiService = CustomerApiServiceImpl()
-
     private var filter: Map<String, String?> = mapOf()
     private var page = 0
 
@@ -45,7 +43,7 @@ class CustomerViewModel : ViewModel() {
 
     private fun getCustomerSummaries(): Flow<List<CustomerSummary>> = flow {
         try {
-            val response = customerApiService
+            val response = RetrofitHandler.customerApi
                 .getCustomersSummary(
                     page = page,
                     size = sizePage,
@@ -63,7 +61,7 @@ class CustomerViewModel : ViewModel() {
 
     fun getCustomerDetails(id: String): Flow<CustomerProfileDto> = flow {
         try {
-            val response = customerApiService.getCustomerProfile(id).awaitResponse()
+            val response = RetrofitHandler.customerApi.getCustomerProfile(id).awaitResponse()
             if (response.isSuccessful) {
                 response.body()?.let { emit(it) }
             } else {
@@ -76,7 +74,7 @@ class CustomerViewModel : ViewModel() {
 
     fun getCustomerAddresses(id: String): Flow<List<AddressDto>> = flow {
         try {
-            val response = customerApiService.getCustomerAddresses(id).awaitResponse()
+            val response = RetrofitHandler.customerApi.getCustomerAddresses(id).awaitResponse()
             if (response.isSuccessful) response.body()?.let { emit(it) }
             else println("Error fetching customer addresses: ${response.message()}")
         } catch (e: Exception) {
@@ -86,7 +84,7 @@ class CustomerViewModel : ViewModel() {
 
     fun getCustomerOrders(id: String): Flow<List<OrderDto>> = flow {
         try {
-            val response = customerApiService.getCustomerOrders(id).awaitResponse()
+            val response = RetrofitHandler.customerApi.getCustomerOrders(id).awaitResponse()
             if (response.isSuccessful) response.body()?.let { emit(it) }
             else println("Error fetching customer orders: ${response.message()}")
         } catch (e: Exception) {

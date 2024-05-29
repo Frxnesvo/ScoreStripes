@@ -1,7 +1,8 @@
 package com.example.clientadmin.service.interfaces
 
+import com.example.clientadmin.model.dto.ClubCreateRequestDto
 import com.example.clientadmin.model.dto.ClubDto
-import com.example.clientadmin.model.dto.ClubRequestDto
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -11,7 +12,10 @@ import retrofit2.http.Part
 interface ClubApiService {
     @Multipart
     @POST("/api/v1/clubs")
-    fun createClub(@Part("clubRequestDto") clubRequestDto: ClubRequestDto): Call<ClubDto>
+    fun createClub(
+        @Part("clubCreateRequestDto") clubCreateRequestDto: ClubCreateRequestDto,
+        @Part pic: MultipartBody.Part,
+    ): Call<ClubDto>
 
     @GET("/api/v1/clubs/names")
     fun getClubNames(): Call<List<String>>

@@ -1,17 +1,10 @@
 package com.example.clientadmin.model
 
-import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
-import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductDto
-import com.example.clientadmin.model.dto.ProductWithVariantAvailabilityDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
-import com.example.clientadmin.service.ConverterUri
-import com.example.clientadmin.viewmodels.formViewModel.ProductState
-
 
 class Product (
     val name: String,
@@ -32,27 +25,6 @@ class Product (
         require(validateBrand(brand)) { "Invalid brand: must be between 1 and 20 characters" }
         require(validatePic(pic1)) { "Invalid brand: must be between 1 and 20 characters" }
         require(validatePic(pic2)) { "Invalid brand: must be between 1 and 20 characters" }
-    }
-
-    fun createRequest(context: Context): ProductCreateRequestDto{
-        try{
-            val picMultipart1 = ConverterUri.convert(context, pic1, "pic")
-            val picMultipart2 = ConverterUri.convert(context, pic2, "pic")
-
-            return ProductCreateRequestDto(
-                name = name,
-                description = description,
-                price = price,
-                club = club,
-                brand = brand,
-                gender = gender,
-                productCategory = productCategory,
-                pic1 = picMultipart1!!,
-                pic2 = picMultipart2!!,
-                variants = variants
-            )
-        }
-        catch (e: Exception) { throw e }
     }
 
     companion object{
