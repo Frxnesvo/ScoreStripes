@@ -25,6 +25,7 @@ object RetrofitHandler {
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
+        .add(LocalDateAdapter())
         .build()
 
     private val retrofit by lazy {

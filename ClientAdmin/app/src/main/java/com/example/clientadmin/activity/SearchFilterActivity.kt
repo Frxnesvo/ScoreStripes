@@ -42,7 +42,7 @@ fun SearchPanelCostumers(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = remember { mutableStateOf("") },
+                value = "",
                 text = stringResource(id = R.string.search_for_username),
                 leadingIcon = Icons.Outlined.Search
             ) { filterBuilder.setName(it) }
@@ -82,7 +82,7 @@ fun SearchPanelProducts(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = remember { mutableStateOf("") },
+                value = "",
                 text = stringResource(id = R.string.search_for_username),
                 leadingIcon = Icons.Outlined.Search
             ) { filterBuilder.setName(it) }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 
 class LoginViewModel: ViewModel() {
@@ -32,10 +33,10 @@ class LoginViewModel: ViewModel() {
         }
     }
 
-    fun register(adminCreateRequestDto: AdminCreateRequestDto){
+    fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: MultipartBody.Part){
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = loginApiService.adminRegister(adminCreateRequestDto).awaitResponse()
+                val response = loginApiService.adminRegister(token, adminCreateRequestDto, pic).awaitResponse()
                 if (response.isSuccessful) {
                     response.body()?.let { _user.value = Admin.fromDto(it) }
                 } else {

@@ -76,7 +76,7 @@ fun ProductDetails(
             )
 
             CustomTextField(
-                value = remember { mutableStateOf(productState.name) },
+                value = productState.name,
                 text = stringResource(id = R.string.name)
             ){ productFormViewModel.updateName(it) }
 
@@ -96,18 +96,18 @@ fun ProductDetails(
             ){ productFormViewModel.updateCategory(ProductCategory.valueOf(it)) }
 
             CustomTextField(
-                value = remember { mutableStateOf(productState.brand) },
+                value = productState.brand,
                 text = stringResource(id = R.string.brand)
             ){ productFormViewModel.updateBrand(it) }
 
             CustomTextField(
-                value = remember { mutableStateOf(productState.price) },
+                value = productState.price.toString(),
                 text = stringResource(id = R.string.price),
                 keyboardType = KeyboardType.Decimal
             ){ productFormViewModel.updatePrice(it.toDouble()) }
 
             CustomTextField(
-                value = remember { mutableStateOf(productState.description) },
+                value = productState.description,
                 text = stringResource(id = R.string.description),
                 lines = 10
             ){ productFormViewModel.updateDescription(it) }
@@ -122,8 +122,9 @@ fun ProductDetails(
             productState.variants.forEach{
                 variant ->
                 CustomTextField(
-                    value = remember {mutableStateOf(variant.value) },
-                    text = variant.key.name
+                    value = variant.value.toString(),
+                    text = variant.key.name,
+                    keyboardType = KeyboardType.Number
                 ) { productFormViewModel.updateVariant(variant.key, it.toInt()) }
             }
         }

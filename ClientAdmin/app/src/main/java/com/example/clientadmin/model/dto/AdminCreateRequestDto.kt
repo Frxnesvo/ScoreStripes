@@ -1,14 +1,13 @@
 package com.example.clientadmin.model.dto
 
 import com.example.clientadmin.model.enumerator.Gender
-import okhttp3.MultipartBody
+import com.squareup.moshi.JsonClass
 import java.time.LocalDate
-
+@JsonClass(generateAdapter = true)
 data class AdminCreateRequestDto (
     val username: String,
     val firstName: String,
     val lastName: String,
     val birthDate: LocalDate,
-    val pic: MultipartBody.Part,
     val gender: Gender
 )

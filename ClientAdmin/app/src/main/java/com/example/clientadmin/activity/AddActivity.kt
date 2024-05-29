@@ -99,7 +99,7 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
         ){ if(it != null) leagueFormViewModel.updateImage(it) }
 
         CustomTextField(
-            value = remember { mutableStateOf(leagueState.name) },
+            value = leagueState.name,
             text = stringResource(id = R.string.league),
             keyboardType = KeyboardType.Text
         ){ leagueFormViewModel.updateName(it) }
@@ -135,7 +135,7 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
         ){ if(it != null) clubFormViewModel.updateImage(it) }
 
         CustomTextField(
-            value = remember { mutableStateOf(clubState.name) },
+            value = clubState.name,
             text = "NAME CLUB",
             keyboardType = KeyboardType.Text,
         ){ clubFormViewModel.updateNameClub(it) }

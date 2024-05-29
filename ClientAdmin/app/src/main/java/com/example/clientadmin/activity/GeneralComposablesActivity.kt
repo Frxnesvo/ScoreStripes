@@ -302,7 +302,7 @@ fun ImagePicker(
 
 @Composable
 fun CustomTextField(
-    value: MutableState<Any>,
+    value: String,
     text: String,
     readOnly: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -323,7 +323,7 @@ fun CustomTextField(
 
     OutlinedTextField(
         readOnly = readOnly,
-        value = value.value.toString(),
+        value = value,
         onValueChange = onValueChange,
         label = {
             Text(
@@ -332,17 +332,13 @@ fun CustomTextField(
                 fontWeight = FontWeight.SemiBold
             )
         },
-        leadingIcon = leadingIcon?.let {
-            { Icon(imageVector = it, contentDescription = null) }
-        },
+        leadingIcon = leadingIcon?.let { { Icon(imageVector = it, contentDescription = null) } },
         maxLines = lines,
         singleLine = lines <= 1,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(30.dp),
         colors = colors,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = keyboardType
-        )
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType)
     )
 }
 
@@ -361,7 +357,7 @@ fun CustomDatePicker(
             selectedOption = remember { mutableStateOf(date.value.dayOfMonth.toString()) }
         ) { onValueChange(LocalDate.of(date.value.year, date.value.month, it.toInt())) }
         CustomComboBox(
-            options = flowOf(listOf(1..12).toList()),
+            options = flowOf((1..12).toList()),
             selectedOption = remember { mutableStateOf(date.value.monthValue.toString()) }
         ) { onValueChange(LocalDate.of(date.value.year, it.toInt(), date.value.dayOfMonth)) }
         CustomComboBox(

@@ -9,8 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -52,37 +50,37 @@ fun Details(customer: CustomerProfileDto){
         )
 
         CustomTextField(
-            value = remember { mutableStateOf(customer.firstName) },
+            value = customer.firstName,
             text = stringResource(id = R.string.first_name),
             readOnly = true
         ){}
 
         CustomTextField(
-            value = remember { mutableStateOf(customer.lastName) },
+            value = customer.lastName,
             text = stringResource(id = R.string.last_name),
             readOnly = true
         ){}
 
         CustomTextField(
-            value = remember { mutableStateOf(customer.email) },
+            value = customer.email,
             text = stringResource(id = R.string.email),
             readOnly = true
         ){}
 
         CustomTextField(
-            value = remember { mutableStateOf(customer.favoriteClub) },
+            value = customer.favoriteClub,
             text = stringResource(id = R.string.favorite_club),
             readOnly = true
         ){}
 
         CustomTextField(
-            value = remember { mutableStateOf(customer.gender) },
+            value = customer.gender.name,
             text = stringResource(id = R.string.gender),
             readOnly = true
         ){}
 
         CustomTextField(
-            value = remember { mutableStateOf(customer.birthDate) },
+            value = customer.birthDate,
             text = "GENDER",
             readOnly = true
         ){}

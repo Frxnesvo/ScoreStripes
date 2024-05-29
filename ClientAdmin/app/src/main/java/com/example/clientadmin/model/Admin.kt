@@ -1,11 +1,8 @@
 package com.example.clientadmin.model
 
-import android.content.Context
 import android.net.Uri
-import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.model.dto.AdminDto
 import com.example.clientadmin.model.enumerator.Gender
-import com.example.clientadmin.service.ConverterUri
 import java.time.LocalDate
 
 class Admin(
@@ -23,14 +20,6 @@ class Admin(
         require(validateLastName(lastName)) { "Invalid last name: must be between 3 and 20 characters" }
         require(validateEmail(email)) { "Invalid email format" }
         require(validateBirthdate(birthDate)) { "Invalid birthdate: must be before the current date" }
-    }
-
-    fun request(context: Context): AdminCreateRequestDto {
-        try {
-            val multipart = ConverterUri.convert(context, pic, "pic")
-            return AdminCreateRequestDto(username, firstName, lastName, birthDate, multipart!!, gender)
-        }
-        catch (e: Exception) { throw e }
     }
 
     companion object {

@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
@@ -62,25 +61,22 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             }
 
             CustomTextField(
-                value = remember { mutableStateOf(adminState.username) },
-                text = stringResource(id = R.string.username),
-                keyboardType = KeyboardType.Text
+                value = adminState.username,
+                text = stringResource(id = R.string.username)
             ){
                 loginFormViewModel.updateUsername(it)
             }
 
             CustomTextField(
-                value = remember { mutableStateOf(adminState.firstName) },
-                text = stringResource(id = R.string.first_name),
-                keyboardType = KeyboardType.Text
+                value = adminState.firstName,
+                text = stringResource(id = R.string.first_name)
             ){
                 loginFormViewModel.updateFirstName(it)
             }
 
             CustomTextField(
-                value = remember { mutableStateOf(adminState.lastName) },
-                text = stringResource(id = R.string.last_name),
-                keyboardType = KeyboardType.Text
+                value = adminState.lastName,
+                text = stringResource(id = R.string.last_name)
             ){
                 loginFormViewModel.updateLastName(it)
             }
@@ -104,15 +100,15 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 background = R.color.secondary
             ) {
                 loginViewModel.register(
-                    //TODO vedere se fare la richiesta da .request
+                    token = token,
                     AdminCreateRequestDto(
                         username = adminState.username,
                         firstName = adminState.firstName,
                         lastName = adminState.lastName,
                         birthDate = adminState.birthdate,
-                        pic = ConverterUri.convert(context, adminState.profilePic, "pic")!!,
                         gender = adminState.gender
-                    )
+                    ),
+                    pic = ConverterUri.convert(context, adminState.profilePic, fieldName = "")!!
                 )
                 if (loginViewModel.user.value != null){
                     navController.navigate("scaffold/${token}")
