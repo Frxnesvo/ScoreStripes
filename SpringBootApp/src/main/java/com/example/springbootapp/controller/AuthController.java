@@ -55,13 +55,9 @@ public class AuthController {
     public ResponseEntity<?> adminRegister(@AuthenticationPrincipal OAuth2User oauth2User, @RequestBody AdminCreateDto userDto) {
 
         User user = adminService.createAdmin(oauth2User, userDto);
-        //TODO gestire immagine profilo
-        CustomUserDetails userDetails = new CustomUserDetails(user);
 
         //String accessToken = JwtUtils.createAccessToken(userDetails.getID(), "", userDetails.getAuthorities());
         //response.setHeader(HttpHeaders.AUTHORIZATION, SecurityConstants.BEARER_TOKEN_PREFIX + accessToken);
-
-        adminService.save(user);
         return ResponseEntity.ok(user);
     }
 }

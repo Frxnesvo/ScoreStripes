@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface AdminService {
 
     Optional<User> findByEmail(String email);
-    void save(User user);
 
     User createAdmin(OAuth2User oauth2User, AdminCreateDto adminDto);
 }

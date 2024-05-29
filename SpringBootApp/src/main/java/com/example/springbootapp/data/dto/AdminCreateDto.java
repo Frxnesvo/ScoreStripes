@@ -31,7 +31,4 @@ public class AdminCreateDto {
 
     @NotNull
     private Gender gender;
-
-    @NotNull
-    private Role role;
 }
