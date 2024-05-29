@@ -1,10 +1,8 @@
 package com.example.clientuser.activity
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,24 +28,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientuser.R
 import com.example.clientuser.model.ExampleProduct
-import com.example.clientuser.model.Product
 import com.example.clientuser.viewmodel.ProductViewModel
 
-//TODO DA COMPLETARE
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewHome(){
-    Home(ProductViewModel())
-}
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Home(viewModel: ProductViewModel){
     Column(
@@ -87,7 +72,6 @@ fun Greetings(){
             fontSize = 16.sp,
             letterSpacing = 3.sp
         )
-        //greeting row, con Ciao, username
         Row{
             Text(
                 text = "CIAO, ",
@@ -95,9 +79,10 @@ fun Greetings(){
             )
 
             Text(
-                text = "FRANCESCO", //TODO nome utente
+                text = "FRANCESCO",
                 color = colorResource(id = R.color.red),
-                style = textStyle
+                style = textStyle,
+                fontWeight = FontWeight.Bold
             )
         }
 
@@ -153,7 +138,6 @@ fun ProductList(products: List<ExampleProduct>){
     )
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(20.dp),
-        //TODO aggiungere lo scroll orizzontale
     ){
         items(products) { product ->
             Column(

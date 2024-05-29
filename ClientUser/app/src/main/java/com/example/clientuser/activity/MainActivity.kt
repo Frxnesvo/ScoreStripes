@@ -1,4 +1,4 @@
-package com.example.clientuser
+package com.example.clientuser.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -36,14 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.clientuser.activity.Cart
-import com.example.clientuser.activity.Home
-import com.example.clientuser.activity.Icon
-import com.example.clientuser.activity.ImageProfile
-import com.example.clientuser.activity.UserProfile
-import com.example.clientuser.activity.WishList
+import com.example.clientuser.R
 import com.example.clientuser.ui.theme.ClientUserTheme
-import com.example.clientuser.viewmodel.ProductViewModel
 
 enum class Screen{
     HOME,
@@ -82,12 +76,8 @@ fun HomePage(){
     Scaffold(
         bottomBar = { BottomBar(selectedScreen) }
     ){
-        it.calculateBottomPadding()
-        when(selectedScreen.value){
-            Screen.HOME -> Home(ProductViewModel())
-            Screen.WISHLIST -> WishList()
-            Screen.CART -> Cart()
-            Screen.USER_PROFILE -> UserProfile()
+        Box(modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = it.calculateBottomPadding())){
+            NavigationView(navHostController)
         }
     }
 }
@@ -139,7 +129,7 @@ fun BottomBar(screen: MutableState<Screen>){
             icon = Icons.Outlined.FavoriteBorder,
             size = 40,
             iconColor = if (screen.value == Screen.WISHLIST) white else black,
-            onclick = {screen.value = Screen.WISHLIST}
+            onclick = {screen.value = Screen.WISHLIST }
         )
 
         //cart button
@@ -148,13 +138,13 @@ fun BottomBar(screen: MutableState<Screen>){
             icon = Icons.Outlined.ShoppingCart,
             size = 40,
             iconColor = if (screen.value == Screen.CART) white else black,
-            onclick = {screen.value = Screen.CART}
+            onclick = {screen.value = Screen.CART }
         )
 
         //user profile button
         ImageProfile(
             size = 40,
-            onClick = {screen.value = Screen.USER_PROFILE},
+            onClick = {screen.value = Screen.USER_PROFILE },
             borderColor = if(screen.value == Screen.USER_PROFILE) red else transparent
         )
     }
