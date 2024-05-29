@@ -1,7 +1,7 @@
 package com.example.springbootapp.security;
 
 public class SecurityConstants {
-    public final static String JWT_SECRET = "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";
+    public final static String JWT_SECRET = "SecretKey";
     public final static long EXPIRATION_TIME = 3_600;   //1 hour
     public final static long EXPIRATION_REFRESH_TOKEN_TIME = 604_800;   //1 week
     public final static String BEARER_TOKEN_PREFIX = "Bearer ";

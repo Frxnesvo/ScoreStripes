@@ -1,5 +1,6 @@
 package com.example.springbootapp.service.impl;
 
+import com.example.springbootapp.exceptions.S3PutObjectException;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -61,7 +62,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         try {
             s3Client.putObject(putRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
         } catch (IOException e) {
-            throw new RuntimeException(e);    //TODO: gestire l'eccezione creando un'eccezione custom S3Exception
+            throw new S3PutObjectException("Error uploading file to S3");
         }
         return s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(key)).toExternalForm();
     }
