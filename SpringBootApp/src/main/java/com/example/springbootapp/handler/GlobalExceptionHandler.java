@@ -1,10 +1,7 @@
 package com.example.springbootapp.handler;
 
 import com.example.springbootapp.data.dto.ErrorDto;
-import com.example.springbootapp.exceptions.RateLimitExceededException;
-import com.example.springbootapp.exceptions.RequestValidationException;
-import com.example.springbootapp.exceptions.StripeSessionException;
-import com.example.springbootapp.exceptions.TokenExpiredException;
+import com.example.springbootapp.exceptions.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -57,6 +54,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(StripeSessionException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto onStripeSessionException(WebRequest req, StripeSessionException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
+    @ExceptionHandler(S3PutObjectException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDto onS3PutObjectException(WebRequest req, S3PutObjectException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
+    @ExceptionHandler(EmailMessagingException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDto onEmailMessagingException(WebRequest req, EmailMessagingException e) {
         return createErrorRespose(req, e.getMessage());
     }
 

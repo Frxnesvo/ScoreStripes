@@ -33,6 +33,7 @@ public class EmailServiceImpl implements EmailService {
         String htmlContent=templateEngine.process("email-template",context);
 
         helper.setTo(emailInfos.getTo());
+        helper.setSubject("Conferma ordine #"+emailInfos.getOrderId());
         helper.setText(htmlContent,true);
 
         mailSender.send(message);

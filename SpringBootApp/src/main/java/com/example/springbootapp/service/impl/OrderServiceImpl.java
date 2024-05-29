@@ -7,6 +7,7 @@ import com.example.springbootapp.data.dto.OrderInfosRequestDto;
 import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Embdeddables.OrderInformations;
 import com.example.springbootapp.data.entities.Enums.OrderStatus;
+import com.example.springbootapp.exceptions.EmailMessagingException;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.exceptions.StripeSessionException;
 import com.example.springbootapp.handler.PaymentHandler;
@@ -112,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (StripeException e) {
             throw new StripeSessionException(e.getMessage());
         } catch (MessagingException e) {
-            throw new RuntimeException(e);    //TODO: farla custom
+            throw new EmailMessagingException("Error sending email");
         }
     }
 
