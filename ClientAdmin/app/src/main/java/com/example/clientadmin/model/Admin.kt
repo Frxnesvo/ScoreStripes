@@ -15,6 +15,7 @@ class Admin(
     val pic: Uri
 ) {
     init {
+        require(validateProfilePic(pic)) { "Invalid profile picture" }
         require(validateUsername(username)) { "Invalid username: must be between 3 and 20 characters" }
         require(validateFirstName(firstName)) { "Invalid first name: must be between 3 and 20 characters" }
         require(validateLastName(lastName)) { "Invalid last name: must be between 3 and 20 characters" }
@@ -24,6 +25,9 @@ class Admin(
 
     companion object {
         //TODO matchare i controlli di validazione con quelli del backend
+        fun validateProfilePic(pic: Uri): Boolean {
+            return pic == Uri.EMPTY
+        }
         fun validateUsername(username: String): Boolean {
             return username.length in 3..20
         }

@@ -3,8 +3,9 @@ package com.example.clientadmin.viewmodels
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import com.example.clientadmin.model.League
-import com.example.clientadmin.service.impl.LeagueApiServiceImpl
+import com.example.clientadmin.model.dto.LeagueCreateRequestDto
+import com.example.clientadmin.service.ConverterUri
+import com.example.clientadmin.service.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +16,6 @@ class LeagueViewModel: ViewModel() {
     private val _leaguesNames = MutableStateFlow<List<String>>(emptyList())
     val leaguesNames = _leaguesNames
 
-    private val leagueApiService = LeagueApiServiceImpl()
-
     init{
         fetchLeaguesNames()
     }
@@ -24,7 +23,7 @@ class LeagueViewModel: ViewModel() {
     private fun fetchLeaguesNames(){
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = leagueApiService.getLeagueNames().awaitResponse()
+                val response = RetrofitHandler.leagueApi.getLeagueNames().awaitResponse()
                 if (response.isSuccessful)
                     response.body()?.let { _leaguesNames.value = it }
                 else
@@ -37,10 +36,11 @@ class LeagueViewModel: ViewModel() {
 
     fun addLeague(context: Context, name: String, pic: Uri){
         try {
-            val leagueRequestDto = League(name, pic).request(context)
-
             CoroutineScope(Dispatchers.IO).launch {
-                val response = leagueApiService.createLeague(leagueRequestDto).awaitResponse()
+                val response = RetrofitHandler.leagueApi.createLeague(
+                    leagueCreateRequestDto = LeagueCreateRequestDto(name),
+                    pic = ConverterUri.convert(context, pic, "picLeague")!!
+                ).awaitResponse()
                 if (response.isSuccessful)
                     response.body()?.let { club -> _leaguesNames.value += club.name }
                 else handleApiError(response.message())
@@ -51,6 +51,6 @@ class LeagueViewModel: ViewModel() {
     }
 
     private fun handleApiError(response: String) {
-        println("Errore nella chiamata API: $response")
+        println("Error in API call: $response")
     }
 }

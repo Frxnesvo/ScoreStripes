@@ -18,6 +18,7 @@ data class AdminState(
     val profilePic : Uri = Uri.EMPTY,
 
     //error
+    val isProfilePicError: Boolean = !Admin.validateProfilePic(profilePic),
     val isUsernameError: Boolean = !Admin.validateUsername(username),
     val isFirstNameError: Boolean = !Admin.validateFirstName(firstName),
     val isLastNameError: Boolean = !Admin.validateLastName(lastName),
@@ -39,31 +40,35 @@ class LoginFormViewModel {
 
     fun updateProfilePic(uri: Uri){
         _adminState.value = _adminState.value.copy(
-            profilePic = uri
+            profilePic = uri,
         )
     }
 
     fun updateUsername(username: String){
         _adminState.value = _adminState.value.copy(
-            username = username
+            username = username,
+            isUsernameError = !Admin.validateUsername(username)
         )
     }
 
     fun updateFirstName(firstName: String){
         _adminState.value = _adminState.value.copy(
-            firstName = firstName
+            firstName = firstName,
+            isFirstNameError = !Admin.validateFirstName(firstName)
         )
     }
 
     fun updateLastName(lastName: String){
         _adminState.value = _adminState.value.copy(
-            lastName = lastName
+            lastName = lastName,
+            isLastNameError = !Admin.validateLastName(lastName)
         )
     }
 
     fun updateBirthdate(birthdate: LocalDate){
         _adminState.value = _adminState.value.copy(
-            birthdate = birthdate
+            birthdate = birthdate,
+            isBirthdateError = !Admin.validateBirthdate(birthdate)
         )
     }
 

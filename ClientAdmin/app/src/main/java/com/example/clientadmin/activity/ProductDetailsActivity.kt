@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Product
+import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductState
 import com.example.clientadmin.viewmodels.ProductViewModel
@@ -134,20 +135,17 @@ fun ProductDetails(
             background = R.color.secondary
         ) {
             if (isAdd) {
-                val product = Product(
+                val productRequestDto = ProductCreateRequestDto(
                     name = productState.name,
                     club = productState.club,
                     brand = productState.brand,
                     gender = productState.gender,
                     productCategory = productState.productCategory,
                     description =  productState.description,
-                    pic1 =  productState.pic1,
-                    pic2 =  productState.pic2,
                     price = productState.price,
                     variants = productState.variants
-                ).createRequest(context)
-
-                productViewModel.addProduct(product)
+                )
+                productViewModel.addProduct(context, productRequestDto, productState.pic1, productState.pic2)
             } else {
                 TODO("serve il controller per l'update")
             }

@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter
 
 class LocalDateAdapter {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
-
     @ToJson
     fun toJson(date: LocalDate): String {
         return date.format(formatter)

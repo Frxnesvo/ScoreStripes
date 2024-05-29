@@ -3,8 +3,9 @@ package com.example.clientadmin.viewmodels
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import com.example.clientadmin.model.Club
-import com.example.clientadmin.service.impl.ClubApiServiceImpl
+import com.example.clientadmin.model.dto.ClubCreateRequestDto
+import com.example.clientadmin.service.ConverterUri
+import com.example.clientadmin.service.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +17,6 @@ class ClubViewModel : ViewModel() {
     private val _clubNames = MutableStateFlow<List<String>>(emptyList())
     val clubNames: StateFlow<List<String>> = _clubNames
 
-    private val clubApiService = ClubApiServiceImpl()
-
     init {
         fetchClubNames()
     }
@@ -25,7 +24,7 @@ class ClubViewModel : ViewModel() {
     private fun fetchClubNames() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = clubApiService.getClubNames().awaitResponse()
+                val response = RetrofitHandler.clubApi.getClubNames().awaitResponse()
                 if (response.isSuccessful) {
                     response.body()?.let { _clubNames.value = it }
                 } else handleApiError(response.message())
@@ -37,10 +36,12 @@ class ClubViewModel : ViewModel() {
 
     fun addClub(context: Context, name: String, pic: Uri, league: String) {
         try {
-            val clubRequestDto = Club(name, pic, league).request(context)
-
             CoroutineScope(Dispatchers.IO).launch {
-                val response = clubApiService.createClub(clubRequestDto).awaitResponse()
+                val response = RetrofitHandler.clubApi.createClub(
+                    clubCreateRequestDto = ClubCreateRequestDto(name, league),
+                    pic = ConverterUri.convert(context, pic, "picLeague")!!
+                ).awaitResponse()
+
                 if (response.isSuccessful)
                     response.body()?.let { club -> _clubNames.value += club.name }
                 else handleApiError(response.message())
@@ -53,6 +54,6 @@ class ClubViewModel : ViewModel() {
     }
 
     private fun handleApiError(response: String) {
-        println("Errore nella chiamata API: $response")
+        println("Error in API call: $response")
     }
 }

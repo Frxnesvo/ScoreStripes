@@ -30,7 +30,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colorResource(id = R.color.primary)
                 ) {
-                    Navigation(navController = navHostController)
+                    Login(
+                        token = "token",
+                        navController = navHostController,
+                        loginViewModel = LoginViewModel(),
+                        loginFormViewModel = LoginFormViewModel()
+                    )
+                    //Navigation(navController = navHostController)
                 }
             }
         }

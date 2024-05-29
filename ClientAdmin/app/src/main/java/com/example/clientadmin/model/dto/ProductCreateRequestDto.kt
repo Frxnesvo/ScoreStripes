@@ -3,8 +3,10 @@ package com.example.clientadmin.model.dto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
+import com.squareup.moshi.JsonClass
 import okhttp3.MultipartBody
 
+@JsonClass(generateAdapter = true)
 data class ProductCreateRequestDto (
     val name: String,
     val description: String,
@@ -13,7 +15,5 @@ data class ProductCreateRequestDto (
     val brand: String,
     val gender: Gender,
     val productCategory: ProductCategory,
-    val pic1: MultipartBody.Part,
-    val pic2: MultipartBody.Part,
     val variants: Map<Size, Int>
 )
