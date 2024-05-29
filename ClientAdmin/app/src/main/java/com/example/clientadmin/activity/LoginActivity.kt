@@ -22,7 +22,6 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.model.enumerator.Gender
-import com.example.clientadmin.service.ConverterUri
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import kotlinx.coroutines.flow.flowOf
@@ -108,7 +107,8 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                         birthDate = adminState.birthdate,
                         gender = adminState.gender
                     ),
-                    pic = ConverterUri.convert(context, adminState.profilePic, fieldName = "")!!
+                    context = context,
+                    pic = adminState.profilePic
                 )
                 if (loginViewModel.user.value != null){
                     navController.navigate("scaffold/${token}")

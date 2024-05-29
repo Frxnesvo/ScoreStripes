@@ -1,15 +1,17 @@
 package com.example.clientadmin.viewmodels
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
+import com.example.clientadmin.service.ConverterUri
 import com.example.clientadmin.service.impl.LoginApiServiceImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 
 class LoginViewModel: ViewModel() {
@@ -33,10 +35,11 @@ class LoginViewModel: ViewModel() {
         }
     }
 
-    fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: MultipartBody.Part){
+    fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, context: Context, pic: Uri){
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = loginApiService.adminRegister(token, adminCreateRequestDto, pic).awaitResponse()
+                val multipartImage = ConverterUri.convert(context, pic, "profilePic")!!
+                val response = loginApiService.adminRegister(token, adminCreateRequestDto, multipartImage).awaitResponse()
                 if (response.isSuccessful) {
                     response.body()?.let { _user.value = Admin.fromDto(it) }
                 } else {
