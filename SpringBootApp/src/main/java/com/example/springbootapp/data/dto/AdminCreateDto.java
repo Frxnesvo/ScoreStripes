@@ -26,9 +26,9 @@ public class AdminCreateDto {
     private LocalDate birthDate;
 
     @NotNull
-    @ValidImageExtension
-    private MultipartFile imageProfile;
+    private Gender gender;
 
     @NotNull
-    private Gender gender;
+    @ValidImageExtension
+    private MultipartFile imageProfile;
 }
