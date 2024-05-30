@@ -34,10 +34,10 @@ class GoogleAuth(private val context: Context){
         val request = buildRequest(googleIdOption)
 
         try {
-            val result = credentialManager.getCredential(context, request)
-            if(result.credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+            val credential = credentialManager.getCredential(context, request).credential
+            if(credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
                 try {
-                    return GoogleIdTokenCredential.createFrom(result.credential.data).idToken
+                    return GoogleIdTokenCredential.createFrom(credential.data).idToken
                 }catch (e: GoogleIdTokenParsingException) {
                     Log.e("INVALID GOOGLE ID TOKEN", "Received an invalid google id token response", e)
                 }

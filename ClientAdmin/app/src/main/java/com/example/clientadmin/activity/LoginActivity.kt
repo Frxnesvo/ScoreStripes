@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -98,6 +99,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {
+                Log.e("prova debug", "ciccio")
                 loginViewModel.register(
                     token = token,
                     AdminCreateRequestDto(
@@ -110,9 +112,12 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                     context = context,
                     pic = adminState.profilePic
                 )
+
                 if (loginViewModel.user.value != null){
+                    Log.e("stampa utente", "not null")
                     navController.navigate("scaffold/${token}")
                 }
+                Log.e("stampa utente", "null")
 
             }
         }

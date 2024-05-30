@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class JwtUtils {
     private static final SecretKey SECRET = new SecretKeySpec(Base64.getDecoder().decode(SecurityConstants.JWT_SECRET), "HmacSHA256");
-
+    private static final SecretKey REGISTRATION_SECRET = new SecretKeySpec(Base64.getDecoder().decode(SecurityConstants.JWT_REGISTRATION_SECRET), "HmacSHA256");
     public static String createAccessToken(String userId, String issuer, List<String> roles){
         try{
             //creazione del payload
@@ -91,5 +91,36 @@ public class JwtUtils {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
         return new UsernamePasswordAuthenticationToken(userId, null, authorities);
+    }
+
+    public static String createRegistrationToken(String email, String firstName, String lastName){
+        try{
+            JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                    .subject(email)
+                    .claim("firstname", firstName)
+                    .claim("lastName", lastName)
+                    .issueTime(new Date())
+                    .build();
+
+            Payload payload = new Payload(claims.toJSONObject());
+
+            JWSObject jwsObject = new JWSObject(new JWSHeader(JWSAlgorithm.HS256), payload);
+            jwsObject.sign(new MACSigner(SECRET));
+            return  jwsObject.serialize();
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static JWTClaimsSet decodeRegistrationToken(String token) throws ParseException, JOSEException, BadJOSEException {
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        signedJWT.verify(new MACVerifier(SECRET));
+        ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
+
+        JWSKeySelector<SecurityContext> keySelector = new JWSVerificationKeySelector<>(JWSAlgorithm.HS256,
+                new ImmutableSecret<>(SECRET));
+        jwtProcessor.setJWSKeySelector(keySelector);
+        jwtProcessor.process(signedJWT, null);
+        return signedJWT.getJWTClaimsSet();
     }
 }

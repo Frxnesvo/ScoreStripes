@@ -12,5 +12,7 @@ public interface AdminService {
 
     Optional<User> findByEmail(String email);
 
-    User createAdmin(OAuth2User oauth2User, AdminCreateDto adminDto);
+    User createAdmin(AdminCreateDto adminDto, String header);
+
+    Optional<User> getUserByHeader(String header);
 }

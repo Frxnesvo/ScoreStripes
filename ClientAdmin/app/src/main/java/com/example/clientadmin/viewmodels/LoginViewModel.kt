@@ -21,7 +21,7 @@ class LoginViewModel: ViewModel() {
     fun getAdminFromToken(token: String){
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = RetrofitHandler.loginApi.checkAdminLogin(token).awaitResponse()
+                val response = RetrofitHandler.loginApi.checkAdminLogin("Bearer $token").awaitResponse()
                 if (response.isSuccessful) {
                     response.body()?.let { _user.value = Admin.fromDto(it) }
                 } else {
