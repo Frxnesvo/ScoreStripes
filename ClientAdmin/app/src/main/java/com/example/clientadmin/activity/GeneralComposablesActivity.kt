@@ -19,12 +19,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -125,7 +127,7 @@ fun Back(onClick: () -> Unit){
                 .clickable(onClick = onClick),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Rounded.KeyboardArrowLeft, contentDescription = "back", tint = colorResource(id = R.color.secondary))
+            Icon(Icons.AutoMirrored.Rounded.KeyboardArrowLeft, contentDescription = "back", tint = colorResource(id = R.color.secondary))
         }
     }
 }
@@ -137,7 +139,8 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
             .fillMaxWidth()
             .height(150.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(30.dp)
+        shape = RoundedCornerShape(30.dp),
+        elevation = CardDefaults.cardElevation(2.dp)
     )
     {
         Box{
@@ -159,7 +162,6 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
                 )
             }
         }
-
     }
 }
 

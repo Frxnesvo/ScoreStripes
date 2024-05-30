@@ -8,7 +8,6 @@ import com.example.clientadmin.service.interfaces.OrdersApiService
 import com.example.clientadmin.service.interfaces.ProductApiService
 import com.example.clientadmin.service.interfaces.ProductVariantApiService
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,8 +23,8 @@ object RetrofitHandler {
         .build()
 
     private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .add(LocalDateAdapter())
+        //.add(KotlinJsonAdapterFactory()) //dovrebbe non essere necessario usando code gen di moshi
+        .add(LocalDateAdapter()) // non so se è ancora necessario, per il momento lascio
         .build()
 
     private val retrofit by lazy {

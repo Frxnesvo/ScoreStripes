@@ -119,8 +119,8 @@ fun HomeButton(){
             modifier = Modifier
                 .padding(10.dp)
         ){
-            ButtonText(text = "COLLEZIONE ", colorId = R.color.white)
-            ButtonText(text = "2024", colorId = R.color.red)
+            //ButtonText(text = "COLLEZIONE ", colorId = R.color.white)
+            //ButtonText(text = "2024", colorId = R.color.red)
         }
 
     }
@@ -144,18 +144,7 @@ fun ProductList(products: List<ExampleProduct>){
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                ProductImage(size = 120)
 
-                ProductDetail(
-                    team = product.team,
-                    kit = product.homekit,
-                    teamFont = 14,
-                    kitFont = 12,
-                    teamSpacing = 1,
-                    kitSpacing = 0,
-                    gap = 5,
-                    fontWeight = FontWeight.Bold
-                )
             }
 
         }

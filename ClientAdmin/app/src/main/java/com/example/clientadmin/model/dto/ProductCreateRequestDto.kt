@@ -4,7 +4,6 @@ import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
 import com.squareup.moshi.JsonClass
-import okhttp3.MultipartBody
 
 @JsonClass(generateAdapter = true)
 data class ProductCreateRequestDto (

@@ -2,7 +2,9 @@ package com.example.clientadmin.model.dto
 
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class ProductDto (
     val id: String,
     val name: String,

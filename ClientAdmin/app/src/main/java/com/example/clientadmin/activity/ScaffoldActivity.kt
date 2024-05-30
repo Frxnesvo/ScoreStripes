@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
@@ -69,17 +69,19 @@ fun Scaffold(loginViewModel: LoginViewModel, token: String) {
                 end = 10.dp
             )
         ){
-            loginViewModel.user.value?.let {
+            loginViewModel.user.collectAsState().value.let {
                 admin ->
-                NavigationScaffold(
-                    navHostController = navController,
-                    customerViewModel = CustomerViewModel(),
-                    productViewModel = ProductViewModel(),
-                    clubViewModel = ClubViewModel(),
-                    leagueViewModel = LeagueViewModel(),
-                    selectedScreen = selectedScreen,
-                    admin = admin
-                )
+                if (admin != null) {
+                    NavigationScaffold(
+                        navHostController = navController,
+                        customerViewModel = CustomerViewModel(),
+                        productViewModel = ProductViewModel(),
+                        clubViewModel = ClubViewModel(),
+                        leagueViewModel = LeagueViewModel(),
+                        selectedScreen = selectedScreen,
+                        admin = admin
+                    )
+                }
             }
         }
     }
@@ -123,7 +125,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
         }
         BottomBarButton(
             indexColor = if (Screen.PRODUCTS == selectedScreen.value) R.color.secondary else R.color.black,
-            imageVector = Icons.Outlined.List
+            imageVector = Icons.AutoMirrored.Outlined.List
         ) {
             selectedScreen.value = Screen.PRODUCTS
             navHostController.navigate("products")

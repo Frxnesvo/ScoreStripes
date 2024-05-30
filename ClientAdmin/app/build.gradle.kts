@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -51,9 +52,11 @@ android {
 
 dependencies {
     implementation(libs.retrofit)
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
     implementation (libs.converter.moshi)
+
+    implementation(libs.moshi)
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+
     implementation (libs.coil.compose)
     implementation (libs.okhttp)
     implementation (libs.logging.interceptor)
