@@ -56,14 +56,14 @@ fun IndexPage(navController : NavHostController) {
                     background = R.color.secondary50,
                     text = stringResource(id = R.string.sign_in)
                 ) {
-
+                    //TODO
                 }
 
                 TextButton(
                     onClick = { navController.navigate("scaffold") }
                 ) {
                     Text(
-                        text = "enter as guest",
+                        text = stringResource(id = R.string.enter_as_guest),
                         color = colorResource(id = R.color.white50),
                         style = TextStyle(
                             fontSize = 16.sp,

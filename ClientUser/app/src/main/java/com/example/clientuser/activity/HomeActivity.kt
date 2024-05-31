@@ -86,13 +86,11 @@ fun Greetings(){
             )
         }
 
-        Icon(
+        BoxIcon(
             background = colorResource(id = R.color.red),
-            icon = Icons.Outlined.Search,
-            size = 40,
+            content = Icons.Outlined.Search,
             iconColor = colorResource(R.color.white),
-            onclick = {}
-        )
+        ){}
     }
 }
 

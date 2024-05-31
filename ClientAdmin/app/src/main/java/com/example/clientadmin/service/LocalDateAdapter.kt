@@ -5,6 +5,8 @@ import com.squareup.moshi.ToJson
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+
+//todo vedere se ancora necessaria
 class LocalDateAdapter {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
     @ToJson

@@ -5,5 +5,24 @@
     <string name="stripes">STRIPES</string>
 
     <string name="sign_in">SIGN IN WITH GOOGLE</string>
+    <string name="enter_as_guest">enter as guest</string>
     <string name="sign_up">SIGN UP</string>
+
+    <string name="name">NAME</string>
+    <string name="brand">BRAND</string>
+    <string name="price">PRICE</string>
+    <string name="description">DESCRIPTION</string>
+    <string name="username">USERNAME</string>
+    <string name="first_name">FIRST NAME</string>
+    <string name="last_name">LAST NAME</string>
+    <string name="email">EMAIL</string>
+    <string name="birth_date">BIRTH DAY</string>
+    <string name="gender">GENDER</string>
+    <string name="league">NAME LEAGUE</string>
+    <string name="club">NAME CLUB</string>
+    <string name="favorite_club">FAVORITE CLUB</string>
+
+    <string name="create">CREATE</string>
+    <string name="update">UPDATE</string>
+    <string name="search">SEARCH</string>
 </resources>

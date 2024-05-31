@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
@@ -146,8 +146,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
 fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: ImageVector?, function: () -> Unit){
     Box(
         modifier = Modifier
-            .width(40.dp)
-            .height(40.dp)
+            .size(40.dp)
             .clickable(onClick = function)
             .background(
                 if (background != null) colorResource(id = background) else Color.Transparent,
@@ -201,7 +200,7 @@ fun NavigationScaffold(
         }
         composable(
             route = "user/{costumer}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            arguments = listOf(navArgument("costumer"){ type = NavType.StringType })
         ){
             it.arguments?.getString("costumer")?.let {
                 customerString ->

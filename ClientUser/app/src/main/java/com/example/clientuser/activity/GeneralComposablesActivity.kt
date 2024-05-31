@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -28,12 +30,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,8 +57,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 import java.time.LocalDate
 
@@ -87,43 +87,41 @@ fun Title(colorText: Color = colorResource(id = R.color.black)){
 }
 
 @Composable
-fun Icon(background: Color, icon: ImageVector, size: Int, iconColor : Color, iconSize: Int = 24, onclick: () -> Unit){
+fun BoxIcon(background: Color, iconColor : Color, content: Any, onclick: () -> Unit){
     Box(
         modifier = Modifier
             .clickable { onclick() }
-            .size(size.dp)
+            .size(40.dp)
             .background(background, RoundedCornerShape(20.dp)),
         contentAlignment = Alignment.Center
     ){
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = iconColor,
-            modifier = Modifier
-                .size(iconSize.dp)
-        )
-    }
-}
-
-@Composable
-fun SizeIcon(letter: String, size: Int, background: Color, sizeColor: Color, font: Int, onClick: () -> Unit){
-    Box(
-        modifier = Modifier
-            .clickable {
-                onClick()
+        when (content) {
+            is ImageVector -> {
+                Icon(
+                    imageVector = content,
+                    contentDescription = null,
+                    tint = iconColor
+                )
             }
-            .size(size.dp)
-            .background(background, RoundedCornerShape(20.dp)),
-        contentAlignment = Alignment.Center
-    ){
-        Text(
-            text = letter,
-            color = sizeColor,
-            style = TextStyle(
-                fontSize = font.sp,
-                fontWeight = FontWeight.Bold
-            )
-        )
+            is String -> {
+                Text(
+                    text = content,
+                    color = iconColor,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            is Uri -> {
+                Image(
+                    painter = rememberAsyncImagePainter(content),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, iconColor, CircleShape)
+                )
+            }
+        }
     }
 }
 
@@ -161,11 +159,16 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fraction: Float = 1f, readOnly: Boolean = false, onValueChange: (String) -> Unit) {
+fun CustomComboBox(
+    options: List<Any>,
+    selectedOption: MutableState<String>,
+    readOnly: Boolean = false,
+    onValueChange: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.fillMaxWidth(fraction)
+        modifier = Modifier.fillMaxWidth()
     ){
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -199,10 +202,8 @@ fun CustomComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String
                     .background(colorResource(id = R.color.white))
             ) {
 
-                val optionList by options.collectAsState(initial = listOf())
-
-                if (optionList.isNotEmpty())
-                    optionList.forEach { option ->
+                if (options.isNotEmpty())
+                    options.forEach { option ->
                         DropdownMenuItem(
                             text = { Text(text = "$option") },
                             onClick = {
@@ -222,7 +223,11 @@ fun CustomComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String
 }
 
 @Composable
-fun CustomButton(text: String, background: Int, onClick: () -> Unit) {
+fun CustomButton(
+    text: String,
+    background: Int,
+    onClick: () -> Unit
+) {
     Button(
         onClick = onClick,
         modifier = Modifier
@@ -335,15 +340,15 @@ fun CustomDatePicker(
     ){
         Text(text = text)
         CustomComboBox(
-            options = flowOf((1..31).toList()),
+            options = (1..31).toList(),
             selectedOption = remember { mutableStateOf(date.value.dayOfMonth.toString()) }
         ) { onValueChange(LocalDate.of(date.value.year, date.value.month, it.toInt())) }
         CustomComboBox(
-            options = flowOf((1..12).toList()),
+            options = (1..12).toList(),
             selectedOption = remember { mutableStateOf(date.value.monthValue.toString()) }
         ) { onValueChange(LocalDate.of(date.value.year, it.toInt(), date.value.dayOfMonth)) }
         CustomComboBox(
-            options = flowOf((1900..LocalDate.now().year).toList() ),
+            options = (LocalDate.now().year downTo 1924).toList(),
             selectedOption = remember { mutableStateOf(date.value.year.toString()) }
         ) { onValueChange(LocalDate.of(it.toInt(), date.value.month, date.value.dayOfMonth)) }
     }

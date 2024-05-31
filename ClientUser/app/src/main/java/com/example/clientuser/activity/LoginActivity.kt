@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import kotlinx.coroutines.flow.flowOf
+import com.example.clientuser.model.Enum.Gender
 
 @Composable
 fun Login(token: String, navController : NavHostController) {
@@ -40,47 +41,45 @@ fun Login(token: String, navController : NavHostController) {
         ) {
             Title()
 
-            /*ImagePicker(
-                imageUri = adminState.profilePic,
-                size = 80.dp
+            ImagePicker(
+                imageUri = Uri.EMPTY,
+                size = 120.dp
             ){
-                uri ->
-                if (uri != null) {
+                if (it != null) {
 
                 }
             }
 
             CustomTextField(
-                value = adminState.username,
+                value = "adminState.username",
                 text = stringResource(id = R.string.username)
             ){
 
             }
 
             CustomTextField(
-                value = adminState.firstName,
+                value = "adminState.firstName",
                 text = stringResource(id = R.string.first_name)
             ){
 
             }
 
             CustomTextField(
-                value = adminState.lastName,
+                value = "adminState.lastName",
                 text = stringResource(id = R.string.last_name)
             ){
 
             }
 
             CustomDatePicker(
-                date = remember { mutableStateOf(adminState.birthdate) },
                 text = stringResource(id = R.string.birth_date)
             ){
 
             }
 
             CustomComboBox(
-                options = flowOf(Gender.entries),
-                selectedOption = remember { mutableStateOf(adminState.gender.toString()) }
+                options = Gender.entries,
+                selectedOption = remember { mutableStateOf("adminState.gender.toString()") }
             ) {
 
             }
@@ -90,7 +89,7 @@ fun Login(token: String, navController : NavHostController) {
                 background = R.color.secondary
             ) {
 
-            }*/
+            }
         }
     }
 }
