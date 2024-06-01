@@ -11,7 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface LoginApiService {
-    @GET("/api/v1/auth/login")
+    @GET("/api/v1/auth/admin-login")
     fun checkAdminLogin(@Header("Authorization") token: String): Call<AdminDto>
 
     @Multipart

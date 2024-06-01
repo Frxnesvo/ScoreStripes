@@ -23,9 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.viewmodel.LoginViewModel
 
 @Composable
-fun IndexPage(navController : NavHostController) {
+fun IndexPage(navController : NavHostController, loginViewModel: LoginViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()

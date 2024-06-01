@@ -15,6 +15,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.clientuser.R
 import com.example.clientuser.ui.theme.ClientUserTheme
+import com.example.clientuser.viewmodel.LoginViewModel
+import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +27,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colorResource(id = R.color.primary)
                 ) {
-                    Navigation(navController = rememberNavController())
+                    Navigation(
+                        navController = rememberNavController(),
+                        loginViewModel = LoginViewModel(),
+                        loginFormViewModel = LoginFormViewModel()
+                    )
                 }
             }
         }
@@ -33,7 +39,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Navigation(navController: NavHostController){
+fun Navigation(navController: NavHostController, loginViewModel : LoginViewModel, loginFormViewModel: LoginFormViewModel){
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
         navController = navController,
@@ -45,7 +51,7 @@ fun Navigation(navController: NavHostController){
         ){
             IndexPage(
                 navController = navController,
-                //loginViewModel = TODO("fare il view model")
+                loginViewModel = loginViewModel
             )
         }
 
@@ -59,8 +65,8 @@ fun Navigation(navController: NavHostController){
                     Login(
                         token = token,
                         navController = navController,
-                        //loginViewModel = TODO("fare il view model"),
-                        //loginFormViewModel = TODO("fare il form view model")
+                        loginViewModel = loginViewModel,
+                        loginFormViewModel = loginFormViewModel
                     )
             }
         }
