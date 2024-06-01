@@ -69,6 +69,17 @@ public class GlobalExceptionHandler {
         return createErrorRespose(req, e.getMessage());
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDto onUserAlreadyExistsException(WebRequest req, UserAlreadyExistsException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDto onInvalidTokenException(WebRequest req, InvalidTokenException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto onException(WebRequest req, Exception e) {

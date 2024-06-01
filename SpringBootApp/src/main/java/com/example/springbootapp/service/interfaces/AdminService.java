@@ -1,18 +1,19 @@
 package com.example.springbootapp.service.interfaces;
 
-import com.example.springbootapp.data.dao.UserDao;
-import com.example.springbootapp.data.dto.AdminCreateDto;
+import com.example.springbootapp.data.dto.AdminCreateRequestDto;
 import com.example.springbootapp.data.entities.Admin;
 import com.example.springbootapp.data.entities.User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Optional;
 
 public interface AdminService {
 
-    Optional<User> findByEmail(String email);
+    Admin register(AdminCreateRequestDto adminDto, String header, HttpServletResponse response);
 
-    User createAdmin(AdminCreateDto adminDto, String header);
+    Admin login(String header, HttpServletResponse response);
 
-    Optional<User> getUserByHeader(String header);
+    void addToken(HttpServletResponse response, Admin admin);
+
+
 }

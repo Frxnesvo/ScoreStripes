@@ -1,7 +1,6 @@
 package com.example.springbootapp.data.dto;
 
 import com.example.springbootapp.data.entities.Enums.Gender;
-import com.example.springbootapp.data.entities.Enums.Role;
 import com.example.springbootapp.security.customValidators.ValidImageExtension;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class AdminCreateDto {
+public class AdminCreateRequestDto {
 
     @NotBlank
     @Size(min = 3, max = 20)

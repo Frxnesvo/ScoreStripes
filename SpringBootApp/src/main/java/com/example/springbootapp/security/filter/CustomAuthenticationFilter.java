@@ -15,6 +15,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
     @Override
@@ -23,9 +24,10 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader(AUTHORIZATION);
 
-        if(header != null && header.startsWith(SecurityConstants.BEARER_TOKEN_PREFIX) &&
-                !uri.endsWith(SecurityConstants.LOGIN_URI_ENDING) && !uri.endsWith(SecurityConstants.REGISTER_ADMIN_URI_ENDING) &&
-                !uri.endsWith(SecurityConstants.REGISTER_CUSTOMER_URI_ENDING)){
+        if(header != null && header.startsWith(SecurityConstants.BEARER_TOKEN_PREFIX) && !uri.endsWith(SecurityConstants.ADMIN_LOGIN_URI_ENDING)
+                && !uri.endsWith(SecurityConstants.CUSTOMER_LOGIN_URI_ENDING) && !uri.endsWith(SecurityConstants.REGISTER_ADMIN_URI_ENDING)
+                && !uri.endsWith(SecurityConstants.REGISTER_CUSTOMER_URI_ENDING)){
+
             try {
                 String token = header.substring("Bearer ".length());
                 UsernamePasswordAuthenticationToken authenticationToken = JwtUtils.parseToken(token);

@@ -43,8 +43,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public User getCurrentUser(){
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails= (CustomUserDetails) authentication.getPrincipal();
-        return userDao.findById(userDetails.getID()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        String userId = (String) authentication.getPrincipal();
+        return userDao.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     public String getCurrentUserId(){
@@ -52,4 +52,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         CustomUserDetails userDetails= (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getID();
     }
+
 }
