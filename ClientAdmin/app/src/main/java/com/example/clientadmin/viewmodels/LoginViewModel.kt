@@ -39,11 +39,9 @@ class LoginViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitHandler.loginApi.adminRegister(
-                    token,
+                    "Bearer $token",
                     AdminCreateRequestDto(
                         username = adminState.username,
-                        firstName = adminState.firstName,
-                        lastName = adminState.lastName,
                         birthDate = adminState.birthdate,
                         gender = adminState.gender,
                         pic = Converter.convertUriToBase64(context, adminState.profilePic)

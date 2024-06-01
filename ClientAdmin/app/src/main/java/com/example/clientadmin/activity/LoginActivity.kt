@@ -68,20 +68,6 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 loginFormViewModel.updateUsername(it)
             }
 
-            CustomTextField(
-                value = adminState.firstName,
-                text = stringResource(id = R.string.first_name)
-            ){
-                loginFormViewModel.updateFirstName(it)
-            }
-
-            CustomTextField(
-                value = adminState.lastName,
-                text = stringResource(id = R.string.last_name)
-            ){
-                loginFormViewModel.updateLastName(it)
-            }
-
             CustomDatePicker(
                 date = remember { mutableStateOf(adminState.birthdate) },
                 text = stringResource(id = R.string.birth_date)
@@ -100,11 +86,10 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {
-                Log.e("prova debug", "ciccio")
                 loginViewModel.register(
                     token = token,
-                    adminState = adminState,
-                    context = context
+                    context = context,
+                    adminState = adminState
                 )
 
                 if (loginViewModel.user.value != null){

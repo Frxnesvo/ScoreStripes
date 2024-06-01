@@ -9,8 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 
 data class AdminState(
-    val firstName : String = "",
-    val lastName : String = "",
     val email : String = "",
     val username : String = "",
     val birthdate : LocalDate = LocalDate.now(),
@@ -20,8 +18,6 @@ data class AdminState(
     //error
     val isProfilePicError: Boolean = !Admin.validateProfilePic(profilePic),
     val isUsernameError: Boolean = !Admin.validateUsername(username),
-    val isFirstNameError: Boolean = !Admin.validateFirstName(firstName),
-    val isLastNameError: Boolean = !Admin.validateLastName(lastName),
     val isEmailError: Boolean = !Admin.validateEmail(email),
     val isBirthdateError: Boolean = !Admin.validateBirthdate(birthdate)
 )
@@ -48,20 +44,6 @@ class LoginFormViewModel {
         _adminState.value = _adminState.value.copy(
             username = username,
             isUsernameError = !Admin.validateUsername(username)
-        )
-    }
-
-    fun updateFirstName(firstName: String){
-        _adminState.value = _adminState.value.copy(
-            firstName = firstName,
-            isFirstNameError = !Admin.validateFirstName(firstName)
-        )
-    }
-
-    fun updateLastName(lastName: String){
-        _adminState.value = _adminState.value.copy(
-            lastName = lastName,
-            isLastNameError = !Admin.validateLastName(lastName)
         )
     }
 

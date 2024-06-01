@@ -71,6 +71,7 @@ fun Scaffold(loginViewModel: LoginViewModel, token: String) {
         ){
             loginViewModel.user.collectAsState().value.let {
                 admin ->
+
                 if (admin != null) {
                     NavigationScaffold(
                         navHostController = navController,

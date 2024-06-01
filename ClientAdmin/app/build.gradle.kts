@@ -55,6 +55,7 @@ dependencies {
     implementation (libs.converter.moshi)
 
     implementation(libs.moshi)
+    implementation(libs.androidx.media3.common)
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
 
     implementation (libs.coil.compose)
