@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.service.Converter
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import kotlinx.coroutines.flow.flowOf
@@ -102,15 +103,8 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 Log.e("prova debug", "ciccio")
                 loginViewModel.register(
                     token = token,
-                    AdminCreateRequestDto(
-                        username = adminState.username,
-                        firstName = adminState.firstName,
-                        lastName = adminState.lastName,
-                        birthDate = adminState.birthdate,
-                        gender = adminState.gender
-                    ),
-                    context = context,
-                    pic = adminState.profilePic
+                    adminState = adminState,
+                    context = context
                 )
 
                 if (loginViewModel.user.value != null){

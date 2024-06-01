@@ -19,6 +19,6 @@ interface LoginApiService {
     fun adminRegister(
         @Header("Authorization") token: String,
         @Part("userDto") userDto: AdminCreateRequestDto,
-        @Part imageProfile: MultipartBody.Part
+        //@Part imageProfile: MultipartBody.Part
     ): Call<AdminDto>
 }
