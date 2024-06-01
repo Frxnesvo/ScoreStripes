@@ -10,17 +10,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.ShoppingCart
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -32,14 +33,14 @@ import com.example.clientuser.R
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
-
+@Preview
 @Composable
 fun Scaffold() {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
-    androidx.compose.material3.Scaffold(
-        bottomBar = { BottomBar(navController, selectedScreen) },
+    Scaffold(
+        bottomBar = { BottomBar(navController, selectedScreen) }
     ) {
         Box(
             modifier = Modifier
@@ -50,7 +51,10 @@ fun Scaffold() {
                     end = 10.dp
                 )
         ) {
-
+            NavigationScaffold(
+                navHostController = navController,
+                selectedScreen = selectedScreen
+            )
         }
     }
 }
@@ -69,8 +73,8 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             )
     ) {
         BoxIcon(
-            background = colorResource(id = R.color.transparent),
-            iconColor = colorResource(id = if (Screen.HOME == selectedScreen.value) R.color.secondary else R.color.black),
+            background = colorResource(id = if (Screen.HOME == selectedScreen.value) R.color.secondary else R.color.transparent),
+            iconColor = colorResource(id = if (Screen.HOME == selectedScreen.value) R.color.white else R.color.black50),
             content = "SS"
         ) {
             selectedScreen.value = Screen.HOME
@@ -78,27 +82,27 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
         }
 
         BoxIcon(
-            background = colorResource(id = R.color.transparent),
-            iconColor = colorResource(id = if (Screen.WISHLIST == selectedScreen.value) R.color.secondary else R.color.black),
-            content = Icons.Rounded.Favorite
+            background = colorResource(id = if (Screen.WISHLIST == selectedScreen.value) R.color.secondary else R.color.transparent),
+            iconColor = colorResource(id = if (Screen.WISHLIST == selectedScreen.value) R.color.white else R.color.black50),
+            content = Icons.Outlined.FavoriteBorder
         ) {
             selectedScreen.value = Screen.WISHLIST
             navHostController.navigate("wishlist")
         }
 
         BoxIcon(
-            background = colorResource(id = R.color.transparent),
-            iconColor = colorResource(id = if (Screen.CART == selectedScreen.value) R.color.secondary else R.color.black),
-            content = Icons.Rounded.ShoppingCart
+            background = colorResource(id = if (Screen.CART == selectedScreen.value) R.color.secondary else R.color.transparent),
+            iconColor = colorResource(id = if (Screen.CART == selectedScreen.value) R.color.white else R.color.black50),
+            content = Icons.Outlined.ShoppingCart
         ) {
             selectedScreen.value = Screen.CART
             navHostController.navigate("cart")
         }
 
         BoxIcon(
-            background = colorResource(id = R.color.transparent),
-            iconColor = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.secondary else R.color.transparent),
-            content = if(false) Icons.Rounded.ShoppingCart else Uri.EMPTY //todo verificare se si è loggati
+            background = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.secondary else R.color.transparent),
+            iconColor = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.white else R.color.black50),
+            content = if(true) Icons.Outlined.Person else Uri.EMPTY //todo verificare se si è loggati
         ) {
             selectedScreen.value = Screen.SETTINGS
             navHostController.navigate("settings")
@@ -120,7 +124,7 @@ fun NavigationScaffold(
         composable(
             route = "home"
         ) {
-
+            Home(navHostController = navHostController)
         }
 
         //WISHLIST
@@ -139,26 +143,43 @@ fun NavigationScaffold(
 
         //SETTINGS
         composable(
-            route = "settings"
+            route = "settings",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
-
+            CustomerProfile(navHostController = navHostController)
         }
         composable(
-            route = "details/{id}"
+            route = "details/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
-
+            it.arguments?.getString("id")?.let {
+                //todo prendere i dati tramite id e passarli alla schermata
+                UserDetails(
+                    customer = TODO("passare il costumer"),
+                    navHostController = navHostController
+                )
+            }
         }
         composable(
-            route = "orders/{id}"
+            route = "orders/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
-
+            it.arguments?.getString("id")?.let {
+                Orders(
+                    orders = TODO("passare la lista degli ordini"),
+                    navHostController = navHostController
+                )
+            }
         }
         composable(
             route = "addresses/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("id")?.let {
-
+                Addresses(
+                    addresses = TODO("passare la lista degli indirizzi"),
+                    navHostController = navHostController
+                )
             }
         }
     }

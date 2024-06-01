@@ -26,7 +26,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -196,11 +195,9 @@ fun CustomComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String
             OutlinedTextField(
                 value = selectedOption.value,
                 onValueChange = onValueChange,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 readOnly = readOnly,
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth(),
+                modifier = Modifier.menuAnchor().fillMaxWidth(),
                 shape = RoundedCornerShape(30.dp),
                 textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
                 colors = OutlinedTextFieldDefaults.colors(

@@ -1,150 +1,156 @@
 package com.example.clientuser.activity
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.ExampleProduct
+import com.example.clientuser.model.ProductSummary
+import com.example.clientuser.model.dto.ClubDto
+import com.example.clientuser.model.dto.LeagueDto
+import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.viewmodel.ProductViewModel
 
 @Composable
-fun Home(viewModel: ProductViewModel){
+fun Home(
+    //viewModel: ProductViewModel,
+    navHostController: NavHostController
+){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
-            .verticalScroll(
-                state = rememberScrollState(),
-                enabled = true
-            )
+            .verticalScroll(rememberScrollState())
     ){
         Title()
-        Greetings()
-        HomeButton()
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ){
-            ProductList(viewModel.getMostSelledProducts())
-        }
+        Greetings(
+            name = " " + "CIRO"
+        ){}
+
+        BoxImage(
+            height = 300.dp,
+            boxTitle = stringResource(id = R.string.discover),
+            painter = painterResource(id = R.drawable.home)
+        ) {  }
+
+        Section(
+            name = stringResource(id = R.string.best_seller),
+            items = listOf(), //TODO get dei più venduti
+            navHostController = navHostController
+        )
+
+        Section(
+            name = stringResource(id = R.string.buy_by_club),
+            items = listOf(), //TODO get dei club
+            navHostController = navHostController
+        )
+
+        Section(
+            name = stringResource(id = R.string.buy_by_league),
+            items = listOf(), //TODO get delle leghe
+            navHostController = navHostController
+        )
     }
 }
 
 
 @Composable
-fun Greetings(){
+fun Greetings(
+    name: String,
+    onClickSearch: () -> Unit
+){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
     ){
-        val textStyle = TextStyle(
-            fontSize = 16.sp,
-            letterSpacing = 3.sp
-        )
         Row{
             Text(
-                text = "CIAO, ",
-                style = textStyle
+                text = stringResource(id = R.string.greetings),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal
             )
 
             Text(
-                text = "FRANCESCO",
-                color = colorResource(id = R.color.red),
-                style = textStyle,
+                text = name,
+                color = colorResource(id = R.color.secondary),
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
         }
 
         BoxIcon(
-            background = colorResource(id = R.color.red),
+            background = colorResource(id = R.color.secondary),
             content = Icons.Outlined.Search,
             iconColor = colorResource(R.color.white),
-        ){}
+            onclick = onClickSearch
+        )
     }
 }
 
 @Composable
-fun HomeButton(){
-    Box(
-        modifier = Modifier
-            .height(250.dp)
-            .fillMaxWidth()
-            .background(colorResource(id = R.color.black50), RoundedCornerShape(30.dp))
-            .clickable { /* TODO */ },
-        contentAlignment = Alignment.BottomCenter
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.home),
-            contentDescription = "button image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(30.dp))
+fun Section(
+    name: String,
+    items: List<Any>,
+    navHostController: NavHostController
+){
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Text(
+            text = name,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
         )
 
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
         ){
-            //ButtonText(text = "COLLEZIONE ", colorId = R.color.white)
-            //ButtonText(text = "2024", colorId = R.color.red)
-        }
-
-    }
-}
-
-@Composable
-fun ProductList(products: List<ExampleProduct>){
-    Text(
-        text = "I PIÙ VENDUTI",
-        style = TextStyle(
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 3.sp
-        )
-    )
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
-    ){
-        items(products) { product ->
-            Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-
-            }
-
+            if (items.isEmpty())
+                item {
+                    Text(
+                        text = stringResource(id = R.string.nothing_to_show),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            else
+                items(items){
+                    when (it) {
+                        is ProductSummary -> key(it.id) {
+                            ProductItem(it){ navHostController.navigate("product/${it.id}") }
+                        }
+                        is ClubDto -> key(it.id) {
+                            ClubItem(it){ TODO("navHostController.navigate()")}
+                        }
+                        is LeagueDto -> key(it.id) {
+                            LeagueItem(it){ TODO("navHostController.navigate()") }
+                        }
+                    }
+                }
         }
     }
 }

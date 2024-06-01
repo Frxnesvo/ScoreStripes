@@ -75,13 +75,13 @@ fun Home(selectedScreen: MutableState<Screen>, homeViewModel: HomeViewModel, nav
 
         Section(
             nameSection = stringResource(id = R.string.best_sellers),
-            products = listOf(),
+            products = listOf(), //TODO
             navHostController = navHostController
         )
 
         Section(
             nameSection = stringResource(id = R.string.least_sold),
-            products = listOf(),
+            products = listOf(), //TODO
             navHostController = navHostController
         )
     }

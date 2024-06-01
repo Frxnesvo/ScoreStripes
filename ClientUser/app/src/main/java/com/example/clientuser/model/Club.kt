@@ -1,9 +1,22 @@
 package com.example.clientuser.model
 
-data class Club(
-    val id: String,
+import android.net.Uri
+
+class Club(
     val name: String,
-    val picUrl: String,
-    val league: League,
-    val products: List<Product>
-)
+    val image: Uri,
+    private val league: String
+){
+    init {
+        require(validateName(name)) { "Invalid name: must be between 3 and 40 characters" }
+        require(validateImage(image)) { "Invalid image: cannot be empty" }
+    }
+    companion object{
+        fun validateName(name: String): Boolean{
+            return name.length in 3..40
+        }
+        fun validateImage(image: Uri): Boolean{
+            return image != Uri.EMPTY
+        }
+    }
+}

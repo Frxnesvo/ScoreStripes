@@ -8,6 +8,14 @@
     <string name="enter_as_guest">enter as guest</string>
     <string name="sign_up">SIGN UP</string>
 
+    <string name="greetings">HELLO,</string>
+    <string name="discover">DISCOVER</string>
+    <string name="best_seller">BEST SELLER</string>
+    <string name="buy_by_club">BUY BY CLUB</string>
+    <string name="buy_by_league">BUY BY LEAGUE</string>
+
+    <string name="nothing_to_show">nothing to show</string>
+
     <string name="name">NAME</string>
     <string name="brand">BRAND</string>
     <string name="price">PRICE</string>
@@ -22,7 +30,13 @@
     <string name="club">NAME CLUB</string>
     <string name="favorite_club">FAVORITE CLUB</string>
 
+    <string name="orders">ORDERS</string>
+    <string name="addresses">ADDRESSES</string>
+    <string name="personal_data">PERSONAL DATA</string>
+    <string name="details">DETAILS</string>
+
     <string name="create">CREATE</string>
+    <string name="edit">EDIT</string>
     <string name="update">UPDATE</string>
     <string name="search">SEARCH</string>
 </resources>

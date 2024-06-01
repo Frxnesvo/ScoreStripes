@@ -1,4 +1,4 @@
-package com.example.clientuser.model.Enum
+package com.example.clientuser.model.enumerator
 
 enum class ProductCategory {
     JERSEY,

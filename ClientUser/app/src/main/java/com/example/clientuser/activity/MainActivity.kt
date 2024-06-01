@@ -40,7 +40,9 @@ fun Navigation(navController: NavHostController){
         startDestination = "index"
     ){
         //INDEX
-        composable(route = "index"){
+        composable(
+            route = "index"
+        ){
             IndexPage(
                 navController = navController,
                 //loginViewModel = TODO("fare il view model")
@@ -48,7 +50,9 @@ fun Navigation(navController: NavHostController){
         }
 
         //REGISTER
-        composable(route = "register/{token}"){
+        composable(
+            route = "register/{token}"
+        ){
             it.arguments?.getString("token").let {
                 token ->
                 if (token != null)
@@ -62,13 +66,10 @@ fun Navigation(navController: NavHostController){
         }
 
         //SCAFFOLD
-        composable(route = "scaffold/{token}"){
-            it.arguments?.getString("token").let {
-                token ->
-                if (token != null) {
-                    //Scaffold(loginViewModel = loginViewModel, token = token)
-                }
-            }
+        composable(
+            route = "scaffold"
+        ){
+            Scaffold()
         }
     }
 }

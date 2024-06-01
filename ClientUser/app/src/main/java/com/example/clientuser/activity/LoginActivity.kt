@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.Enum.Gender
+import com.example.clientuser.model.enumerator.Gender
 
 @Composable
 fun Login(token: String, navController : NavHostController) {

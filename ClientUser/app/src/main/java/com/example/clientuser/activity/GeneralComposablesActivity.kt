@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -55,6 +56,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
 
@@ -63,31 +65,60 @@ import java.time.LocalDate
 
 @Composable
 fun Title(colorText: Color = colorResource(id = R.color.black)){
-    val titleStyle = TextStyle(
-        fontSize = 26.sp,
-        letterSpacing = 5.sp,
-        fontWeight = FontWeight.SemiBold,
-    )
-
     Row (
         verticalAlignment = Alignment.CenterVertically
     ){
         Text(
             color = colorResource(id = R.color.secondary),
             text = stringResource(id = R.string.score),
-            style = titleStyle
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.SemiBold
 
         )
         Text(
             text = stringResource(id = R.string.stripes),
-            style = titleStyle,
-            color = colorText
+            style = MaterialTheme.typography.titleLarge,
+            color = colorText,
+            fontWeight = FontWeight.Normal
         )
     }
 }
 
 @Composable
-fun BoxIcon(background: Color, iconColor : Color, content: Any, onclick: () -> Unit){
+fun IconButtonBar(
+    imageVector: ImageVector?,
+    navHostController: NavHostController,
+    onClick: () -> Unit
+){
+    Row(
+        horizontalArrangement = if (imageVector != null) Arrangement.SpaceBetween else Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .height(40.dp)
+            .fillMaxWidth()
+    ){
+        BoxIcon(
+            iconColor = colorResource(id = R.color.secondary),
+            content = Icons.Outlined.ChevronLeft
+        ) { navHostController.popBackStack() }
+
+        if (imageVector != null) {
+            BoxIcon(
+                background = colorResource(id = R.color.secondary),
+                iconColor = colorResource(id = R.color.secondary),
+                content = imageVector
+            ) { onClick() }
+        }
+    }
+}
+
+@Composable
+fun BoxIcon(
+    background: Color = colorResource(id = R.color.white),
+    iconColor : Color,
+    content: Any,
+    onclick: () -> Unit)
+{
     Box(
         modifier = Modifier
             .clickable { onclick() }
@@ -107,7 +138,7 @@ fun BoxIcon(background: Color, iconColor : Color, content: Any, onclick: () -> U
                 Text(
                     text = content,
                     color = iconColor,
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
             is Uri -> {
@@ -126,11 +157,15 @@ fun BoxIcon(background: Color, iconColor : Color, content: Any, onclick: () -> U
 }
 
 @Composable
-fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
+fun BoxImage(
+    height: Dp = 150.dp,
+    boxTitle: String,
+    painter: Painter,
+    onClick: () -> Unit){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(height)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(30.dp)
     )
@@ -139,7 +174,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
             Image(
                 painter = painter,
                 contentDescription = null,
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Fit
             )
             Box(modifier = Modifier
                 .fillMaxSize()
