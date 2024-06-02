@@ -5,10 +5,8 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
-import com.example.clientadmin.service.Converter
 import com.example.clientadmin.service.ConverterUri
 import com.example.clientadmin.service.RetrofitHandler
-import com.example.clientadmin.viewmodels.formViewModel.AdminState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,18 +33,15 @@ class LoginViewModel: ViewModel() {
         }
     }
 
-    fun register(token: String, adminState: AdminState, context: Context){
+    fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Uri, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitHandler.loginApi.adminRegister(
                     "Bearer $token",
-                    AdminCreateRequestDto(
-                        username = adminState.username,
-                        birthDate = adminState.birthdate,
-                        gender = adminState.gender,
-                        pic = Converter.convertUriToBase64(context, adminState.profilePic)
-                    )
-                    //ConverterUri.convert(context, pic, "profilePic")!!
+                    adminCreateRequestDto.username,
+                    adminCreateRequestDto.birthDate,
+                    adminCreateRequestDto.gender,
+                    ConverterUri.convert(context, pic, "profilePic")!!
                 ).awaitResponse()
 
                 if (response.isSuccessful) {

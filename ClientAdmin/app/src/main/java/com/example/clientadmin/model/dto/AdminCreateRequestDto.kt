@@ -9,5 +9,5 @@ data class AdminCreateRequestDto (
     val username: String,
     val birthDate: LocalDate,
     val gender: Gender,
-    val pic: String
+    //val pic: String
 )
