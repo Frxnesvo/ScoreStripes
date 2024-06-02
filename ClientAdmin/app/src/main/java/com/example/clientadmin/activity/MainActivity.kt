@@ -15,7 +15,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
 import com.example.clientadmin.ui.theme.ClientAdminTheme
+import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.LoginViewModel
+import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 
 
@@ -42,6 +44,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 @Composable
 fun Navigation(navController: NavHostController){
@@ -81,6 +85,14 @@ fun Navigation(navController: NavHostController){
                     Scaffold(loginViewModel = loginViewModel, token = token)
                 }
             }
+        }
+
+
+        //todo da togliere
+        composable(
+            route = "addLeague"
+        ){
+            LeagueDetails(leagueViewModel = LeagueViewModel(), leagueFormViewModel = LeagueFormViewModel(), navHostController = navController)
         }
     }
 }

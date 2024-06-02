@@ -72,6 +72,13 @@ fun IndexPage(navController : NavHostController, loginViewModel: LoginViewModel)
                     }
                 }
 
+                CustomButton(
+                    background = R.color.secondary50,
+                    text = "CREATE LEAGUE"
+                ) {
+                    navController.navigate("addLeague")
+                }
+
                 /*TextButton(onClick = { globalIndex.intValue = 3 }) {
                     Text(
                         text = "enter as guest",

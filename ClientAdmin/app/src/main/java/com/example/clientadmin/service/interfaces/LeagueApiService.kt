@@ -1,6 +1,5 @@
 package com.example.clientadmin.service.interfaces
 
-import com.example.clientadmin.model.dto.LeagueCreateRequestDto
 import com.example.clientadmin.model.dto.LeagueDto
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -13,7 +12,7 @@ interface LeagueApiService {
     @Multipart
     @POST("/api/v1/leagues")
     fun createLeague(
-        @Part("leagueCreateRequestDto") leagueCreateRequestDto: LeagueCreateRequestDto,
+        @Part("name") name: String,
         @Part pic: MultipartBody.Part
     ): Call<LeagueDto>
 

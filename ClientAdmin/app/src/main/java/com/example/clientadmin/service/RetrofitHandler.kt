@@ -24,12 +24,12 @@ object RetrofitHandler {
 
     private val moshi = Moshi.Builder()
         //.add(KotlinJsonAdapterFactory()) //dovrebbe non essere necessario usando code gen di moshi
-        .add(LocalDateAdapter()) // non so se è ancora necessario, per il momento lascio
+        //.add(LocalDateAdapter())
         .build()
 
     private val retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://192.168.1.3:8080")
+            .baseUrl("http://10.0.2.2:8080")
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
