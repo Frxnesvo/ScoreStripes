@@ -33,7 +33,6 @@ import com.example.clientuser.R
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
-@Preview
 @Composable
 fun Scaffold() {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
@@ -131,14 +130,14 @@ fun NavigationScaffold(
         composable(
             route = "wishlist"
         ) {
-
+            Wishlist(myList = TODO() , sharedLists = TODO()) //TODO passare navHostController e wishlistviewmodel
         }
 
         //CART
         composable(
             route = "cart"
         ) {
-
+            Cart() //TODO passare navHostController e cartviewmodel
         }
 
         //SETTINGS

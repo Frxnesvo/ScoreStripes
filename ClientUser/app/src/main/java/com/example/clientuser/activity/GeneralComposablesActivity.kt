@@ -52,8 +52,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -66,12 +68,14 @@ import java.time.LocalDate
 @Composable
 fun Title(colorText: Color = colorResource(id = R.color.black)){
     Row (
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
     ){
         Text(
-            color = colorResource(id = R.color.secondary),
             text = stringResource(id = R.string.score),
             style = MaterialTheme.typography.titleLarge,
+            color = colorResource(id = R.color.secondary),
             fontWeight = FontWeight.SemiBold
 
         )
@@ -115,6 +119,7 @@ fun IconButtonBar(
 @Composable
 fun BoxIcon(
     background: Color = colorResource(id = R.color.white),
+    size: Dp = 40.dp,
     iconColor : Color,
     content: Any,
     onclick: () -> Unit)
@@ -122,7 +127,7 @@ fun BoxIcon(
     Box(
         modifier = Modifier
             .clickable { onclick() }
-            .size(40.dp)
+            .size(size)
             .background(background, RoundedCornerShape(20.dp)),
         contentAlignment = Alignment.Center
     ){
@@ -138,7 +143,7 @@ fun BoxIcon(
                 Text(
                     text = content,
                     color = iconColor,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
             is Uri -> {
@@ -174,7 +179,7 @@ fun BoxImage(
             Image(
                 painter = painter,
                 contentDescription = null,
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Crop
             )
             Box(modifier = Modifier
                 .fillMaxSize()

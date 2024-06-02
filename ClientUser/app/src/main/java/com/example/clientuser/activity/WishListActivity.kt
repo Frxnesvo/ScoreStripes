@@ -49,9 +49,9 @@ fun Wishlist(myList: Any, sharedLists: List<Any>){ //todo vedere che oggetti pas
         }
 
         items(sharedLists){
-            key {
-                //WishListItem()
-            }
+//            key {
+//                WishListItem()
+//            }
         }
     }
 }

@@ -39,14 +39,13 @@ fun ProductItem(product: ProductSummary, onClick: () -> Unit) {
         Image(
             painter = rememberAsyncImagePainter(product.getPic()),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             modifier = Modifier
                 .size(120.dp)
                 .clip(RoundedCornerShape(10.dp))
         )
         Text(
             text = product.clubName,
-            color = colorResource(id = R.color.black),
             style = MaterialTheme.typography.labelMedium
         )
         Text(

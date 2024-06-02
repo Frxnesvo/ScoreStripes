@@ -33,10 +33,12 @@
     <string name="orders">ORDERS</string>
     <string name="addresses">ADDRESSES</string>
     <string name="personal_data">PERSONAL DATA</string>
+    <string name="cart">CART</string>
     <string name="details">DETAILS</string>
 
     <string name="create">CREATE</string>
     <string name="edit">EDIT</string>
     <string name="update">UPDATE</string>
     <string name="search">SEARCH</string>
+    <string name="buy">BUY</string>
 </resources>
