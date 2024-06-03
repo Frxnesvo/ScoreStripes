@@ -9,7 +9,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -22,7 +23,6 @@ import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.viewmodels.CustomerViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,6 +75,7 @@ fun SearchPanelProducts(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val filterBuilder = remember { FilterBuilder() }
+    val leagues by leagueViewModel.leaguesNames.collectAsState()
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
@@ -88,18 +89,18 @@ fun SearchPanelProducts(
             ) { filterBuilder.setName(it) }
 
             CustomComboBox(
-                options = leagueViewModel.leaguesNames,
-                selectedOption = remember { mutableStateOf("") }
+                options = leagues,
+                selectedOption = ""
             ) { filterBuilder.setLeague(it) }
 
             CustomComboBox(
-                options = flowOf(ProductCategory.entries),
-                selectedOption = remember { mutableStateOf("") }
+                options = ProductCategory.entries,
+                selectedOption = ""
             ) { filterBuilder.setCategory(it) }
 
             CustomComboBox(
-                options = flowOf(Size.entries),
-                selectedOption = remember { mutableStateOf("") }
+                options = Size.entries,
+                selectedOption = ""
             ) { filterBuilder.setSize(it) }
 
             CustomButton(

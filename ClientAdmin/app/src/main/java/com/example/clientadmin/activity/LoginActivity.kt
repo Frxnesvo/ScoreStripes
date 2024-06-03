@@ -25,7 +25,6 @@ import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun Login(token: String, navController : NavHostController, loginViewModel: LoginViewModel, loginFormViewModel: LoginFormViewModel) {
@@ -75,8 +74,8 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             }
 
             CustomComboBox(
-                options = flowOf(Gender.entries),
-                selectedOption = remember { mutableStateOf(adminState.gender.toString()) }
+                options = Gender.entries,
+                selectedOption = "${adminState.gender}"
             ) {
                 loginFormViewModel.updateGender(Gender.valueOf(it))
             }

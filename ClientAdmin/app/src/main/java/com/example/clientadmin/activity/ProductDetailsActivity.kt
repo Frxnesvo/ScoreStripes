@@ -15,8 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -28,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductState
@@ -36,7 +33,6 @@ import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.viewmodels.ClubViewModel
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun ProductDetails(
@@ -82,18 +78,18 @@ fun ProductDetails(
             ){ productFormViewModel.updateName(it) }
 
             CustomComboBox(
-                options = clubViewModel.clubNames,
-                selectedOption = remember { mutableStateOf(productState.club) }
+                options = clubViewModel.clubNames.collectAsState().value,
+                selectedOption = productState.club
             ){ productFormViewModel.updateClub(it) }
 
             CustomComboBox(
-                options = flowOf(Gender.entries),
-                selectedOption = remember { mutableStateOf(productState.gender.toString()) }
+                options = Gender.entries,
+                selectedOption = "${productState.gender}"
             ){ productFormViewModel.updateGender(Gender.valueOf(it)) }
 
             CustomComboBox(
-                options = flowOf(ProductCategory.entries),
-                selectedOption = remember { mutableStateOf(productState.productCategory.toString()) }
+                options = ProductCategory.entries,
+                selectedOption = "${productState.productCategory}"
             ){ productFormViewModel.updateCategory(ProductCategory.valueOf(it)) }
 
             CustomTextField(

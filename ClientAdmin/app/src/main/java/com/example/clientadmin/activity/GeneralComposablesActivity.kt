@@ -37,7 +37,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,8 +58,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientadmin.R
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDate
 
 
@@ -180,24 +177,32 @@ fun SubSectionUser(username: String, subSectionName: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String>, fraction: Float = 1f, readOnly: Boolean = false, onValueChange: (String) -> Unit) {
+fun CustomComboBox(
+    options: List<Any>,
+    selectedOption: String,
+    readOnly: Boolean = false,
+    expandable: Boolean = true,
+    onValueChange: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.fillMaxWidth(fraction)
+        modifier = Modifier.fillMaxWidth()
     ){
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = {
-                expanded = if (readOnly) false else !expanded
+                expanded = if (expandable) !expanded else false
             }
         ) {
             OutlinedTextField(
-                value = selectedOption.value,
-                onValueChange = onValueChange,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                value = selectedOption,
+                onValueChange = {  },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
                 readOnly = readOnly,
-                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
                 shape = RoundedCornerShape(30.dp),
                 textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -216,14 +221,12 @@ fun CustomComboBox(options: Flow<List<Any>>, selectedOption: MutableState<String
                     .background(colorResource(id = R.color.white))
             ) {
 
-                val optionList by options.collectAsState(initial = listOf())
-
-                if (optionList.isNotEmpty())
-                    optionList.forEach { option ->
+                if (options.isNotEmpty())
+                    options.forEach { option ->
                         DropdownMenuItem(
                             text = { Text(text = "$option") },
                             onClick = {
-                                selectedOption.value = "$option"
+                                onValueChange("$option")
                                 expanded = false
                             }
                         )
@@ -352,16 +355,16 @@ fun CustomDatePicker(
     ){
         Text(text = text)
         CustomComboBox(
-            options = flowOf((1..31).toList()),
-            selectedOption = remember { mutableStateOf(date.value.dayOfMonth.toString()) }
+            options = (1..31).toList(),
+            selectedOption = date.value.dayOfMonth.toString()
         ) { onValueChange(LocalDate.of(date.value.year, date.value.month, it.toInt())) }
         CustomComboBox(
-            options = flowOf((1..12).toList()),
-            selectedOption = remember { mutableStateOf(date.value.monthValue.toString()) }
+            options = (1..12).toList(),
+            selectedOption = date.value.monthValue.toString()
         ) { onValueChange(LocalDate.of(date.value.year, it.toInt(), date.value.dayOfMonth)) }
         CustomComboBox(
-            options = flowOf((1900..LocalDate.now().year).toList() ),
-            selectedOption = remember { mutableStateOf(date.value.year.toString()) }
+            options = (LocalDate.now().year downTo 1900).toList(),
+            selectedOption = date.value.year.toString()
         ) { onValueChange(LocalDate.of(it.toInt(), date.value.month, date.value.dayOfMonth)) }
     }
 }

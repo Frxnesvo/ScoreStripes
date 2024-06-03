@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -35,9 +35,10 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
     ) {
         val customerState by loginFormViewModel.customerState.collectAsState()
 
-//        Back {
-//            navController.navigate("index")
-//        }
+        BoxIcon(
+            iconColor = colorResource(id = R.color.secondary),
+            content = Icons.Outlined.ChevronLeft
+        ) { navController.popBackStack() }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -84,7 +85,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
 
             CustomComboBox(
                 options = Gender.entries,
-                selectedOption = remember { mutableStateOf(customerState.gender.toString()) }
+                selectedOption = customerState.gender.name
             ) {
                 loginFormViewModel.updateGender(Gender.valueOf(it))
             }

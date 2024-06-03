@@ -12,8 +12,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -117,6 +115,7 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 @Composable
 fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController) {
     val clubState by clubFormViewModel.clubState.collectAsState()
+    val leagues by leagueViewModel.leaguesNames.collectAsState()
     val context = LocalContext.current
 
     Column(
@@ -142,13 +141,8 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
 
 
         CustomComboBox(
-            options = leagueViewModel.leaguesNames ,
-            selectedOption = remember {
-                if (leagueViewModel.leaguesNames.value.isNotEmpty())
-                    mutableStateOf(leagueViewModel.leaguesNames.value[0])
-                else
-                    mutableStateOf("")
-            }
+            options = leagues ,
+            selectedOption = if (leagues.isNotEmpty()) leagues[0] else ""
         ) { clubFormViewModel.updateLeague(it) }
 
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
