@@ -3,11 +3,9 @@ package com.example.clientadmin.activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,18 +23,17 @@ import com.example.clientadmin.viewmodels.ProductViewModel
 
 @Composable
 fun Products(navHostController: NavHostController, productViewModel: ProductViewModel, leagueViewModel: LeagueViewModel) {
-    val products = productViewModel.productSummaries.value
+    val products = productViewModel.productSummaries
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
     LazyColumn(
-        state = rememberLazyListState(),
         verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),
     ) {
         item { Title() }
 
         item { Search(name = stringResource(R.string.list_all_products)) { setBottomSheet(true) } }
 
-        if(products.isEmpty())
+        if(products.value.isEmpty())
             item{
                 Text(
                     text = stringResource(id = R.string.list_all_products_empty),
@@ -45,7 +42,7 @@ fun Products(navHostController: NavHostController, productViewModel: ProductView
                 )
             }
         else {
-            items(products) { product ->
+            items(products.value) { product ->
                 key(product.id) {
                     ProductItemColumn(product = product) { navHostController.navigate("product/${product.id}") }
                 }
