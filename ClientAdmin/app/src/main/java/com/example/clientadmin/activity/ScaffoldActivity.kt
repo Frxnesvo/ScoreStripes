@@ -139,7 +139,11 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             navHostController.navigate("settings")
         }
         if (isOpenSheet)
-            AddPanel(onDismissRequest = { setBottomSheet(false) }, setBottomSheet = setBottomSheet, navHostController = navHostController)
+            AddPanel(
+                onDismissRequest = { setBottomSheet(false) },
+                setBottomSheet = setBottomSheet,
+                navHostController = navHostController
+            )
     }
 }
 

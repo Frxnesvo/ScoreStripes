@@ -15,6 +15,10 @@
     <string name="buy_by_league">BUY BY LEAGUE</string>
 
     <string name="nothing_to_show">nothing to show</string>
+    <string name="default_address">default</string>
+    <string name="size_mbs">SIZE:</string>
+    <string name="price_mbs">PRICE:</string>
+    <string name="add_to_cart">ADD TO CART</string>
 
     <string name="name">NAME</string>
     <string name="brand">BRAND</string>
@@ -29,12 +33,20 @@
     <string name="league">NAME LEAGUE</string>
     <string name="club">NAME CLUB</string>
     <string name="favorite_club">FAVORITE CLUB</string>
+    <string name="street">STREET</string>
+    <string name="civic_number">CIVIC NUMBER</string>
+    <string name="city">CITY</string>
+    <string name="zip_code">ZIP CODE</string>
+    <string name="state">STATE</string>
 
     <string name="orders">ORDERS</string>
     <string name="addresses">ADDRESSES</string>
     <string name="personal_data">PERSONAL DATA</string>
     <string name="cart">CART</string>
     <string name="details">DETAILS</string>
+    <string name="my_wishlist">DETAILS</string>
+    <string name="shared_with_me">SHARED WITH ME</string>
+    <string name="share">SHARE</string>
 
     <string name="create">CREATE</string>
     <string name="edit">EDIT</string>

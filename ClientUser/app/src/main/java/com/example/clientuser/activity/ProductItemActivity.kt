@@ -22,11 +22,13 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
+import com.example.clientuser.model.Product
 import com.example.clientuser.model.ProductSummary
 import com.example.clientuser.model.dto.ProductDto
 
 @Composable
-fun ProductItem(product: ProductSummary, onClick: () -> Unit) {
+fun ProductItem(productDto: ProductDto, onClick: () -> Unit) {
+    val product = Product.fromDto(productDto)
     Column(
         modifier = Modifier
             .width(150.dp)
@@ -37,7 +39,7 @@ fun ProductItem(product: ProductSummary, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = rememberAsyncImagePainter(product.getPic()),
+            painter = rememberAsyncImagePainter(product.pic1),
             contentDescription = null,
             contentScale = ContentScale.Fit,
             modifier = Modifier
@@ -45,7 +47,7 @@ fun ProductItem(product: ProductSummary, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(10.dp))
         )
         Text(
-            text = product.clubName,
+            text = product.club,
             style = MaterialTheme.typography.labelMedium
         )
         Text(

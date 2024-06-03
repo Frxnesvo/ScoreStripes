@@ -1,6 +1,5 @@
 package com.example.clientuser.activity
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,47 +16,48 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.clientuser.R
-import com.example.clientuser.model.ProductSummary
+import com.example.clientuser.model.dto.WishListDto
 
 @Composable
-fun Wishlist(myList: Any, sharedLists: List<Any>){ //todo vedere che oggetti passare
+fun Wishlist(myList: WishListDto, sharedLists: List<WishListDto>){ //TODO passare il view model e prendere i parametri da lì
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         item {
             Text(
-                text = "MY WISHLIST",
+                text = stringResource(id = R.string.my_wishlist),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
         }
 
         item{
-            //WishListItem()
+            WishListItem(myList)
         }
 
         item {
             Text(
-                text = "SHARED WITH ME",
+                text = stringResource(id = R.string.shared_with_me),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
         }
 
         items(sharedLists){
-//            key {
-//                WishListItem()
-//            }
+            key(it.id) {
+                WishListItem(it)
+            }
         }
     }
 }
 
 @Composable
-fun WishListItem(name: String, numProducts: Int, products: List<ProductSummary>, peoplesShares: List<Uri>){ //todo passare l'oggetto sopra
+fun WishListItem(wishListDto: WishListDto){
     Column(
         modifier = Modifier
             .background(colorResource(id = R.color.white), RoundedCornerShape(size = 30.dp))
@@ -72,12 +72,12 @@ fun WishListItem(name: String, numProducts: Int, products: List<ProductSummary>,
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 Text(
-                    text = name,
+                    text = wishListDto.ownerUsername,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "$numProducts Products",
+                    text = "${wishListDto.items.count()} Products",
                     style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.black50),
                     fontWeight = FontWeight.Normal
@@ -87,11 +87,11 @@ fun WishListItem(name: String, numProducts: Int, products: List<ProductSummary>,
                 horizontalArrangement = Arrangement.spacedBy((-20).dp),
                 verticalAlignment = Alignment.CenterVertically,
             ){
-                for (people in peoplesShares)
-                    BoxIcon(
-                        iconColor = colorResource(id = R.color.transparent),
-                        content = people
-                    ) { }
+//                for (people in peoplesShares) //TODO vedere come ricevere l'immagine di quelli a cui è condivisa
+//                    BoxIcon(
+//                        iconColor = colorResource(id = R.color.transparent),
+//                        content = people
+//                    ) { }
             }
         }
 
@@ -99,8 +99,8 @@ fun WishListItem(name: String, numProducts: Int, products: List<ProductSummary>,
             modifier = Modifier.padding(10.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            ProductItem(product = products[0]) { }
-            ProductItem(product = products[1]) { }
+            ProductItem(productDto = wishListDto.items[0].product) { }
+            ProductItem(productDto = wishListDto.items[1].product) { }
         }
     }
 }

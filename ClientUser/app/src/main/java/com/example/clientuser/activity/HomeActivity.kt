@@ -140,7 +140,7 @@ fun Section(
             else
                 items(items){
                     when (it) {
-                        is ProductSummary -> key(it.id) {
+                        is ProductDto -> key(it.id) {
                             ProductItem(it){ navHostController.navigate("product/${it.id}") }
                         }
                         is ClubDto -> key(it.id) {

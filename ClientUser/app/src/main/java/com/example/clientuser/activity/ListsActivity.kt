@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.model.ProductSummary
 import com.example.clientuser.R
+import com.example.clientuser.model.dto.ProductDto
+import com.example.clientuser.model.dto.WishListDto
 
 @Composable
 fun ListTwoColumn(
-    name: String,
-    products: List<ProductSummary>,
+    wishListDto: WishListDto,
     navHostController: NavHostController
 ){
     Column(
@@ -39,7 +40,7 @@ fun ListTwoColumn(
         ) { navHostController.popBackStack() }
 
         Text(
-            text = name,
+            text = wishListDto.ownerUsername,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -47,9 +48,9 @@ fun ListTwoColumn(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(25.dp)
         ) {
-            items(products){
+            items(wishListDto.items){
                 key(it.id) {
-                    ProductItem(it){ navHostController.navigate("product/${it.id}") }
+                    ProductItem(it.product){ navHostController.navigate("product/${it.product.id}") }
                 }
             }
         }

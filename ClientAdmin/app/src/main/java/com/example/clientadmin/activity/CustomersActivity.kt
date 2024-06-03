@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +27,6 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
     LazyColumn(
-        state = rememberLazyListState(),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item { Title() }

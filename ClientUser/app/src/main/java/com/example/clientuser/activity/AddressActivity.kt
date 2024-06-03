@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,8 +22,7 @@ import com.example.clientuser.model.dto.AddressDto
 
 
 @Composable
-fun AddressItem(address: AddressDto){
-    //TODO mappare con Address
+fun AddressItem(addressDto: AddressDto){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,28 +37,28 @@ fun AddressItem(address: AddressDto){
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = if(address.defaultAddress) Arrangement.SpaceBetween else Arrangement.Start
+            horizontalArrangement = if(addressDto.defaultAddress) Arrangement.SpaceBetween else Arrangement.Start
         ) {
             Text(
-                text = "${address.street}, ${address.civicNumber}",
+                text = "${addressDto.street}, ${addressDto.civicNumber}",
                 style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Light, color = colorResource(id = R.color.black))
             )
-            if(address.defaultAddress)
+            if(addressDto.defaultAddress)
                 Text(
-                    text = "PRINCIPALE",
+                    text = stringResource(id = R.string.default_address),
                     style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light, color = colorResource(id = R.color.secondary))
                 )
         }
         Text(
-            text = address.state,
+            text = addressDto.state,
             style = style
         )
         Text(
-            text = address.city,
+            text = addressDto.city,
             style = style
         )
         Text(
-            text = address.zipCode,
+            text = addressDto.zipCode,
             style = style
         )
     }

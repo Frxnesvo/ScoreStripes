@@ -1,6 +1,7 @@
 package com.example.clientuser.activity
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -10,7 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,17 +24,19 @@ import com.example.clientuser.model.dto.AddressDto
 
 @Composable
 fun Addresses(addresses: List<AddressDto>, navHostController: NavHostController){
+    val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
+
     LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(25.dp),
-        state = rememberLazyListState()
+        verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         item {
             IconButtonBar(
                 imageVector = Icons.Outlined.Add,
                 navHostController = navHostController
             ) {
-                //TODO fare il modal battom sheet
+
             }
         }
 
@@ -53,8 +59,14 @@ fun Addresses(addresses: List<AddressDto>, navHostController: NavHostController)
             items(addresses){
                 address ->
                 key(address.id) {
-                    AddressItem(address = address)
+                    AddressItem(addressDto = address)
                 }
             }
     }
+
+    if (isOpenSheet)
+        AddAddress(
+            onDismissRequest = { setBottomSheet(false) },
+            setBottomSheet = setBottomSheet,
+        )
 }
