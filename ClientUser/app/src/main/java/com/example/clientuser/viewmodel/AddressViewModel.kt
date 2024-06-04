@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
-class AddressViewModel(customerId: String): ViewModel() {
+class AddressViewModel(private val customerId: String): ViewModel() {
     private val _addresses = MutableStateFlow<List<AddressDto>>(emptyList())
     val addresses : StateFlow<List<AddressDto>> = _addresses
 
@@ -35,7 +35,7 @@ class AddressViewModel(customerId: String): ViewModel() {
         }
     }
 
-    fun addAddress(customerId: String, addressCreateRequestDto: AddressCreateRequestDto){
+    fun addAddress(addressCreateRequestDto: AddressCreateRequestDto){
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.addressApi.addAddress(customerId, addressCreateRequestDto).awaitResponse()

@@ -58,6 +58,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
 
             CustomTextField(
                 value = customerState.username,
+                isError = customerState.isUsernameError,
                 text = stringResource(id = R.string.username)
             ){
                 loginFormViewModel.updateUsername(it)
@@ -65,6 +66,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
 
             CustomTextField(
                 value = customerState.firstName,
+                isError = customerState.isFirstNameError,
                 text = stringResource(id = R.string.first_name)
             ){
                 loginFormViewModel.updateFirstName(it)
@@ -72,6 +74,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
 
             CustomTextField(
                 value = customerState.lastName,
+                isError = customerState.isLastNameError,
                 text = stringResource(id = R.string.last_name)
             ){
                 loginFormViewModel.updateLastName(it)

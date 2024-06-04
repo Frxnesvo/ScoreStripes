@@ -68,38 +68,45 @@ fun Details(customer: CustomerProfileDto){
             )
         }
 
+        //TODO gestire gli errori (isError = false) facendo il form view model
         CustomTextField(
             value = customer.firstName,
+            isError = false,
             text = stringResource(id = R.string.first_name),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.lastName,
+            isError = false,
             text = stringResource(id = R.string.last_name),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.email,
+            isError = false,
             text = stringResource(id = R.string.email),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.favoriteClub,
+            isError = false,
             text = stringResource(id = R.string.favorite_club),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.gender.name,
+            isError = false,
             text = stringResource(id = R.string.gender),
             readOnly = true
         ){}
 
         CustomTextField(
             value = customer.birthDate,
+            isError = false,
             text = "GENDER",
             readOnly = true
         ){}
