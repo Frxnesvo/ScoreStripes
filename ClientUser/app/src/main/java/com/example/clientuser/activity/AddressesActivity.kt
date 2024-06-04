@@ -19,11 +19,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.dto.AddressDto
+import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 
 @Composable
-fun Addresses(addresses: List<AddressDto>, navHostController: NavHostController){
+fun Addresses(
+    addressViewModel: AddressViewModel,
+    addressFormViewModel: AddressFormViewModel,
+    navHostController: NavHostController
+){
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
+
+    val addresses = addressViewModel.addresses
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -47,7 +54,7 @@ fun Addresses(addresses: List<AddressDto>, navHostController: NavHostController)
             )
         }
 
-        if (addresses.isEmpty())
+        if (addresses.value.isEmpty())
             item{
                 Text(
                     text = stringResource(id = R.string.nothing_to_show),
@@ -55,7 +62,7 @@ fun Addresses(addresses: List<AddressDto>, navHostController: NavHostController)
                 )
             }
         else
-            items(addresses){
+            items(addresses.value){
                 address ->
                 key(address.id) {
                     AddressItem(addressDto = address)
@@ -67,5 +74,7 @@ fun Addresses(addresses: List<AddressDto>, navHostController: NavHostController)
         AddAddress(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
+            addressFormViewModel = addressFormViewModel,
+            addressViewModel = addressViewModel
         )
 }

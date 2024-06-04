@@ -30,7 +30,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
+import com.example.clientuser.viewmodel.AddressViewModel
 import com.example.clientuser.viewmodel.HomeViewModel
+import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
@@ -176,8 +178,10 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("id")?.let {
+                customerId ->
                 Addresses(
-                    addresses = TODO("passare la lista degli indirizzi"),
+                    addressViewModel = AddressViewModel(customerId),
+                    addressFormViewModel = AddressFormViewModel(),
                     navHostController = navHostController
                 )
             }

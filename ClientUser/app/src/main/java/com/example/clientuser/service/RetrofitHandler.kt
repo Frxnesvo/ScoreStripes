@@ -1,6 +1,7 @@
 package com.example.clientuser.service
 
 import com.example.clientuser.activity.Cart
+import com.example.clientuser.service.interfaces.AddressApiService
 import com.example.clientuser.service.interfaces.CartApiService
 import com.example.clientuser.service.interfaces.HomeApiService
 import com.example.clientuser.service.interfaces.LoginApiService
@@ -31,6 +32,7 @@ object RetrofitHandler {
     }
 
     val loginApi: LoginApiService by lazy { retrofit.create(LoginApiService::class.java) }
-    val homeApi: HomeApiService by lazy { retrofit.create(HomeApiService::class.java)}
-    val cartApi: CartApiService by lazy { retrofit.create(CartApiService::class.java)}
+    val homeApi: HomeApiService by lazy { retrofit.create(HomeApiService::class.java) }
+    val cartApi: CartApiService by lazy { retrofit.create(CartApiService::class.java) }
+    val addressApi: AddressApiService by lazy { retrofit.create(AddressApiService::class.java) }
 }

@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.provider.Telephony.Mms.Addr
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -32,17 +34,20 @@ import com.example.clientuser.R
 import com.example.clientuser.model.Personalization
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToCartRequestDto
+import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
+import com.example.clientuser.viewmodel.AddressViewModel
 import com.example.clientuser.viewmodel.CartViewModel
+import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharedWithPanel(
-onDismissRequest: () -> Unit, //TODO da aggiungere il view model
-setBottomSheet: (Boolean) -> Unit
+    onDismissRequest: () -> Unit, //TODO da aggiungere il view model
+    setBottomSheet: (Boolean) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -90,10 +95,14 @@ setBottomSheet: (Boolean) -> Unit
 @Composable
 fun AddAddress(
     onDismissRequest: () -> Unit, //TODO aggiungere view model e form view model
-    setBottomSheet: (Boolean) -> Unit
+    setBottomSheet: (Boolean) -> Unit,
+    addressViewModel: AddressViewModel,
+    addressFormViewModel: AddressFormViewModel
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+
+    val addressState by addressFormViewModel.addressState.collectAsState()
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
@@ -102,36 +111,49 @@ fun AddAddress(
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             CustomTextField(
-                value = TODO(),
+                value = addressState.street,
+                isError = addressState.isStreetError,
                 text = stringResource(id = R.string.street)
-            ){ TODO("logica form view model") }
+            ){ addressFormViewModel.updateStreet(it) }
 
             CustomTextField(
-                value = TODO(),
+                value = addressState.civicNumber,
+                isError = addressState.isCivicNumberError,
                 text = stringResource(id = R.string.civic_number),
                 keyboardType = KeyboardType.Number
-            ){ TODO("logica form view model") }
+            ){ addressFormViewModel.updateCivicNumber(it) }
 
             CustomTextField(
-                value = TODO(),
+                value = addressState.state,
+                isError = addressState.isStateError,
                 text = stringResource(id = R.string.state)
-            ){ TODO("logica form view model") }
+            ){ addressFormViewModel.updateState(it) }
 
             CustomTextField(
-                value = TODO(),
+                value = addressState.city,
+                isError = addressState.isCityError,
                 text = stringResource(id = R.string.city),
-            ){ TODO("logica form view model") }
+            ){ addressFormViewModel.updateCity(it) }
 
             CustomTextField(
-                value = TODO(),
+                value = addressState.zipCode,
+                isError = addressState.isZipCodeError,
                 text = stringResource(id = R.string.zip_code),
                 keyboardType = KeyboardType.Number
-            ){ TODO("logica view model") }
+            ){ addressFormViewModel.updateZipCode(it) }
 
             CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
                 if(sheetState.isVisible)
                     scope.launch {
-                        TODO("logica view model")
+                        addressViewModel.addAddress(
+                            AddressCreateRequestDto(
+                                street = addressState.street,
+                                civicNumber = addressState.civicNumber,
+                                state = addressState.state,
+                                city = addressState.city,
+                                zipCode = addressState.zipCode
+                            )
+                        )
                         sheetState.hide()
                         setBottomSheet(false)
                     }
@@ -164,6 +186,7 @@ fun AddItemToCart(
             if(isProductJersey) {
                 CustomTextField(
                     value = "",
+                    isError = false,
                     text = stringResource(id = R.string.name_personalization)
                 ) {
                     productFormViewModel.updatePersonalizationName(it)
@@ -172,6 +195,7 @@ fun AddItemToCart(
 
             CustomTextField(
                 value = "",
+                isError = false,
                 text = stringResource(id = if(isProductJersey) R.string.number_jersey_personalization else R.string.number_shorts_personalization ),
                 keyboardType = KeyboardType.Number
             ) {
