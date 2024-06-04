@@ -16,6 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,12 +34,12 @@ import java.util.Optional;
 public class AuthController {
     private final AdminServiceImpl adminService;
 
-    @GetMapping("/admin-login")
-    public ResponseEntity<?> login(HttpServletResponse response, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
-        Admin admin = adminService.login(authHeader, response);
-        if(admin != null) return ResponseEntity.ok(admin);
-        return ResponseEntity.notFound().build();
-    }
+//    @GetMapping("/admin-login1234")
+//    public ResponseEntity<?> adminLogin(HttpServletResponse response, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
+//        Admin admin = adminService.login(authHeader, response);
+//        if(admin != null) return ResponseEntity.ok(admin);
+//        return ResponseEntity.notFound().build();
+//    }
 
     @PostMapping(value = "/admin-register", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
@@ -50,6 +54,17 @@ public class AuthController {
 
         Admin user = adminService.register(userDto, authHeader, response);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/admin-login")
+    public ResponseEntity<?> login(
+            HttpServletResponse response,
+            @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient,
+            @AuthenticationPrincipal OAuth2User oauth2User
+    ){
+        Admin admin = adminService.login(oauth2User.getAttribute("email").toString(), response, authorizedClient);
+        if(admin != null)return ResponseEntity.ok(admin);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
     }
 
 }

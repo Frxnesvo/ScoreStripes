@@ -2,6 +2,7 @@ package com.example.clientadmin.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,11 +37,13 @@ class MainActivity : ComponentActivity() {
 //                        loginViewModel = LoginViewModel(),
 //                        loginFormViewModel = LoginFormViewModel()
 //                    )
+
                     Navigation(navController = navHostController)
                 }
             }
         }
     }
+
 }
 
 @Composable

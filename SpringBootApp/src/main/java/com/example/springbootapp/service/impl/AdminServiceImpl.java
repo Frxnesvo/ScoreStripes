@@ -17,6 +17,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.common.net.HttpHeaders;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -74,32 +77,48 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    @Override
-    public Admin login(String header, HttpServletResponse response) {
-        try{
-            GoogleIdToken idToken = googleTokenUtils.getTokenByHeader(header);
-            if(idToken != null){
-                String email = idToken.getPayload().getEmail();
-                Optional<Admin> optionalAdmin = adminDao.findByEmail(email);
-                if(optionalAdmin.isPresent()){
-                    Admin admin =  optionalAdmin.get();
-                    addToken(response, admin);
-                    return admin;
-                }
-                return null;
-            }
-            else{
-                throw new InvalidTokenException("Invalid id token");
-            }
-        } catch (GeneralSecurityException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Override
+//    public Admin login(String header, HttpServletResponse response) {
+//        try{
+//            GoogleIdToken idToken = googleTokenUtils.getTokenByHeader(header);
+//            if(idToken != null){
+//                String email = idToken.getPayload().getEmail();
+//                Optional<Admin> optionalAdmin = adminDao.findByEmail(email);
+//                if(optionalAdmin.isPresent()){
+//                    Admin admin =  optionalAdmin.get();
+//                    addToken(response, admin);
+//                    return admin;
+//                }
+//                return null;
+//            }
+//            else{
+//                throw new InvalidTokenException("Invalid id token");
+//            }
+//        } catch (GeneralSecurityException | IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @Override
     public void addToken(HttpServletResponse response, Admin admin) {
         String accessToken = JwtUtils.createAccessToken(admin.getId(), "", List.of("ROLE_" + admin.getRole().name()));
         response.setHeader(HttpHeaders.AUTHORIZATION, SecurityConstants.BEARER_TOKEN_PREFIX + accessToken);
+    }
+
+    @Override
+    public Admin login(String email, HttpServletResponse response, OAuth2AuthorizedClient oauth2AuthorizedClient) {
+        Optional<Admin> admin = adminDao.findByEmail(email);
+
+        if(admin.isPresent()) {
+            Admin a = admin.get();
+            addToken(response, a);
+            return a;
+        }
+        else{
+            String accessToken = oauth2AuthorizedClient.getAccessToken().getTokenValue();
+            response.addHeader("access token", accessToken);
+            return null;
+        }
     }
 
 }

@@ -55,6 +55,7 @@ dependencies {
     implementation (libs.converter.moshi)
 
     implementation (libs.moshi)
+    implementation(libs.play.services)
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
 
     implementation (libs.coil.compose)
@@ -79,6 +80,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.identity.credential)
+    implementation(libs.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
 
     implementation ("androidx.compose.material:material-icons-core:1.0.0")
     implementation ("androidx.compose.material:material-icons-extended:1.0.0")

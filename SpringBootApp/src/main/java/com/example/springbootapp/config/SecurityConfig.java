@@ -4,6 +4,7 @@ import com.example.springbootapp.security.filter.CustomAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,11 +30,13 @@ public class SecurityConfig{
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/api/v1/auth/**").authenticated()
+                .anyRequest().permitAll()
         );
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
+        http.oauth2Login(Customizer.withDefaults())
+                .oauth2Client(Customizer.withDefaults());
 
 //        http.addFilterBefore(new CustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         //http.oauth2ResourceServer(AbstractHttpConfigurer::disable);     //disabilita la configurazione del resource server OAuth2

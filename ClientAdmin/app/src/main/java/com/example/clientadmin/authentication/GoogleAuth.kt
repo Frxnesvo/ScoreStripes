@@ -1,11 +1,17 @@
 package com.example.clientadmin.authentication
 
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import android.util.Log
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 
@@ -18,6 +24,7 @@ class GoogleAuth(private val context: Context){
         return GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false) // Query all google accounts on the device
             .setServerClientId(WEB_SERVER_CLIENT_ID)
+            .setNonce("")
             .build()
     }
 
@@ -42,6 +49,8 @@ class GoogleAuth(private val context: Context){
             }
 
         } catch (e: GetCredentialException) {
+
+
             Log.e("Authentication", "GetCredentialException", e)
         }
         return null
