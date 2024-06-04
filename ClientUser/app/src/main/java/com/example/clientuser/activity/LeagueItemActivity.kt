@@ -1,6 +1,5 @@
 package com.example.clientuser.activity
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
@@ -10,13 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.clientuser.model.League
 import com.example.clientuser.model.dto.LeagueDto
 
 @Composable
 fun LeagueItem(leagueDto: LeagueDto, onClick: () -> Unit){
-    //todo mappare il dto con League
+    val league = League.fromDto(leagueDto)
     Image(
-        painter = rememberAsyncImagePainter(Uri.EMPTY), //todo prendere da product
+        painter = rememberAsyncImagePainter(league.image),
         contentDescription = null,
         modifier = Modifier
             .size(100.dp)
