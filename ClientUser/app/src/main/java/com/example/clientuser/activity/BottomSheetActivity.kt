@@ -175,7 +175,7 @@ fun AddItemToCart(
                 text = stringResource(id = if(isProductJersey) R.string.number_jersey_personalization else R.string.number_shorts_personalization ),
                 keyboardType = KeyboardType.Number
             ) {
-                productFormViewModel.updatePersonalizationNumber(it.toInt())
+                productFormViewModel.updatePersonalizationNumber(if(it != "")it.toInt() else 0)
             }
 
             Row(
@@ -208,7 +208,9 @@ fun AddItemToCart(
 
             val productState = productFormViewModel.productState.collectAsState().value
             CustomButton(text = stringResource(id = R.string.add_to_cart), background = R.color.secondary) {
-                if(sheetState.isVisible)
+                if(sheetState.isVisible) {
+                    val personalizationName = if (productState.name == "") null else productState.name
+                    val personalizationNumber = if (productState.number == 0) null else productState.number
                     scope.launch {
                         cartViewModel.addProductToCart(
                             addToCartRequestDto = AddToCartRequestDto(
@@ -216,14 +218,15 @@ fun AddItemToCart(
                                 size = productState.size!!,
                                 category = product.productCategory,
                                 personalization = Personalization(
-                                    productState.name,
-                                    productState.number
+                                    personalizationName,
+                                    personalizationNumber
                                 )
                             )
                         )
                         sheetState.hide()
                         setBottomSheet(false)
                     }
+                }
             }
         }
     }
