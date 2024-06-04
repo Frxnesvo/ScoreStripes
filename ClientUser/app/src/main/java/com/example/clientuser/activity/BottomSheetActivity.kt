@@ -13,7 +13,12 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,9 +29,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.clientuser.R
+import com.example.clientuser.model.Personalization
 import com.example.clientuser.model.Product
-import com.example.clientuser.model.dto.ProductDto
+import com.example.clientuser.model.dto.AddToCartRequestDto
+import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
+import com.example.clientuser.viewmodel.CartViewModel
+import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,13 +144,14 @@ fun AddAddress(
 @Composable
 fun AddItemToCart(
     onDismissRequest: () -> Unit,
-    price: Double,
-    size: Size,
     setBottomSheet: (Boolean) -> Unit,
-    onClick: () -> Unit
+    product: Product,
+    cartViewModel: CartViewModel,
+    productFormViewModel: ProductFormViewModel
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
@@ -149,6 +159,25 @@ fun AddItemToCart(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
+            val isProductJersey = product.productCategory == ProductCategory.JERSEY
+
+            if(isProductJersey) {
+                CustomTextField(
+                    value = "",
+                    text = stringResource(id = R.string.name_personalization)
+                ) {
+                    productFormViewModel.updatePersonalizationName(it)
+                }
+            }
+
+            CustomTextField(
+                value = "",
+                text = stringResource(id = if(isProductJersey) R.string.number_jersey_personalization else R.string.number_shorts_personalization ),
+                keyboardType = KeyboardType.Number
+            ) {
+                productFormViewModel.updatePersonalizationNumber(it.toInt())
+            }
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
@@ -157,7 +186,7 @@ fun AddItemToCart(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = size.name,
+                    text = productFormViewModel.productState.collectAsState().value.size!!.name,
                     color = colorResource(id = R.color.secondary),
                     style = MaterialTheme.typography.labelMedium
                 )
@@ -171,16 +200,27 @@ fun AddItemToCart(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = "$price€",
+                    text = "${product.price + productFormViewModel.calculatePersonalizationPrice()}€",
                     color = colorResource(id = R.color.secondary),
                     style = MaterialTheme.typography.labelMedium
                 )
             }
 
+            val productState = productFormViewModel.productState.collectAsState().value
             CustomButton(text = stringResource(id = R.string.add_to_cart), background = R.color.secondary) {
                 if(sheetState.isVisible)
                     scope.launch {
-                        onClick()
+                        cartViewModel.addProductToCart(
+                            addToCartRequestDto = AddToCartRequestDto(
+                                productId = product.id,
+                                size = productState.size!!,
+                                category = product.productCategory,
+                                personalization = Personalization(
+                                    productState.name,
+                                    productState.number
+                                )
+                            )
+                        )
                         sheetState.hide()
                         setBottomSheet(false)
                     }

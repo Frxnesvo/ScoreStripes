@@ -38,6 +38,9 @@
     <string name="city">CITY</string>
     <string name="zip_code">ZIP CODE</string>
     <string name="state">STATE</string>
+    <string name="name_personalization">NAME ON JERSEY</string>
+    <string name="number_jersey_personalization">NUMBER ON JERSEY</string>
+    <string name="number_shorts_personalization">NUMBER ON SHORTS</string>
 
     <string name="orders">ORDERS</string>
     <string name="addresses">ADDRESSES</string>

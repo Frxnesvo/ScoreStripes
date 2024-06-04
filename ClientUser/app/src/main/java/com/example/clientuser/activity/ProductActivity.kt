@@ -21,15 +21,19 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
 import com.example.clientuser.model.Product
+import com.example.clientuser.model.dto.AddToCartRequestDto
 import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.model.enumerator.Size
+import com.example.clientuser.viewmodel.CartViewModel
+import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
+
 
 @Composable
 fun ProductDetails(productDto: ProductDto, navHostController: NavHostController){
     val product = Product.fromDto(productDto)
     //TODO serve un form view model e anche il view model
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val sizeSelected: MutableState<Size?> = remember { mutableStateOf(null) }
+    val productFormViewModel = ProductFormViewModel()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -72,7 +76,7 @@ fun ProductDetails(productDto: ProductDto, navHostController: NavHostController)
                 content = size
             ) {
                 if (product.variants[size]!! > 0)
-                    sizeSelected.value = size
+                    productFormViewModel.updateProductSize(size)
                     setBottomSheet(true)
             }
         }
@@ -107,11 +111,9 @@ fun ProductDetails(productDto: ProductDto, navHostController: NavHostController)
     if (isOpenSheet)
         AddItemToCart(
             onDismissRequest = { setBottomSheet(false) },
-            price = product.price,
-            size = sizeSelected.value!!,
             setBottomSheet = setBottomSheet,
-        ) {
-            TODO("logica view model")
-        }
-
+            product = product,
+            cartViewModel = CartViewModel(),
+            productFormViewModel = productFormViewModel
+        )
 }

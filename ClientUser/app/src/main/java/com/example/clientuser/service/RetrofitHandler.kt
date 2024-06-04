@@ -1,5 +1,7 @@
 package com.example.clientuser.service
 
+import com.example.clientuser.activity.Cart
+import com.example.clientuser.service.interfaces.CartApiService
 import com.example.clientuser.service.interfaces.HomeApiService
 import com.example.clientuser.service.interfaces.LoginApiService
 import com.squareup.moshi.Moshi
@@ -18,8 +20,6 @@ object RetrofitHandler {
         .build()
 
     private val moshi = Moshi.Builder()
-        //.add(KotlinJsonAdapterFactory()) //dovrebbe non essere necessario usando code gen di moshi
-        //.add(LocalDateAdapter()) // non so se è ancora necessario, per il momento lascio
         .build()
 
     private val retrofit by lazy {
@@ -32,4 +32,5 @@ object RetrofitHandler {
 
     val loginApi: LoginApiService by lazy { retrofit.create(LoginApiService::class.java) }
     val homeApi: HomeApiService by lazy { retrofit.create(HomeApiService::class.java)}
+    val cartApi: CartApiService by lazy { retrofit.create(CartApiService::class.java)}
 }
