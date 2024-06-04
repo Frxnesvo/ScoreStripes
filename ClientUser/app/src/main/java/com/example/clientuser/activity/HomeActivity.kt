@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,13 +30,16 @@ import com.example.clientuser.model.ProductSummary
 import com.example.clientuser.model.dto.ClubDto
 import com.example.clientuser.model.dto.LeagueDto
 import com.example.clientuser.model.dto.ProductDto
+import com.example.clientuser.viewmodel.HomeViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 
 @Composable
 fun Home(
-    //viewModel: ProductViewModel,
+    homeViewModel: HomeViewModel,
     navHostController: NavHostController
 ){
+    val clubs = homeViewModel.clubs.collectAsState(initial = emptyList())
+
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,7 +67,7 @@ fun Home(
 
         Section(
             name = stringResource(id = R.string.buy_by_club),
-            items = listOf(), //TODO get dei club
+            items = clubs.value,
             navHostController = navHostController
         )
 

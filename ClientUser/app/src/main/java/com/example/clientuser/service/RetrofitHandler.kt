@@ -1,5 +1,6 @@
 package com.example.clientuser.service
 
+import com.example.clientuser.service.interfaces.HomeApiService
 import com.example.clientuser.service.interfaces.LoginApiService
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
@@ -30,4 +31,5 @@ object RetrofitHandler {
     }
 
     val loginApi: LoginApiService by lazy { retrofit.create(LoginApiService::class.java) }
+    val homeApi: HomeApiService by lazy { retrofit.create(HomeApiService::class.java)}
 }

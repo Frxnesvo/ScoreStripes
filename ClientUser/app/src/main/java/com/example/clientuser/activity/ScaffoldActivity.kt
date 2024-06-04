@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
+import com.example.clientuser.viewmodel.HomeViewModel
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
@@ -123,7 +124,7 @@ fun NavigationScaffold(
         composable(
             route = "home"
         ) {
-            Home(navHostController = navHostController)
+            Home(homeViewModel = HomeViewModel(), navHostController = navHostController)
         }
 
         //WISHLIST
