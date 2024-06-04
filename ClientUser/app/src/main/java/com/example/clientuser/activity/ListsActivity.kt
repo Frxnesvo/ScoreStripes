@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +27,8 @@ import com.example.clientuser.model.dto.WishListDto
 
 @Composable
 fun ListTwoColumn(
-    wishListDto: WishListDto,
+    name: String,
+    items: List<ProductDto>,
     navHostController: NavHostController
 ){
     Column(
@@ -36,11 +38,11 @@ fun ListTwoColumn(
     ) {
         BoxIcon(
             iconColor = colorResource(id = R.color.secondary),
-            content = Icons.Outlined.Add
+            content = Icons.Outlined.ChevronLeft
         ) { navHostController.popBackStack() }
 
         Text(
-            text = wishListDto.ownerUsername,
+            text = name,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -48,9 +50,9 @@ fun ListTwoColumn(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(25.dp)
         ) {
-            items(wishListDto.items){
+            items(items){
                 key(it.id) {
-                    ProductItem(it.product){ navHostController.navigate("product/${it.product.id}") }
+                    ProductItem(it){ navHostController.navigate("product/${it.id}") }
                 }
             }
         }

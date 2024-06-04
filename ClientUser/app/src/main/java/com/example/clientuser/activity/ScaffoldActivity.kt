@@ -131,7 +131,7 @@ fun NavigationScaffold(
         composable(
             route = "wishlist"
         ) {
-            Wishlist(myList = TODO() , sharedLists = TODO()) //TODO passare navHostController e wishlistviewmodel
+            Wishlist(myList = TODO() , sharedLists = TODO(), navHostController) //TODO passare e wishlistviewmodel
         }
 
         //CART
@@ -178,6 +178,21 @@ fun NavigationScaffold(
             it.arguments?.getString("id")?.let {
                 Addresses(
                     addresses = TODO("passare la lista degli indirizzi"),
+                    navHostController = navHostController
+                )
+            }
+        }
+
+        //PRODUCTSLIST
+        composable(
+            route = "productsList/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("id")?.let {
+                //todo prendere i dati tramite id e passarli alla schermata
+                ListTwoColumn(
+                    name = TODO("passare il nome dell'owner"),
+                    items = TODO("passare la lista dei prodotti"),
                     navHostController = navHostController
                 )
             }

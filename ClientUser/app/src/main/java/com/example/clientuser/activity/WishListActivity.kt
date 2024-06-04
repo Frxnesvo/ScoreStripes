@@ -1,6 +1,7 @@
 package com.example.clientuser.activity
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,11 +20,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.dto.WishListDto
 
 @Composable
-fun Wishlist(myList: WishListDto, sharedLists: List<WishListDto>){ //TODO passare il view model e prendere i parametri da lì
+fun Wishlist(myList: WishListDto, sharedLists: List<WishListDto>, navHostController: NavHostController){ //TODO passare il view model e prendere i parametri da lì
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(25.dp)
@@ -37,7 +39,7 @@ fun Wishlist(myList: WishListDto, sharedLists: List<WishListDto>){ //TODO passar
         }
 
         item{
-            WishListItem(myList)
+            WishListItem(myList){ navHostController.navigate("productsList/${myList.id}") }
         }
 
         item {
@@ -50,14 +52,14 @@ fun Wishlist(myList: WishListDto, sharedLists: List<WishListDto>){ //TODO passar
 
         items(sharedLists){
             key(it.id) {
-                WishListItem(it)
+                WishListItem(it){ navHostController.navigate("productsList/${it.id}") }
             }
         }
     }
 }
 
 @Composable
-fun WishListItem(wishListDto: WishListDto){
+fun WishListItem(wishListDto: WishListDto, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .background(colorResource(id = R.color.white), RoundedCornerShape(size = 30.dp))
@@ -96,7 +98,9 @@ fun WishListItem(wishListDto: WishListDto){
         }
 
         Row(
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier
+                .padding(10.dp)
+                .clickable { onClick() },
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             ProductItem(productDto = wishListDto.items[0].product) { }
