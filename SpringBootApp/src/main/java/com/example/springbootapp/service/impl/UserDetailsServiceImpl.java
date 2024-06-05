@@ -26,31 +26,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return createUserDetails(user);
     }
 
-    public UserDetails loadUserByEmail(String email){
-        User user = userDao.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return createUserDetails(user);
-    }
-
     public UserDetails loadUserById(String id){
         User user= userDao.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         return createUserDetails(user);
     }
 
-
     private UserDetails createUserDetails(User user) {
         return new CustomUserDetails(user);
     }
 
-    public User getCurrentUser(){
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        String userId = (String) authentication.getPrincipal();
-        return userDao.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
-    }
-
-    public String getCurrentUserId(){
+    public User getCurrentUser(){    //EVITO DI RIFARE LA QUERY, LA FACCIO GIA NEL FILTRO DOPO AVER ESSERMI ASSICURATO CHE L'UTENTE E' AUTENTICATO
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails= (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getID();
+        return userDetails.getUser();
     }
 
 }

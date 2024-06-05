@@ -1,15 +1,13 @@
 package com.example.springbootapp.controller;
 
-import com.example.springbootapp.data.dto.AddressDto;
-import com.example.springbootapp.data.dto.CustomerProfileDto;
-import com.example.springbootapp.data.dto.CustomerSummaryDto;
-import com.example.springbootapp.data.dto.OrderDto;
+import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.data.entities.Customer;
 import com.example.springbootapp.data.specification.CustomerSpecification;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.AddressService;
 import com.example.springbootapp.service.interfaces.CustomerService;
 import com.example.springbootapp.service.interfaces.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,4 +54,8 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.countNewAccounts());
     }
 
+    @PostMapping("/address")
+    public ResponseEntity<AddressDto> addAddress(@Valid @RequestBody AddressRequestDto addressRequestDto) {
+        return ResponseEntity.ok(addressService.addAddress(addressRequestDto));
+    }
 }
