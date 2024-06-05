@@ -17,6 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,36 +30,52 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.clientuser.R
+import com.example.clientuser.model.dto.OrderInfoDto
+import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.viewmodel.OrderViewModel
 
 @Composable
-fun Cart(){
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(25.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        item {
-            Title()
-        }
+fun Cart(
+    orderViewModel: OrderViewModel,
+    addressViewModel: AddressViewModel
+){
+    val showWebView = remember { mutableStateOf(false)}
 
-        item {
-            Text(
-                text = stringResource(id = R.string.cart),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+    if (showWebView.value) {
+        orderViewModel.createCartOrder(
+            OrderInfoDto(addressViewModel.addresses.collectAsState().value[0].id)
+        ).collectAsState(initial = mapOf()).value["url"]?.let {
+            url -> WebViewScreen(url)
         }
-
-        item {
-            CustomButton(
-                text = stringResource(id = R.string.buy),
-                background = R.color.secondary
-            ) {
-                //TODO logica dal viewModel
+    } else {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(25.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            item {
+                Title()
             }
-        }
 
-        items(3){
-            ItemCart()
+            item {
+                Text(
+                    text = stringResource(id = R.string.cart),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            item {
+                CustomButton(
+                    text = stringResource(id = R.string.buy),
+                    background = R.color.secondary
+                ) {
+                    showWebView.value = true
+                }
+            }
+
+            items(3) {
+                ItemCart()
+            }
         }
     }
 }
