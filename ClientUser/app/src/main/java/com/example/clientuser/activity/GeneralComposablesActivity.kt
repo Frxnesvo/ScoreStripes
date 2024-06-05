@@ -330,7 +330,7 @@ fun ImagePicker(
 fun CustomTextField(
     value: String,
     text: String,
-    isError: Boolean,
+    isError: Boolean = false,
     readOnly: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     lines: Int = 1,

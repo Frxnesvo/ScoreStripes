@@ -1,9 +1,9 @@
 package com.example.clientuser.service
 
-import com.example.clientuser.activity.Cart
 import com.example.clientuser.service.interfaces.AddressApiService
 import com.example.clientuser.service.interfaces.CartApiService
-import com.example.clientuser.service.interfaces.HomeApiService
+import com.example.clientuser.service.interfaces.ClubApiService
+import com.example.clientuser.service.interfaces.LeagueApiService
 import com.example.clientuser.service.interfaces.LoginApiService
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
@@ -32,7 +32,8 @@ object RetrofitHandler {
     }
 
     val loginApi: LoginApiService by lazy { retrofit.create(LoginApiService::class.java) }
-    val homeApi: HomeApiService by lazy { retrofit.create(HomeApiService::class.java) }
+    val leagueApi: LeagueApiService by lazy { retrofit.create(LeagueApiService::class.java) }
     val cartApi: CartApiService by lazy { retrofit.create(CartApiService::class.java) }
     val addressApi: AddressApiService by lazy { retrofit.create(AddressApiService::class.java) }
+    val clubApi: ClubApiService by lazy { retrofit.create(ClubApiService::class.java)}
 }

@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -31,13 +30,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.viewmodel.AddressViewModel
-import com.example.clientuser.viewmodel.HomeViewModel
+import com.example.clientuser.viewmodel.ClubViewModel
+import com.example.clientuser.viewmodel.LeagueViewModel
+import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
+import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
 @Composable
-fun Scaffold() {
+fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewModel) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
@@ -55,7 +57,10 @@ fun Scaffold() {
         ) {
             NavigationScaffold(
                 navHostController = navController,
-                selectedScreen = selectedScreen
+                selectedScreen = selectedScreen,
+                loginFormViewModel = loginFormViewModel,
+                loginViewModel = loginViewModel,
+                clubViewModel = ClubViewModel()
             )
         }
     }
@@ -115,7 +120,10 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
 @Composable
 fun NavigationScaffold(
     navHostController: NavHostController,
-    selectedScreen: MutableState<Screen>
+    selectedScreen: MutableState<Screen>,
+    loginFormViewModel: LoginFormViewModel,
+    loginViewModel: LoginViewModel,
+    clubViewModel: ClubViewModel
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -126,7 +134,10 @@ fun NavigationScaffold(
         composable(
             route = "home"
         ) {
-            Home(homeViewModel = HomeViewModel(), navHostController = navHostController)
+            Home(
+                leagueViewModel = LeagueViewModel(),
+                clubViewModel = clubViewModel,
+                navHostController = navHostController)
         }
 
         //WISHLIST
@@ -145,22 +156,19 @@ fun NavigationScaffold(
 
         //SETTINGS
         composable(
-            route = "settings",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "settings"
         ) {
             CustomerProfile(navHostController = navHostController)
         }
         composable(
-            route = "details/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "details"
         ) {
-            it.arguments?.getString("id")?.let {
-                //todo prendere i dati tramite id e passarli alla schermata
-                UserDetails(
-                    customer = TODO("passare il costumer"),
-                    navHostController = navHostController
-                )
-            }
+            UserDetails(
+                loginFormViewModel = loginFormViewModel,
+                navHostController = navHostController,
+                loginViewModel = loginViewModel,
+                clubViewModel = clubViewModel
+            )
         }
         composable(
             route = "orders/{id}",

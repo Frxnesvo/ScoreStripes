@@ -6,15 +6,7 @@ import com.example.clientuser.model.dto.LeagueDto
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface HomeApiService {
-    @GET
-    fun getClubs() : Call<List<ClubDto>>
-
-    @GET
-    fun getMostSelledProduct(){
-        TODO("manca controller rest")
-    }
-
-    @GET
+interface LeagueApiService {
+    @GET("/api/v1/leagues")
     fun getLeagues() : Call<List<LeagueDto>>
 }

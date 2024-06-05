@@ -1,11 +1,9 @@
 package com.example.clientuser.activity
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -26,20 +24,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.ProductSummary
 import com.example.clientuser.model.dto.ClubDto
 import com.example.clientuser.model.dto.LeagueDto
 import com.example.clientuser.model.dto.ProductDto
-import com.example.clientuser.viewmodel.HomeViewModel
-import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.ClubViewModel
+import com.example.clientuser.viewmodel.LeagueViewModel
 
 @Composable
 fun Home(
-    homeViewModel: HomeViewModel,
-    navHostController: NavHostController
+    leagueViewModel: LeagueViewModel,
+    navHostController: NavHostController,
+    clubViewModel: ClubViewModel
 ){
-    val clubs = homeViewModel.clubs.collectAsState(initial = emptyList())
-    val leagues = homeViewModel.leagues.collectAsState(initial = emptyList())
+    val clubs = clubViewModel.clubs.collectAsState(initial = emptyList())
+    val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),

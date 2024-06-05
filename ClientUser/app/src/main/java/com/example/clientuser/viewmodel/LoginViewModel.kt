@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.Customer
 import com.example.clientuser.model.dto.CustomerCreateRequestDto
+import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.service.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,8 +14,9 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class LoginViewModel: ViewModel() {
-    private val _user = MutableStateFlow<Customer?>(null)
-    val user: StateFlow<Customer?> = _user
+    //todo mettere il customerDto
+    private val _user = MutableStateFlow<CustomerDto?>(null)
+    val user: StateFlow<CustomerDto?> = _user
 
     fun getCustomerFromToken(token: String){
         CoroutineScope(Dispatchers.IO).launch {
@@ -35,4 +37,7 @@ class LoginViewModel: ViewModel() {
         TODO()
     }
 
+    fun updateCustomer(customerDto: CustomerDto){
+        TODO("manca controller per l'update")
+    }
 }
