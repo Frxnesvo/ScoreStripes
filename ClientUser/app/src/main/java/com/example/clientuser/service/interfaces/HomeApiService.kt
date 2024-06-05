@@ -2,6 +2,7 @@ package com.example.clientuser.service.interfaces
 
 
 import com.example.clientuser.model.dto.ClubDto
+import com.example.clientuser.model.dto.LeagueDto
 import retrofit2.Call
 import retrofit2.http.GET
 
@@ -15,7 +16,5 @@ interface HomeApiService {
     }
 
     @GET
-    fun getLeagues(){
-        TODO("manca controller rest")
-    }
+    fun getLeagues() : Call<List<LeagueDto>>
 }

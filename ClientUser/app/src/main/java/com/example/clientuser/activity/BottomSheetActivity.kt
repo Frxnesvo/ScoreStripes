@@ -174,6 +174,8 @@ fun AddItemToCart(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
+    val productState = productFormViewModel.productState.collectAsState()
+
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
@@ -210,7 +212,7 @@ fun AddItemToCart(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = productFormViewModel.productState.collectAsState().value.size!!.name,
+                    text = productState.value.size!!.name,
                     color = colorResource(id = R.color.secondary),
                     style = MaterialTheme.typography.labelMedium
                 )
@@ -230,16 +232,16 @@ fun AddItemToCart(
                 )
             }
 
-            val productState = productFormViewModel.productState.collectAsState().value
+
             CustomButton(text = stringResource(id = R.string.add_to_cart), background = R.color.secondary) {
                 if(sheetState.isVisible) {
-                    val personalizationName = if (productState.name == "") null else productState.name
-                    val personalizationNumber = if (productState.number == 0) null else productState.number
+                    val personalizationName = if (productState.value.name == "") null else productState.value.name
+                    val personalizationNumber = if (productState.value.number == 0) null else productState.value.number
                     scope.launch {
                         cartViewModel.addProductToCart(
                             addToCartRequestDto = AddToCartRequestDto(
                                 productId = product.id,
-                                size = productState.size!!,
+                                size = productState.value.size!!,
                                 category = product.productCategory,
                                 personalization = Personalization(
                                     personalizationName,

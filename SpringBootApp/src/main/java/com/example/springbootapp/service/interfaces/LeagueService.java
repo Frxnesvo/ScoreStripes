@@ -8,4 +8,5 @@ import java.util.List;
 public interface LeagueService {
     LeagueDto createLeague(LeagueRequestDto leagueRequestDto);
     List<String> getLeagueNames();
+    List<LeagueDto> getLeagues();
 }

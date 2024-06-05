@@ -39,6 +39,7 @@ fun Home(
     navHostController: NavHostController
 ){
     val clubs = homeViewModel.clubs.collectAsState(initial = emptyList())
+    val leagues = homeViewModel.leagues.collectAsState(initial = emptyList())
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -73,7 +74,7 @@ fun Home(
 
         Section(
             name = stringResource(id = R.string.buy_by_league),
-            items = listOf(), //TODO get delle leghe
+            items = leagues.value,
             navHostController = navHostController
         )
     }
