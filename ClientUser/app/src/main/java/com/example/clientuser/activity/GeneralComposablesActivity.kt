@@ -107,7 +107,7 @@ fun IconButtonBar(
         if (imageVector != null) {
             BoxIcon(
                 background = colorResource(id = R.color.secondary),
-                iconColor = colorResource(id = R.color.secondary),
+                iconColor = colorResource(id = R.color.white),
                 content = imageVector
             ) { onClick() }
         }

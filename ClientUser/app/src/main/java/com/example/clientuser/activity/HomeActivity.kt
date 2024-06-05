@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,15 +46,28 @@ fun Home(
     ){
         Title()
 
-        Greetings(
-            name = " " + "CIRO"
-        ){}
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(
+                text = stringResource(id = R.string.greetings),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal
+            )
+            Text(
+                text = "CIRO",
+                color = colorResource(id = R.color.secondary),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
         BoxImage(
             height = 300.dp,
             boxTitle = stringResource(id = R.string.discover),
             painter = painterResource(id = R.drawable.home)
-        ) {  }
+        ) { navHostController.navigate("list") }
 
         Section(
             name = stringResource(id = R.string.best_seller),
@@ -74,42 +85,6 @@ fun Home(
             name = stringResource(id = R.string.buy_by_league),
             items = leagues.value,
             navHostController = navHostController
-        )
-    }
-}
-
-
-@Composable
-fun Greetings(
-    name: String,
-    onClickSearch: () -> Unit
-){
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        Row{
-            Text(
-                text = stringResource(id = R.string.greetings),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal
-            )
-
-            Text(
-                text = name,
-                color = colorResource(id = R.color.secondary),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        BoxIcon(
-            background = colorResource(id = R.color.secondary),
-            content = Icons.Outlined.Search,
-            iconColor = colorResource(R.color.white),
-            onclick = onClickSearch
         )
     }
 }
@@ -147,10 +122,10 @@ fun Section(
                             ProductItem(it){ navHostController.navigate("product/${it.id}") }
                         }
                         is ClubDto -> key(it.id) {
-                            ClubItem(it){ TODO("navHostController.navigate()")}
+                            ClubItem(it){ navHostController.navigate("list/club/${it.name}")}
                         }
                         is LeagueDto -> key(it.id) {
-                            LeagueItem(it){ TODO("navHostController.navigate()") }
+                            LeagueItem(it){ navHostController.navigate("list/league/${it.name}") }
                         }
                     }
                 }

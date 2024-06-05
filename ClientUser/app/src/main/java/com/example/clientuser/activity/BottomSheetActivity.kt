@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -31,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.clientuser.R
+import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Personalization
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToCartRequestDto
@@ -39,6 +42,8 @@ import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
 import com.example.clientuser.viewmodel.AddressViewModel
 import com.example.clientuser.viewmodel.CartViewModel
+import com.example.clientuser.viewmodel.LeagueViewModel
+import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 import kotlinx.coroutines.launch
@@ -85,6 +90,61 @@ fun SharedWithPanel(
                             sheetState.hide()
                             setBottomSheet(false)
                         }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchPanelProducts(
+    onDismissRequest: () -> Unit,
+    setBottomSheet: (Boolean) -> Unit,
+    leagueViewModel: LeagueViewModel,
+    productViewModel: ProductViewModel
+){
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    val filterBuilder = remember { FilterBuilder() }
+    //TODO val leagues by leagueViewModel.leaguesNames.collectAsState()
+
+    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+        Column(
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            CustomTextField(
+                value = "",
+                text = stringResource(id = R.string.search_for_name),
+                leadingIcon = Icons.Outlined.Search
+            ) { filterBuilder.setName(it) }
+
+            CustomComboBox(
+                options = listOf(), //TODO inserire i nomi delle leghe
+                selectedOption = ""
+            ) { filterBuilder.setLeague(it) }
+
+            CustomComboBox(
+                options = ProductCategory.entries,
+                selectedOption = ""
+            ) { filterBuilder.setCategory(it) }
+
+            CustomComboBox(
+                options = Size.entries,
+                selectedOption = ""
+            ) { filterBuilder.setSize(it) }
+
+            CustomButton(
+                text = stringResource(id = R.string.search),
+                background = R.color.secondary
+            ){
+                if(sheetState.isVisible) {
+                    scope.launch {
+                        sheetState.hide()
+                        setBottomSheet(false)
+                        productViewModel.setFilter(filterBuilder.build())
+                    }
                 }
             }
         }

@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -29,10 +30,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
+import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.viewmodel.AddressViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
+import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
@@ -60,7 +63,9 @@ fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewMo
                 selectedScreen = selectedScreen,
                 loginFormViewModel = loginFormViewModel,
                 loginViewModel = loginViewModel,
-                clubViewModel = ClubViewModel()
+                clubViewModel = ClubViewModel(),
+                leagueViewModel = LeagueViewModel(),
+                productViewModel = ProductViewModel()
             )
         }
     }
@@ -123,7 +128,9 @@ fun NavigationScaffold(
     selectedScreen: MutableState<Screen>,
     loginFormViewModel: LoginFormViewModel,
     loginViewModel: LoginViewModel,
-    clubViewModel: ClubViewModel
+    leagueViewModel: LeagueViewModel,
+    clubViewModel: ClubViewModel,
+    productViewModel: ProductViewModel
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -135,9 +142,10 @@ fun NavigationScaffold(
             route = "home"
         ) {
             Home(
-                leagueViewModel = LeagueViewModel(),
+                leagueViewModel = leagueViewModel,
                 clubViewModel = clubViewModel,
-                navHostController = navHostController)
+                navHostController = navHostController
+            )
         }
 
         //WISHLIST
@@ -195,16 +203,56 @@ fun NavigationScaffold(
             }
         }
 
-        //PRODUCTSLIST
+        //LISTS
         composable(
-            route = "productsList/{id}",
+            route = "wishlistProducts/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("id")?.let {
                 //todo prendere i dati tramite id e passarli alla schermata
-                ListTwoColumn(
-                    name = TODO("passare il nome dell'owner"),
-                    items = TODO("passare la lista dei prodotti"),
+                WishlistProducts(
+                    wishlistDto = TODO(),
+                    navHostController = navHostController
+                )
+            }
+        }
+
+        composable(
+            route = "list",
+        ) {
+            ListDiscover(
+                name = stringResource(id = R.string.discover),
+                productViewModel = productViewModel,
+                leagueViewModel = leagueViewModel,
+                navHostController = navHostController
+            )
+        }
+        composable(
+            route = "list/club/{name}",
+            arguments = listOf(navArgument("name"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("name")?.let {
+                club ->
+                productViewModel.setFilter(FilterBuilder().setClub(club).build())
+                ListDiscover(
+                    name = stringResource(id = R.string.discover),
+                    productViewModel = productViewModel,
+                    leagueViewModel = leagueViewModel,
+                    navHostController = navHostController
+                )
+            }
+        }
+        composable(
+            route = "list/league/{name}",
+            arguments = listOf(navArgument("name"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("name")?.let {
+                league ->
+                productViewModel.setFilter(FilterBuilder().setLeague(league).build())
+                ListDiscover(
+                    name = stringResource(id = R.string.discover),
+                    productViewModel = productViewModel,
+                    leagueViewModel = leagueViewModel,
                     navHostController = navHostController
                 )
             }
