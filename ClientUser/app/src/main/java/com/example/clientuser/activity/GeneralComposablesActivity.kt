@@ -107,7 +107,7 @@ fun IconButtonBar(
         if (imageVector != null) {
             BoxIcon(
                 background = colorResource(id = R.color.secondary),
-                iconColor = colorResource(id = R.color.secondary),
+                iconColor = colorResource(id = R.color.white),
                 content = imageVector
             ) { onClick() }
         }
@@ -330,10 +330,12 @@ fun ImagePicker(
 fun CustomTextField(
     value: String,
     text: String,
+    isError: Boolean = false,
     readOnly: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     lines: Int = 1,
     leadingIcon: ImageVector? = null,
+
     onValueChange: (String) -> Unit
 ){
     val colors = OutlinedTextFieldDefaults.colors(
@@ -350,6 +352,7 @@ fun CustomTextField(
     OutlinedTextField(
         readOnly = readOnly,
         value = value,
+        isError = isError,
         onValueChange = onValueChange,
         label = {
             Text(

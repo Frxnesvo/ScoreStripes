@@ -37,4 +37,14 @@ public class LeagueServiceImpl implements LeagueService {
     public List<String> getLeagueNames() {
         return leagueDao.getAllNames();
     }
+
+
+    @Override
+    public List<LeagueDto> getLeagues() {
+        List<League> leagues = leagueDao.findAll();
+        return leagues.stream()
+                .map(league -> modelMapper.map(league, LeagueDto.class))
+                .toList();
+    }
+
 }

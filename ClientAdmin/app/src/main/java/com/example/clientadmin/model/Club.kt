@@ -5,7 +5,6 @@ import android.net.Uri
 class Club(
     val name: String,
     val image: Uri,
-    private val league: String
 ){
     init {
         require(validateName(name)) { "Invalid name: must be between 3 and 40 characters" }

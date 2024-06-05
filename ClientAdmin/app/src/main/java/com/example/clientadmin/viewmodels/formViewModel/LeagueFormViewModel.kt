@@ -1,7 +1,6 @@
 package com.example.clientadmin.viewmodels.formViewModel
 
 import android.net.Uri
-import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.League
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +26,7 @@ class LeagueFormViewModel{
         )
     }
     fun updateImage(image: Uri) {
-        val hasError = !Club.validateImage(image)
+        val hasError = !League.validateImage(image)
         _leagueState.value = _leagueState.value.copy(
             image = image,
             isImageError = hasError

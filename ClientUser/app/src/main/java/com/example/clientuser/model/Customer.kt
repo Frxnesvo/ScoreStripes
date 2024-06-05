@@ -12,7 +12,8 @@ class Customer(
     val email: String,
     val birthDate: LocalDate,
     val gender: Gender,
-    val pic: Uri
+    val pic: Uri,
+    val favoriteTeam: String
     //TODO aggiungere gli altri campi
 ) {
     init {

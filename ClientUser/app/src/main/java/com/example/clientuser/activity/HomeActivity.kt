@@ -1,20 +1,17 @@
 package com.example.clientuser.activity
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,17 +22,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.ProductSummary
 import com.example.clientuser.model.dto.ClubDto
 import com.example.clientuser.model.dto.LeagueDto
 import com.example.clientuser.model.dto.ProductDto
-import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.ClubViewModel
+import com.example.clientuser.viewmodel.LeagueViewModel
 
 @Composable
 fun Home(
-    //viewModel: ProductViewModel,
-    navHostController: NavHostController
+    leagueViewModel: LeagueViewModel,
+    navHostController: NavHostController,
+    clubViewModel: ClubViewModel
 ){
+    val clubs = clubViewModel.clubs.collectAsState(initial = emptyList())
+    val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
+
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,15 +46,28 @@ fun Home(
     ){
         Title()
 
-        Greetings(
-            name = " " + "CIRO"
-        ){}
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(
+                text = stringResource(id = R.string.greetings),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal
+            )
+            Text(
+                text = "CIRO",
+                color = colorResource(id = R.color.secondary),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
         BoxImage(
             height = 300.dp,
             boxTitle = stringResource(id = R.string.discover),
             painter = painterResource(id = R.drawable.home)
-        ) {  }
+        ) { navHostController.navigate("list") }
 
         Section(
             name = stringResource(id = R.string.best_seller),
@@ -63,50 +77,14 @@ fun Home(
 
         Section(
             name = stringResource(id = R.string.buy_by_club),
-            items = listOf(), //TODO get dei club
+            items = clubs.value,
             navHostController = navHostController
         )
 
         Section(
             name = stringResource(id = R.string.buy_by_league),
-            items = listOf(), //TODO get delle leghe
+            items = leagues.value,
             navHostController = navHostController
-        )
-    }
-}
-
-
-@Composable
-fun Greetings(
-    name: String,
-    onClickSearch: () -> Unit
-){
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        Row{
-            Text(
-                text = stringResource(id = R.string.greetings),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal
-            )
-
-            Text(
-                text = name,
-                color = colorResource(id = R.color.secondary),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        BoxIcon(
-            background = colorResource(id = R.color.secondary),
-            content = Icons.Outlined.Search,
-            iconColor = colorResource(R.color.white),
-            onclick = onClickSearch
         )
     }
 }
@@ -144,10 +122,10 @@ fun Section(
                             ProductItem(it){ navHostController.navigate("product/${it.id}") }
                         }
                         is ClubDto -> key(it.id) {
-                            ClubItem(it){ TODO("navHostController.navigate()")}
+                            ClubItem(it){ navHostController.navigate("list/club/${it.name}")}
                         }
                         is LeagueDto -> key(it.id) {
-                            LeagueItem(it){ TODO("navHostController.navigate()") }
+                            LeagueItem(it){ navHostController.navigate("list/league/${it.name}") }
                         }
                     }
                 }

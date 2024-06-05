@@ -41,4 +41,12 @@ public class LeagueController {
                 .status(HttpStatus.OK)
                 .body(leagueNames);
     }
+
+    @GetMapping()
+    public ResponseEntity<List<LeagueDto>> getLeagues(){
+        List<LeagueDto> leagues = leagueService.getLeagues();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(leagues);
+    }
 }

@@ -13,6 +13,10 @@ import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -20,11 +24,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.dto.CustomerProfileDto
+import com.example.clientuser.viewmodel.ClubViewModel
+import com.example.clientuser.viewmodel.LoginViewModel
+import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 
 @Composable
-fun UserDetails(customer: CustomerProfileDto, navHostController: NavHostController){
+fun UserDetails(
+    loginFormViewModel: LoginFormViewModel,
+    navHostController: NavHostController,
+    loginViewModel: LoginViewModel,
+    clubViewModel: ClubViewModel
+){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
@@ -42,12 +53,28 @@ fun UserDetails(customer: CustomerProfileDto, navHostController: NavHostControll
             fontWeight = FontWeight.Bold
         )
 
-        Details(customer = customer)
+        Details(
+            loginFormViewModel = loginFormViewModel,
+            clubViewModel = clubViewModel
+        ){
+            loginViewModel.updateCustomer(
+                TODO("vedere come gestire l'invio del dto")
+            )
+        }
     }
 }
 
 @Composable
-fun Details(customer: CustomerProfileDto){
+fun Details(
+    loginFormViewModel: LoginFormViewModel,
+    clubViewModel: ClubViewModel,
+    onClick: () -> Unit
+){
+    val customer by loginFormViewModel.customerState.collectAsState()
+    val clubsName by clubViewModel.clubNames.collectAsState(initial = emptyList())
+
+    val isEditable = remember { mutableStateOf(false) }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.fillMaxWidth()
@@ -61,12 +88,22 @@ fun Details(customer: CustomerProfileDto){
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = stringResource(id = R.string.edit),
+                text = stringResource(id = if(!isEditable.value) R.string.edit else R.string.update),
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.secondary),
-                modifier = Modifier.clickable { TODO("readonly = false oppure readonly = true e update dell'utente") }
+                modifier = Modifier.clickable {
+                    if(isEditable.value) onClick()
+                    isEditable.value = !isEditable.value
+                }
             )
         }
+
+        CustomTextField(
+            value = customer.username,
+            isError = customer.isUsernameError,
+            text = stringResource(id = R.string.username),
+            //TODO readOnly = true
+        ){}
 
         CustomTextField(
             value = customer.firstName,
@@ -86,11 +123,12 @@ fun Details(customer: CustomerProfileDto){
             readOnly = true
         ){}
 
-        CustomTextField(
-            value = customer.favoriteClub,
-            text = stringResource(id = R.string.favorite_club),
-            readOnly = true
-        ){}
+        CustomComboBox(
+            options = clubsName,
+            selectedOption = customer.favouriteTeam,
+        ){
+            loginFormViewModel.updateFavouriteTeam(it)
+        }
 
         CustomTextField(
             value = customer.gender.name,
@@ -99,8 +137,8 @@ fun Details(customer: CustomerProfileDto){
         ){}
 
         CustomTextField(
-            value = customer.birthDate,
-            text = "GENDER",
+            value = customer.birthdate.toString(),
+            text = stringResource(id = R.string.birth_date),
             readOnly = true
         ){}
     }

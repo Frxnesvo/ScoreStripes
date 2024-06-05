@@ -1,6 +1,7 @@
 package com.example.clientuser.viewmodel.formviewmodel
 
 import android.net.Uri
+import com.example.clientuser.model.Club
 import com.example.clientuser.model.Customer
 import com.example.clientuser.model.enumerator.Gender
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ data class CustomerState(
     val birthdate : LocalDate = LocalDate.now(),
     val gender : Gender = Gender.entries[0],
     val profilePic : Uri = Uri.EMPTY,
-    val favouriteTeam : String =  "",
+    val favouriteTeam : String = "",
 
     //error
     val isProfilePicError: Boolean = !Customer.validateProfilePic(profilePic),
@@ -24,7 +25,7 @@ data class CustomerState(
     val isFirstNameError: Boolean = !Customer.validateFirstName(firstName),
     val isLastNameError: Boolean = !Customer.validateLastName(lastName),
     val isEmailError: Boolean = !Customer.validateEmail(email),
-    val isBirthdateError: Boolean = !Customer.validateBirthdate(birthdate)
+    val isBirthdateError: Boolean = !Customer.validateBirthdate(birthdate),
 )
 class LoginFormViewModel {
     private val _customerState = MutableStateFlow(CustomerState())
@@ -58,15 +59,21 @@ class LoginFormViewModel {
     }
 
     fun updateBirthdate(birthdate: LocalDate){
-        _customerState.value = customerState.value.copy(
+        _customerState.value = _customerState.value.copy(
             birthdate = birthdate,
             isBirthdateError = !Customer.validateBirthdate(birthdate)
         )
     }
 
     fun updateGender(gender: Gender){
-        _customerState.value = customerState.value.copy(
+        _customerState.value = _customerState.value.copy(
             gender = gender
+        )
+    }
+
+    fun updateFavouriteTeam(favouriteTeam: String){
+        _customerState.value = _customerState.value.copy(
+            favouriteTeam = favouriteTeam
         )
     }
 }

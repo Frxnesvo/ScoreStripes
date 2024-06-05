@@ -1,23 +1,20 @@
 package com.example.clientuser.model
 
 import android.net.Uri
+import com.example.clientuser.model.dto.LeagueDto
 
 class League(
+    val id: String,
     val name: String,
     val image: Uri
 ){
-    init {
-        require(validateName(name)) { "Invalid name: must be between 3 and 40 characters" }
-        require(validateImage(image)) { "Invalid image: cannot be empty" }
-    }
-
     companion object{
-        fun validateName(name: String): Boolean{
-            return name.length in 1..30
-        }
-
-        fun validateImage(image: Uri): Boolean{
-            return image != Uri.EMPTY
+        fun fromDto(leagueDto: LeagueDto): League{
+            return League(
+                id = leagueDto.id,
+                name = leagueDto.name,
+                image = Uri.EMPTY //TODO prendere dal bucket
+            )
         }
     }
 }

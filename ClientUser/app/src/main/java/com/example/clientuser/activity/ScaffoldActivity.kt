@@ -21,7 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -30,11 +30,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
+import com.example.clientuser.model.FilterBuilder
+import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.viewmodel.ClubViewModel
+import com.example.clientuser.viewmodel.LeagueViewModel
+import com.example.clientuser.viewmodel.LoginViewModel
+import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
+import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
 @Composable
-fun Scaffold() {
+fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewModel) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
@@ -52,7 +60,12 @@ fun Scaffold() {
         ) {
             NavigationScaffold(
                 navHostController = navController,
-                selectedScreen = selectedScreen
+                selectedScreen = selectedScreen,
+                loginFormViewModel = loginFormViewModel,
+                loginViewModel = loginViewModel,
+                clubViewModel = ClubViewModel(),
+                leagueViewModel = LeagueViewModel(),
+                productViewModel = ProductViewModel()
             )
         }
     }
@@ -112,7 +125,12 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
 @Composable
 fun NavigationScaffold(
     navHostController: NavHostController,
-    selectedScreen: MutableState<Screen>
+    selectedScreen: MutableState<Screen>,
+    loginFormViewModel: LoginFormViewModel,
+    loginViewModel: LoginViewModel,
+    leagueViewModel: LeagueViewModel,
+    clubViewModel: ClubViewModel,
+    productViewModel: ProductViewModel
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -123,14 +141,18 @@ fun NavigationScaffold(
         composable(
             route = "home"
         ) {
-            Home(navHostController = navHostController)
+            Home(
+                leagueViewModel = leagueViewModel,
+                clubViewModel = clubViewModel,
+                navHostController = navHostController
+            )
         }
 
         //WISHLIST
         composable(
             route = "wishlist"
         ) {
-            Wishlist(myList = TODO() , sharedLists = TODO()) //TODO passare navHostController e wishlistviewmodel
+            Wishlist(myList = TODO() , sharedLists = TODO(), navHostController) //TODO passare e wishlistviewmodel
         }
 
         //CART
@@ -142,22 +164,19 @@ fun NavigationScaffold(
 
         //SETTINGS
         composable(
-            route = "settings",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "settings"
         ) {
             CustomerProfile(navHostController = navHostController)
         }
         composable(
-            route = "details/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "details"
         ) {
-            it.arguments?.getString("id")?.let {
-                //todo prendere i dati tramite id e passarli alla schermata
-                UserDetails(
-                    customer = TODO("passare il costumer"),
-                    navHostController = navHostController
-                )
-            }
+            UserDetails(
+                loginFormViewModel = loginFormViewModel,
+                navHostController = navHostController,
+                loginViewModel = loginViewModel,
+                clubViewModel = clubViewModel
+            )
         }
         composable(
             route = "orders/{id}",
@@ -175,8 +194,65 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("id")?.let {
+                customerId ->
                 Addresses(
-                    addresses = TODO("passare la lista degli indirizzi"),
+                    addressViewModel = AddressViewModel(customerId),
+                    addressFormViewModel = AddressFormViewModel(),
+                    navHostController = navHostController
+                )
+            }
+        }
+
+        //LISTS
+        composable(
+            route = "wishlistProducts/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("id")?.let {
+                //todo prendere i dati tramite id e passarli alla schermata
+                WishlistProducts(
+                    wishlistDto = TODO(),
+                    navHostController = navHostController
+                )
+            }
+        }
+
+        composable(
+            route = "list",
+        ) {
+            ListDiscover(
+                name = stringResource(id = R.string.discover),
+                productViewModel = productViewModel,
+                leagueViewModel = leagueViewModel,
+                navHostController = navHostController
+            )
+        }
+        composable(
+            route = "list/club/{name}",
+            arguments = listOf(navArgument("name"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("name")?.let {
+                club ->
+                productViewModel.setFilter(FilterBuilder().setClub(club).build())
+                ListDiscover(
+                    name = stringResource(id = R.string.discover),
+                    productViewModel = productViewModel,
+                    leagueViewModel = leagueViewModel,
+                    navHostController = navHostController
+                )
+            }
+        }
+        composable(
+            route = "list/league/{name}",
+            arguments = listOf(navArgument("name"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("name")?.let {
+                league ->
+                productViewModel.setFilter(FilterBuilder().setLeague(league).build())
+                ListDiscover(
+                    name = stringResource(id = R.string.discover),
+                    productViewModel = productViewModel,
+                    leagueViewModel = leagueViewModel,
                     navHostController = navHostController
                 )
             }

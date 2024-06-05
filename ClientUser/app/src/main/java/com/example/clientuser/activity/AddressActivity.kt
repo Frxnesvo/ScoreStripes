@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +34,6 @@ fun AddressItem(addressDto: AddressDto){
             .padding(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        val style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light, color = colorResource(id = R.color.black50))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -41,25 +41,29 @@ fun AddressItem(addressDto: AddressDto){
         ) {
             Text(
                 text = "${addressDto.street}, ${addressDto.civicNumber}",
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Light, color = colorResource(id = R.color.black))
+                style = MaterialTheme.typography.labelMedium,
             )
             if(addressDto.defaultAddress)
                 Text(
                     text = stringResource(id = R.string.default_address),
-                    style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light, color = colorResource(id = R.color.secondary))
+                    style = MaterialTheme.typography.labelMedium,
+                    color = colorResource(id = R.color.secondary)
                 )
         }
         Text(
             text = addressDto.state,
-            style = style
+            style = MaterialTheme.typography.labelMedium,
+            color = colorResource(id = R.color.black50)
         )
         Text(
             text = addressDto.city,
-            style = style
+            style = MaterialTheme.typography.labelMedium,
+            color = colorResource(id = R.color.black50)
         )
         Text(
             text = addressDto.zipCode,
-            style = style
+            style = MaterialTheme.typography.labelMedium,
+            color = colorResource(id = R.color.black50)
         )
     }
 }

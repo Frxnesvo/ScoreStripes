@@ -15,7 +15,6 @@ class League(
         fun validateName(name: String): Boolean{
             return name.length in 1..30
         }
-
         fun validateImage(image: Uri): Boolean{
             return image != Uri.EMPTY
         }

@@ -75,7 +75,10 @@ fun Navigation(navController: NavHostController, loginViewModel : LoginViewModel
         composable(
             route = "scaffold"
         ){
-            Scaffold()
+            Scaffold(
+                loginFormViewModel = loginFormViewModel,
+                loginViewModel = loginViewModel
+            )
         }
     }
 }
