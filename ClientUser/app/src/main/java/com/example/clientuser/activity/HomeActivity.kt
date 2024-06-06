@@ -27,15 +27,18 @@ import com.example.clientuser.model.dto.LeagueDto
 import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
+import com.example.clientuser.viewmodel.ProductViewModel
 
 @Composable
 fun Home(
     leagueViewModel: LeagueViewModel,
     navHostController: NavHostController,
-    clubViewModel: ClubViewModel
+    clubViewModel: ClubViewModel,
+    productViewModel: ProductViewModel
 ){
     val clubs = clubViewModel.clubs.collectAsState(initial = emptyList())
     val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
+    val mostSoldProduct = productViewModel.mostSoldProducts.collectAsState(initial = emptyList())
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -71,7 +74,7 @@ fun Home(
 
         Section(
             name = stringResource(id = R.string.best_seller),
-            items = listOf(), //TODO get dei più venduti
+            items = mostSoldProduct.value,
             navHostController = navHostController
         )
 

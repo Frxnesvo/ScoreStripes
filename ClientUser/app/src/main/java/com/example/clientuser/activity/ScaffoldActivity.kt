@@ -144,6 +144,7 @@ fun NavigationScaffold(
             Home(
                 leagueViewModel = leagueViewModel,
                 clubViewModel = clubViewModel,
+                productViewModel = productViewModel,
                 navHostController = navHostController
             )
         }
