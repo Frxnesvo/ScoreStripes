@@ -35,6 +35,7 @@ import com.example.clientuser.viewmodel.AddressViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
+import com.example.clientuser.viewmodel.OrderViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
@@ -60,7 +61,6 @@ fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewMo
         ) {
             NavigationScaffold(
                 navHostController = navController,
-                selectedScreen = selectedScreen,
                 loginFormViewModel = loginFormViewModel,
                 loginViewModel = loginViewModel,
                 clubViewModel = ClubViewModel(),
@@ -125,7 +125,6 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
 @Composable
 fun NavigationScaffold(
     navHostController: NavHostController,
-    selectedScreen: MutableState<Screen>,
     loginFormViewModel: LoginFormViewModel,
     loginViewModel: LoginViewModel,
     leagueViewModel: LeagueViewModel,
@@ -159,7 +158,11 @@ fun NavigationScaffold(
         composable(
             route = "cart"
         ) {
-            Cart() //TODO passare navHostController e cartviewmodel
+            Cart(
+                addressViewModel = AddressViewModel(""), //TODO passare l'id dell'utente, è usato già in due punti quindi meglio crearlo prima
+                orderViewModel = OrderViewModel(),
+                navHostController = navHostController
+            )
         }
 
         //SETTINGS
@@ -256,6 +259,30 @@ fun NavigationScaffold(
                     navHostController = navHostController
                 )
             }
+        }
+
+        //PAYMENT
+        composable(
+            route = "splash_screen/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("id")?.let {
+                sessionId -> //todo chiamare la validateTransaction
+                SplashScreen(navHostController, orderViewModel = OrderViewModel()) //todo credo vada preso già creato
+            }
+        }
+        composable(
+            route = "payment/{result}",
+            arguments = listOf(navArgument("result"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("result")?.let {
+                result -> PaymentSuccessScreen(result = result, navHostController = navHostController)
+            }
+        }
+        composable(
+            route = "payment_failure"
+        ) {
+            PaymentFailureScreen(navHostController = navHostController)
         }
     }
 }

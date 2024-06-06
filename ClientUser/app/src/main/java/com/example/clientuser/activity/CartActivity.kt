@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.dto.OrderInfoDto
 import com.example.clientuser.viewmodel.AddressViewModel
@@ -37,7 +38,8 @@ import com.example.clientuser.viewmodel.OrderViewModel
 @Composable
 fun Cart(
     orderViewModel: OrderViewModel,
-    addressViewModel: AddressViewModel
+    addressViewModel: AddressViewModel,
+    navHostController: NavHostController
 ){
     val showWebView = remember { mutableStateOf(false)}
 
@@ -45,7 +47,9 @@ fun Cart(
         orderViewModel.createCartOrder(
             OrderInfoDto(addressViewModel.addresses.collectAsState().value[0].id)
         ).collectAsState(initial = mapOf()).value["url"]?.let {
-            url -> WebViewScreen(url)
+            url -> WebViewScreen(url, navHostController) {
+                showWebView.value = false
+            }
         }
     } else {
         LazyColumn(
