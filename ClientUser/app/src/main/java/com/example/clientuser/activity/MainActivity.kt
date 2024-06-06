@@ -39,7 +39,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Navigation(navController: NavHostController, loginViewModel : LoginViewModel, loginFormViewModel: LoginFormViewModel){
+fun Navigation(
+    navController: NavHostController,
+    loginViewModel : LoginViewModel,
+    loginFormViewModel: LoginFormViewModel
+){
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
         navController = navController,
