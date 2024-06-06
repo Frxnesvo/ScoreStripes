@@ -7,6 +7,7 @@ import com.example.clientuser.service.interfaces.LeagueApiService
 import com.example.clientuser.service.interfaces.LoginApiService
 import com.example.clientuser.service.interfaces.OrderApiService
 import com.example.clientuser.service.interfaces.ProductApiService
+import com.example.clientuser.service.interfaces.WishListApiService
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -40,4 +41,5 @@ object RetrofitHandler {
     val clubApi: ClubApiService by lazy { retrofit.create(ClubApiService::class.java)}
     val orderApi: OrderApiService by lazy { retrofit.create(OrderApiService::class.java)}
     val productApi: ProductApiService by lazy { retrofit.create(ProductApiService::class.java)}
+    val wishListApi: WishListApiService by lazy { retrofit.create(WishListApiService::class.java)}
 }

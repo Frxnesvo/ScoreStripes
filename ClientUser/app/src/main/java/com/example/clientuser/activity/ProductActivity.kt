@@ -31,7 +31,7 @@ import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 @Composable
 fun ProductDetails(productDto: ProductDto, navHostController: NavHostController){
     val product = Product.fromDto(productDto)
-    //TODO serve un form view model e anche il view model
+    //TODO serve il view model e capire come gestire il like
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val productFormViewModel = ProductFormViewModel()
 

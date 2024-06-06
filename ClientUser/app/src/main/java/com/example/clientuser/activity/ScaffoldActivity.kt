@@ -36,6 +36,7 @@ import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
@@ -153,7 +154,10 @@ fun NavigationScaffold(
         composable(
             route = "wishlist"
         ) {
-            Wishlist(myList = TODO() , sharedLists = TODO(), navHostController) //TODO passare e wishlistviewmodel
+            Wishlist(
+                myList = TODO(),
+                wishListViewModel = WishListViewModel(), //TODO va preso dalle altre schermate
+                navHostController = navHostController)
         }
 
         //CART

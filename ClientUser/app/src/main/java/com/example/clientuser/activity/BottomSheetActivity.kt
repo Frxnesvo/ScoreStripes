@@ -107,7 +107,7 @@ fun SearchPanelProducts(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val filterBuilder = remember { FilterBuilder() }
-    val leagues by leagueViewModel.leaguesNames.collectAsState(initial = "")
+    val leagues by leagueViewModel.leaguesNames.collectAsState(initial = emptyList())
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
@@ -121,7 +121,7 @@ fun SearchPanelProducts(
             ) { filterBuilder.setName(it) }
 
             CustomComboBox(
-                options = listOf(), //TODO inserire i nomi delle leghe
+                options = leagues,
                 selectedOption = ""
             ) { filterBuilder.setLeague(it) }
 

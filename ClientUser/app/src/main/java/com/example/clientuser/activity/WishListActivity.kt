@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,9 +24,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.dto.WishListDto
+import com.example.clientuser.viewmodel.WishListViewModel
 
 @Composable
-fun Wishlist(myList: WishListDto, sharedLists: List<WishListDto>, navHostController: NavHostController){ //TODO passare il view model e prendere i parametri da lì
+fun Wishlist(
+    myList: WishListDto,
+    navHostController: NavHostController,
+    wishListViewModel: WishListViewModel
+){
+
+    //TODO val myList = wishListViewModel.myWishList.collectAsState()
+    val sharedLists = wishListViewModel.sharedWithMeWishlists.collectAsState(initial = emptyList())
+    val publicLists = wishListViewModel.publicWishLists.collectAsState(initial = emptyList()) //TODO implementare il bottone
+
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(25.dp)
@@ -39,6 +50,7 @@ fun Wishlist(myList: WishListDto, sharedLists: List<WishListDto>, navHostControl
         }
 
         item{
+            TODO("da sistemare")
             WishListItem(myList){ navHostController.navigate("productsList/${myList.id}") }
         }
 
@@ -50,7 +62,7 @@ fun Wishlist(myList: WishListDto, sharedLists: List<WishListDto>, navHostControl
             )
         }
 
-        items(sharedLists){
+        items(sharedLists.value){
             key(it.id) {
                 WishListItem(it){ navHostController.navigate("productsList/${it.id}") }
             }

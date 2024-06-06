@@ -13,7 +13,7 @@ import retrofit2.awaitResponse
 
 class OrderViewModel: ViewModel() {
 
-    private val _validateTransactionResult = MutableStateFlow<String>("")
+    private val _validateTransactionResult = MutableStateFlow("")
     val validateTransactionResult = _validateTransactionResult
 
     fun createCartOrder(orderInfoDto: OrderInfoDto){
