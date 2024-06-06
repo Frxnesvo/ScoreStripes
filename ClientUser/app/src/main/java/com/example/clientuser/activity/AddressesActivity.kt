@@ -42,7 +42,7 @@ fun Addresses(
                 imageVector = Icons.Outlined.Add,
                 navHostController = navHostController
             ) {
-
+                setBottomSheet(true)
             }
         }
 

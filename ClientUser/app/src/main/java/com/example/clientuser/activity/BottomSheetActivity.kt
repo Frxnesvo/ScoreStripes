@@ -1,6 +1,5 @@
 package com.example.clientuser.activity
 
-import android.provider.Telephony.Mms.Addr
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,12 +15,9 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -154,7 +150,7 @@ fun SearchPanelProducts(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAddress(
-    onDismissRequest: () -> Unit, //TODO aggiungere view model e form view model
+    onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
     addressViewModel: AddressViewModel,
     addressFormViewModel: AddressFormViewModel

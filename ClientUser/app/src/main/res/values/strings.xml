@@ -47,7 +47,8 @@
     <string name="personal_data">PERSONAL DATA</string>
     <string name="cart">CART</string>
     <string name="details">DETAILS</string>
-    <string name="my_wishlist">DETAILS</string>
+    <string name="my_wishlist">MY WISHLIST</string>
+    <string name="discover_wishlists">DISCOVER WISHLISTS</string>
     <string name="shared_with_me">SHARED WITH ME</string>
     <string name="share">SHARE</string>
 

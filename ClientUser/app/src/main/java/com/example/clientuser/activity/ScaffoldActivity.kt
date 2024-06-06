@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -66,7 +67,9 @@ fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewMo
                 loginViewModel = loginViewModel,
                 clubViewModel = ClubViewModel(),
                 leagueViewModel = LeagueViewModel(),
-                productViewModel = ProductViewModel()
+                productViewModel = ProductViewModel(),
+                orderViewModel = OrderViewModel(),
+                wishlistViewModel = WishListViewModel()
             )
         }
     }
@@ -130,7 +133,9 @@ fun NavigationScaffold(
     loginViewModel: LoginViewModel,
     leagueViewModel: LeagueViewModel,
     clubViewModel: ClubViewModel,
-    productViewModel: ProductViewModel
+    productViewModel: ProductViewModel,
+    orderViewModel: OrderViewModel,
+    wishlistViewModel: WishListViewModel
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -154,9 +159,56 @@ fun NavigationScaffold(
             route = "wishlist"
         ) {
             Wishlist(
-                myList = TODO(),
-                wishListViewModel = WishListViewModel(), //TODO va preso dalle altre schermate
+                wishListViewModel = wishlistViewModel,
                 navHostController = navHostController)
+        }
+
+        composable(
+            route = "discoverWishlist",
+        ) {
+            WishlistDiscover(
+                wishListViewModel = wishlistViewModel,
+                navHostController = navHostController
+            )
+        }
+
+        composable(
+            route = "myWishlist",
+        ) {
+            val myList = wishlistViewModel.myWishList.collectAsState()
+            WishlistProducts(
+                name = stringResource(id = R.string.my_wishlist),
+                items = myList.value,
+                navHostController = navHostController
+            )
+        }
+
+        composable(
+            route = "sharedWishlistProducts/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+        ) {
+                route -> route.arguments?.getString("id")?.let {
+                id -> val wishlists = wishlistViewModel.sharedWithMeWishlists.collectAsState(initial = emptyList())
+                WishlistProducts(
+                    name = wishlists.value.find { it.id == id }?.ownerUsername ?: "", //faccio così per gli aggiornamenti in tempo reale, ma non è il massimo
+                    items = wishlists.value.find { it.id == id }?.items ?: emptyList(),
+                    navHostController = navHostController
+                )
+            }
+        }
+
+        composable(
+            route = "publicWishlistProducts/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+        ) {
+                route -> route.arguments?.getString("id")?.let {
+                id -> val wishlists = wishlistViewModel.publicWishLists.collectAsState(initial = emptyList())
+                WishlistProducts(
+                    name = wishlists.value.find { it.id == id }?.ownerUsername ?: "", //faccio così per gli aggiornamenti in tempo reale, ma non è il massimo
+                    items = wishlists.value.find { it.id == id }?.items ?: emptyList(),
+                    navHostController = navHostController
+                )
+            }
         }
 
         //CART
@@ -213,19 +265,6 @@ fun NavigationScaffold(
 
         //LISTS
         composable(
-            route = "wishlistProducts/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
-        ) {
-            it.arguments?.getString("id")?.let {
-                //todo prendere i dati tramite id e passarli alla schermata
-                WishlistProducts(
-                    wishlistDto = TODO(),
-                    navHostController = navHostController
-                )
-            }
-        }
-
-        composable(
             route = "list",
         ) {
             ListDiscover(
@@ -272,8 +311,8 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("id")?.let {
-                sessionId -> //todo chiamare la validateTransaction
-                SplashScreen(navHostController, orderViewModel = OrderViewModel()) //todo credo vada preso già creato
+                sessionId -> orderViewModel.validateTransaction(sessionId)
+                SplashScreen(navHostController, orderViewModel = orderViewModel)
             }
         }
         composable(

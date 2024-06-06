@@ -18,6 +18,7 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,14 +29,10 @@ import com.example.clientuser.viewmodel.WishListViewModel
 
 @Composable
 fun Wishlist(
-    myList: WishListDto,
     navHostController: NavHostController,
     wishListViewModel: WishListViewModel
 ){
-
-    //TODO val myList = wishListViewModel.myWishList.collectAsState()
     val sharedLists = wishListViewModel.sharedWithMeWishlists.collectAsState(initial = emptyList())
-    val publicLists = wishListViewModel.publicWishLists.collectAsState(initial = emptyList()) //TODO implementare il bottone
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -49,9 +46,18 @@ fun Wishlist(
             )
         }
 
+        item {
+            BoxImage(
+                boxTitle = stringResource(id = R.string.discover_wishlists),
+                painter = painterResource(id = R.drawable.collection) //TODO trovare un'immagine più adatta
+            ) { navHostController.navigate("discoverWishlist") }
+        }
+
         item{
-            TODO("da sistemare")
-            WishListItem(myList){ navHostController.navigate("productsList/${myList.id}") }
+            BoxImage(
+                boxTitle = stringResource(id = R.string.my_wishlist),
+                painter = painterResource(id = R.drawable.collection) //TODO trovare un'immagine più adatta
+            ){ navHostController.navigate("myWishlist") }
         }
 
         item {
@@ -64,7 +70,7 @@ fun Wishlist(
 
         items(sharedLists.value){
             key(it.id) {
-                WishListItem(it){ navHostController.navigate("productsList/${it.id}") }
+                WishListItem(it){ navHostController.navigate("sharedWishlistProducts/${it.id}") }
             }
         }
     }

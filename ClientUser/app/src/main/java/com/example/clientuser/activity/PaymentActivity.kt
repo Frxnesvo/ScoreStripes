@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
@@ -18,11 +19,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -33,6 +34,7 @@ import com.example.clientuser.viewmodel.OrderViewModel
 import com.example.clientuser.R
 import kotlinx.coroutines.delay
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish: () -> Unit) {
     AndroidView(
@@ -90,7 +92,10 @@ fun PaymentSuccessScreen(result: String, navHostController: NavHostController) {
         Text(
             text = result
         )
-        CustomButton(text = "go back to shopping", background = R.color.secondary) { navHostController.navigate("home") }
+        CustomButton(
+            text = "go back to shopping",
+            background = R.color.secondary
+        ) { navHostController.navigate("home") }
     }
 }
 
@@ -113,10 +118,10 @@ fun PaymentFailureScreen(navHostController: NavHostController) {
 
 @Composable
 fun SplashScreen(navController: NavHostController, orderViewModel: OrderViewModel) {
-    //TODO val validate by orderViewModel.validateTransactionResult.collectAsState()
+    val validate by orderViewModel.validateTransactionResult.collectAsState()
 
-    LaunchedEffect(true) {//todo validate == ""
-        if (true) { //todo !validate != ""
+    LaunchedEffect(validate == "") {
+        if (validate != "") {
             navController.navigate("payment_success") {
                 popUpTo("splash_screen") { inclusive = true }
             }
@@ -126,7 +131,8 @@ fun SplashScreen(navController: NavHostController, orderViewModel: OrderViewMode
     var growing by remember { mutableStateOf(true) }
     val size by animateFloatAsState(
         targetValue = if (growing) 200f else 100f,
-        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+        label = "circle_size_animation"
     )
     LaunchedEffect(size) {
         delay(1000)
