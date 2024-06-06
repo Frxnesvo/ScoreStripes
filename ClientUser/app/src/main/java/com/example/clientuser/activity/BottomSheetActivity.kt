@@ -107,7 +107,7 @@ fun SearchPanelProducts(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val filterBuilder = remember { FilterBuilder() }
-    //TODO val leagues by leagueViewModel.leaguesNames.collectAsState()
+    val leagues by leagueViewModel.leaguesNames.collectAsState(initial = "")
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
