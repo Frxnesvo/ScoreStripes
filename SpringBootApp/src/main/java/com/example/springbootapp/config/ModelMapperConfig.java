@@ -160,6 +160,29 @@ public class ModelMapperConfig {
             }
         };
 
+        PropertyMap<WishlistItem,WishlistItemDto> wishlistItemMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setProduct(modelMapper.map(source.getProduct(), ProductDto.class));
+            }
+        };
+
+        PropertyMap<ProductWithVariant,ProductWithVariantDto> productWithVariantMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setProduct(modelMapper.map(source.getProduct(), BasicProductDto.class));
+            }
+        };
+
+        PropertyMap<CartItem,CartItemDto> cartItemToDtoMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setProduct(modelMapper.map(source.getProduct(), ProductWithVariantDto.class));
+                map().setPrice(source.getPrice());
+            }
+        };
+
+
         modelMapper.addMappings(customerMap);
         modelMapper.addMappings(productMap);
         modelMapper.addMappings(leagueMap);
@@ -169,6 +192,9 @@ public class ModelMapperConfig {
         modelMapper.addMappings(productDtoMap);
         modelMapper.addMappings(wishlistMap);
         modelMapper.addMappings(cartItemMap);
+        modelMapper.addMappings(wishlistItemMap);
+        modelMapper.addMappings(productWithVariantMap);
+        modelMapper.addMappings(cartItemToDtoMap);
 
         modelMapper.addConverter(productPicUrlConverter);
 
