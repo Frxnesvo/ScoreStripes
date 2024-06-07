@@ -33,6 +33,7 @@ import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
@@ -69,7 +70,8 @@ fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewMo
                 leagueViewModel = LeagueViewModel(),
                 productViewModel = ProductViewModel(),
                 orderViewModel = OrderViewModel(),
-                wishlistViewModel = WishListViewModel()
+                wishlistViewModel = WishListViewModel(),
+                cartViewModel = CartViewModel()
             )
         }
     }
@@ -135,7 +137,8 @@ fun NavigationScaffold(
     clubViewModel: ClubViewModel,
     productViewModel: ProductViewModel,
     orderViewModel: OrderViewModel,
-    wishlistViewModel: WishListViewModel
+    wishlistViewModel: WishListViewModel,
+    cartViewModel: CartViewModel
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -218,6 +221,7 @@ fun NavigationScaffold(
             Cart(
                 addressViewModel = AddressViewModel(""), //TODO passare l'id dell'utente, è usato già in due punti quindi meglio crearlo prima
                 orderViewModel = OrderViewModel(),
+                cartViewModel = cartViewModel,
                 navHostController = navHostController
             )
         }

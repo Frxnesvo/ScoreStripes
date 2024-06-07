@@ -26,7 +26,11 @@ class WishListViewModel : ViewModel() {
     private val _myWishList = MutableStateFlow<List<WishlistItemDto>>(emptyList())
     val myWishList = _myWishList
 
+    init{
+        getMyWishList()
+    }
 
+    //todo
     private fun getMyWishList() {
         CoroutineScope(Dispatchers.IO).launch {
             try{

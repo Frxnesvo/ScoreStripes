@@ -8,5 +8,5 @@ import com.squareup.moshi.JsonClass
 data class ProductWithVariantDto(
     val id: String,
     val size: Size,
-    val product: ProductDto
+    val product: BasicProductDto
 )
