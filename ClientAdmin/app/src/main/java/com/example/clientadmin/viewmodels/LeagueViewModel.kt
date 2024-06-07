@@ -34,12 +34,12 @@ class LeagueViewModel: ViewModel() {
         }
     }
 
-    fun addLeague(context: Context, name: String, pic: Uri){
+    fun addLeague(context: Context, leagueCreateRequestDto: LeagueCreateRequestDto, pic: Uri){
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.leagueApi.createLeague(
-                    leagueCreateRequestDto = LeagueCreateRequestDto(name),
-                    pic = ConverterUri.convert(context, pic, "picLeague")!!
+                    name = leagueCreateRequestDto.name,
+                    pic = ConverterUri.convert(context, pic, "pic")!!
                 ).awaitResponse()
                 if (response.isSuccessful)
                     response.body()?.let { club -> _leaguesNames.value += club.name }

@@ -34,11 +34,12 @@ class ClubViewModel : ViewModel() {
         }
     }
 
-    fun addClub(context: Context, name: String, pic: Uri, league: String) {
+    fun addClub(context: Context, clubCreateRequestDto: ClubCreateRequestDto, pic: Uri) {
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.createClub(
-                    clubCreateRequestDto = ClubCreateRequestDto(name, league),
+                    name = clubCreateRequestDto.name,
+                    league = clubCreateRequestDto.league,
                     pic = ConverterUri.convert(context, pic, "picLeague")!!
                 ).awaitResponse()
 

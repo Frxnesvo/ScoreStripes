@@ -77,9 +77,15 @@ class ProductViewModel: ViewModel() {
     fun addProduct(context: Context, productCreateRequestDto: ProductCreateRequestDto, pic1: Uri, pic2: Uri): Flow<ProductDto> = flow {
         try {
             val response = RetrofitHandler.productApi.createProduct(
-                productCreateRequestDto = productCreateRequestDto,
-                pic1 = ConverterUri.convert(context = context, uri = pic1, fieldName = "pic1")!!,
+                name = productCreateRequestDto.name,
+                description = productCreateRequestDto.description,
+                price = productCreateRequestDto.price,
+                brand = productCreateRequestDto.brand,
+                gender = productCreateRequestDto.gender,
+                category = productCreateRequestDto.productCategory,
+                picPrincipal = ConverterUri.convert(context = context, uri = pic1, fieldName = "picPrincipal")!!,
                 pic2 = ConverterUri.convert(context = context, uri = pic2, fieldName = "pic2")!!,
+                club = productCreateRequestDto.club
             ).awaitResponse()
 
             if (response.isSuccessful) {
