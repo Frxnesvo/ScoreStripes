@@ -21,6 +21,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.model.dto.ClubCreateRequestDto
+import com.example.clientadmin.model.dto.LeagueCreateRequestDto
 import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
@@ -102,11 +104,8 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
         ){ leagueFormViewModel.updateName(it) }
 
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
-            leagueViewModel.addLeague(
-                context,
-                leagueState.name,
-                leagueState.image
-            )
+            val leagueCreateRequestDto = LeagueCreateRequestDto(leagueState.name)
+            leagueViewModel.addLeague(context, leagueCreateRequestDto, leagueState.image)
         }
     }
 }
@@ -144,12 +143,8 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
         ) { clubFormViewModel.updateLeague(it) }
 
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
-            clubViewModel.addClub(
-                context,
-                clubState.name,
-                clubState.image,
-                clubState.league
-            )
+            val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, clubState.league)
+            clubViewModel.addClub(context, clubCreateRequestDto, clubState.image)
         }
     }
 }
