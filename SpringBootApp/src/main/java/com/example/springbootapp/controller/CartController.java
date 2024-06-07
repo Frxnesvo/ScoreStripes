@@ -1,12 +1,15 @@
 package com.example.springbootapp.controller;
 
 import com.example.springbootapp.data.dto.AddToCartRequestDto;
+import com.example.springbootapp.data.dto.CartItemDto;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RateLimited(permitsPerSecond = 10)
 @RestController
@@ -21,5 +24,10 @@ public class CartController {
     public ResponseEntity<String> addProductToCart(@Valid @RequestBody AddToCartRequestDto requestDto) {
         cartService.addProductToCart(requestDto);
         return ResponseEntity.ok("Product added to cart");
+    }
+
+    @GetMapping("/my-cart")
+    public ResponseEntity<List<CartItemDto>> getCart(){
+        return ResponseEntity.ok(cartService.getCart());
     }
 }
