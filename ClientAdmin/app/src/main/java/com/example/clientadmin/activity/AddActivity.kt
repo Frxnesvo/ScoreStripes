@@ -93,10 +93,12 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
     ) {
         Back { navHostController.popBackStack() }
 
-        ImagePicker(
-            imageUri = leagueState.image,
+        ImagePickerBitmap(
+            image = leagueState.image,
             size = 150.dp
-        ){ if(it != null) leagueFormViewModel.updateImage(it) }
+        ){
+            if(it != null) leagueFormViewModel.updateImage(it)
+        }
 
         CustomTextField(
             value = leagueState.name,
@@ -108,7 +110,7 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
             leagueViewModel.addLeague(
                 context,
                 leagueState.name,
-                leagueState.image
+                leagueState.image!!
             )
         }
     }

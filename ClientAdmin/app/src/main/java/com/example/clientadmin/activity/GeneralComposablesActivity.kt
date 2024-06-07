@@ -1,5 +1,7 @@
 package com.example.clientadmin.activity
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,9 +48,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -363,5 +367,46 @@ fun CustomDatePicker(
             options = flowOf((1900..LocalDate.now().year).toList() ),
             selectedOption = remember { mutableStateOf(date.value.year.toString()) }
         ) { onValueChange(LocalDate.of(it.toInt(), date.value.month, date.value.dayOfMonth)) }
+    }
+}
+
+
+@Composable
+fun ImagePickerBitmap(
+    image: Bitmap?,
+    size: Dp,
+    onLaunch: (Bitmap?) -> Unit
+) {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
+        uri?.let{
+            val image : Bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
+            onLaunch(image)
+        }
+
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(size)
+            .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
+            .clickable { launcher.launch("image/*") }
+    ) {
+        if (image != null)
+            Image(
+                bitmap = image.asImageBitmap(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(30.dp))
+            )
+        else
+            Icon(
+                imageVector = Icons.Outlined.AddCircle,
+                contentDescription = "addImage",
+                tint = colorResource(id = R.color.secondary)
+            )
     }
 }
