@@ -14,14 +14,10 @@
     <string name="sign_up">SIGN UP</string>
 
     <string name="list_all_user">USERS</string>
-    <string name="list_all_user_empty">no user to show</string>
     <string name="list_all_products">PRODUCTS</string>
-    <string name="list_all_products_empty">no product to show</string>
-
     <string name="list_orders">ORDERS</string>
-    <string name="list_orders_empty">no order to show</string>
     <string name="list_addresses">ADDRESSES</string>
-    <string name="list_addresses_empty">no address to show</string>
+    <string name="list_empty">nothing to show</string>
     <string name="more">more</string>
 
     <string name="list_out_of_stock">OUT OF STOCK</string>

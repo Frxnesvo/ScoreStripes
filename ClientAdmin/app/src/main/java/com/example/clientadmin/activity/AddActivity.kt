@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -78,9 +80,13 @@ fun AddPanel(
 }
 
 @Composable
-fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueFormViewModel, navHostController: NavHostController) {
+fun LeagueDetails(
+    leagueViewModel: LeagueViewModel,
+    leagueFormViewModel: LeagueFormViewModel,
+    navHostController: NavHostController
+) {
     val leagueState by leagueFormViewModel.leagueState.collectAsState()
-
+    val error by leagueViewModel.addError
     val context = LocalContext.current
 
     Column(
@@ -99,21 +105,37 @@ fun LeagueDetails(leagueViewModel: LeagueViewModel, leagueFormViewModel: LeagueF
 
         CustomTextField(
             value = leagueState.name,
+            isError = leagueState.isNameError,
             text = stringResource(id = R.string.league),
             keyboardType = KeyboardType.Text
         ){ leagueFormViewModel.updateName(it) }
 
+        if (error.isNotEmpty()) {
+            Text(
+                text = error,
+                color = colorResource(id = R.color.red)
+            )
+        }
+
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
             val leagueCreateRequestDto = LeagueCreateRequestDto(leagueState.name)
-            leagueViewModel.addLeague(context, leagueCreateRequestDto, leagueState.image)
+            if (leagueViewModel.addLeague(context, leagueCreateRequestDto, leagueState.image)) {
+                navHostController.popBackStack()
+            }
         }
     }
 }
 
 @Composable
-fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, clubFormViewModel: ClubFormViewModel, navHostController: NavHostController) {
+fun ClubDetails(
+    leagueViewModel: LeagueViewModel,
+    clubViewModel: ClubViewModel,
+    clubFormViewModel: ClubFormViewModel,
+    navHostController: NavHostController
+) {
     val clubState by clubFormViewModel.clubState.collectAsState()
     val leagues by leagueViewModel.leaguesNames.collectAsState()
+    val error by clubViewModel.addError
     val context = LocalContext.current
 
     Column(
@@ -132,19 +154,29 @@ fun ClubDetails(leagueViewModel: LeagueViewModel, clubViewModel: ClubViewModel, 
 
         CustomTextField(
             value = clubState.name,
-            text = "NAME CLUB",
+            isError = clubState.isNameError,
+            text = stringResource(id = R.string.club),
             keyboardType = KeyboardType.Text,
         ){ clubFormViewModel.updateNameClub(it) }
 
-
         CustomComboBox(
-            options = leagues ,
+            options = leagues,
+            expandable = leagues.isNotEmpty(),
             selectedOption = if (leagues.isNotEmpty()) leagues[0] else ""
         ) { clubFormViewModel.updateLeague(it) }
 
+        if (error.isNotEmpty()) {
+            Text(
+                text = error,
+                color = colorResource(id = R.color.red)
+            )
+        }
+
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
             val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, clubState.league)
-            clubViewModel.addClub(context, clubCreateRequestDto, clubState.image)
+            if (clubViewModel.addClub(context, clubCreateRequestDto, clubState.image)){
+                navHostController.popBackStack()
+            }
         }
     }
 }

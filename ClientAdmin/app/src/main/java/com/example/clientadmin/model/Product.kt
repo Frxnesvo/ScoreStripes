@@ -29,16 +29,16 @@ class Product (
 
     companion object{
         fun validateName(name: String): Boolean{
-            return name.length in 1..30
+            return name.length in 3..40
         }
         fun validatePrice(price: Double): Boolean{
             return price > 0
         }
         fun validateDescription(description: String): Boolean{
-            return description.length in 1..50
+            return description.length in 10..500
         }
         fun validateBrand(brand: String): Boolean{
-            return brand.length in 1..20
+            return brand.length in 2..40
         }
         fun validatePic(pic: Uri): Boolean{
             return pic != Uri.EMPTY
@@ -52,8 +52,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.productCategory,
-                pic1 = Uri.EMPTY,//productDto.pics[0]
-                pic2 = Uri.EMPTY,//productDto.pics[1]
+                pic1 = Uri.EMPTY,//todo productDto.pics[0], prendere dal bucket
+                pic2 = Uri.EMPTY,//todo productDto.pics[1], prendere dal bucket
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

@@ -29,7 +29,7 @@ import com.example.clientadmin.R
 import com.example.clientadmin.model.CustomerSummary
 
 @Composable
-fun UserProfile(customer: CustomerSummary, navHostController: NavHostController){
+fun CustomerProfile(customer: CustomerSummary, navHostController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxSize()

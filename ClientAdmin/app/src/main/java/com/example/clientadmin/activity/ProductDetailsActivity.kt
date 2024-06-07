@@ -40,10 +40,11 @@ fun ProductDetails(
     productFormViewModel: ProductFormViewModel,
     clubViewModel: ClubViewModel,
     navHostController: NavHostController,
-
     isAdd: Boolean = false
 ){
     val productState by productFormViewModel.productState.collectAsState()
+    val clubs by clubViewModel.clubNames.collectAsState()
+    val error by productViewModel.addError
     val context = LocalContext.current
 
     Column(
@@ -78,7 +79,8 @@ fun ProductDetails(
             ){ productFormViewModel.updateName(it) }
 
             CustomComboBox(
-                options = clubViewModel.clubNames.collectAsState().value,
+                options = clubs,
+                expandable = clubs.isNotEmpty(),
                 selectedOption = productState.club
             ){ productFormViewModel.updateClub(it) }
 
@@ -126,6 +128,13 @@ fun ProductDetails(
             }
         }
 
+        if (error.isNotEmpty()) {
+            Text(
+                text = error,
+                color = colorResource(id = R.color.red)
+            )
+        }
+
         CustomButton(
             text = if(isAdd) stringResource(id = R.string.create) else stringResource(id = R.string.update),
             background = R.color.secondary
@@ -141,7 +150,9 @@ fun ProductDetails(
                     price = productState.price,
                     variants = productState.variants
                 )
-                productViewModel.addProduct(context, productRequestDto, productState.pic1, productState.pic2)
+                if (productViewModel.addProduct(context, productRequestDto, productState.pic1, productState.pic2)) {
+                    navHostController.popBackStack()
+                }
             } else {
                 TODO("serve il controller per l'update")
             }

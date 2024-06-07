@@ -4,6 +4,7 @@ import android.net.Uri
 
 class Club(
     val name: String,
+    val league: String,
     val image: Uri,
 ){
     init {

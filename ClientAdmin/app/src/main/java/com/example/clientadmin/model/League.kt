@@ -13,7 +13,7 @@ class League(
 
     companion object{
         fun validateName(name: String): Boolean{
-            return name.length in 1..30
+            return name.length in 3..25
         }
         fun validateImage(image: Uri): Boolean{
             return image != Uri.EMPTY

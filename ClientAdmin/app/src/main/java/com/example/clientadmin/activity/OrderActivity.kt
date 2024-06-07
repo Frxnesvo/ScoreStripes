@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -95,14 +94,13 @@ fun OrderItem(order: OrderDto, navHostController: NavHostController) {
             Text(text = "${order.date}", color = colorResource(id = R.color.black), style = style12)
         }
 
-        ProductOrdersList(orderItems = order.items, navHostController = navHostController)
+        OrderProductsList(orderItems = order.items, navHostController = navHostController)
     }
 }
 
 @Composable
-fun ProductOrdersList(orderItems: List<OrderItemDto>, navHostController: NavHostController){
+fun OrderProductsList(orderItems: List<OrderItemDto>, navHostController: NavHostController){
     LazyRow(
-        state = rememberLazyListState(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         items(orderItems) {

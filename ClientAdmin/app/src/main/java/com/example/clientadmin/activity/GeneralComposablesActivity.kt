@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -65,9 +65,13 @@ import java.time.LocalDate
 fun Title(colorStripes: Color = colorResource(id = R.color.black)){
     val style = TextStyle(fontSize = 24.sp, letterSpacing = 5.sp)
 
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(40.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
         Text(
             text = stringResource(id = R.string.score),
             color = colorResource(id = R.color.secondary),
@@ -97,12 +101,12 @@ fun Search(name: String, onClick: () -> Unit){
         )
         Box(
             modifier = Modifier
-                .size(40.dp)
-                .background(colorResource(id = R.color.white), RoundedCornerShape(20.dp))
+                .size(30.dp)
+                .background(colorResource(id = R.color.white), CircleShape)
                 .clickable(onClick = onClick),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Rounded.Search, contentDescription = "search", tint = colorResource(id = R.color.secondary))
+            Icon(Icons.Rounded.Search, contentDescription = null, tint = colorResource(id = R.color.secondary))
         }
     }
 }
@@ -117,13 +121,12 @@ fun Back(onClick: () -> Unit){
     ) {
         Box(
             modifier = Modifier
-                .height(40.dp)
-                .width(40.dp)
-                .background(colorResource(id = R.color.white), RoundedCornerShape(20.dp))
+                .size(30.dp)
+                .background(colorResource(id = R.color.white), CircleShape)
                 .clickable(onClick = onClick),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.AutoMirrored.Rounded.KeyboardArrowLeft, contentDescription = "back", tint = colorResource(id = R.color.secondary))
+            Icon(Icons.AutoMirrored.Rounded.KeyboardArrowLeft, contentDescription = null, tint = colorResource(id = R.color.secondary))
         }
     }
 }
@@ -161,20 +164,6 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
     }
 }
 
-/*@Composable
-fun SubSectionUser(username: String, subSectionName: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        val style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
-
-        Text(text = subSectionName, color = colorResource(id = R.color.black), style = style)
-        Text(text = username, color = colorResource(id = R.color.secondary), style = style)
-    }
-}*/
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomComboBox(
@@ -200,9 +189,7 @@ fun CustomComboBox(
                 onValueChange = {  },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
                 readOnly = readOnly,
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth(),
+                modifier = Modifier.menuAnchor().fillMaxWidth(),
                 shape = RoundedCornerShape(30.dp),
                 textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -306,6 +293,7 @@ fun ImagePicker(
 fun CustomTextField(
     value: String,
     text: String,
+    isError: Boolean = false,
     readOnly: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     lines: Int = 1,
@@ -334,6 +322,7 @@ fun CustomTextField(
                 fontWeight = FontWeight.SemiBold
             )
         },
+        isError = isError,
         leadingIcon = leadingIcon?.let { { Icon(imageVector = it, contentDescription = null) } },
         maxLines = lines,
         singleLine = lines <= 1,

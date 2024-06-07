@@ -2,7 +2,9 @@ package com.example.clientadmin.viewmodels
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductSummary
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductDto
@@ -20,6 +22,9 @@ class ProductViewModel: ViewModel() {
 
     private val _productSummaries = MutableStateFlow<List<ProductSummary>>(emptyList())
     val productSummaries: StateFlow<List<ProductSummary>> = _productSummaries
+
+    private val _addError =  mutableStateOf("")
+    val addError = _addError
 
     private val sizePage = 2
 
@@ -46,10 +51,10 @@ class ProductViewModel: ViewModel() {
     private fun getProductSummaries(page: Int): Flow<List<ProductSummary>> = flow {
         try {
             val response = RetrofitHandler.productApi.getProductsSummary(
-                    page,
-                    sizePage,
-                    filter
-                ).awaitResponse()
+                page,
+                sizePage,
+                filter
+            ).awaitResponse()
 
             if (response.isSuccessful) {
                 response.body()?.let { emit(it) }
@@ -74,27 +79,43 @@ class ProductViewModel: ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    fun addProduct(context: Context, productCreateRequestDto: ProductCreateRequestDto, pic1: Uri, pic2: Uri): Flow<ProductDto> = flow {
+    fun addProduct(context: Context, productCreateRequestDto: ProductCreateRequestDto, pic1: Uri, pic2: Uri): Boolean {
         try {
-            val response = RetrofitHandler.productApi.createProduct(
+            Product(
                 name = productCreateRequestDto.name,
                 description = productCreateRequestDto.description,
                 price = productCreateRequestDto.price,
                 brand = productCreateRequestDto.brand,
                 gender = productCreateRequestDto.gender,
-                category = productCreateRequestDto.productCategory,
-                picPrincipal = ConverterUri.convert(context = context, uri = pic1, fieldName = "picPrincipal")!!,
-                pic2 = ConverterUri.convert(context = context, uri = pic2, fieldName = "pic2")!!,
-                club = productCreateRequestDto.club
-            ).awaitResponse()
+                productCategory = productCreateRequestDto.productCategory,
+                pic1 = pic1,
+                pic2 = pic2,
+                club = productCreateRequestDto.club,
+                variants = productCreateRequestDto.variants
+            )
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.productApi.createProduct(
+                    name = productCreateRequestDto.name,
+                    description = productCreateRequestDto.description,
+                    price = productCreateRequestDto.price,
+                    brand = productCreateRequestDto.brand,
+                    gender = productCreateRequestDto.gender,
+                    category = productCreateRequestDto.productCategory,
+                    picPrincipal = ConverterUri.convert(context = context, uri = pic1, fieldName = "picPrincipal")!!,
+                    pic2 = ConverterUri.convert(context = context, uri = pic2, fieldName = "pic2")!!,
+                    club = productCreateRequestDto.club
+                ).awaitResponse()
 
-            if (response.isSuccessful) {
-                response.body()?.let { emit(it) }
-            } else {
-                println("Error creating product: ${response.message()}")
+                if (response.isSuccessful) {
+                    response.body()?.let { TODO("vedere se salvare il product") }
+                } else {
+                    println("Error creating product: ${response.message()}")
+                }
             }
-        } catch (e: Exception) {
-            println("Exception creating product: ${e.message}")
+            return true
+        } catch (e: IllegalArgumentException) {
+            _addError.value = e.message ?: "Unknown error"
+            return false
         }
-    }.flowOn(Dispatchers.IO)
+    }
 }

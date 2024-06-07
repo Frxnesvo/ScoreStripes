@@ -210,7 +210,7 @@ fun NavigationScaffold(
             it.arguments?.getString("costumer")?.let {
                 customerString ->
                 val customer = CustomerSummary.fromQueryString(customerString)
-                UserProfile(customer = customer, navHostController = navHostController)
+                CustomerProfile(customer = customer, navHostController = navHostController)
             }
         }
         composable(
@@ -219,7 +219,7 @@ fun NavigationScaffold(
         ){
             it.arguments?.getString("id")?.let {
                 id -> customerViewModel.getCustomerOrders(id).collectAsState(initial = null).value?.let {
-                    orders -> Orders(orders = orders, navHostController = navHostController)
+                    orders -> List(items = orders, navHostController = navHostController)
                 }
             }
         }
@@ -229,7 +229,7 @@ fun NavigationScaffold(
         ){
             it.arguments?.getString("id")?.let {
                 id -> customerViewModel.getCustomerDetails(id).collectAsState(initial = null).value?.let {
-                    customer -> UserDetails(customer = customer, navHostController = navHostController)
+                    customer -> CustomerDetails(customer = customer, navHostController = navHostController)
                 }
             }
         }
@@ -239,7 +239,7 @@ fun NavigationScaffold(
         ){
             it.arguments?.getString("id")?.let {
                 id -> customerViewModel.getCustomerAddresses(id).collectAsState(initial = null).value?.let {
-                    addresses -> Addresses(addresses = addresses, navHostController = navHostController)
+                    addresses -> List(items = addresses, navHostController = navHostController)
                 }
             }
         }

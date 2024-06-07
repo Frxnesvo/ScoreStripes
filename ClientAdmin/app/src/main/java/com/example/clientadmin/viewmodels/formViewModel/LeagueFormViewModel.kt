@@ -11,8 +11,7 @@ data class LeagueState(
     val name: String = "",
     val image: Uri = Uri.EMPTY,
     //error
-    val isNameError: Boolean = !League.validateName(name),
-    val isImageError: Boolean = !League.validateImage(image)
+    val isNameError: Boolean = !League.validateName(name)
 )
 class LeagueFormViewModel{
     private val _leagueState = MutableStateFlow(LeagueState())
@@ -26,10 +25,8 @@ class LeagueFormViewModel{
         )
     }
     fun updateImage(image: Uri) {
-        val hasError = !League.validateImage(image)
         _leagueState.value = _leagueState.value.copy(
-            image = image,
-            isImageError = hasError
+            image = image
         )
     }
 }

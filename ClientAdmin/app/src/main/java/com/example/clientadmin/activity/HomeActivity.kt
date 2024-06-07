@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -33,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.dto.ProductDto
-import com.example.clientadmin.viewmodels.CustomerViewModel
 import com.example.clientadmin.viewmodels.HomeViewModel
 
 @Composable
@@ -155,7 +153,6 @@ fun Section(nameSection: String, products: List<ProductDto>, navHostController: 
         )
 
         LazyRow(
-            state = rememberLazyListState(),
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(products){
