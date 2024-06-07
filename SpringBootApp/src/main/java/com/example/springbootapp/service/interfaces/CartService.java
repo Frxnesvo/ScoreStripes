@@ -8,5 +8,5 @@ import java.util.List;
 public interface CartService {
     void addProductToCart(AddToCartRequestDto requestDto);
 
-    List<CartItemDto> getCart();
+    List<CartItemDto> getMyCart();
 }

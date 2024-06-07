@@ -1,10 +1,14 @@
 package com.example.springbootapp.data.dto;
 
 import com.example.springbootapp.data.entities.Embdeddables.Personalization;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class CartItemDto {
     private String id;
-    private String quantity;
+    private Integer quantity;
     private Personalization personalization;
-    private ProductWithVariantDto productWithVariant;
+    private ProductWithVariantDto product;
 }

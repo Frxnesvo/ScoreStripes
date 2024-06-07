@@ -52,7 +52,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartItemDto> getCart() {
+    public List<CartItemDto> getMyCart() {
         List<CartItem> cartItems = cartItemDao.findAllByCartId(((Customer) userDetailsService.getCurrentUser()).getCart().getId());
         return cartItems.stream()
                 .map(cartItem -> modelMapper.map(cartItem, CartItemDto.class))
