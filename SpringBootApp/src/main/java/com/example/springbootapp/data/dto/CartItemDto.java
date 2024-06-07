@@ -11,4 +11,5 @@ public class CartItemDto {
     private Integer quantity;
     private Personalization personalization;
     private ProductWithVariantDto product;
+    private Double price;
 }

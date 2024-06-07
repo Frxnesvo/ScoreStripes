@@ -178,6 +178,7 @@ public class ModelMapperConfig {
             @Override
             protected void configure() {
                 map().setProduct(modelMapper.map(source.getProduct(), ProductWithVariantDto.class));
+                map().setPrice(source.getPrice());
             }
         };
 
