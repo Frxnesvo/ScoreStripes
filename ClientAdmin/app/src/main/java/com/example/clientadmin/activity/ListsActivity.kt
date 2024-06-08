@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.dto.AddressDto
-import com.example.clientadmin.model.dto.OrderDto
 
 @Composable
 fun List(items: List<Any>, navHostController: NavHostController){
@@ -35,7 +35,7 @@ fun List(items: List<Any>, navHostController: NavHostController){
         else
             items(items) {
                 when (it) {
-                    is OrderDto -> OrderItem(orderDto = it, navHostController = navHostController)
+                    is Order -> OrderItem(order = it, navHostController = navHostController)
                     is AddressDto -> AddressItem(address = it)
                 }
             }

@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
 import com.example.clientadmin.model.CustomerSummary
+import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.dto.CustomerSummaryDto
-import com.example.clientadmin.model.dto.OrderDto
 import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -88,10 +88,10 @@ class CustomerViewModel : ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    fun getCustomerOrders(id: String): Flow<List<OrderDto>> = flow {
+    fun getCustomerOrders(id: String): Flow<List<Order>> = flow {
         try {
             val response = RetrofitHandler.customerApi.getCustomerOrders(id).awaitResponse()
-            if (response.isSuccessful) response.body()?.let { emit(it) }
+            if (response.isSuccessful) response.body()?.let { orders -> emit(orders.map{ Order.fromDto(it) }) }
             else println("Error fetching customer orders: ${response.message()}")
         } catch (e: Exception) {
             println("Exception fetching customer orders: ${e.message}")

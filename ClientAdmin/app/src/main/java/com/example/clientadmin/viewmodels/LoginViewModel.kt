@@ -40,9 +40,6 @@ class LoginViewModel: ViewModel() {
         try {
             Admin(
                 username = adminCreateRequestDto.username,
-                firstName = null,
-                lastName = null,
-                email = null,
                 birthDate = adminCreateRequestDto.birthDate,
                 gender = adminCreateRequestDto.gender,
                 pic = pic
