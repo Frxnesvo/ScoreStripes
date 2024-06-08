@@ -1,6 +1,8 @@
 package com.example.clientuser.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.example.clientuser.model.Wishlist
+import com.example.clientuser.model.WishlistItem
 import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.dto.WishListDto
 import com.example.clientuser.model.dto.WishlistItemDto
@@ -23,7 +25,7 @@ class WishListViewModel : ViewModel() {
     private val _publicWishLists = fetchPublicWishlist()
     val publicWishLists = _publicWishLists
 
-    private val _myWishList = MutableStateFlow<List<WishlistItemDto>>(emptyList())
+    private val _myWishList = MutableStateFlow<List<WishlistItem>>(emptyList())
     val myWishList = _myWishList
 
     init{
@@ -35,7 +37,9 @@ class WishListViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val response = RetrofitHandler.wishListApi.getMyWishList().awaitResponse()
-                if(response.isSuccessful) response.body()?.let { result -> _myWishList.value = result }
+                if(response.isSuccessful) response.body()?.let { result ->
+                    _myWishList.value = result.map { wishlistItemDto -> WishlistItem.fromDto(wishlistItemDto)  }
+                }
                 else println("Error during the of the personal wishlists: ${response.message()}")
             }
             catch (e : Exception){
@@ -45,10 +49,10 @@ class WishListViewModel : ViewModel() {
 
     }
 
-    private fun fetchSharedWithMeWishlists() : Flow<List<WishListDto>> = flow {
+    private fun fetchSharedWithMeWishlists() : Flow<List<Wishlist>> = flow {
         try {
             val response = RetrofitHandler.wishListApi.getSharedWithMeWishlists().awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it) }
+            if(response.isSuccessful) response.body()?.let { emit(it.map { Wishlist.fromDto(it) }) }
             else println("Error during the get of the shared with me wishlists: ${response.message()}")
         }
         catch (e : Exception) {
@@ -58,10 +62,10 @@ class WishListViewModel : ViewModel() {
     }
 
     //TODO fare la paginazione
-    private fun fetchPublicWishlist() : Flow<List<WishListDto>> = flow {
+    private fun fetchPublicWishlist() : Flow<List<Wishlist>> = flow {
         try{
             val response = RetrofitHandler.wishListApi.getPublicWishlists().awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it) }
+            if(response.isSuccessful) response.body()?.let { emit(it.map { Wishlist.fromDto(it) }) }
             else println("Error during the get of the public wishlists: ${response.message()}")
         }
         catch (e : Exception){

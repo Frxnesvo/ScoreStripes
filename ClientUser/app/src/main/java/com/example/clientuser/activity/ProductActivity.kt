@@ -29,8 +29,7 @@ import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 
 
 @Composable
-fun ProductDetails(productDto: ProductDto, navHostController: NavHostController){
-    val product = Product.fromDto(productDto)
+fun ProductDetails(product: Product, navHostController: NavHostController){
     //TODO serve il view model e capire come gestire il like
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val productFormViewModel = ProductFormViewModel()
@@ -52,11 +51,11 @@ fun ProductDetails(productDto: ProductDto, navHostController: NavHostController)
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
-                text = productDto.clubName,
+                text = product.club,
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = productDto.clubName,
+                text = product.club,
                 style = MaterialTheme.typography.titleLarge
             )
         }

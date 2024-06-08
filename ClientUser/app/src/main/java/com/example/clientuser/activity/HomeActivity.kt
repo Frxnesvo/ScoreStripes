@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.model.League
+import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.ClubDto
 import com.example.clientuser.model.dto.LeagueDto
 import com.example.clientuser.model.dto.ProductDto
@@ -36,7 +38,6 @@ fun Home(
     clubViewModel: ClubViewModel,
     productViewModel: ProductViewModel
 ){
-    val clubs = clubViewModel.clubs.collectAsState(initial = emptyList())
     val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
     val mostSoldProduct = productViewModel.mostSoldProducts.collectAsState(initial = emptyList())
 
@@ -79,12 +80,6 @@ fun Home(
         )
 
         Section(
-            name = stringResource(id = R.string.buy_by_club),
-            items = clubs.value,
-            navHostController = navHostController
-        )
-
-        Section(
             name = stringResource(id = R.string.buy_by_league),
             items = leagues.value,
             navHostController = navHostController
@@ -121,13 +116,10 @@ fun Section(
             else
                 items(items){
                     when (it) {
-                        is ProductDto -> key(it.id) {
+                        is Product -> key(it.id) {
                             ProductItem(it){ navHostController.navigate("product/${it.id}") }
                         }
-                        is ClubDto -> key(it.id) {
-                            ClubItem(it){ navHostController.navigate("list/club/${it.name}")}
-                        }
-                        is LeagueDto -> key(it.id) {
+                        is League -> key(it.id) {
                             LeagueItem(it){ navHostController.navigate("list/league/${it.name}") }
                         }
                     }
