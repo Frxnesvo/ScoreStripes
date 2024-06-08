@@ -241,10 +241,4 @@ public class ModelMapperConfig {
 
         return modelMapper;
     }
-    private <S, D> void applyConditions(TypeMap<S, D> typeMap) {
-        typeMap.setPropertyCondition(context -> {
-            // Solo mappa proprietà che non sono già mappate esplicitamente
-            return !context.getMapping().getLastDestinationProperty().getName().equals("product");
-        });
-    }
 }

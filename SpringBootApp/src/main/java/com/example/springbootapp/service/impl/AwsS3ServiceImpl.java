@@ -27,6 +27,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     public String generatePresignedUrl(String url){  //Mi garantisce sicurezza e privacy per non mandare direttamente l'url dell'immagine al client
         String[] urlParts = url.replace("https://", "").split("/", 2);
         String bucketName = urlParts[0];
+        bucketName = bucketName.split("\\.")[0];
         String key = urlParts[1];
         System.out.println("Bucket name: " + bucketName);
         System.out.println("Key: " + key);
