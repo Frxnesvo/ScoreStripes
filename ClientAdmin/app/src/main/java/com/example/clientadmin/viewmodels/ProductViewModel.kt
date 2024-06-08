@@ -1,17 +1,18 @@
 package com.example.clientadmin.viewmodels
 
-import android.content.Context
-import android.net.Uri
+import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductSummary
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
-import com.example.clientadmin.model.dto.ProductDto
-import com.example.clientadmin.service.ConverterUri
-import com.example.clientadmin.service.RetrofitHandler
+import com.example.clientadmin.model.dto.ProductSummaryDto
+import com.example.clientadmin.utils.ConverterBitmap
+import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
@@ -42,13 +43,16 @@ class ProductViewModel: ViewModel() {
 
     private fun loadMoreProductSummaries() {
         CoroutineScope(Dispatchers.IO).launch {
-            getProductSummaries(page).collect { newSummaries ->
+            getProductSummaries(page).collect {
+                val newSummaries = it.map {
+                    dto -> async { ProductSummary.fromDto(dto) }
+                }.awaitAll()
                 _productSummaries.value += newSummaries
             }
         }
     }
 
-    private fun getProductSummaries(page: Int): Flow<List<ProductSummary>> = flow {
+    private fun getProductSummaries(page: Int): Flow<List<ProductSummaryDto>> = flow {
         try {
             val response = RetrofitHandler.productApi.getProductsSummary(
                 page,
@@ -66,11 +70,11 @@ class ProductViewModel: ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    fun getProduct(id: String): Flow<ProductDto> = flow {
+    fun getProduct(id: String): Flow<Product> = flow {
         try {
             val response = RetrofitHandler.productApi.getProductById(id).awaitResponse()
             if (response.isSuccessful) {
-                response.body()?.let { emit(it) }
+                response.body()?.let { emit(Product.fromDto(it)) }
             } else {
                 println("Error fetching product details: ${response.message()}")
             }
@@ -79,7 +83,7 @@ class ProductViewModel: ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    fun addProduct(context: Context, productCreateRequestDto: ProductCreateRequestDto, pic1: Uri, pic2: Uri): Boolean {
+    fun addProduct(productCreateRequestDto: ProductCreateRequestDto, pic1: Bitmap, pic2: Bitmap): Boolean {
         try {
             Product(
                 name = productCreateRequestDto.name,
@@ -101,8 +105,8 @@ class ProductViewModel: ViewModel() {
                     brand = productCreateRequestDto.brand,
                     gender = productCreateRequestDto.gender,
                     category = productCreateRequestDto.productCategory,
-                    picPrincipal = ConverterUri.convert(context = context, uri = pic1, fieldName = "picPrincipal")!!,
-                    pic2 = ConverterUri.convert(context = context, uri = pic2, fieldName = "pic2")!!,
+                    picPrincipal = ConverterBitmap.convert(bitmap = pic1, fieldName = "picPrincipal"),
+                    pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),
                     club = productCreateRequestDto.club
                 ).awaitResponse()
 

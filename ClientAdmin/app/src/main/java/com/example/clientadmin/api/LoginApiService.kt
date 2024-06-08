@@ -1,4 +1,4 @@
-package com.example.clientadmin.service.interfaces
+package com.example.clientadmin.api
 
 import com.example.clientadmin.model.dto.AdminDto
 import com.example.clientadmin.model.enumerator.Gender

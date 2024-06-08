@@ -1,17 +1,18 @@
-package com.example.clientadmin
+package com.example.clientadmin.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 
 class S3ImageDownloader {
     companion object {
-        fun getImageFromPresignedUrl(presignedUrl: String): Flow<Bitmap> = flow {
+        fun download(presignedUrl: String): Flow<Bitmap> = flow {
             try {
                 val client = OkHttpClient()
                 val request = Request.Builder()
@@ -30,6 +31,6 @@ class S3ImageDownloader {
             catch (e : Exception){
                 println("Exception getting image from bucket: ${e.message}")
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 }

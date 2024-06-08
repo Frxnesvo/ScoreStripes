@@ -35,7 +35,7 @@ fun List(items: List<Any>, navHostController: NavHostController){
         else
             items(items) {
                 when (it) {
-                    is OrderDto -> OrderItem(order = it, navHostController = navHostController)
+                    is OrderDto -> OrderItem(orderDto = it, navHostController = navHostController)
                     is AddressDto -> AddressItem(address = it)
                 }
             }

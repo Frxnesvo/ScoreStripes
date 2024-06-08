@@ -1,10 +1,12 @@
 package com.example.clientadmin.model
 
-import android.net.Uri
+import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.ProductDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
+import com.example.clientadmin.utils.S3ImageDownloader
+import kotlinx.coroutines.flow.first
 
 class Product (
     val name: String,
@@ -13,8 +15,8 @@ class Product (
     val brand: String,
     val gender: Gender,
     val productCategory: ProductCategory,
-    val pic1: Uri,
-    val pic2: Uri,
+    val pic1: Bitmap,
+    val pic2: Bitmap,
     val club: String,
     val variants: Map<Size, Int>
 ){
@@ -40,11 +42,11 @@ class Product (
         fun validateBrand(brand: String): Boolean{
             return brand.length in 2..40
         }
-        fun validatePic(pic: Uri): Boolean{
-            return pic != Uri.EMPTY
+        fun validatePic(pic: Bitmap): Boolean{
+            return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         }
 
-        fun fromDto(productDto: ProductDto): Product{
+        suspend fun fromDto(productDto: ProductDto): Product{
             return Product(
                 name = productDto.name,
                 description = productDto.description,
@@ -52,8 +54,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.productCategory,
-                pic1 = Uri.EMPTY,//todo productDto.pics[0], prendere dal bucket
-                pic2 = Uri.EMPTY,//todo productDto.pics[1], prendere dal bucket
+                pic1 = S3ImageDownloader.download(productDto.pics[0]).first(),
+                pic2 = S3ImageDownloader.download(productDto.pics[1]).first(),
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

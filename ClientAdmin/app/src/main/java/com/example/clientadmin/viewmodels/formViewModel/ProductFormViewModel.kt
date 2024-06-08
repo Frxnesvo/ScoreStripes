@@ -1,6 +1,6 @@
 package com.example.clientadmin.viewmodels.formViewModel
 
-import android.net.Uri
+import android.graphics.Bitmap
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
@@ -13,8 +13,8 @@ data class ProductState(
     val name: String = "",
     val club: String = "",
     val gender: Gender = Gender.entries[0],
-    val pic1: Uri = Uri.EMPTY,
-    val pic2: Uri = Uri.EMPTY,
+    val pic1: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+    val pic2: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
     val brand: String = "",
     val productCategory: ProductCategory = ProductCategory.entries[0],
     val description: String = "",
@@ -84,12 +84,12 @@ class ProductFormViewModel(product: Product? = null) {
             isBrandError = hasError
         )
     }
-    fun updatePic1(pic: Uri) {
+    fun updatePic1(pic: Bitmap) {
         _productState.value = _productState.value.copy(
             pic1 = pic
         )
     }
-    fun updatePic2(pic: Uri) {
+    fun updatePic2(pic: Bitmap) {
         _productState.value = _productState.value.copy(
             pic2 = pic
         )

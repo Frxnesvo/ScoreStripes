@@ -1,8 +1,10 @@
 package com.example.clientadmin.model
 
-import android.net.Uri
+import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.AdminDto
 import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.utils.S3ImageDownloader
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 
 class Admin(
@@ -12,7 +14,7 @@ class Admin(
     val email: String?,
     val birthDate: LocalDate,
     val gender: Gender,
-    val pic: Uri
+    val pic: Bitmap
 ) {
     init {
         require(validateProfilePic(pic)) { "Invalid profile picture" }
@@ -24,8 +26,8 @@ class Admin(
     }
 
     companion object {
-        fun validateProfilePic(pic: Uri): Boolean {
-            return pic == Uri.EMPTY
+        fun validateProfilePic(pic: Bitmap): Boolean {
+            return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         }
         fun validateUsername(username: String): Boolean {
             return username.length in 3..20
@@ -43,8 +45,7 @@ class Admin(
             return birthdate.isBefore(LocalDate.now())
         }
 
-        fun fromDto(adminDto: AdminDto): Admin{
-            //TODO settare l'immagine
+        suspend fun fromDto(adminDto: AdminDto): Admin{
             return Admin(
                 username = adminDto.username,
                 firstName = adminDto.firstName,
@@ -52,7 +53,7 @@ class Admin(
                 email = adminDto.email,
                 birthDate = adminDto.birthDate,
                 gender = adminDto.gender,
-                pic = Uri.EMPTY
+                pic = S3ImageDownloader.download(adminDto.picUrl).first()
             )
         }
     }

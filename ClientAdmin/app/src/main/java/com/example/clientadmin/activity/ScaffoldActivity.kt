@@ -40,7 +40,6 @@ import androidx.navigation.navArgument
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.CustomerSummary
-import com.example.clientadmin.model.Product
 import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
@@ -61,17 +60,17 @@ fun Scaffold(loginViewModel: LoginViewModel, token: String) {
     Scaffold(
         bottomBar = { BottomBar(navController, selectedScreen) },
     ) {
-        Box(modifier = Modifier
-            .padding(
-                top = it.calculateTopPadding() + 10.dp,
-                bottom = it.calculateBottomPadding(),
-                start = 10.dp,
-                end = 10.dp
-            )
+        Box(
+            modifier = Modifier
+                .padding(
+                    top = it.calculateTopPadding() + 10.dp,
+                    bottom = it.calculateBottomPadding(),
+                    start = 10.dp,
+                    end = 10.dp,
+                ),
         ){
             loginViewModel.user.collectAsState().value.let {
                 admin ->
-
                 if (admin != null) {
                     NavigationScaffold(
                         navHostController = navController,
@@ -209,8 +208,8 @@ fun NavigationScaffold(
         ){
             it.arguments?.getString("costumer")?.let {
                 customerString ->
-                val customer = CustomerSummary.fromQueryString(customerString)
-                CustomerProfile(customer = customer, navHostController = navHostController)
+                val customerSummary = CustomerSummary.fromQueryString(customerString)
+                CustomerProfile(customerSummary = customerSummary, navHostController = navHostController)
             }
         }
         composable(
@@ -276,7 +275,7 @@ fun NavigationScaffold(
                     product-> ProductDetails(
                         productViewModel = productViewModel,
                         clubViewModel = clubViewModel,
-                        productFormViewModel = ProductFormViewModel(Product.fromDto(product)),
+                        productFormViewModel = ProductFormViewModel(product = product),
                         navHostController = navHostController
                     )
                 }

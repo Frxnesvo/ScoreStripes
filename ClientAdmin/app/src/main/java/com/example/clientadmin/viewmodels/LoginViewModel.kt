@@ -1,13 +1,12 @@
 package com.example.clientadmin.viewmodels
 
-import android.content.Context
-import android.net.Uri
+import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
-import com.example.clientadmin.service.ConverterUri
-import com.example.clientadmin.service.RetrofitHandler
+import com.example.clientadmin.utils.ConverterBitmap
+import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +36,7 @@ class LoginViewModel: ViewModel() {
         }
     }
 
-    fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Uri, context: Context): Boolean{
+    fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
         try {
             Admin(
                 username = adminCreateRequestDto.username,
@@ -54,7 +53,7 @@ class LoginViewModel: ViewModel() {
                     adminCreateRequestDto.username,
                     adminCreateRequestDto.birthDate,
                     adminCreateRequestDto.gender,
-                    ConverterUri.convert(context, pic, "profilePic")!!
+                    ConverterBitmap.convert(bitmap = pic, fieldName = "profilePic")
                 ).awaitResponse()
 
                 if (response.isSuccessful) {

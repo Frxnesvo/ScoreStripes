@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -45,7 +44,6 @@ fun ProductDetails(
     val productState by productFormViewModel.productState.collectAsState()
     val clubs by clubViewModel.clubNames.collectAsState()
     val error by productViewModel.addError
-    val context = LocalContext.current
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -150,7 +148,7 @@ fun ProductDetails(
                     price = productState.price,
                     variants = productState.variants
                 )
-                if (productViewModel.addProduct(context, productRequestDto, productState.pic1, productState.pic2)) {
+                if (productViewModel.addProduct(productRequestDto, productState.pic1, productState.pic2)) {
                     navHostController.popBackStack()
                 }
             } else {
@@ -175,7 +173,7 @@ fun ImagesProduct(productFormViewModel: ProductFormViewModel, productState: Prod
 
     ) {
         ImagePicker(
-            imageUri = productState.pic1,
+            pic = productState.pic1,
             size = 80.dp
         ){
             uri ->
@@ -183,7 +181,7 @@ fun ImagesProduct(productFormViewModel: ProductFormViewModel, productState: Prod
         }
 
         ImagePicker(
-            imageUri = productState.pic2,
+            pic = productState.pic2,
             size = 80.dp
         ){
             uri ->

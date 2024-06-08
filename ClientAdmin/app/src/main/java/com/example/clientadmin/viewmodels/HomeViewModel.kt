@@ -1,7 +1,7 @@
 package com.example.clientadmin.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.example.clientadmin.service.RetrofitHandler
+import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

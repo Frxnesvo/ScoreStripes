@@ -1,6 +1,7 @@
 package com.example.clientadmin.activity
 
-import android.net.Uri
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -45,9 +46,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -56,7 +59,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
 import com.example.clientadmin.R
 import java.time.LocalDate
 
@@ -189,7 +191,9 @@ fun CustomComboBox(
                 onValueChange = {  },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
                 readOnly = readOnly,
-                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
                 shape = RoundedCornerShape(30.dp),
                 textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -220,7 +224,7 @@ fun CustomComboBox(
                     }
                 else
                     DropdownMenuItem(
-                        text = { Text(text = "No options available") },
+                        text = { Text(text = stringResource(id = R.string.list_empty)) },
                         onClick = {expanded = false}
                     )
             }
@@ -258,11 +262,16 @@ fun CustomButton(text: String, background: Int, onClick: () -> Unit) {
 
 @Composable
 fun ImagePicker(
-    imageUri: Uri,
+    pic: Bitmap,
     size: Dp,
-    onLaunch: (Uri?) -> Unit
+    onChange: (Bitmap?) -> Unit
 ) {
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { onLaunch(it) }
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+        it?.let { uri ->
+            onChange(BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri)))
+        }
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -271,9 +280,9 @@ fun ImagePicker(
             .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
             .clickable { launcher.launch("image/*") }
     ) {
-        if (imageUri != Uri.EMPTY)
+        if (pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
             Image(
-                painter = rememberAsyncImagePainter(imageUri),
+                bitmap = pic.asImageBitmap(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -283,7 +292,7 @@ fun ImagePicker(
         else
             Icon(
             imageVector = Icons.Outlined.AddCircle,
-            contentDescription = "addImage",
+            contentDescription = null,
             tint = colorResource(id = R.color.secondary)
         )
     }

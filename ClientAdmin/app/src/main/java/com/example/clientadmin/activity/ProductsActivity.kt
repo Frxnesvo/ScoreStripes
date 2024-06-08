@@ -44,9 +44,9 @@ fun Products(navHostController: NavHostController, productViewModel: ProductView
                 )
             }
         else {
-            items(products) { product ->
-                key(product.id) {
-                    ProductItemColumn(product = product) { navHostController.navigate("product/${product.id}") }
+            items(products) {
+                key(it.id) {
+                    ProductItemColumn(productSummary = it) { navHostController.navigate("product/${it.id}") }
                 }
             }
 

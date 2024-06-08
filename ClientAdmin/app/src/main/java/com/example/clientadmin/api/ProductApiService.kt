@@ -1,7 +1,7 @@
-package com.example.clientadmin.service.interfaces
+package com.example.clientadmin.api
 
 import com.example.clientadmin.model.dto.ProductDto
-import com.example.clientadmin.model.ProductSummary
+import com.example.clientadmin.model.dto.ProductSummaryDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import okhttp3.MultipartBody
@@ -37,5 +37,5 @@ interface ProductApiService {
         @Query("page") page: Int,
         @Query("size") size: Int,
         @QueryMap filters: Map<String, String?>
-    ): Call<List<ProductSummary>>
+    ): Call<List<ProductSummaryDto>>
 }

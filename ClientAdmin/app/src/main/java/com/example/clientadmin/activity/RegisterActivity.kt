@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,7 +34,6 @@ fun Register(
 ) {
     val adminState by loginFormViewModel.adminState.collectAsState()
     val error by loginViewModel.addError
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -56,12 +54,11 @@ fun Register(
             Title()
 
             ImagePicker(
-                imageUri = adminState.profilePic,
+                pic = adminState.profilePic,
                 size = 100.dp
             ){
-                uri ->
-                if (uri != null) {
-                    loginFormViewModel.updateProfilePic(uri)
+                if (it != null) {
+                    loginFormViewModel.updateProfilePic(it)
                 }
             }
 
@@ -100,7 +97,6 @@ fun Register(
                 if (
                     loginViewModel.register(
                         token = token,
-                        context = context,
                         adminCreateRequestDto = AdminCreateRequestDto(
                             username = adminState.username,
                             birthDate = adminState.birthdate,

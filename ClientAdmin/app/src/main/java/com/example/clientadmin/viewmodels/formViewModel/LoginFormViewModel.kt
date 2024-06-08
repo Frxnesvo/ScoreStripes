@@ -1,6 +1,6 @@
 package com.example.clientadmin.viewmodels.formViewModel
 
-import android.net.Uri
+import android.graphics.Bitmap
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.enumerator.Gender
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,12 +13,11 @@ data class AdminState(
     val username : String = "",
     val birthdate : LocalDate = LocalDate.now(),
     val gender : Gender = Gender.entries[0],
-    val profilePic : Uri = Uri.EMPTY,
-
+    val profilePic : Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
     //error
     val isProfilePicError: Boolean = !Admin.validateProfilePic(profilePic),
     val isUsernameError: Boolean = !Admin.validateUsername(username),
-    val isEmailError: Boolean = !Admin.validateEmail(email),
+//    val isEmailError: Boolean = !Admin.validateEmail(email),
     val isBirthdateError: Boolean = !Admin.validateBirthdate(birthdate)
 )
 
@@ -34,9 +33,9 @@ class LoginFormViewModel {
         )
     }*/
 
-    fun updateProfilePic(uri: Uri){
+    fun updateProfilePic(profilePic: Bitmap){
         _adminState.value = _adminState.value.copy(
-            profilePic = uri,
+            profilePic = profilePic,
         )
     }
 

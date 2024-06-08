@@ -1,13 +1,12 @@
 package com.example.clientadmin.viewmodels
 
-import android.content.Context
-import android.net.Uri
+import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.dto.ClubCreateRequestDto
-import com.example.clientadmin.service.ConverterUri
-import com.example.clientadmin.service.RetrofitHandler
+import com.example.clientadmin.utils.ConverterBitmap
+import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,14 +38,14 @@ class ClubViewModel : ViewModel() {
         }
     }
 
-    fun addClub(context: Context, clubCreateRequestDto: ClubCreateRequestDto, pic: Uri):Boolean {
+    fun addClub(clubCreateRequestDto: ClubCreateRequestDto, pic: Bitmap): Boolean{
         try {
             Club(name = clubCreateRequestDto.name, league = clubCreateRequestDto.league, image = pic)
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.createClub(
                     name = clubCreateRequestDto.name,
                     league = clubCreateRequestDto.league,
-                    pic = ConverterUri.convert(context, pic, "picLeague")!!
+                    pic = ConverterBitmap.convert(bitmap = pic, fieldName = "picLeague")
                 ).awaitResponse()
 
                 if (response.isSuccessful)

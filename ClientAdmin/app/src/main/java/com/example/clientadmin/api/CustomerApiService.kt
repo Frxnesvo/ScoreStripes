@@ -1,8 +1,8 @@
-package com.example.clientadmin.service.interfaces
+package com.example.clientadmin.api
 
 import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
-import com.example.clientadmin.model.CustomerSummary
+import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.model.dto.OrderDto
 import retrofit2.Call
 import retrofit2.http.GET
@@ -27,5 +27,5 @@ interface CustomerApiService {
         @Query("page") page: Int,
         @Query("size") size: Int,
         @QueryMap filters: Map<String, String?>
-    ): Call<List<CustomerSummary>>
+    ): Call<List<CustomerSummaryDto>>
 }

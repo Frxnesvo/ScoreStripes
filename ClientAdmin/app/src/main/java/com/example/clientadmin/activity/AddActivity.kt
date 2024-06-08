@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -87,7 +86,6 @@ fun LeagueDetails(
 ) {
     val leagueState by leagueFormViewModel.leagueState.collectAsState()
     val error by leagueViewModel.addError
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -99,7 +97,7 @@ fun LeagueDetails(
         Back { navHostController.popBackStack() }
 
         ImagePicker(
-            imageUri = leagueState.image,
+            pic = leagueState.image,
             size = 150.dp
         ){ if(it != null) leagueFormViewModel.updateImage(it) }
 
@@ -119,7 +117,7 @@ fun LeagueDetails(
 
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
             val leagueCreateRequestDto = LeagueCreateRequestDto(leagueState.name)
-            if (leagueViewModel.addLeague(context, leagueCreateRequestDto, leagueState.image)) {
+            if (leagueViewModel.addLeague(leagueCreateRequestDto, leagueState.image)) {
                 navHostController.popBackStack()
             }
         }
@@ -136,7 +134,6 @@ fun ClubDetails(
     val clubState by clubFormViewModel.clubState.collectAsState()
     val leagues by leagueViewModel.leaguesNames.collectAsState()
     val error by clubViewModel.addError
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -148,7 +145,7 @@ fun ClubDetails(
         Back { navHostController.popBackStack() }
 
         ImagePicker(
-            imageUri = clubState.image,
+            pic = clubState.image,
             size = 150.dp
         ){ if(it != null) clubFormViewModel.updateImage(it) }
 
@@ -174,7 +171,7 @@ fun ClubDetails(
 
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
             val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, clubState.league)
-            if (clubViewModel.addClub(context, clubCreateRequestDto, clubState.image)){
+            if (clubViewModel.addClub(clubCreateRequestDto, clubState.image)){
                 navHostController.popBackStack()
             }
         }

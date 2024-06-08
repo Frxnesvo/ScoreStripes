@@ -1,11 +1,11 @@
 package com.example.clientadmin.model
 
-import android.net.Uri
+import android.graphics.Bitmap
 
 class Club(
     val name: String,
     val league: String,
-    val image: Uri,
+    val image: Bitmap,
 ){
     init {
         require(validateName(name)) { "Invalid name: must be between 3 and 40 characters" }
@@ -15,8 +15,8 @@ class Club(
         fun validateName(name: String): Boolean{
             return name.length in 3..40
         }
-        fun validateImage(image: Uri): Boolean{
-            return image != Uri.EMPTY
+        fun validateImage(image: Bitmap): Boolean{
+            return image != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         }
     }
 }
