@@ -28,6 +28,8 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         String[] urlParts = url.replace("https://", "").split("/", 2);
         String bucketName = urlParts[0];
         String key = urlParts[1];
+        System.out.println("Bucket name: " + bucketName);
+        System.out.println("Key: " + key);
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
