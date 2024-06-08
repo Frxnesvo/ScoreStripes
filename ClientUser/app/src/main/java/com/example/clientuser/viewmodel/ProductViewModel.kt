@@ -17,7 +17,7 @@ class ProductViewModel: ViewModel() {
     private val _products = MutableStateFlow<List<ProductDto>>(emptyList())
     val products: StateFlow<List<ProductDto>> = _products
 
-    private val _mostSoldProducts = getMostSoldProducts()
+    private val _mostSoldProducts = fetchMostSoldProducts()
     val mostSoldProducts = _mostSoldProducts
 
     private val sizePage = 2
@@ -38,7 +38,7 @@ class ProductViewModel: ViewModel() {
         //loadMoreProductSummaries()
     }
 
-    fun getMostSoldProducts() : Flow<List<ProductDto>> = flow {
+    fun fetchMostSoldProducts() : Flow<List<ProductDto>> = flow {
         try{
             val response = RetrofitHandler.productApi.getMostSoldProduct().awaitResponse()
             if(response.isSuccessful) response.body()?.let {emit(it)}

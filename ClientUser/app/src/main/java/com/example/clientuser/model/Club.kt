@@ -14,7 +14,7 @@ class Club(
         fun fromDto(clubDto: ClubDto): Club{
             val image = runBlocking {
                 S3ImageDownloader.getImageFromPresignedUrl(clubDto.picUrl)
-            } ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            } ?: Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)
 
             return Club(
                 id = clubDto.id,
