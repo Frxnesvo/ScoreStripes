@@ -1,6 +1,5 @@
 package com.example.clientadmin.activity
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,7 +26,15 @@ import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 
 @Composable
-fun Login(token: String, navController : NavHostController, loginViewModel: LoginViewModel, loginFormViewModel: LoginFormViewModel) {
+fun Register(
+    token: String,
+    navController : NavHostController,
+    loginViewModel: LoginViewModel,
+    loginFormViewModel: LoginFormViewModel
+) {
+    val adminState by loginFormViewModel.adminState.collectAsState()
+    val error by loginViewModel.addError
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,9 +42,6 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             .padding(10.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        val adminState by loginFormViewModel.adminState.collectAsState()
-        val context = LocalContext.current
-
         Back {
             navController.navigate("index")
         }
@@ -50,12 +54,11 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             Title()
 
             ImagePicker(
-                imageUri = adminState.profilePic,
-                size = 80.dp
+                pic = adminState.profilePic,
+                size = 100.dp
             ){
-                uri ->
-                if (uri != null) {
-                    loginFormViewModel.updateProfilePic(uri)
+                if (it != null) {
+                    loginFormViewModel.updateProfilePic(it)
                 }
             }
 
@@ -80,27 +83,28 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 loginFormViewModel.updateGender(Gender.valueOf(it))
             }
 
+            if (error.isNotEmpty()) {
+                Text(
+                    text = error,
+                    color = colorResource(id = R.color.red)
+                )
+            }
+
             CustomButton(
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {
-                loginViewModel.register(
-                    token = token,
-                    context = context,
-                    adminCreateRequestDto = AdminCreateRequestDto(
-                        username = adminState.username,
-                        birthDate = adminState.birthdate,
-                        gender = adminState.gender
-                    ),
-                    pic = adminState.profilePic
-                )
-
-                if (loginViewModel.user.value != null){
-                    Log.e("stampa utente", "not null")
-                    navController.navigate("scaffold/${token}")
-                }
-                Log.e("stampa utente", "null")
-
+                if (
+                    loginViewModel.register(
+                        token = token,
+                        adminCreateRequestDto = AdminCreateRequestDto(
+                            username = adminState.username,
+                            birthDate = adminState.birthdate,
+                            gender = adminState.gender
+                        ),
+                        pic = adminState.profilePic
+                    )
+                ){ navController.navigate("scaffold/${token}") }
             }
         }
     }

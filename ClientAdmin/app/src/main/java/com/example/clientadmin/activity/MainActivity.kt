@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colorResource(id = R.color.primary)
                 ) {
-//                    Login(
+//                    Register(
 //                        token = "token",
 //                        navController = navHostController,
 //                        loginViewModel = LoginViewModel(),
@@ -64,7 +64,7 @@ fun Navigation(navController: NavHostController){
             it.arguments?.getString("token").let {
                 token ->
                 if (token != null)
-                    Login(
+                    Register(
                         token = token,
                         navController = navController,
                         loginViewModel = loginViewModel,

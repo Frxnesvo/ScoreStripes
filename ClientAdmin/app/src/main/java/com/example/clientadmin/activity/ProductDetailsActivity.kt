@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -40,11 +39,11 @@ fun ProductDetails(
     productFormViewModel: ProductFormViewModel,
     clubViewModel: ClubViewModel,
     navHostController: NavHostController,
-
     isAdd: Boolean = false
 ){
     val productState by productFormViewModel.productState.collectAsState()
-    val context = LocalContext.current
+    val clubs by clubViewModel.clubNames.collectAsState()
+    val error by productViewModel.addError
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -78,7 +77,8 @@ fun ProductDetails(
             ){ productFormViewModel.updateName(it) }
 
             CustomComboBox(
-                options = clubViewModel.clubNames.collectAsState().value,
+                options = clubs,
+                expandable = clubs.isNotEmpty(),
                 selectedOption = productState.club
             ){ productFormViewModel.updateClub(it) }
 
@@ -126,6 +126,13 @@ fun ProductDetails(
             }
         }
 
+        if (error.isNotEmpty()) {
+            Text(
+                text = error,
+                color = colorResource(id = R.color.red)
+            )
+        }
+
         CustomButton(
             text = if(isAdd) stringResource(id = R.string.create) else stringResource(id = R.string.update),
             background = R.color.secondary
@@ -141,7 +148,9 @@ fun ProductDetails(
                     price = productState.price,
                     variants = productState.variants
                 )
-                productViewModel.addProduct(context, productRequestDto, productState.pic1, productState.pic2)
+                if (productViewModel.addProduct(productRequestDto, productState.pic1, productState.pic2)) {
+                    navHostController.popBackStack()
+                }
             } else {
                 TODO("serve il controller per l'update")
             }
@@ -164,7 +173,7 @@ fun ImagesProduct(productFormViewModel: ProductFormViewModel, productState: Prod
 
     ) {
         ImagePicker(
-            imageUri = productState.pic1,
+            pic = productState.pic1,
             size = 80.dp
         ){
             uri ->
@@ -172,7 +181,7 @@ fun ImagesProduct(productFormViewModel: ProductFormViewModel, productState: Prod
         }
 
         ImagePicker(
-            imageUri = productState.pic2,
+            pic = productState.pic2,
             size = 80.dp
         ){
             uri ->

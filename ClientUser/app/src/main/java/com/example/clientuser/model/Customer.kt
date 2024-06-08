@@ -1,5 +1,6 @@
 package com.example.clientuser.model
 
+import android.graphics.Bitmap
 import android.net.Uri
 import com.example.clientuser.model.enumerator.Gender
 
@@ -12,7 +13,7 @@ class Customer(
     val email: String,
     val birthDate: LocalDate,
     val gender: Gender,
-    val pic: Uri,
+    val pic: Bitmap,
     val favoriteTeam: String
     //TODO aggiungere gli altri campi
 ) {
@@ -27,8 +28,8 @@ class Customer(
 
     companion object {
         //TODO matchare i controlli di validazione con quelli del backend
-        fun validateProfilePic(pic: Uri): Boolean {
-            return pic == Uri.EMPTY
+        fun validateProfilePic(pic: Bitmap): Boolean {
+            return pic == Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)
         }
         fun validateUsername(username: String): Boolean {
             return username.length in 3..20

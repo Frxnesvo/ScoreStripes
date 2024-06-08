@@ -1,4 +1,4 @@
-package com.example.clientadmin.service.interfaces
+package com.example.clientadmin.api
 
 import retrofit2.Call
 import retrofit2.http.GET

@@ -1,5 +1,7 @@
 package com.example.clientuser.activity
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,9 +50,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -295,11 +299,17 @@ fun CustomButton(
 
 @Composable
 fun ImagePicker(
-    imageUri: Uri,
+    image: Bitmap,
     size: Dp,
-    onLaunch: (Uri?) -> Unit
+    onLaunch: (Bitmap?) -> Unit
 ) {
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { onLaunch(it) }
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
+        uri?.let{
+            val image : Bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
+            onLaunch(image)
+        }
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -308,9 +318,9 @@ fun ImagePicker(
             .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
             .clickable { launcher.launch("image/*") }
     ) {
-        if (imageUri != Uri.EMPTY)
+        if (image != Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888))
             Image(
-                painter = rememberAsyncImagePainter(imageUri),
+                bitmap = image.asImageBitmap(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

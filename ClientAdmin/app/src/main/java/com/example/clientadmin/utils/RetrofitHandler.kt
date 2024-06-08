@@ -1,12 +1,12 @@
-package com.example.clientadmin.service
+package com.example.clientadmin.utils
 
-import com.example.clientadmin.service.interfaces.ClubApiService
-import com.example.clientadmin.service.interfaces.CustomerApiService
-import com.example.clientadmin.service.interfaces.LeagueApiService
-import com.example.clientadmin.service.interfaces.LoginApiService
-import com.example.clientadmin.service.interfaces.OrdersApiService
-import com.example.clientadmin.service.interfaces.ProductApiService
-import com.example.clientadmin.service.interfaces.ProductVariantApiService
+import com.example.clientadmin.api.ClubApiService
+import com.example.clientadmin.api.CustomerApiService
+import com.example.clientadmin.api.LeagueApiService
+import com.example.clientadmin.api.LoginApiService
+import com.example.clientadmin.api.OrdersApiService
+import com.example.clientadmin.api.ProductApiService
+import com.example.clientadmin.api.ProductVariantApiService
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -37,6 +37,7 @@ object RetrofitHandler {
     val customerApi: CustomerApiService by lazy { retrofit.create(CustomerApiService::class.java) }
     val productApi: ProductApiService by lazy { retrofit.create(ProductApiService::class.java) }
     val ordersApi: OrdersApiService by lazy { retrofit.create(OrdersApiService::class.java) }
-    val productVariantApi: ProductVariantApiService by lazy { retrofit.create(ProductVariantApiService::class.java) }
+    val productVariantApi: ProductVariantApiService by lazy { retrofit.create(
+        ProductVariantApiService::class.java) }
     val loginApi: LoginApiService by lazy { retrofit.create(LoginApiService::class.java) }
 }

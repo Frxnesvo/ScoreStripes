@@ -26,7 +26,7 @@ import com.example.clientadmin.R
 import com.example.clientadmin.model.CustomerSummary
 
 @Composable
-fun UserItem(customer: CustomerSummary, onClick: () -> Unit){
+fun CustomerItem(customer: CustomerSummary, onClick: () -> Unit){
     Row(
         modifier = Modifier
             .fillMaxWidth()

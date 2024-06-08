@@ -22,23 +22,29 @@ fun Settings(admin: Admin){
             readOnly = true
         ) { }
 
-        CustomTextField(
-            value = admin.firstName,
-            text = stringResource(id = R.string.first_name),
-            readOnly = true
-        ) { }
+        admin.firstName?.let {//TODO da verificare se necessario dopo che la register è completa
+            CustomTextField(
+                value = it,
+                text = stringResource(id = R.string.first_name),
+                readOnly = true
+            ) { }
+        }
 
-        CustomTextField(
-            value = admin.lastName,
-            text = stringResource(id = R.string.last_name),
-            readOnly = true
-        ) { }
+        admin.lastName?.let {//TODO da verificare se necessario dopo che la register è completa
+            CustomTextField(
+                value = it,
+                text = stringResource(id = R.string.last_name),
+                readOnly = true
+            ) { }
+        }
 
-        CustomTextField(
-            value = admin.email,
-            text = stringResource(id = R.string.email),
-            readOnly = true
-        ) { }
+        admin.email?.let {//TODO da verificare se necessario dopo che la register è completa
+            CustomTextField(
+                value = it,
+                text = stringResource(id = R.string.email),
+                readOnly = true
+            ) { }
+        }
 
         CustomTextField(
             value = "${admin.birthDate.dayOfMonth} ${admin.birthDate.month} ${admin.birthDate.year}",

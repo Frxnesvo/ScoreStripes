@@ -1,11 +1,12 @@
 package com.example.clientadmin.viewmodels
 
-import android.content.Context
-import android.net.Uri
+import android.graphics.Bitmap
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.dto.ClubCreateRequestDto
-import com.example.clientadmin.service.ConverterUri
-import com.example.clientadmin.service.RetrofitHandler
+import com.example.clientadmin.utils.ConverterBitmap
+import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,44 +18,46 @@ class ClubViewModel : ViewModel() {
     private val _clubNames = MutableStateFlow<List<String>>(emptyList())
     val clubNames: StateFlow<List<String>> = _clubNames
 
+    private val _addError =  mutableStateOf("")
+    val addError = _addError
+
     init {
         fetchClubNames()
     }
 
     private fun fetchClubNames() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.getClubNames().awaitResponse()
                 if (response.isSuccessful) {
                     response.body()?.let { _clubNames.value = it }
-                } else handleApiError(response.message())
-            } catch (e: Exception) {
-                handleApiError(e.message ?: "Unknown error")
+                } else println(response.message())
             }
+        } catch (e: Exception) {
+            println(e.message ?: "Unknown error")
         }
     }
 
-    fun addClub(context: Context, clubCreateRequestDto: ClubCreateRequestDto, pic: Uri) {
+    fun addClub(clubCreateRequestDto: ClubCreateRequestDto, pic: Bitmap): Boolean{
         try {
+            Club(name = clubCreateRequestDto.name, league = clubCreateRequestDto.league, image = pic)
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.createClub(
                     name = clubCreateRequestDto.name,
                     league = clubCreateRequestDto.league,
-                    pic = ConverterUri.convert(context, pic, "picLeague")!!
+                    pic = ConverterBitmap.convert(bitmap = pic, fieldName = "picLeague")
                 ).awaitResponse()
 
                 if (response.isSuccessful)
                     response.body()?.let { club -> _clubNames.value += club.name }
-                else handleApiError(response.message())
+                else println(response.message())
             }
+            return true
         }
-        catch (e: Exception) {
-            handleApiError(e.message ?: "Unknown error")
+        catch (e: IllegalArgumentException) {
+            _addError.value = e.message ?: "Unknown error"
+            return false
         }
 
-    }
-
-    private fun handleApiError(response: String) {
-        println("Error in API call: $response")
     }
 }

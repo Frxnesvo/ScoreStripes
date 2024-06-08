@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
 import com.example.clientadmin.model.CustomerSummary
+import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.model.dto.OrderDto
-import com.example.clientadmin.service.RetrofitHandler
+import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
@@ -35,13 +38,16 @@ class CustomerViewModel : ViewModel() {
 
     private fun loadMoreCustomerSummaries() {
         CoroutineScope(Dispatchers.IO).launch {
-            getCustomerSummaries().collect { newSummaries ->
+            getCustomerSummaries().collect {
+                val newSummaries = it.map {
+                    dto -> async { CustomerSummary.fromDto(dto) }
+                }.awaitAll()
                 _customerSummaries.value += newSummaries
             }
         }
     }
 
-    private fun getCustomerSummaries(): Flow<List<CustomerSummary>> = flow {
+    private fun getCustomerSummaries(): Flow<List<CustomerSummaryDto>> = flow {
         try {
             val response = RetrofitHandler.customerApi
                 .getCustomersSummary(

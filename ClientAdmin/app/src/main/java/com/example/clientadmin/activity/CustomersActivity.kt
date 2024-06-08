@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,7 +23,7 @@ import com.example.clientadmin.viewmodels.CustomerViewModel
 
 @Composable
 fun Users(navHostController: NavHostController, customerViewModel: CustomerViewModel) {
-    val customers = customerViewModel.customerSummaries
+    val customers by customerViewModel.customerSummaries.collectAsState()
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
     LazyColumn(
@@ -31,19 +33,19 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
 
         item { Search(name = stringResource(R.string.list_all_user)) { setBottomSheet(true) } }
 
-        if(customers.value.isEmpty())
+        if(customers.isEmpty())
             item{
                 Text(
-                    text = stringResource(id = R.string.list_all_user_empty),
+                    text = stringResource(id = R.string.list_empty),
                     color = colorResource(id = R.color.black),
                     style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp)
                 )
             }
         else {
-            items(customers.value) {
+            items(customers) {
                 customer ->
                 key(customer.id) {
-                    UserItem(customer = customer) { navHostController.navigate("user/${customer.toQueryString()}") }
+                    CustomerItem(customer = customer) { navHostController.navigate("user/${customer.toQueryString()}") }
                 }
             }
 

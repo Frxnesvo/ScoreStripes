@@ -22,7 +22,7 @@ import com.example.clientadmin.model.dto.CustomerProfileDto
 
 
 @Composable
-fun UserDetails(customer: CustomerProfileDto, navHostController: NavHostController){
+fun CustomerDetails(customer: CustomerProfileDto, navHostController: NavHostController){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
