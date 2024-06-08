@@ -135,7 +135,7 @@ fun ItemCart(cartItemDto: CartItemDto) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "${cartItemDto.personalization.getPrice() /* + cartItemDto.productWithVariantDto.product.price */}€",    //todo prendere dal prodotto
+                    text = "${cartItemDto.price}€",
                     style = MaterialTheme.typography.labelMedium
                 )
                 Row(
@@ -149,7 +149,7 @@ fun ItemCart(cartItemDto: CartItemDto) {
                         modifier = Modifier.clickable { TODO() }
                     )
                     Text(
-                        text = "1",
+                        text = "${cartItemDto.quantity}",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.width(15.dp)

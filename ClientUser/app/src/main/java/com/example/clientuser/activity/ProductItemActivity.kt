@@ -1,6 +1,5 @@
 package com.example.clientuser.activity
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
 import com.example.clientuser.model.Product
-import com.example.clientuser.model.ProductSummary
 import com.example.clientuser.model.dto.ProductDto
 
 @Composable
