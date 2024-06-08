@@ -21,9 +21,8 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/add-product")    //TODO: proteggere endpoint dagli admin
-    public ResponseEntity<String> addProductToCart(@Valid @RequestBody AddToCartRequestDto requestDto) {
-        cartService.addProductToCart(requestDto);
-        return ResponseEntity.ok("Product added to cart");
+    public ResponseEntity<CartItemDto> addProductToCart(@Valid @RequestBody AddToCartRequestDto requestDto) {
+        return ResponseEntity.ok(cartService.addProductToCart(requestDto));
     }
 
     @GetMapping("/my-cart")
