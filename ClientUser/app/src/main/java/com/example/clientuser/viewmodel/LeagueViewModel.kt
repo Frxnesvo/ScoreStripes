@@ -13,7 +13,7 @@ class LeagueViewModel : ViewModel() {
     private val _leagues = getAllLeagues()
     val leagues = _leagues
 
-    private val _leaguesNames = getLeaguesNames()
+    private val _leaguesNames = fetchLeaguesNames()
     val leaguesNames = _leaguesNames
 
     private fun getAllLeagues() : Flow<List<LeagueDto>> = flow {
@@ -27,7 +27,7 @@ class LeagueViewModel : ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    private fun getLeaguesNames() : Flow<List<String>> = flow {
+    private fun fetchLeaguesNames() : Flow<List<String>> = flow {
         try{
             val response = RetrofitHandler.leagueApi.getLeaguesNames().awaitResponse()
             if(response.isSuccessful) response.body()?.let { emit(it) }

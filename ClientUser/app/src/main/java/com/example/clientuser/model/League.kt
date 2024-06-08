@@ -15,7 +15,7 @@ class League(
         fun fromDto(leagueDto: LeagueDto): League{
             val image = runBlocking {
                 S3ImageDownloader.getImageFromPresignedUrl(leagueDto.picUrl)
-            } ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            } ?: Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)
 
             return League(
                 id = leagueDto.id,

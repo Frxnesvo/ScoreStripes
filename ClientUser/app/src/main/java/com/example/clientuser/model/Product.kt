@@ -26,11 +26,11 @@ class Product (
         fun fromDto(productDto: ProductDto): Product {
             val image1 = runBlocking {
                 S3ImageDownloader.getImageFromPresignedUrl(productDto.pics[0])
-            } ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            } ?: Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)
 
             val image2 = runBlocking {
                 S3ImageDownloader.getImageFromPresignedUrl(productDto.pics[1])
-            } ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            } ?: Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)
 
             return Product(
                 id = productDto.id,
