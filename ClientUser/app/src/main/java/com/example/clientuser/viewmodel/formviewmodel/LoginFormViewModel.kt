@@ -1,7 +1,6 @@
 package com.example.clientuser.viewmodel.formviewmodel
 
-import android.net.Uri
-import com.example.clientuser.model.Club
+import android.graphics.Bitmap
 import com.example.clientuser.model.Customer
 import com.example.clientuser.model.enumerator.Gender
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +15,7 @@ data class CustomerState(
     val username : String = "",
     val birthdate : LocalDate = LocalDate.now(),
     val gender : Gender = Gender.entries[0],
-    val profilePic : Uri = Uri.EMPTY,
+    val profilePic : Bitmap = Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888),
     val favouriteTeam : String = "",
 
     //error
@@ -31,7 +30,7 @@ class LoginFormViewModel {
     private val _customerState = MutableStateFlow(CustomerState())
     val customerState: StateFlow<CustomerState> = _customerState.asStateFlow()
 
-    fun updateProfilePic(uri: Uri){
+    fun updateProfilePic(uri: Bitmap){
         _customerState.value = _customerState.value.copy(
             profilePic = uri,
         )

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
+import com.example.clientuser.model.BasicProduct
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.OrderDto
 import com.example.clientuser.model.dto.OrderItemDto
@@ -118,7 +119,7 @@ fun ProductOrdersList(orderItems: List<OrderItemDto>, navHostController: NavHost
 
 @Composable
 fun ProductOrderItem(orderItem: OrderItemDto, onClick: () -> Unit) {
-    val product = Product.fromDto(orderItem.product.product)
+    val product = BasicProduct.fromDto(orderItem.product.product)
     Column(
         modifier = Modifier
             .clickable { onClick() },
@@ -126,7 +127,7 @@ fun ProductOrderItem(orderItem: OrderItemDto, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = rememberAsyncImagePainter(product.pic1),
+            painter = rememberAsyncImagePainter(product.pic),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier

@@ -6,7 +6,7 @@ import com.example.springbootapp.data.dto.CartItemDto;
 import java.util.List;
 
 public interface CartService {
-    void addProductToCart(AddToCartRequestDto requestDto);
+    CartItemDto addProductToCart(AddToCartRequestDto requestDto);
 
     List<CartItemDto> getMyCart();
 }

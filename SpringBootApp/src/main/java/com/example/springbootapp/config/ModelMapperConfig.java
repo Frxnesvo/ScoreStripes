@@ -4,9 +4,9 @@ import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.service.impl.AwsS3ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
+import org.modelmapper.*;
+import org.modelmapper.spi.Mapping;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -74,6 +74,50 @@ public class ModelMapperConfig {
         Converter<ProductPic, String> productPicUrlConverter = context -> {
             String picUrl = context.getSource().getPicUrl();
             return awsS3Service.generatePresignedUrl(picUrl);
+        };
+
+        Converter<Product,BasicProductDto> productToBasicProductDto = context -> {
+            Product source = context.getSource();
+            BasicProductDto destination = context.getDestination();
+            destination.setId(source.getId());
+            destination.setName(source.getName());
+            destination.setDescription(source.getDescription());
+            destination.setBrand(source.getBrand());
+            destination.setGender(source.getGender());
+            destination.setClub(source.getClub().getName());
+            MappingContext<Product,String> picUrlContext = context.create(source, String.class);
+            destination.setPicUrl(firstPicUrlConverter.convert(picUrlContext));
+            return destination;
+        };
+
+        Converter<ProductWithVariant, ProductWithVariantDto> productWithVariantDtoConverter = context -> {
+            ProductWithVariant source = context.getSource();
+            ProductWithVariantDto destination = context.getDestination();
+            destination.setId(source.getId());
+            destination.setSize(source.getSize());
+            MappingContext<Product,BasicProductDto> productContext = context.create(source.getProduct(), BasicProductDto.class);
+            destination.setProduct(productToBasicProductDto.convert(productContext));
+            return destination;
+        };
+
+        Converter<Product, ProductDto> productDtoConverter = context -> {
+            Product source = context.getSource();
+            ProductDto destination = context.getDestination();
+            destination.setId(source.getId());
+            destination.setName(source.getName());
+            destination.setDescription(source.getDescription());
+            destination.setPrice(source.getPrice());
+            destination.setBrand(source.getBrand());
+            destination.setGender(source.getGender());
+            destination.setCategory(source.getCategory());
+            destination.setClubName(source.getClub().getName());
+            MappingContext<List<ProductPic>, List<ProductPicDto>> picListContext = context.create(source.getPics(), new TypeToken<List<ProductPicDto>>() {
+            }.getType());
+            destination.setPics(productPicListConverter.convert(picListContext));
+            MappingContext<List<ProductWithVariant>, List<ProductWithVariantAvailabilityDto>> variantListContext = context.create(source.getVariants(), new TypeToken<List<ProductWithVariantAvailabilityDto>>() {
+            }.getType());
+            destination.setVariants(productWithVariantListConverter.convert(variantListContext));
+            return destination;
         };
 
 
@@ -160,27 +204,24 @@ public class ModelMapperConfig {
             }
         };
 
+
         PropertyMap<WishlistItem,WishlistItemDto> wishlistItemMap = new PropertyMap<>() {
             @Override
             protected void configure() {
-                map().setProduct(modelMapper.map(source.getProduct(), ProductDto.class));
+                using(productDtoConverter)
+                        .map(source.getProduct(), destination.getProduct());
             }
         };
 
-        PropertyMap<ProductWithVariant,ProductWithVariantDto> productWithVariantMap = new PropertyMap<>() {
+
+        PropertyMap<CartItem, CartItemDto> cartItemToDtoMap = new PropertyMap<>() {
             @Override
             protected void configure() {
-                map().setProduct(modelMapper.map(source.getProduct(), BasicProductDto.class));
+                using(productWithVariantDtoConverter)
+                        .map(source.getProduct(), destination.getProduct());
             }
         };
 
-        PropertyMap<CartItem,CartItemDto> cartItemToDtoMap = new PropertyMap<>() {
-            @Override
-            protected void configure() {
-                map().setProduct(modelMapper.map(source.getProduct(), ProductWithVariantDto.class));
-                map().setPrice(source.getPrice());
-            }
-        };
 
 
         modelMapper.addMappings(customerMap);
@@ -193,10 +234,10 @@ public class ModelMapperConfig {
         modelMapper.addMappings(wishlistMap);
         modelMapper.addMappings(cartItemMap);
         modelMapper.addMappings(wishlistItemMap);
-        modelMapper.addMappings(productWithVariantMap);
         modelMapper.addMappings(cartItemToDtoMap);
 
         modelMapper.addConverter(productPicUrlConverter);
+
 
         return modelMapper;
     }

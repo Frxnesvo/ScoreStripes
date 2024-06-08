@@ -17,21 +17,21 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class WishListViewModel : ViewModel() {
-    private val _shareWithMeWishlists = getSharedWithMeWishlists()
+    private val _shareWithMeWishlists = fetchSharedWithMeWishlists()
     val sharedWithMeWishlists = _shareWithMeWishlists
 
-    private val _publicWishLists = getPublicWishlist()
+    private val _publicWishLists = fetchPublicWishlist()
     val publicWishLists = _publicWishLists
 
     private val _myWishList = MutableStateFlow<List<WishlistItemDto>>(emptyList())
     val myWishList = _myWishList
 
     init{
-        getMyWishList()
+        fetchMyWishList()
     }
 
     //todo
-    private fun getMyWishList() {
+    private fun fetchMyWishList() {
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val response = RetrofitHandler.wishListApi.getMyWishList().awaitResponse()
@@ -45,7 +45,7 @@ class WishListViewModel : ViewModel() {
 
     }
 
-    private fun getSharedWithMeWishlists() : Flow<List<WishListDto>> = flow {
+    private fun fetchSharedWithMeWishlists() : Flow<List<WishListDto>> = flow {
         try {
             val response = RetrofitHandler.wishListApi.getSharedWithMeWishlists().awaitResponse()
             if(response.isSuccessful) response.body()?.let { emit(it) }
@@ -58,7 +58,7 @@ class WishListViewModel : ViewModel() {
     }
 
     //TODO fare la paginazione
-    private fun getPublicWishlist() : Flow<List<WishListDto>> = flow {
+    private fun fetchPublicWishlist() : Flow<List<WishListDto>> = flow {
         try{
             val response = RetrofitHandler.wishListApi.getPublicWishlists().awaitResponse()
             if(response.isSuccessful) response.body()?.let { emit(it) }

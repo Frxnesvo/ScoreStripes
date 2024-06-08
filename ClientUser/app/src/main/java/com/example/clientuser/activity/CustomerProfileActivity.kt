@@ -44,7 +44,10 @@ fun CustomerProfile(navHostController: NavHostController){ //todo passare il cus
             content = Icons.Outlined.ChevronLeft
         ) { navHostController.popBackStack() }
 
-        BoxProfilePic(name = TODO("customer.username"), picUri = Uri.EMPTY)
+        BoxProfilePic(
+            name = TODO("customer.username"),
+            picUri = Uri.EMPTY
+        )
 
         Text(text = "customer.username", color = colorResource(id = R.color.black), style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal))
 

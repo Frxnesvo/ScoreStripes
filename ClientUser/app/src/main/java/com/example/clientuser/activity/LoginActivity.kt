@@ -1,6 +1,6 @@
 package com.example.clientuser.activity
 
-import android.net.Uri
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -48,7 +48,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             Title()
 
             ImagePicker(
-                imageUri = Uri.EMPTY,
+                image = Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888),
                 size = 120.dp
             ){
                 if (it != null) {

@@ -32,7 +32,7 @@ public class CartServiceImpl implements CartService {
     //TODO: L'endpoint per aggiungere un prodotto al carrello dovrebbe essere accessibile solo ai customer non agli admin.
 
     @Override
-    public void addProductToCart(AddToCartRequestDto requestDto) {
+    public CartItemDto addProductToCart(AddToCartRequestDto requestDto) {
         Product product = productDao.findById(requestDto.getProductId())
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
         ProductWithVariant variant = product.getVariants().stream().filter(p -> p.getSize()
@@ -49,6 +49,7 @@ public class CartServiceImpl implements CartService {
             cart.getCartItems().add(newItem);
         }
         cartDao.save(cart);
+        return modelMapper.map(newItem, CartItemDto.class);
     }
 
     @Override
