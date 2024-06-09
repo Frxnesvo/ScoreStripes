@@ -10,9 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.ui.theme.ClientUserTheme
 import com.example.clientuser.viewmodel.LoginViewModel
@@ -61,7 +63,8 @@ fun Navigation(
 
         //REGISTER
         composable(
-            route = "register/{token}"
+            route = "register/{token}",
+            arguments = listOf(navArgument("token") { type = NavType.StringType })
         ){
             it.arguments?.getString("token").let {
                 token ->

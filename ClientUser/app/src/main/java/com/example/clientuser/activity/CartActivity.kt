@@ -27,25 +27,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.BasicProduct
 import com.example.clientuser.model.CartItem
-import com.example.clientuser.model.dto.CartItemDto
 import com.example.clientuser.model.dto.OrderInfoDto
-import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
 
 @Composable
 fun Cart(
     orderViewModel: OrderViewModel,
-    addressViewModel: AddressViewModel,
+    customerViewModel: CustomerViewModel,
     navHostController: NavHostController,
     cartViewModel: CartViewModel
 ){
@@ -54,7 +51,7 @@ fun Cart(
 
     if (showWebView.value) {
         orderViewModel.createCartOrder(
-            OrderInfoDto(addressViewModel.addresses.collectAsState().value[0].id)
+            OrderInfoDto(customerViewModel.addresses.collectAsState().value[0].id)
         ).collectAsState(initial = mapOf()).value["url"]?.let {
             url -> WebViewScreen(url, navHostController) {
                 showWebView.value = false

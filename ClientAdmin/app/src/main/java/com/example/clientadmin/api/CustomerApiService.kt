@@ -13,10 +13,8 @@ import retrofit2.http.QueryMap
 interface CustomerApiService {
     @GET("/api/v1/customers/{id}/profile")
     fun getCustomerProfile(@Path("id") id: String): Call<CustomerProfileDto>
-
     @GET("/api/v1/customers/{id}/addresses")
     fun getCustomerAddresses(@Path("id") id: String): Call<List<AddressDto>>
-
     @GET("/api/v1/customers/{id}/orders")
     fun getCustomerOrders(@Path("id") id: String): Call<List<OrderDto>>
     @GET("/api/v1/customers/new-accounts")

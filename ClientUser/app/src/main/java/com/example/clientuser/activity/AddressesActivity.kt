@@ -9,6 +9,8 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,18 +21,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 
 @Composable
 fun Addresses(
-    addressViewModel: AddressViewModel,
+    customerViewModel: CustomerViewModel,
     addressFormViewModel: AddressFormViewModel,
     navHostController: NavHostController
 ){
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
-    val addresses = addressViewModel.addresses
+    val addresses by customerViewModel.addresses.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -54,7 +56,7 @@ fun Addresses(
             )
         }
 
-        if (addresses.value.isEmpty())
+        if (addresses.isEmpty())
             item{
                 Text(
                     text = stringResource(id = R.string.nothing_to_show),
@@ -62,7 +64,7 @@ fun Addresses(
                 )
             }
         else
-            items(addresses.value){
+            items(addresses){
                 address ->
                 key(address.id) {
                     AddressItem(addressDto = address)
@@ -75,6 +77,6 @@ fun Addresses(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
             addressFormViewModel = addressFormViewModel,
-            addressViewModel = addressViewModel
+            addressViewModel = customerViewModel
         )
 }

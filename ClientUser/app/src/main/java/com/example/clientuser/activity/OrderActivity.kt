@@ -19,6 +19,7 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
@@ -26,17 +27,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
-import com.example.clientuser.model.BasicProduct
-import com.example.clientuser.model.Product
-import com.example.clientuser.model.dto.OrderDto
-import com.example.clientuser.model.dto.OrderItemDto
+import com.example.clientuser.model.Order
 import com.example.clientuser.model.enumerator.OrderStatus
 
 
 @Composable
-fun OrderItem(order: OrderDto, navHostController: NavHostController) {
+fun OrderItem(order: Order, navHostController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,7 +98,7 @@ fun OrderItem(order: OrderDto, navHostController: NavHostController) {
 }
 
 @Composable
-fun ProductOrdersList(orderItems: List<OrderItemDto>, navHostController: NavHostController){
+fun ProductOrdersList(orderItems: List<Order.OrderItem>, navHostController: NavHostController){
     LazyRow(
         state = rememberLazyListState(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
@@ -118,8 +115,7 @@ fun ProductOrdersList(orderItems: List<OrderItemDto>, navHostController: NavHost
 }
 
 @Composable
-fun ProductOrderItem(orderItem: OrderItemDto, onClick: () -> Unit) {
-    val product : BasicProduct = TODO("mappare nel view model dell'order")
+fun ProductOrderItem(orderItem: Order.OrderItem, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .clickable { onClick() },
@@ -127,7 +123,7 @@ fun ProductOrderItem(orderItem: OrderItemDto, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = rememberAsyncImagePainter(product.pic),
+            bitmap = orderItem.product.product.pic.asImageBitmap(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -135,7 +131,7 @@ fun ProductOrderItem(orderItem: OrderItemDto, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(10.dp))
         )
         Text(
-            text = product.name,
+            text = orderItem.product.product.name,
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Light)
         )

@@ -15,8 +15,8 @@ class ProductViewModel: ViewModel() {
     private var filter: Map<String, String?> = mapOf()
     private var page = 0
 
-    private val _products = MutableStateFlow<List<ProductDto>>(emptyList())
-    val products: StateFlow<List<ProductDto>> = _products
+    private val _products = MutableStateFlow<List<Product>>(emptyList())
+    val products = _products
 
     private val _mostSoldProducts = fetchMostSoldProducts()
     val mostSoldProducts = _mostSoldProducts

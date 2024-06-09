@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.dto.WishlistItemDto
+import com.example.clientuser.model.WishlistItem
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
@@ -36,7 +36,7 @@ import com.example.clientuser.viewmodel.WishListViewModel
 @Composable
 fun WishlistProducts(
     name: String,
-    items: List<WishlistItemDto>,
+    items: List<WishlistItem>,
     navHostController: NavHostController
 ){
     Column(

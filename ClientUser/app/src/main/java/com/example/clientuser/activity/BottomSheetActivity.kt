@@ -36,7 +36,7 @@ import com.example.clientuser.model.dto.AddToCartRequestDto
 import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
-import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
@@ -152,7 +152,7 @@ fun SearchPanelProducts(
 fun AddAddress(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
-    addressViewModel: AddressViewModel,
+    addressViewModel: CustomerViewModel,
     addressFormViewModel: AddressFormViewModel
 ){
     val sheetState = rememberModalBottomSheetState()
