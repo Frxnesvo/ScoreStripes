@@ -20,7 +20,7 @@ public class CartController {
 
     private final CartService cartService;
 
-    @PostMapping("/add-product")    //TODO: proteggere endpoint dagli admin
+    @PostMapping("/add-product")    //TODO: proteggere endpoint dagli admin, cambiare path in /item/add
     public ResponseEntity<CartItemDto> addProductToCart(@Valid @RequestBody AddToCartRequestDto requestDto) {
         return ResponseEntity.ok(cartService.addProductToCart(requestDto));
     }
@@ -29,4 +29,14 @@ public class CartController {
     public ResponseEntity<List<CartItemDto>> getMyCart(){
         return ResponseEntity.ok(cartService.getMyCart());
     }
+
+
+    //@PatchMapping("/item/{itemId}")
+
+    @DeleteMapping("/item/{itemId}")
+    public ResponseEntity<String> deleteItemFromCart(@PathVariable String itemId){
+        cartService.deleteItemFromCart(itemId);
+        return ResponseEntity.ok("Item deleted");
+    }
+
 }

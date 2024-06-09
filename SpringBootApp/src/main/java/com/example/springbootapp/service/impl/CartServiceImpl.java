@@ -59,4 +59,16 @@ public class CartServiceImpl implements CartService {
                 .map(cartItem -> modelMapper.map(cartItem, CartItemDto.class))
                 .toList();
     }
+
+    @Override
+    public void deleteItemFromCart(String itemId) {
+        Customer customer = (Customer) userDetailsService.getCurrentUser();
+        //cerca nel carrello un item con l'id passato`usando gli stream e se lo trova lo rimuove
+        CartItem item = customer.getCart().getCartItems().stream()
+                .filter(cartItem -> cartItem.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new RequestValidationException("Item not found in cart"));
+        customer.getCart().getCartItems().remove(item);
+        cartDao.save(customer.getCart());
+    }
 }
