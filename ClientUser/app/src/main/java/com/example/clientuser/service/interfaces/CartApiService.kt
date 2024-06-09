@@ -10,7 +10,7 @@ import retrofit2.http.POST
 interface CartApiService {
 
     @POST("/api/v1/carts/add-product")
-    fun addProductToCart(@Body addToCartRequestDto: AddToCartRequestDto): Call<String>
+    fun addProductToCart(@Body addToCartRequestDto: AddToCartRequestDto): Call<CartItemDto>
 
     @GET("/api/v1/carts/my-cart")
     fun getMyCart(): Call<List<CartItemDto>>

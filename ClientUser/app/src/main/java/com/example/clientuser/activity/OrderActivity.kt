@@ -119,7 +119,7 @@ fun ProductOrdersList(orderItems: List<OrderItemDto>, navHostController: NavHost
 
 @Composable
 fun ProductOrderItem(orderItem: OrderItemDto, onClick: () -> Unit) {
-    val product = BasicProduct.fromDto(orderItem.product.product)
+    val product : BasicProduct = TODO("mappare nel view model dell'order")
     Column(
         modifier = Modifier
             .clickable { onClick() },

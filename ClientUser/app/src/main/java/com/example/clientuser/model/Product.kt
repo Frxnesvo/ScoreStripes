@@ -7,6 +7,7 @@ import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.model.enumerator.Gender
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 class Product (
@@ -23,15 +24,7 @@ class Product (
     val variants: Map<Size, Int>
 ){
     companion object{
-        fun fromDto(productDto: ProductDto): Product {
-            val image1 = runBlocking {
-                S3ImageDownloader.getImageFromPresignedUrl(productDto.pics[0])
-            } ?: Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)
-
-            val image2 = runBlocking {
-                S3ImageDownloader.getImageFromPresignedUrl(productDto.pics[1])
-            } ?: Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)
-
+        suspend fun fromDto(productDto: ProductDto): Product {
             return Product(
                 id = productDto.id,
                 name = productDto.name,
@@ -40,8 +33,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.productCategory,
-                pic1 = image1,
-                pic2 = image2,
+                pic1 = S3ImageDownloader.download(productDto.pics[0]).first(),
+                pic2 = S3ImageDownloader.download(productDto.pics[1]).first(),
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

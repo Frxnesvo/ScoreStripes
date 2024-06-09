@@ -1,6 +1,7 @@
 package com.example.clientuser.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.example.clientuser.model.League
 import com.example.clientuser.model.dto.LeagueDto
 import com.example.clientuser.service.RetrofitHandler
 import kotlinx.coroutines.Dispatchers
@@ -16,10 +17,13 @@ class LeagueViewModel : ViewModel() {
     private val _leaguesNames = fetchLeaguesNames()
     val leaguesNames = _leaguesNames
 
-    private fun getAllLeagues() : Flow<List<LeagueDto>> = flow {
+    private fun getAllLeagues() : Flow<List<League>> = flow {
         try{
             val response = RetrofitHandler.leagueApi.getLeagues().awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it) }
+            if(response.isSuccessful) response.body()?.let {
+                val newList = it.map { League.fromDto(it) }
+                emit(newList)
+            }
             else println("Error getting leagues: ${response.message()}")
         }
         catch (e : Exception){

@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.model.Wishlist
 import com.example.clientuser.model.dto.WishListDto
 import com.example.clientuser.viewmodel.WishListViewModel
 
@@ -77,7 +78,7 @@ fun Wishlist(
 }
 
 @Composable
-fun WishListItem(wishListDto: WishListDto, onClick: () -> Unit) {
+fun WishListItem(wishlist: Wishlist, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .background(colorResource(id = R.color.white), RoundedCornerShape(size = 30.dp))
@@ -92,12 +93,12 @@ fun WishListItem(wishListDto: WishListDto, onClick: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 Text(
-                    text = wishListDto.ownerUsername,
+                    text = wishlist.ownerUsername,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "${wishListDto.items.count()} Products",
+                    text = "${wishlist.items.count()} Products",
                     style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.black50),
                     fontWeight = FontWeight.Normal
@@ -121,8 +122,8 @@ fun WishListItem(wishListDto: WishListDto, onClick: () -> Unit) {
                 .clickable { onClick() },
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            ProductItem(productDto = wishListDto.items[0].product) { }
-            ProductItem(productDto = wishListDto.items[1].product) { }
+            ProductItem(product = wishlist.items[0].product) { }
+            ProductItem(product = wishlist.items[1].product) { }
         }
     }
 }

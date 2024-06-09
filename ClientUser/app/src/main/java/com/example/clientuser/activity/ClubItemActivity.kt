@@ -12,9 +12,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.model.Club
 import com.example.clientuser.model.dto.ClubDto
 
+//TODO si può eliminare
 @Composable
-fun ClubItem(clubDto: ClubDto, onClick: () -> Unit){
-    val club = Club.fromDto(clubDto)
+fun ClubItem(club: Club, onClick: () -> Unit){
     Image(
         painter = rememberAsyncImagePainter(club.image),
         contentDescription = null,

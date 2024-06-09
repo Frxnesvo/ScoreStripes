@@ -25,8 +25,7 @@ import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.ProductDto
 
 @Composable
-fun ProductItem(productDto: ProductDto, onClick: () -> Unit) {
-    val product = Product.fromDto(productDto)
+fun ProductItem(product: Product, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .width(150.dp)

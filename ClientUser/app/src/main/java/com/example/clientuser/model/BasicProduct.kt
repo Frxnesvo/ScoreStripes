@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.example.clientuser.S3ImageDownloader
 import com.example.clientuser.model.dto.BasicProductDto
 import com.example.clientuser.model.enumerator.Gender
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 class BasicProduct(
@@ -16,10 +17,7 @@ class BasicProduct(
     val club: String
 ) {
     companion object{
-        fun fromDto(basicProductDto: BasicProductDto) : BasicProduct{
-            val image = runBlocking {
-                S3ImageDownloader.getImageFromPresignedUrl(basicProductDto.picUrl)
-            } ?: Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)
+        suspend fun fromDto(basicProductDto: BasicProductDto) : BasicProduct{
 
             return BasicProduct(
                 id = basicProductDto.id,
@@ -27,7 +25,7 @@ class BasicProduct(
                 description = basicProductDto.description,
                 brand = basicProductDto.brand,
                 gender = basicProductDto.gender,
-                pic = image,
+                pic = S3ImageDownloader.download(basicProductDto.picUrl).first(),
                 club = basicProductDto.club
             )
         }

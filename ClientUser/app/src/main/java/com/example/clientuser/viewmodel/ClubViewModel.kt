@@ -17,9 +17,6 @@ class ClubViewModel: ViewModel() {
     private val _clubNames = getClubsName()
     val clubNames = _clubNames
 
-    private val _clubs = getAllClubs()
-    val clubs = _clubs
-
     private fun getClubsName(): Flow<List<String>> = flow {
         try {
             val response = RetrofitHandler.clubApi.getClubsName().awaitResponse()
@@ -30,14 +27,4 @@ class ClubViewModel: ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    private fun getAllClubs() : Flow<List<ClubDto>> = flow {
-        try{
-            val response = RetrofitHandler.clubApi.getClubs().awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error getting clubs: ${response.message()}")
-        }
-        catch (e : Exception){
-            println("Exception getting clubs: ${e.message}")
-        }
-    }.flowOn(Dispatchers.IO)
 }
