@@ -2,7 +2,6 @@ package com.example.clientadmin.activity
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,14 +24,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.enumerator.OrderStatus
 
 
 @Composable
-fun OrderItem(order: Order, navHostController: NavHostController) {
+fun OrderItem(order: Order) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,31 +90,27 @@ fun OrderItem(order: Order, navHostController: NavHostController) {
             Text(text = "${order.date}", color = colorResource(id = R.color.black), style = style12)
         }
 
-        OrderProductsList(orderItems = order.items, navHostController = navHostController)
+        OrderProductsList(orderItems = order.items)
     }
 }
 
 @Composable
-fun OrderProductsList(orderItems: List<Order.OrderItem>, navHostController: NavHostController){
+fun OrderProductsList(orderItems: List<Order.OrderItem>){
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         items(orderItems) {
             orderItem ->
             key(orderItem.id) {
-                ProductOrderItem(orderItem = orderItem){
-                    navHostController.navigate("product/${orderItem.product.id}")
-                }
+                ProductOrderItem(orderItem = orderItem)
             }
         }
     }
 }
 
 @Composable
-fun ProductOrderItem(orderItem: Order.OrderItem, onClick: () -> Unit) {
+fun ProductOrderItem(orderItem: Order.OrderItem) {
     Column(
-        modifier = Modifier
-            .clickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

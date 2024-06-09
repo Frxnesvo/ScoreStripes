@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -105,7 +106,10 @@ fun Search(name: String, onClick: () -> Unit){
             modifier = Modifier
                 .size(30.dp)
                 .background(colorResource(id = R.color.white), CircleShape)
-                .clickable(onClick = onClick),
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ){ onClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.Rounded.Search, contentDescription = null, tint = colorResource(id = R.color.secondary))
@@ -125,7 +129,10 @@ fun Back(onClick: () -> Unit){
             modifier = Modifier
                 .size(30.dp)
                 .background(colorResource(id = R.color.white), CircleShape)
-                .clickable(onClick = onClick),
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ){ onClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.AutoMirrored.Rounded.KeyboardArrowLeft, contentDescription = null, tint = colorResource(id = R.color.secondary))
@@ -139,7 +146,10 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .clickable(onClick = onClick),
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ){ onClick()},
         shape = RoundedCornerShape(30.dp),
         elevation = CardDefaults.cardElevation(2.dp)
     )
@@ -278,7 +288,10 @@ fun ImagePicker(
         modifier = Modifier
             .size(size)
             .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
-            .clickable { launcher.launch("image/*") }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ){ launcher.launch("image/*") }
     ) {
         if (pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
             Image(

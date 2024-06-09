@@ -2,6 +2,7 @@ package com.example.clientadmin.activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -151,7 +152,10 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
     Box(
         modifier = Modifier
             .size(40.dp)
-            .clickable(onClick = function)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ){ function() }
             .background(
                 if (background != null) colorResource(id = background) else Color.Transparent,
                 RoundedCornerShape(20.dp)
@@ -213,16 +217,6 @@ fun NavigationScaffold(
             }
         }
         composable(
-            route = "userOrders/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
-        ){
-            it.arguments?.getString("id")?.let {
-                id -> customerViewModel.getCustomerOrders(id).collectAsState(initial = null).value?.let {
-                    orders -> List(items = orders, navHostController = navHostController)
-                }
-            }
-        }
-        composable(
             route = "userDetails/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
@@ -232,6 +226,20 @@ fun NavigationScaffold(
                 }
             }
         }
+
+        //ORDERS
+        composable(
+            route = "userOrders/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+        ){
+            it.arguments?.getString("id")?.let {
+                id -> customerViewModel.getCustomerOrders(id).collectAsState(initial = null).value?.let {
+                    orders -> List(items = orders, navHostController = navHostController)
+                }
+            }
+        }
+
+        //ADDRESSES
         composable(
             route = "userAddresses/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })

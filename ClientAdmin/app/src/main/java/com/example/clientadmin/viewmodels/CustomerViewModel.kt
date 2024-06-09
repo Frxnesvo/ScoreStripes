@@ -9,8 +9,6 @@ import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
@@ -24,7 +22,11 @@ class CustomerViewModel : ViewModel() {
 
     private val sizePage = 2
 
-    fun incrementAll() {
+    init {
+        loadMoreCustomerSummaries()
+    }
+
+    fun incrementPage() {
         page += 1
         loadMoreCustomerSummaries()
     }
@@ -39,9 +41,7 @@ class CustomerViewModel : ViewModel() {
     private fun loadMoreCustomerSummaries() {
         CoroutineScope(Dispatchers.IO).launch {
             getCustomerSummaries().collect {
-                val newSummaries = it.map {
-                    dto -> async { CustomerSummary.fromDto(dto) }
-                }.awaitAll()
+                val newSummaries = it.map { summary -> CustomerSummary.fromDto(summary) }
                 _customerSummaries.value += newSummaries
             }
         }
@@ -68,11 +68,8 @@ class CustomerViewModel : ViewModel() {
     fun getCustomerDetails(id: String): Flow<CustomerProfileDto> = flow {
         try {
             val response = RetrofitHandler.customerApi.getCustomerProfile(id).awaitResponse()
-            if (response.isSuccessful) {
-                response.body()?.let { emit(it) }
-            } else {
-                println("Error fetching customer details: ${response.message()}")
-            }
+            if (response.isSuccessful) response.body()?.let { emit(it) }
+            else println("Error fetching customer details: ${response.message()}")
         } catch (e: Exception) {
             println("Exception fetching customer details: ${e.message}")
         }
