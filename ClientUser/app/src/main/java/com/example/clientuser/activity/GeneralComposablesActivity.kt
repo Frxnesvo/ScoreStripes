@@ -148,9 +148,9 @@ fun BoxIcon(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
-            is Uri -> {
+            is Bitmap -> {
                 Image(
-                    painter = rememberAsyncImagePainter(content),
+                    bitmap = content.asImageBitmap(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

@@ -48,4 +48,8 @@
     <string name="update">UPDATE</string>
     <string name="search">SEARCH</string>
     <string name="search_for_username">SEARCH FOR USERNAME</string>
+    <string name="quantity">QUANTITY</string>
+    <string name="number">NUMBER</string>
+    <string name="size">SIZE</string>
+    <string name="default_address">DEFAULT</string>
 </resources>

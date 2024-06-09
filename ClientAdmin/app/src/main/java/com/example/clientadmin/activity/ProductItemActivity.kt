@@ -39,7 +39,6 @@ fun ProductItemRow(product: Product, onClick: () -> Unit) { //TODO probabilmente
         modifier = Modifier
             .width(150.dp)
             .wrapContentHeight()
-            .background(Color.Transparent)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
@@ -82,7 +81,6 @@ fun ProductItemColumn(productSummary: ProductSummary, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
                 .background(Color.Transparent),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -117,7 +115,6 @@ fun ProductItemColumn(productSummary: ProductSummary, onClick: () -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
                     .background(Color.Transparent),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween

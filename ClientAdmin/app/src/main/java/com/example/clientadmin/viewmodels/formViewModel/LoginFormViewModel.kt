@@ -17,21 +17,12 @@ data class AdminState(
     //error
     val isProfilePicError: Boolean = !Admin.validateProfilePic(profilePic),
     val isUsernameError: Boolean = !Admin.validateUsername(username),
-//    val isEmailError: Boolean = !Admin.validateEmail(email),
     val isBirthdateError: Boolean = !Admin.validateBirthdate(birthdate)
 )
 
 class LoginFormViewModel {
     private val _adminState = MutableStateFlow(AdminState())
     val adminState: StateFlow<AdminState> = _adminState.asStateFlow()
-
-    /*fun setUserGoogleData(googleUserDto : GoogleUserDto){
-        _adminState.value = _adminState.value.copy(
-            firstName = googleUserDto.firstName,
-            lastName = googleUserDto.lastName,
-            email = googleUserDto.email
-        )
-    }*/
 
     fun updateProfilePic(profilePic: Bitmap){
         _adminState.value = _adminState.value.copy(

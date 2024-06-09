@@ -13,8 +13,7 @@ import com.example.clientuser.model.League
 import com.example.clientuser.model.dto.LeagueDto
 
 @Composable
-fun LeagueItem(leagueDto: LeagueDto, onClick: () -> Unit){
-    val league = League.fromDto(leagueDto)
+fun LeagueItem(league: League, onClick: () -> Unit){
     Image(
         painter = rememberAsyncImagePainter(league.image),
         contentDescription = null,

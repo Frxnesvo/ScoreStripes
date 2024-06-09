@@ -29,6 +29,8 @@ class ProductViewModel: ViewModel() {
 
     private val sizePage = 2
 
+    init { loadMoreProductSummaries() }
+
     fun incrementPage() {
         page += 1
         loadMoreProductSummaries()
@@ -60,11 +62,8 @@ class ProductViewModel: ViewModel() {
                 filter
             ).awaitResponse()
 
-            if (response.isSuccessful) {
-                response.body()?.let { emit(it) }
-            } else {
-                println("Error fetching product summaries: ${response.message()}")
-            }
+            if (response.isSuccessful) response.body()?.let { emit(it) }
+            else println("Error fetching product summaries: ${response.message()}")
         } catch (e: Exception) {
             println("Exception fetching product summaries: ${e.message}")
         }
@@ -73,11 +72,8 @@ class ProductViewModel: ViewModel() {
     fun getProduct(id: String): Flow<Product> = flow {
         try {
             val response = RetrofitHandler.productApi.getProductById(id).awaitResponse()
-            if (response.isSuccessful) {
-                response.body()?.let { emit(Product.fromDto(it)) }
-            } else {
-                println("Error fetching product details: ${response.message()}")
-            }
+            if (response.isSuccessful) response.body()?.let { emit(Product.fromDto(it)) }
+            else println("Error fetching product details: ${response.message()}")
         } catch (e: Exception) {
             println("Exception fetching product details: ${e.message}")
         }

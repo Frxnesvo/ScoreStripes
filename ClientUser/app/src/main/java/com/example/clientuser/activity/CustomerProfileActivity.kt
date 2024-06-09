@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChevronLeft
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,22 +50,26 @@ fun CustomerProfile(navHostController: NavHostController){ //todo passare il cus
             picUri = Uri.EMPTY
         )
 
-        Text(text = "customer.username", color = colorResource(id = R.color.black), style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal))
+        Text(
+            text = "customer.username",
+            color = colorResource(id = R.color.black),
+            style = MaterialTheme.typography.titleMedium
+        )
 
         BoxImage(
             boxTitle = stringResource(id = R.string.orders),
             painter = painterResource(id = R.drawable.my_order)
-        ){ navHostController.navigate("orders/${TODO("customer.id")}") }
+        ){ navHostController.navigate("orders") }
 
         BoxImage(
             boxTitle = stringResource(id = R.string.personal_data),
             painter = painterResource(id = R.drawable.personal_data)
-        ){ navHostController.navigate("details/${TODO("customer.id")}") }
+        ){ navHostController.navigate("details") }
 
         BoxImage(
             boxTitle = stringResource(id = R.string.addresses),
             painter = painterResource(id = R.drawable.address)
-        ){ navHostController.navigate("addresses/${TODO("customer.id")}") }
+        ){ navHostController.navigate("addresses") }
     }
 }
 

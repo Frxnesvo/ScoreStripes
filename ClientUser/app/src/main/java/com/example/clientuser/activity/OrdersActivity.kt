@@ -5,29 +5,38 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.dto.OrderDto
+import com.example.clientuser.viewmodel.CustomerViewModel
 
 @Composable
-fun Orders(orders: List<OrderDto>, navHostController: NavHostController){
+fun Orders(customerViewModel: CustomerViewModel, navHostController: NavHostController){
+    val orders by customerViewModel.getCustomerOrders().collectAsState(initial = emptyList())
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp),
         state = rememberLazyListState(),
     ) {
+        item {
+            BoxIcon(
+                iconColor = colorResource(id = R.color.secondary),
+                content = Icons.Outlined.ChevronLeft
+            ) { navHostController.popBackStack() }
+        }
+
         item {
             Text(
                 text = stringResource(id = R.string.orders),

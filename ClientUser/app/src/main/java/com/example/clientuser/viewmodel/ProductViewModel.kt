@@ -2,6 +2,7 @@ package com.example.clientuser.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.FilterBuilder
+import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.service.RetrofitHandler
 import kotlinx.coroutines.flow.Flow
@@ -14,8 +15,8 @@ class ProductViewModel: ViewModel() {
     private var filter: Map<String, String?> = mapOf()
     private var page = 0
 
-    private val _products = MutableStateFlow<List<ProductDto>>(emptyList())
-    val products: StateFlow<List<ProductDto>> = _products
+    private val _products = MutableStateFlow<List<Product>>(emptyList())
+    val products = _products
 
     private val _mostSoldProducts = fetchMostSoldProducts()
     val mostSoldProducts = _mostSoldProducts
@@ -38,10 +39,15 @@ class ProductViewModel: ViewModel() {
         //loadMoreProductSummaries()
     }
 
-    fun fetchMostSoldProducts() : Flow<List<ProductDto>> = flow {
+
+    //TODO usare BasicProduct?
+    private fun fetchMostSoldProducts() : Flow<List<Product>> = flow {
         try{
             val response = RetrofitHandler.productApi.getMostSoldProduct().awaitResponse()
-            if(response.isSuccessful) response.body()?.let {emit(it)}
+            if(response.isSuccessful) response.body()?.let {
+                val newList = it.map { Product.fromDto(it) }
+                emit(newList)
+            }
             else println("Error during the get of the most selling products: ${response.message()}")
         }
         catch (e : Exception){

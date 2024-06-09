@@ -1,6 +1,6 @@
 package com.example.clientuser.activity
 
-import android.net.Uri
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,7 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.model.FilterBuilder
-import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
@@ -64,8 +65,9 @@ fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewMo
         ) {
             NavigationScaffold(
                 navHostController = navController,
-                loginFormViewModel = loginFormViewModel,
-                loginViewModel = loginViewModel,
+                loginViewModel = loginViewModel, //todo da togliere
+                loginFormViewModel = loginFormViewModel, // todo da togliere
+                customerViewModel = CustomerViewModel(""), //TODO passare l'id dell'utente
                 clubViewModel = ClubViewModel(),
                 leagueViewModel = LeagueViewModel(),
                 productViewModel = ProductViewModel(),
@@ -120,7 +122,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
         BoxIcon(
             background = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.secondary else R.color.transparent),
             iconColor = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.white else R.color.black50),
-            content = if(true) Icons.Outlined.Person else Uri.EMPTY //todo verificare se si è loggati
+            content = if(true) Icons.Outlined.Person else Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) //todo verificare se si è loggati
         ) {
             selectedScreen.value = Screen.SETTINGS
             navHostController.navigate("settings")
@@ -131,14 +133,15 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
 @Composable
 fun NavigationScaffold(
     navHostController: NavHostController,
-    loginFormViewModel: LoginFormViewModel,
-    loginViewModel: LoginViewModel,
+    customerViewModel: CustomerViewModel,
     leagueViewModel: LeagueViewModel,
     clubViewModel: ClubViewModel,
     productViewModel: ProductViewModel,
     orderViewModel: OrderViewModel,
     wishlistViewModel: WishListViewModel,
-    cartViewModel: CartViewModel
+    cartViewModel: CartViewModel,
+    loginFormViewModel: LoginFormViewModel,
+    loginViewModel: LoginViewModel
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -178,10 +181,10 @@ fun NavigationScaffold(
         composable(
             route = "myWishlist",
         ) {
-            val myList = wishlistViewModel.myWishList.collectAsState()
+            val myList by wishlistViewModel.myWishList.collectAsState()
             WishlistProducts(
                 name = stringResource(id = R.string.my_wishlist),
-                items = myList.value,
+                items = myList,
                 navHostController = navHostController
             )
         }
@@ -190,11 +193,12 @@ fun NavigationScaffold(
             route = "sharedWishlistProducts/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
-                route -> route.arguments?.getString("id")?.let {
-                id -> val wishlists = wishlistViewModel.sharedWithMeWishlists.collectAsState(initial = emptyList())
+            it.arguments?.getString("id")?.let { id ->
+                val wishlists by wishlistViewModel.sharedWithMeWishlists.collectAsState(initial = emptyList())
+                val wishlist = wishlists.find { it.id == id }
                 WishlistProducts(
-                    name = wishlists.value.find { it.id == id }?.ownerUsername ?: "", //faccio così per gli aggiornamenti in tempo reale, ma non è il massimo
-                    items = wishlists.value.find { it.id == id }?.items ?: emptyList(),
+                    name = wishlist?.ownerUsername ?: "",
+                    items = wishlist?.items ?: emptyList(),
                     navHostController = navHostController
                 )
             }
@@ -204,11 +208,12 @@ fun NavigationScaffold(
             route = "publicWishlistProducts/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
-                route -> route.arguments?.getString("id")?.let {
-                id -> val wishlists = wishlistViewModel.publicWishLists.collectAsState(initial = emptyList())
+            it.arguments?.getString("id")?.let { id ->
+                val wishlists by wishlistViewModel.publicWishLists.collectAsState(initial = emptyList())
+                val wishlist = wishlists.find { it.id == id }
                 WishlistProducts(
-                    name = wishlists.value.find { it.id == id }?.ownerUsername ?: "", //faccio così per gli aggiornamenti in tempo reale, ma non è il massimo
-                    items = wishlists.value.find { it.id == id }?.items ?: emptyList(),
+                    name = wishlist?.ownerUsername ?: "", //faccio così per gli aggiornamenti in tempo reale, ma non è il massimo
+                    items = wishlist?.items ?: emptyList(),
                     navHostController = navHostController
                 )
             }
@@ -219,7 +224,7 @@ fun NavigationScaffold(
             route = "cart"
         ) {
             Cart(
-                addressViewModel = AddressViewModel(""), //TODO passare l'id dell'utente, è usato già in due punti quindi meglio crearlo prima
+                customerViewModel = customerViewModel,
                 orderViewModel = OrderViewModel(),
                 cartViewModel = cartViewModel,
                 navHostController = navHostController
@@ -236,35 +241,28 @@ fun NavigationScaffold(
             route = "details"
         ) {
             UserDetails(
-                loginFormViewModel = loginFormViewModel,
+                loginFormViewModel = loginFormViewModel, //todo cambiare con customer form view model
+                loginViewModel = loginViewModel, //todo cambiare con customer view model
                 navHostController = navHostController,
-                loginViewModel = loginViewModel,
                 clubViewModel = clubViewModel
             )
         }
         composable(
-            route = "orders/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "orders",
         ) {
-            it.arguments?.getString("id")?.let {
-                Orders(
-                    orders = TODO("passare la lista degli ordini"),
-                    navHostController = navHostController
-                )
-            }
+            Orders(
+                customerViewModel = customerViewModel,
+                navHostController = navHostController
+            )
         }
         composable(
-            route = "addresses/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "addresses",
         ) {
-            it.arguments?.getString("id")?.let {
-                customerId ->
-                Addresses(
-                    addressViewModel = AddressViewModel(customerId),
-                    addressFormViewModel = AddressFormViewModel(),
-                    navHostController = navHostController
-                )
-            }
+            Addresses(
+                customerViewModel = customerViewModel,
+                addressFormViewModel = AddressFormViewModel(),
+                navHostController = navHostController
+            )
         }
 
         //LISTS

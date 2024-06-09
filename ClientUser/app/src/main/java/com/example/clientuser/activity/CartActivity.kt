@@ -24,25 +24,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.dto.CartItemDto
+import com.example.clientuser.model.CartItem
 import com.example.clientuser.model.dto.OrderInfoDto
-import com.example.clientuser.viewmodel.AddressViewModel
+import com.example.clientuser.model.dto.UpdateCartItemDto
+import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
 
 @Composable
 fun Cart(
     orderViewModel: OrderViewModel,
-    addressViewModel: AddressViewModel,
+    customerViewModel: CustomerViewModel,
     navHostController: NavHostController,
     cartViewModel: CartViewModel
 ){
@@ -51,7 +52,7 @@ fun Cart(
 
     if (showWebView.value) {
         orderViewModel.createCartOrder(
-            OrderInfoDto(addressViewModel.addresses.collectAsState().value[0].id)
+            OrderInfoDto(customerViewModel.addresses.collectAsState().value[0].id)
         ).collectAsState(initial = mapOf()).value["url"]?.let {
             url -> WebViewScreen(url, navHostController) {
                 showWebView.value = false
@@ -85,7 +86,9 @@ fun Cart(
 
             items(myCart.value){
                 key(it.id) {
-                    ItemCart(it)
+                    ItemCart(
+                        cartItem = it,
+                        cartViewModel = cartViewModel)
                 }
             }
         }
@@ -93,7 +96,7 @@ fun Cart(
 }
 
 @Composable
-fun ItemCart(cartItemDto: CartItemDto) {
+fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -102,7 +105,7 @@ fun ItemCart(cartItemDto: CartItemDto) {
             .padding(10.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.product), //todo prendere dal prodotto
+            bitmap = cartItem.productWithVariant.product.pic.asImageBitmap(),
             contentDescription = null,
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(100.dp)
@@ -116,18 +119,18 @@ fun ItemCart(cartItemDto: CartItemDto) {
                 verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
             ) {
                 Text(
-                    text = cartItemDto.productWithVariantDto.product.club,
+                    text = cartItem.productWithVariant.product.club,
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = cartItemDto.productWithVariantDto.product.name,
+                    text = cartItem.productWithVariant.product.name,
                     color = colorResource(id = R.color.black50),
                     style = MaterialTheme.typography.labelSmall
                 )
                 BoxIcon(
                     iconColor = colorResource(id = R.color.secondary),
                     size = 30.dp,
-                    content = cartItemDto.productWithVariantDto.size.name
+                    content = cartItem.productWithVariant.size.name
                 ) {}
             }
             Column(
@@ -135,7 +138,7 @@ fun ItemCart(cartItemDto: CartItemDto) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "${cartItemDto.price}€",
+                    text = "${cartItem.price}€",
                     style = MaterialTheme.typography.labelMedium
                 )
                 Row(
@@ -146,10 +149,17 @@ fun ItemCart(cartItemDto: CartItemDto) {
                         imageVector = Icons.Filled.RemoveCircle,
                         contentDescription = null,
                         tint = colorResource(id = R.color.secondary),
-                        modifier = Modifier.clickable { TODO() }
+                        modifier = Modifier.clickable {
+                            cartViewModel.updateItemCartQuantity(
+                                UpdateCartItemDto(
+                                    id = cartItem.id,
+                                    quantity = cartItem.quantity - 1
+                                )
+                            )
+                        }
                     )
                     Text(
-                        text = "${cartItemDto.quantity}",
+                        text = "${cartItem.quantity}",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.width(15.dp)
@@ -158,7 +168,14 @@ fun ItemCart(cartItemDto: CartItemDto) {
                         imageVector = Icons.Filled.AddCircle,
                         contentDescription = null,
                         tint = colorResource(id = R.color.secondary),
-                        modifier = Modifier.clickable { TODO() }
+                        modifier = Modifier.clickable {
+                            cartViewModel.updateItemCartQuantity(
+                                UpdateCartItemDto(
+                                    id = cartItem.id,
+                                    quantity = cartItem.quantity + 1
+                                )
+                            )
+                        }
                     )
                 }
             }
