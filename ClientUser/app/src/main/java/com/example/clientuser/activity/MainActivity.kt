@@ -82,10 +82,7 @@ fun Navigation(
         composable(
             route = "scaffold"
         ){
-            Scaffold(
-                loginFormViewModel = loginFormViewModel,
-                loginViewModel = loginViewModel
-            )
+            Scaffold()
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
 import com.example.clientadmin.model.CustomerSummary
+import com.example.clientadmin.model.FilterBuilder
 import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.utils.RetrofitHandler
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class CustomerViewModel : ViewModel() {
-    private var filter: Map<String, String?> = mapOf()
+    private var filter: Map<String, String?> = FilterBuilder().build()
     private var page = 0
 
     private val _customerSummaries = MutableStateFlow<List<CustomerSummary>>(emptyList())

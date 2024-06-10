@@ -76,4 +76,5 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
         }
     }
 
+    //TODO updateCustomer()
 }

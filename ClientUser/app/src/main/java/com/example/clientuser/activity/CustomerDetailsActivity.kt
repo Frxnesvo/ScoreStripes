@@ -25,16 +25,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.viewmodel.ClubViewModel
-import com.example.clientuser.viewmodel.LoginViewModel
+import com.example.clientuser.viewmodel.CustomerViewModel
+import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 
 @Composable
 fun UserDetails(
-    loginFormViewModel: LoginFormViewModel,
     navHostController: NavHostController,
-    loginViewModel: LoginViewModel,
-    clubViewModel: ClubViewModel
+    clubViewModel: ClubViewModel,
+    customerFormViewModel: CustomerFormViewModel,
+    customerViewModel: CustomerViewModel
 ){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -54,25 +55,22 @@ fun UserDetails(
         )
 
         Details(
-            loginFormViewModel = loginFormViewModel,
+            customerFormViewModel = customerFormViewModel,
             clubViewModel = clubViewModel
         ){
-            loginViewModel.updateCustomer(
-                TODO("vedere come gestire l'invio del dto")
-            )
+            TODO("fare customerViewModel.updateCustomer()")
         }
     }
 }
 
 @Composable
 fun Details(
-    loginFormViewModel: LoginFormViewModel,
     clubViewModel: ClubViewModel,
+    customerFormViewModel: CustomerFormViewModel,
     onClick: () -> Unit
 ){
-    val customer by loginFormViewModel.customerState.collectAsState()
+    val customer = customerFormViewModel.customer.collectAsState().value
     val clubsName by clubViewModel.clubNames.collectAsState(initial = emptyList())
-
     val isEditable = remember { mutableStateOf(false) }
 
     Column(
@@ -127,7 +125,7 @@ fun Details(
             options = clubsName,
             selectedOption = customer.favouriteTeam,
         ){
-            loginFormViewModel.updateFavouriteTeam(it)
+            customerFormViewModel.updateFavouriteTeam(it)
         }
 
         CustomTextField(
