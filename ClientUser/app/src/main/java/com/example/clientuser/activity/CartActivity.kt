@@ -35,6 +35,7 @@ import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.CartItem
 import com.example.clientuser.model.dto.OrderInfoDto
+import com.example.clientuser.model.dto.UpdateCartItemDto
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
@@ -87,7 +88,9 @@ fun Cart(
 
             items(myCart.value){
                 key(it.id) {
-                    ItemCart(it)
+                    ItemCart(
+                        cartItem = it,
+                        cartViewModel = cartViewModel)
                 }
             }
         }
@@ -106,7 +109,7 @@ fun Cart(
 }
 
 @Composable
-fun ItemCart(cartItem: CartItem) {
+fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -160,8 +163,12 @@ fun ItemCart(cartItem: CartItem) {
                         contentDescription = null,
                         tint = colorResource(id = R.color.secondary),
                         modifier = Modifier.clickable {
-
-                            TODO()
+                            cartViewModel.updateItemCartQuantity(
+                                UpdateCartItemDto(
+                                    id = cartItem.id,
+                                    quantity = cartItem.quantity - 1
+                                )
+                            )
                         }
                     )
                     Text(
@@ -174,7 +181,14 @@ fun ItemCart(cartItem: CartItem) {
                         imageVector = Icons.Filled.AddCircle,
                         contentDescription = null,
                         tint = colorResource(id = R.color.secondary),
-                        modifier = Modifier.clickable { TODO() }
+                        modifier = Modifier.clickable {
+                            cartViewModel.updateItemCartQuantity(
+                                UpdateCartItemDto(
+                                    id = cartItem.id,
+                                    quantity = cartItem.quantity + 1
+                                )
+                            )
+                        }
                     )
                 }
             }

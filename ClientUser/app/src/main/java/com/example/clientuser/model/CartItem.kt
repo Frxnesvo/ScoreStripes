@@ -3,7 +3,7 @@ package com.example.clientuser.model
 import com.example.clientuser.model.dto.CartItemDto
 import com.example.clientuser.model.dto.ProductWithVariantDto
 
-class CartItem(
+data class CartItem(
     val id: String,
     val quantity: Int,
     val personalization: Personalization,
@@ -21,4 +21,5 @@ class CartItem(
             )
         }
     }
+
 }

@@ -9,4 +9,6 @@ public interface CartService {
     CartItemDto addProductToCart(AddToCartRequestDto requestDto);
 
     List<CartItemDto> getMyCart();
+
+    void deleteItemFromCart(String itemId);
 }
