@@ -47,13 +47,17 @@ fun Cart(
     navHostController: NavHostController,
     cartViewModel: CartViewModel
 ){
-    val showWebView = remember { mutableStateOf(false)}
+    val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
+    val selectedAddress = remember { mutableStateOf("") }
+
+    val showWebView = remember { mutableStateOf(false) }
+
     val myCart = cartViewModel.cart.collectAsState()
 
     if (showWebView.value) {
-        orderViewModel.createCartOrder(
-            OrderInfoDto(customerViewModel.addresses.collectAsState().value[0].id)
-        ).collectAsState(initial = mapOf()).value["url"]?.let {
+        orderViewModel
+            .createCartOrder(OrderInfoDto(selectedAddress.value))
+            .collectAsState(initial = mapOf()).value["url"]?.let {
             url -> WebViewScreen(url, navHostController) {
                 showWebView.value = false
             }
@@ -77,11 +81,9 @@ fun Cart(
 
             item {
                 CustomButton(
-                    text = stringResource(id = R.string.buy),
+                    text = stringResource(id = R.string.go_to_payment),
                     background = R.color.secondary
-                ) {
-                    showWebView.value = true
-                }
+                ) { setBottomSheet(true) }
             }
 
             items(myCart.value){
@@ -93,6 +95,17 @@ fun Cart(
             }
         }
     }
+
+    if(isOpenSheet)
+        ChooseAddress(
+            onDismissRequest = { setBottomSheet(false) },
+            setBottomSheet = setBottomSheet,
+            customerViewModel = customerViewModel
+        ) {
+            selectedAddress.value = it
+            if (selectedAddress.value != "")
+                showWebView.value = true
+        }
 }
 
 @Composable

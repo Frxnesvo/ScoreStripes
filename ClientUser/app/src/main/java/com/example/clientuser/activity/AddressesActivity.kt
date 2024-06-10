@@ -30,7 +30,10 @@ fun Addresses(
     addressFormViewModel: AddressFormViewModel,
     navHostController: NavHostController
 ){
-    val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
+    val (isOpenSheetAdd, setBottomSheetAdd) = remember { mutableStateOf(false) }
+    val (isOpenSheetSet, setBottomSheetSet) = remember { mutableStateOf(false) }
+
+    val addressToSetDefault = remember { mutableStateOf("") }
 
     val addresses by customerViewModel.addresses.collectAsState()
 
@@ -44,7 +47,7 @@ fun Addresses(
                 imageVector = Icons.Outlined.Add,
                 navHostController = navHostController
             ) {
-                setBottomSheet(true)
+                setBottomSheetAdd(true)
             }
         }
 
@@ -67,16 +70,28 @@ fun Addresses(
             items(addresses){
                 address ->
                 key(address.id) {
-                    AddressItem(addressDto = address)
+                    AddressItem(addressDto = address){
+                        setBottomSheetSet(true)
+                        addressToSetDefault.value = address.id
+                    }
                 }
             }
     }
 
-    if (isOpenSheet)
+    if (isOpenSheetSet)
+        SetDefaultAddress(
+            onDismissRequest = { setBottomSheetSet(false) },
+            setBottomSheet = setBottomSheetSet
+        ) {
+            if(addressToSetDefault.value.isNotEmpty())
+                customerViewModel.setDefaultAddress(addressToSetDefault.value)
+        }
+
+    if (isOpenSheetAdd)
         AddAddress(
-            onDismissRequest = { setBottomSheet(false) },
-            setBottomSheet = setBottomSheet,
+            onDismissRequest = { setBottomSheetAdd(false) },
+            setBottomSheet = setBottomSheetAdd,
             addressFormViewModel = addressFormViewModel,
-            addressViewModel = customerViewModel
+            customerViewModel = customerViewModel
         )
 }

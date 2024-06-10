@@ -4,9 +4,10 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 class AddressCreateRequestDto (
-    var street: String,
-    var city: String,
-    var civicNumber: String,
-    var zipCode: String,
-    var state: String
+    val street: String,
+    val city: String,
+    val civicNumber: String,
+    val zipCode: String,
+    val state: String,
+    val defaultAddress: Boolean
 )

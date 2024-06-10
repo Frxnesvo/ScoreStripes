@@ -9,6 +9,7 @@ data class AddressState(
     val civicNumber: String = "",
     val zipCode: String = "",
     val state: String = "",
+    val defaultAddress: Boolean = false,
     //Error
     val isStreetError: Boolean = Address.validateStreet(street),
     val isCityError: Boolean = Address.validateCity(city),
@@ -22,18 +23,36 @@ class AddressFormViewModel {
     val addressState = _addressState
 
     fun updateStreet(street: String) {
-        _addressState.value = _addressState.value.copy(street = street)
+        _addressState.value = _addressState.value.copy(
+            street = street,
+            isStreetError = Address.validateStreet(street)
+        )
     }
     fun updateCity(city: String) {
-        _addressState.value = _addressState.value.copy(city = city)
+        _addressState.value = _addressState.value.copy(
+            city = city,
+            isCityError = Address.validateCity(city)
+        )
     }
     fun updateCivicNumber(civicNumber: String) {
-        _addressState.value = _addressState.value.copy(civicNumber = civicNumber)
+        _addressState.value = _addressState.value.copy(
+            civicNumber = civicNumber,
+            isCivicNumberError = Address.validateCivicNumber(civicNumber)
+        )
     }
     fun updateZipCode(zipCode: String) {
-        _addressState.value = _addressState.value.copy(zipCode = zipCode)
+        _addressState.value = _addressState.value.copy(
+            zipCode = zipCode,
+            isZipCodeError = Address.validateZipCode(zipCode)
+        )
     }
     fun updateState(state: String) {
-        _addressState.value = _addressState.value.copy(state = state)
+        _addressState.value = _addressState.value.copy(
+            state = state,
+            isStateError = Address.validateState(state)
+        )
+    }
+    fun updateDefaultAddress(defaultAddress: Boolean) {
+        _addressState.value = _addressState.value.copy(defaultAddress = defaultAddress)
     }
 }

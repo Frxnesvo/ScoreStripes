@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class OrderViewModel: ViewModel() {
-
     private val _validateTransactionResult = MutableStateFlow("")
     val validateTransactionResult = _validateTransactionResult
 
