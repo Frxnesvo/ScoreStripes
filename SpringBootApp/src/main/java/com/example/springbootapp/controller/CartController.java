@@ -31,7 +31,11 @@ public class CartController {
     }
 
 
-    //@PatchMapping("/item/{itemId}")
+    @PatchMapping("/item/{itemId}")   //Si potrebbe anche passare un DTO e rendere il metodo più generico per aggiornare qualsiasi campo; mi attengo al caso d'uso
+    public ResponseEntity<String> updateItemQuantity(@PathVariable String itemId, @RequestParam Integer quantity){
+        cartService.updateItemQuantity(itemId, quantity);
+        return ResponseEntity.ok("Item quantity updated");
+    }
 
     @DeleteMapping("/item/{itemId}")
     public ResponseEntity<String> deleteItemFromCart(@PathVariable String itemId){

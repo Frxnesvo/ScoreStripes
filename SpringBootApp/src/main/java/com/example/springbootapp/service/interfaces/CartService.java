@@ -11,4 +11,6 @@ public interface CartService {
     List<CartItemDto> getMyCart();
 
     void deleteItemFromCart(String itemId);
+
+    void updateItemQuantity(String itemId, Integer quantity);
 }

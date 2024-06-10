@@ -71,4 +71,15 @@ public class CartServiceImpl implements CartService {
         customer.getCart().getCartItems().remove(item);
         cartDao.save(customer.getCart());
     }
+
+    @Override
+    public void updateItemQuantity(String itemId, Integer quantity) {
+        Customer customer = (Customer) userDetailsService.getCurrentUser();
+        CartItem item = customer.getCart().getCartItems().stream()
+                .filter(cartItem -> cartItem.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new RequestValidationException("Item not found in cart"));
+        item.setQuantity(quantity);
+        cartDao.save(customer.getCart());
+    }
 }
