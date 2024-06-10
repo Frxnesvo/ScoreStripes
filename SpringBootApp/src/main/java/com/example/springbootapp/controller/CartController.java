@@ -2,6 +2,7 @@ package com.example.springbootapp.controller;
 
 import com.example.springbootapp.data.dto.AddToCartRequestDto;
 import com.example.springbootapp.data.dto.CartItemDto;
+import com.example.springbootapp.data.dto.CartItemUpdateDto;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.CartService;
 import jakarta.validation.Valid;
@@ -31,9 +32,9 @@ public class CartController {
     }
 
 
-    @PatchMapping("/item/{itemId}")   //Si potrebbe anche passare un DTO e rendere il metodo più generico per aggiornare qualsiasi campo; mi attengo al caso d'uso
-    public ResponseEntity<String> updateItemQuantity(@PathVariable String itemId, @RequestParam Integer quantity){
-        cartService.updateItemQuantity(itemId, quantity);
+    @PatchMapping("/item/{itemId}")
+    public ResponseEntity<String> updateItemQuantity(@PathVariable String itemId, @Valid @RequestBody CartItemUpdateDto updateDto){
+        cartService.updateItemQuantity(itemId, updateDto);
         return ResponseEntity.ok("Item quantity updated");
     }
 

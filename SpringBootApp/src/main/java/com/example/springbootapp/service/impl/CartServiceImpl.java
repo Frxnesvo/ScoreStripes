@@ -6,6 +6,7 @@ import com.example.springbootapp.data.dao.CustomerDao;
 import com.example.springbootapp.data.dao.ProductDao;
 import com.example.springbootapp.data.dto.AddToCartRequestDto;
 import com.example.springbootapp.data.dto.CartItemDto;
+import com.example.springbootapp.data.dto.CartItemUpdateDto;
 import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.security.CustomUserDetails;
@@ -73,13 +74,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void updateItemQuantity(String itemId, Integer quantity) {
+    public void updateItemQuantity(String itemId, CartItemUpdateDto updateDto) {
         Customer customer = (Customer) userDetailsService.getCurrentUser();
         CartItem item = customer.getCart().getCartItems().stream()
                 .filter(cartItem -> cartItem.getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("Item not found in cart"));
-        item.setQuantity(quantity);
+        item.setQuantity(updateDto.getQuantity());
         cartDao.save(customer.getCart());
     }
 }
