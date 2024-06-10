@@ -1,10 +1,8 @@
 package com.example.clientuser.viewmodel
 
-import androidx.compose.runtime.key
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.CartItem
 import com.example.clientuser.model.dto.AddToCartRequestDto
-import com.example.clientuser.model.dto.CartItemDto
 import com.example.clientuser.model.dto.UpdateCartItemDto
 
 import com.example.clientuser.service.RetrofitHandler
@@ -58,15 +56,38 @@ class CartViewModel : ViewModel() {
         }
     }
 
-    fun updateItemCartQuantity(updateCartItemDto: UpdateCartItemDto){
-        if(updateCartItemDto.quantity > 0) {
+    fun updateItemCartQuantity(updateCartItemDto: UpdateCartItemDto, itemId: String){
+        if(updateCartItemDto.quantity in 1..99) {
             CoroutineScope(Dispatchers.IO).launch {
-                val response = RetrofitHandler.cartApi.updateItemCartQuantity(updateCartItemDto).awaitResponse()
-                if(response.isSuccessful)
-                    _cart.value[updateCartItemDto.id] = _cart.value[updateCartItemDto.id]!!.copy(
-                        quantity = updateCartItemDto.quantity
-                    )
+                try {
+                    val response =
+                        RetrofitHandler.cartApi.updateItemCartQuantity(itemId, updateCartItemDto)
+                            .awaitResponse()
+                    if (response.isSuccessful)
+                        _cart.value[itemId] = _cart.value[itemId]!!.copy(
+                            quantity = updateCartItemDto.quantity
+                        )
+                    else println("Error updating cart item quantity: ${response.message()}")
+                }
+                catch (e : Exception){
+                    println("Exception updating cart item quantity: ${e.message}")
+                }
             }
+        }
+    }
+
+    fun deleteItem(itemId: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitHandler.cartApi.deleteItemFromCart(itemId).awaitResponse()
+                if(response.isSuccessful)
+                    _cart.value.remove(itemId)
+                else println("Error deleting the cart item: ${response.message()}")
+            }
+            catch (e : Exception){
+                println("Exception deleting the cart item: ${e.message}")
+            }
+
         }
     }
 }

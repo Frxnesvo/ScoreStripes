@@ -105,8 +105,7 @@ fun Cart(
                         item = it,
                         cartViewModel = cartViewModel
                     ) {
-                        TODO("chiamata al backend")
-                        myCart.value.remove(it.id)
+                        cartViewModel.deleteItem(itemId = it.id)
                     }
                 }
             }
@@ -181,8 +180,8 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                         tint = colorResource(id = R.color.secondary),
                         modifier = Modifier.clickable {
                             cartViewModel.updateItemCartQuantity(
-                                UpdateCartItemDto(
-                                    id = cartItem.id,
+                                itemId = cartItem.id,
+                                updateCartItemDto = UpdateCartItemDto(
                                     quantity = cartItem.quantity - 1
                                 )
                             )
@@ -200,10 +199,10 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                         tint = colorResource(id = R.color.secondary),
                         modifier = Modifier.clickable {
                             cartViewModel.updateItemCartQuantity(
-                                UpdateCartItemDto(
-                                    id = cartItem.id,
+                                itemId = cartItem.id,
+                                updateCartItemDto = UpdateCartItemDto(
                                     quantity = cartItem.quantity + 1
-                                )
+                                ),
                             )
                         }
                     )
