@@ -1,6 +1,8 @@
 package com.example.clientuser.activity
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -149,10 +153,94 @@ fun SearchPanelProducts(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun ChooseAddress(
+    onDismissRequest: () -> Unit,
+    setBottomSheet: (Boolean) -> Unit,
+    customerViewModel: CustomerViewModel,
+    onClick: (String) -> Unit
+){
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    val addresses by customerViewModel.addresses.collectAsState()
+
+    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+        Column(
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            addresses.forEach {address ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            if (sheetState.isVisible)
+                                scope.launch {
+                                    onClick(address.id)
+                                    sheetState.hide()
+                                    setBottomSheet(false)
+                                }
+                        },
+                    horizontalArrangement = if (address.defaultAddress) Arrangement.SpaceBetween else Arrangement.Start
+                ) {
+                    Text(
+                        text = "${address.street}, ${address.civicNumber}",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    if (address.defaultAddress)
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = null,
+                            tint = colorResource(id = R.color.secondary)
+                        )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SetDefaultAddress(
+    onDismissRequest: () -> Unit,
+    setBottomSheet: (Boolean) -> Unit,
+    onClick: () -> Unit
+){
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+        Column(
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            CustomButton(
+                text = stringResource(id = R.string.set_default),
+                background = R.color.secondary
+            ) {
+                if(sheetState.isVisible)
+                    scope.launch {
+                        onClick()
+                        sheetState.hide()
+                        setBottomSheet(false)
+                    }
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun AddAddress(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
-    addressViewModel: CustomerViewModel,
+    customerViewModel: CustomerViewModel,
     addressFormViewModel: AddressFormViewModel
 ){
     val sheetState = rememberModalBottomSheetState()
@@ -199,15 +287,19 @@ fun AddAddress(
             ){ addressFormViewModel.updateZipCode(it) }
 
             CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
+                if (customerViewModel.addresses.value.isEmpty())
+                    addressFormViewModel.updateDefaultAddress(true)
+
                 if(sheetState.isVisible)
                     scope.launch {
-                        addressViewModel.addAddress(
+                        customerViewModel.addAddress(
                             AddressCreateRequestDto(
                                 street = addressState.street,
                                 civicNumber = addressState.civicNumber,
                                 state = addressState.state,
                                 city = addressState.city,
-                                zipCode = addressState.zipCode
+                                zipCode = addressState.zipCode,
+                                defaultAddress = addressState.defaultAddress
                             )
                         )
                         sheetState.hide()
