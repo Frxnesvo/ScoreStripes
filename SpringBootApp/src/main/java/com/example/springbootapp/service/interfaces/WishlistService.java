@@ -1,10 +1,6 @@
 package com.example.springbootapp.service.interfaces;
 
-import com.example.springbootapp.data.dto.AddToWishlistRequestDto;
-import com.example.springbootapp.data.dto.WishlistDto;
-import com.example.springbootapp.data.dto.WishlistItemDto;
-import com.example.springbootapp.data.dto.WishlistVisibilityDto;
-import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
+import com.example.springbootapp.data.dto.*;
 
 import java.util.List;
 
@@ -18,4 +14,8 @@ public interface WishlistService {
     List<WishlistDto> getPublicWishlists();
 
     List<WishlistDto> getSharedWithMeWishlists();
+
+    List<CustomerSummaryDto> getMyWishlistAccesses();
+
+    void deleteWishlistAccess(String guestId);
 }

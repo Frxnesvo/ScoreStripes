@@ -57,4 +57,15 @@ public class WishlistController {
         return ResponseEntity.ok(wishlistService.getMyWishlist());
     }
 
+    @GetMapping("/my-wishlist/accesses")
+    public ResponseEntity<List<CustomerSummaryDto>> getMyWishlistAccesses(){
+        return ResponseEntity.ok(wishlistService.getMyWishlistAccesses());
+    }
+
+    @DeleteMapping("/my-wishlist/accesses/{GuestId}")
+    public ResponseEntity<String> deleteWishlistAccess(@PathVariable String GuestId) {
+        wishlistService.deleteWishlistAccess(GuestId);
+        return ResponseEntity.ok("Access deleted");
+    }
+
 }

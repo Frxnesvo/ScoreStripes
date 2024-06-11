@@ -4,10 +4,7 @@ import com.example.springbootapp.data.dao.ProductDao;
 import com.example.springbootapp.data.dao.WishlistAccessDao;
 import com.example.springbootapp.data.dao.WishlistDao;
 import com.example.springbootapp.data.dao.WishlistItemDao;
-import com.example.springbootapp.data.dto.AddToWishlistRequestDto;
-import com.example.springbootapp.data.dto.WishlistDto;
-import com.example.springbootapp.data.dto.WishlistItemDto;
-import com.example.springbootapp.data.dto.WishlistVisibilityDto;
+import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
 import com.example.springbootapp.exceptions.IllegalWishlistVisibility;
@@ -78,5 +75,20 @@ public class WishlistServiceImpl implements WishlistService {
         return wishlistAccesses.stream()
                 .map(wishlistAccess -> modelMapper.map(wishlistAccess.getWishlist(), WishlistDto.class))
                 .toList();
+    }
+
+    @Override
+    public List<CustomerSummaryDto> getMyWishlistAccesses() {
+        List<WishlistAccess> wishlistAccesses = wishlistAccessDao.findAllByWishlistId(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId());
+        return wishlistAccesses.stream()
+                .map(wishlistAccess -> modelMapper.map(wishlistAccess.getGuest(), CustomerSummaryDto.class))
+                .toList();
+    }
+
+    @Override
+    public void deleteWishlistAccess(String guestId) {
+        WishlistAccess wishlistAccess = wishlistAccessDao.findByWishlistIdAndGuestId(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId(), guestId)
+                .orElseThrow(() -> new EntityNotFoundException("Access not found"));
+        wishlistAccessDao.delete(wishlistAccess);
     }
 }
