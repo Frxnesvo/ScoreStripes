@@ -1,6 +1,6 @@
 package com.example.clientuser.activity
 
-import android.net.Uri
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,23 +16,28 @@ import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
+import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 
 @Composable
-fun CustomerProfile(navHostController: NavHostController){ //todo passare il customer
+fun CustomerProfile(
+    navHostController: NavHostController,
+    customerFormViewModel: CustomerFormViewModel
+){
+    val customer = customerFormViewModel.customer.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,12 +51,12 @@ fun CustomerProfile(navHostController: NavHostController){ //todo passare il cus
         ) { navHostController.popBackStack() }
 
         BoxProfilePic(
-            name = TODO("customer.username"),
-            picUri = Uri.EMPTY
+            name = customer.value.username,
+            pic = customer.value.profilePic     //prima c'èera Uri.EMPTY, va bene così?p
         )
 
         Text(
-            text = "customer.username",
+            text = customer.value.username,
             color = colorResource(id = R.color.black),
             style = MaterialTheme.typography.titleMedium
         )
@@ -74,12 +79,12 @@ fun CustomerProfile(navHostController: NavHostController){ //todo passare il cus
 }
 
 @Composable
-fun BoxProfilePic(name: String, picUri: Uri){
+fun BoxProfilePic(name: String, pic: Bitmap){
     val modifier = Modifier
         .clip(RoundedCornerShape(75.dp))
         .size(150.dp)
 
-    if (picUri == Uri.EMPTY)
+    if (pic == Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888))
         Box(
             modifier = modifier
                 .background(color = colorResource(id = R.color.secondary)),
@@ -93,7 +98,7 @@ fun BoxProfilePic(name: String, picUri: Uri){
         }
     else
         Image(
-            painter = rememberAsyncImagePainter(picUri),
+            bitmap = pic.asImageBitmap(),
             contentDescription = "userImg",
             contentScale = ContentScale.Crop,
             modifier = modifier

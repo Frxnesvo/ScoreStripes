@@ -32,23 +32,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
+import com.example.clientuser.model.Customer
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
-import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
-import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
 @Composable
-fun Scaffold() {
+fun Scaffold(customer: Customer) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
@@ -65,8 +64,8 @@ fun Scaffold() {
                 )
         ) {
             NavigationScaffold(
-                customerFormViewModel = CustomerFormViewModel(), //TODO passare il customer state dal loginFormViewModel
-                customerViewModel = CustomerViewModel(""), //TODO passare l'id dell'utente
+                customerFormViewModel = CustomerFormViewModel(customer),
+                customerViewModel = CustomerViewModel(customer.id),
                 clubViewModel = ClubViewModel(),
                 leagueViewModel = LeagueViewModel(),
                 productViewModel = ProductViewModel(),
@@ -234,14 +233,14 @@ fun NavigationScaffold(
         composable(
             route = "settings"
         ) {
-            CustomerProfile(navHostController = navHostController)
+            CustomerProfile(customerFormViewModel = customerFormViewModel, navHostController = navHostController)
         }
         composable(
             route = "details"
         ) {
             UserDetails(
-                customerFormViewModel = customerFormViewModel, //todo cambiare con customer form view model
-                customerViewModel = customerViewModel, //todo cambiare con customer view model
+                customerFormViewModel = customerFormViewModel,
+                customerViewModel = customerViewModel,
                 navHostController = navHostController,
                 clubViewModel = clubViewModel
             )

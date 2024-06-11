@@ -1,12 +1,12 @@
 package com.example.clientuser.model
 
 import android.graphics.Bitmap
-import android.net.Uri
 import com.example.clientuser.model.enumerator.Gender
 
 import java.time.LocalDate
 
 class Customer(
+    val id: String,
     val username: String,
     val firstName: String,
     val lastName: String,
@@ -15,7 +15,6 @@ class Customer(
     val gender: Gender,
     val pic: Bitmap,
     val favoriteTeam: String
-    //TODO aggiungere gli altri campi
 ) {
     init {
         require(validateProfilePic(pic)) { "Invalid profile picture" }
@@ -26,7 +25,10 @@ class Customer(
         require(validateBirthdate(birthDate)) { "Invalid birthdate: must be before the current date" }
     }
 
+
     companion object {
+        //todo aggiungere fromDto
+
         //TODO matchare i controlli di validazione con quelli del backend
         fun validateProfilePic(pic: Bitmap): Boolean {
             return pic == Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888)

@@ -51,7 +51,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharedWithPanel(
-    onDismissRequest: () -> Unit, //TODO da aggiungere il view model
+    onDismissRequest: () -> Unit, //TODO da aggiungere il view model delle wishlist
     setBottomSheet: (Boolean) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()

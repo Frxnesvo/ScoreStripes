@@ -55,7 +55,7 @@ dependencies {
     implementation (libs.converter.moshi)
 
     implementation (libs.moshi)
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+    ksp(libs.moshi.kotlin.codegen.v1130)
 
     implementation (libs.coil.compose)
 
@@ -80,6 +80,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation ("androidx.compose.material:material-icons-core:1.0.0")
-    implementation ("androidx.compose.material:material-icons-extended:1.0.0")
+    implementation(libs.ui)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.gson)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
+
+    implementation (libs.androidx.material.icons.core)
+    implementation (libs.androidx.material.icons.extended)
 }

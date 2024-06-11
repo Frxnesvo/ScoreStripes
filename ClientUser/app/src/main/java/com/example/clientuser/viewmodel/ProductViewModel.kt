@@ -3,16 +3,14 @@ package com.example.clientuser.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Product
-import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.service.RetrofitHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import retrofit2.awaitResponse
 
 class ProductViewModel: ViewModel() {
-    private var filter: Map<String, String?> = mapOf()
+    private var filter: Map<String, String?> = FilterBuilder().build()
     private var page = 0
 
     private val _products = MutableStateFlow<List<Product>>(emptyList())

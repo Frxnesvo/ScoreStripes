@@ -57,11 +57,13 @@ fun IndexPage(navController : NavHostController, loginViewModel: LoginViewModel)
                     background = R.color.secondary50,
                     text = stringResource(id = R.string.sign_in)
                 ) {
-                    //TODO
+                    //TODO("gestire tutta la login")
                 }
 
                 TextButton(
-                    onClick = { navController.navigate("scaffold") }
+                    onClick = {
+                        navController.navigate("scaffold")  //todo aggiungere il customer della login come parametro
+                    }
                 ) {
                     Text(
                         text = stringResource(id = R.string.enter_as_guest),

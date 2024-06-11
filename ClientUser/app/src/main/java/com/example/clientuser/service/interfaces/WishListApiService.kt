@@ -22,7 +22,7 @@ interface WishListApiService {
     fun getSharedWithMeWishlists() : Call<List<WishListDto>>
 
     @POST("/api/v1/wishlists/add-Item")
-    fun addItemToWishlist(@Body addToWishListItemDto: AddToWishListRequestDto) : Call<String>
+    fun addItemToWishlist(@Body addToWishListItemDto: AddToWishListRequestDto) : Call<WishlistItemDto>
 
     @POST("/api/v1/wishlists/create-shareToken")
     fun createShareToken() : Call<WishlistShareTokenDto>
