@@ -3,6 +3,7 @@ package com.example.clientadmin.viewmodels
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.clientadmin.model.FilterBuilder
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductSummary
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class ProductViewModel: ViewModel() {
-    private var filter: Map<String, String?> = mapOf()
+    private var filter: Map<String, String?> = FilterBuilder().build()
     private var page = 0
 
     private val _productSummaries = MutableStateFlow<List<ProductSummary>>(emptyList())
@@ -47,8 +48,8 @@ class ProductViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             getProductSummaries(page).collect {
                 val newSummaries = it.map {
-                    dto -> async { ProductSummary.fromDto(dto) }
-                }.awaitAll()
+                    dto ->  ProductSummary.fromDto(dto)
+                }
                 _productSummaries.value += newSummaries
             }
         }

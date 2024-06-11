@@ -5,8 +5,11 @@ import com.example.clientuser.model.dto.CartItemDto
 import com.example.clientuser.model.dto.UpdateCartItemDto
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface CartApiService {
 
@@ -16,6 +19,9 @@ interface CartApiService {
     @GET("/api/v1/carts/my-cart")
     fun getMyCart(): Call<List<CartItemDto>>
 
-    @POST("api/v1/carts/")//TODO aggiungere il resto del path una volta fatto il controller nel backend
-    fun updateItemCartQuantity(updateCartItemDto: UpdateCartItemDto): Call<String>  //todo passare il dto
+    @PATCH("api/v1/carts/item/{itemId}")
+    fun updateItemCartQuantity(@Path("itemId") itemId: String, updateCartItemDto: UpdateCartItemDto): Call<String>
+
+    @DELETE("api/v1/carts/item/{itemId}")
+    fun deleteItemFromCart(@Path("itemId") itemId: String): Call<String>
 }

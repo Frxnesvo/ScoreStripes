@@ -3,7 +3,6 @@ package com.example.clientuser.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.CartItem
 import com.example.clientuser.model.dto.AddToCartRequestDto
-import com.example.clientuser.model.dto.CartItemDto
 import com.example.clientuser.model.dto.UpdateCartItemDto
 
 import com.example.clientuser.service.RetrofitHandler
@@ -14,7 +13,7 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class CartViewModel : ViewModel() {
-    private val _cart = MutableStateFlow<List<CartItem>>(emptyList())
+    private val _cart = MutableStateFlow<MutableMap<String, CartItem>>(mutableMapOf())
     val cart = _cart
 
     init{
@@ -28,7 +27,8 @@ class CartViewModel : ViewModel() {
 
                 if(response.isSuccessful){
                     //TODO va bene o conviene fare _cart MutableList?
-                    _cart.value += CartItem.fromDto(response.body()!!)
+                    val cartItem = CartItem.fromDto(response.body()!!)
+                    _cart.value[cartItem.id] = cartItem
                 }
                 else println("Error during adding product to cart")
             }
@@ -38,13 +38,15 @@ class CartViewModel : ViewModel() {
         }
     }
 
-    //todo
     private fun getMyCart(){
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val response = RetrofitHandler.cartApi.getMyCart().awaitResponse()
                 if(response.isSuccessful) response.body()?.let {  result ->
-                    _cart.value = result.map { cartItemDto -> CartItem.fromDto(cartItemDto) }
+                    _cart.value = result.associateBy(
+                        keySelector = { cartItemDto -> cartItemDto.id},
+                        valueTransform = { cartItemDto -> CartItem.fromDto(cartItemDto)  }
+                    ).toMutableMap()
                 }
                 else println("Error getting cart: ${response.message()}")
             }
@@ -54,20 +56,38 @@ class CartViewModel : ViewModel() {
         }
     }
 
-    fun updateItemCartQuantity(updateCartItemDto: UpdateCartItemDto){
-        if(updateCartItemDto.quantity > 0) {
+    fun updateItemCartQuantity(updateCartItemDto: UpdateCartItemDto, itemId: String){
+        if(updateCartItemDto.quantity in 1..99) {
             CoroutineScope(Dispatchers.IO).launch {
-                for (item: CartItem in _cart.value)
-                    if (item.id == updateCartItemDto.id) {
-                        val response = RetrofitHandler.cartApi.updateItemCartQuantity(updateCartItemDto).awaitResponse()
-                        if (response.isSuccessful)
-                            _cart.value = _cart.value.map { cartItem ->
-                                if (cartItem.id == updateCartItemDto.id) cartItem.copy(quantity = updateCartItemDto.quantity)
-                                else cartItem
-                            }
-                        break
-                    }
+                try {
+                    val response =
+                        RetrofitHandler.cartApi.updateItemCartQuantity(itemId, updateCartItemDto)
+                            .awaitResponse()
+                    if (response.isSuccessful)
+                        _cart.value[itemId] = _cart.value[itemId]!!.copy(
+                            quantity = updateCartItemDto.quantity
+                        )
+                    else println("Error updating cart item quantity: ${response.message()}")
+                }
+                catch (e : Exception){
+                    println("Exception updating cart item quantity: ${e.message}")
+                }
             }
+        }
+    }
+
+    fun deleteItem(itemId: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitHandler.cartApi.deleteItemFromCart(itemId).awaitResponse()
+                if(response.isSuccessful)
+                    _cart.value.remove(itemId)
+                else println("Error deleting the cart item: ${response.message()}")
+            }
+            catch (e : Exception){
+                println("Exception deleting the cart item: ${e.message}")
+            }
+
         }
     }
 }

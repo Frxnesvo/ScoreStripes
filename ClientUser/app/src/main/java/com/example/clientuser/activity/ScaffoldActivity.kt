@@ -42,12 +42,13 @@ import com.example.clientuser.viewmodel.OrderViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
+import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
 @Composable
-fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewModel) {
+fun Scaffold() {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
@@ -64,16 +65,15 @@ fun Scaffold(loginFormViewModel: LoginFormViewModel, loginViewModel: LoginViewMo
                 )
         ) {
             NavigationScaffold(
-                navHostController = navController,
-                loginViewModel = loginViewModel, //todo da togliere
-                loginFormViewModel = loginFormViewModel, // todo da togliere
+                customerFormViewModel = CustomerFormViewModel(), //TODO passare il customer state dal loginFormViewModel
                 customerViewModel = CustomerViewModel(""), //TODO passare l'id dell'utente
                 clubViewModel = ClubViewModel(),
                 leagueViewModel = LeagueViewModel(),
                 productViewModel = ProductViewModel(),
                 orderViewModel = OrderViewModel(),
                 wishlistViewModel = WishListViewModel(),
-                cartViewModel = CartViewModel()
+                cartViewModel = CartViewModel(),
+                navHostController = navController
             )
         }
     }
@@ -140,8 +140,7 @@ fun NavigationScaffold(
     orderViewModel: OrderViewModel,
     wishlistViewModel: WishListViewModel,
     cartViewModel: CartViewModel,
-    loginFormViewModel: LoginFormViewModel,
-    loginViewModel: LoginViewModel
+    customerFormViewModel: CustomerFormViewModel,
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -241,8 +240,8 @@ fun NavigationScaffold(
             route = "details"
         ) {
             UserDetails(
-                loginFormViewModel = loginFormViewModel, //todo cambiare con customer form view model
-                loginViewModel = loginViewModel, //todo cambiare con customer view model
+                customerFormViewModel = customerFormViewModel, //todo cambiare con customer form view model
+                customerViewModel = customerViewModel, //todo cambiare con customer view model
                 navHostController = navHostController,
                 clubViewModel = clubViewModel
             )

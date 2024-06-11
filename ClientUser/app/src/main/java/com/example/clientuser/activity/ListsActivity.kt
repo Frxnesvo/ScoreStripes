@@ -105,7 +105,7 @@ fun WishlistDiscover(
 fun ListDiscover(
     name: String,
     productViewModel: ProductViewModel,
-    leagueViewModel: LeagueViewModel, //TODO serve anche il club view model
+    leagueViewModel: LeagueViewModel,
     navHostController: NavHostController,
 ){
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
