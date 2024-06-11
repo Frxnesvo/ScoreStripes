@@ -11,7 +11,7 @@ import java.util.List;
 public interface WishlistService {
     void changeVisibility(WishlistVisibilityDto visibilityDto);
 
-    void addItemToWishlist(AddToWishlistRequestDto requestDto);
+    WishlistItemDto addItemToWishlist(AddToWishlistRequestDto requestDto);
 
     List<WishlistItemDto> getMyWishlist();
 

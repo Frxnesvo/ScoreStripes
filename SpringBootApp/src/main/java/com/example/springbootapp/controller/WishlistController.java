@@ -38,9 +38,8 @@ public class WishlistController {
     }
 
     @PostMapping("/add-Item")
-    public ResponseEntity<String> addItemToWishlist(@Valid @RequestBody AddToWishlistRequestDto requestDto){
-        wishlistService.addItemToWishlist(requestDto);
-        return ResponseEntity.ok("Item added to wishlist");
+    public ResponseEntity<WishlistItemDto> addItemToWishlist(@Valid @RequestBody AddToWishlistRequestDto requestDto){
+         return ResponseEntity.ok(wishlistService.addItemToWishlist(requestDto));
     }
 
     @GetMapping("/shared-with-me")

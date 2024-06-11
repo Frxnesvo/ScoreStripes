@@ -45,7 +45,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public void addItemToWishlist(AddToWishlistRequestDto requestDto) {
+    public WishlistItemDto addItemToWishlist(AddToWishlistRequestDto requestDto) {
         Product product= productDao.findById(requestDto.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
         Wishlist wishlist =((Customer) userDetailsService.getCurrentUser()).getWishlist();
         WishlistItem wishlistItem = new WishlistItem();
@@ -53,6 +53,7 @@ public class WishlistServiceImpl implements WishlistService {
         wishlistItem.setWishlist(wishlist);
         wishlistItem.setProduct(product);
         wishlistItemDao.save(wishlistItem);  //Ho preferito iniettare anche il dao per il WishlistItem per evitare di fare una save di wishlist e usare il cascade poichè meno efficiente
+        return modelMapper.map(wishlistItem, WishlistItemDto.class);
     }
 
     @Override
