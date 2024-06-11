@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.Wishlist
 import com.example.clientuser.model.WishlistItem
 import com.example.clientuser.model.dto.AddToWishListRequestDto
-import com.example.clientuser.model.dto.WishListDto
-import com.example.clientuser.model.dto.WishlistItemDto
 import com.example.clientuser.model.dto.WishlistShareTokenDto
 import com.example.clientuser.model.dto.WishlistVisibilityDto
 import com.example.clientuser.service.RetrofitHandler
@@ -19,26 +17,25 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class WishListViewModel : ViewModel() {
-    private val _shareWithMeWishlists = fetchSharedWithMeWishlists()
-    val sharedWithMeWishlists = _shareWithMeWishlists
+    private val _sharedWithMeWishlists = fetchSharedWithMeWishlists()
+    val sharedWithMeWishlists = _sharedWithMeWishlists
 
     private val _publicWishLists = fetchPublicWishlist()
     val publicWishLists = _publicWishLists
 
-    private val _myWishList = MutableStateFlow<List<WishlistItem>>(emptyList())
+    private val _myWishList = MutableStateFlow<MutableList<WishlistItem>>(mutableListOf())
     val myWishList = _myWishList
 
     init{
         fetchMyWishList()
     }
 
-    //todo
     private fun fetchMyWishList() {
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val response = RetrofitHandler.wishListApi.getMyWishList().awaitResponse()
                 if(response.isSuccessful) response.body()?.let { result ->
-                    _myWishList.value = result.map { wishlistItemDto -> WishlistItem.fromDto(wishlistItemDto)  }
+                    _myWishList.value = result.map { wishlistItemDto -> WishlistItem.fromDto(wishlistItemDto)  }.toMutableList()
                 }
                 else println("Error during the of the personal wishlists: ${response.message()}")
             }
@@ -73,14 +70,18 @@ class WishListViewModel : ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    fun addItemToWishlist(addToWishListRequestDto: AddToWishListRequestDto) : Flow<String> = flow {
-        try{
-            val response = RetrofitHandler.wishListApi.addItemToWishlist(addToWishListRequestDto).awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error during the add of a product to the wishlists: ${response.message()}")
-        }
-        catch (e : Exception){
-            println("Error during the add of a product to the wishlists: ${e.message}")
+    fun addItemToWishlist(addToWishListRequestDto: AddToWishListRequestDto){
+        CoroutineScope(Dispatchers.IO).launch {
+            try{
+                val response = RetrofitHandler.wishListApi.addItemToWishlist(addToWishListRequestDto).awaitResponse()
+                if(response.isSuccessful) response.body()?.let {
+                    _myWishList.value.add(WishlistItem.fromDto(it))
+                }
+                else println("Error during the add of a product to the wishlists: ${response.message()}")
+            }
+            catch (e : Exception){
+                println("Error during the add of a product to the wishlists: ${e.message}")
+            }
         }
     }
 

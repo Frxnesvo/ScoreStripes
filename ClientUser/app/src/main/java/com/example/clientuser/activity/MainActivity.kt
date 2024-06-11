@@ -16,9 +16,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
+import com.example.clientuser.model.Customer
 import com.example.clientuser.ui.theme.ClientUserTheme
 import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
+import com.google.gson.Gson
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +44,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 @Composable
 fun Navigation(
     navController: NavHostController,
@@ -80,9 +85,18 @@ fun Navigation(
 
         //SCAFFOLD
         composable(
-            route = "scaffold"
+            route = "scaffold/{customer}",
+            arguments = listOf(navArgument("customer") { type = NavType.StringType })
         ){
-            Scaffold()
+            it.arguments?.getString("customer").let { customerJson ->
+
+                val customer = customerJson?.let {
+                    Gson().fromJson(it, Customer::class.java)
+                    Json.decodeFromString<Customer>(it)
+                }
+
+                Scaffold(customer!!)
+            }
         }
     }
 }

@@ -26,7 +26,6 @@ class CartViewModel : ViewModel() {
                 val response = RetrofitHandler.cartApi.addProductToCart(addToCartRequestDto).awaitResponse()
 
                 if(response.isSuccessful){
-                    //TODO va bene o conviene fare _cart MutableList?
                     val cartItem = CartItem.fromDto(response.body()!!)
                     _cart.value[cartItem.id] = cartItem
                 }

@@ -97,7 +97,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {
-                TODO("fare navigate e passare il customer")
+                TODO("fare navigate e passare il customer allo scaffold")
             }
         }
     }
