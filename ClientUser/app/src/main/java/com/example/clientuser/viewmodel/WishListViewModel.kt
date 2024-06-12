@@ -24,13 +24,13 @@ class WishListViewModel : ViewModel() {
     private val _publicWishLists = fetchPublicWishlist()
     val publicWishLists = _publicWishLists
 
-    private val _myWishList = MutableStateFlow<MutableList<WishlistItem>>(mutableListOf())
+    private val _myWishList = MutableStateFlow<List<WishlistItem>>(emptyList())
     val myWishList = _myWishList
 
     private val _wishlistSharedToken = MutableStateFlow("")
     val wishlistSharedToken = _wishlistSharedToken
 
-    private val _myWishlistAccesses = MutableStateFlow<MutableList<CustomerSummary>>(mutableListOf())
+    private val _myWishlistAccesses = MutableStateFlow<List<CustomerSummary>>(emptyList())
     val myWishlistAccesses = _myWishlistAccesses
 
     init{
@@ -43,7 +43,7 @@ class WishListViewModel : ViewModel() {
             try{
                 val response = RetrofitHandler.wishListApi.getMyWishList().awaitResponse()
                 if(response.isSuccessful) response.body()?.let { result ->
-                    _myWishList.value = result.map { wishlistItemDto -> WishlistItem.fromDto(wishlistItemDto)  }.toMutableList()
+                    _myWishList.value = result.map { wishlistItemDto -> WishlistItem.fromDto(wishlistItemDto) }
                 }
                 else println("Error during the of the personal wishlists: ${response.message()}")
             }
@@ -82,7 +82,7 @@ class WishListViewModel : ViewModel() {
             try{
                 val response = RetrofitHandler.wishListApi.addItemToWishlist(addToWishListRequestDto).awaitResponse()
                 if(response.isSuccessful) response.body()?.let {
-                    _myWishList.value.add(WishlistItem.fromDto(it))
+                    _myWishList.value += WishlistItem.fromDto(it)
                 }
                 else println("Error during the add of a product to the wishlists: ${response.message()}")
             }
@@ -121,7 +121,7 @@ class WishListViewModel : ViewModel() {
             try{
                 val response = RetrofitHandler.wishListApi.getMyWishlistAccesses().awaitResponse()
                 if(response.isSuccessful)response.body()?.let { result ->
-                    _myWishlistAccesses.value = result.map { customerSummaryDto -> CustomerSummary.fromDto(customerSummaryDto)  }.toMutableList()
+                    _myWishlistAccesses.value = result.map { customerSummaryDto -> CustomerSummary.fromDto(customerSummaryDto) }
                 }
                 else println("Error get wishlist accesses: ${response.message()}")
             }
@@ -135,7 +135,8 @@ class WishListViewModel : ViewModel() {
         try{
             val response = RetrofitHandler.wishListApi.deleteWishlistAccess(guestId).awaitResponse()
             if(response.isSuccessful) response.body()?.let { result ->
-                _myWishlistAccesses.value.removeIf { it.id == guestId }
+                val guestToDelete = _myWishlistAccesses.value.find { it.id == guestId }
+                _myWishlistAccesses.value -= guestToDelete!!
                 emit(result)
             }
         }
@@ -148,7 +149,8 @@ class WishListViewModel : ViewModel() {
         try{
             val response = RetrofitHandler.wishListApi.deleteItem(productId).awaitResponse()
             if(response.isSuccessful) response.body()?.let { result ->
-                _myWishList.value.removeIf { it.product.id == productId}
+                val itemToDelete = _myWishList.value.find { it.product.id == productId }
+                _myWishList.value -= itemToDelete!!
                 emit(result)
             }
             else println("Error delete wishlist item: ${response.message()}")
