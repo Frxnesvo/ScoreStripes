@@ -68,4 +68,9 @@ public class WishlistController {
         return ResponseEntity.ok("Access deleted");
     }
 
+    @DeleteMapping("/my-wishlist/item/{productId}")
+    public ResponseEntity<String> deleteItemFromWishlist(@PathVariable String productId){
+        wishlistService.deleteItemFromWishlist(productId);
+        return ResponseEntity.ok("Item deleted");
+    }
 }

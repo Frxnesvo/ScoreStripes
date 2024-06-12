@@ -18,4 +18,6 @@ public interface WishlistService {
     List<CustomerSummaryDto> getMyWishlistAccesses();
 
     void deleteWishlistAccess(String guestId);
+
+    void deleteItemFromWishlist(String productId);
 }

@@ -1,38 +1,55 @@
 package com.example.clientuser.activity
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.clientuser.R
+import com.example.clientuser.model.CustomerSummary
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Personalization
 import com.example.clientuser.model.Product
@@ -44,54 +61,113 @@ import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharedWithPanel(
-    onDismissRequest: () -> Unit, //TODO da aggiungere il view model delle wishlist
-    setBottomSheet: (Boolean) -> Unit
+    onDismissRequest: () -> Unit,
+    setBottomSheet: (Boolean) -> Unit,
+    wishListViewModel: WishListViewModel
 ){
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+    val sharedToken = wishListViewModel.wishlistSharedToken.collectAsState()
+    val wishlistAccesses = wishListViewModel.myWishlistAccesses.collectAsState()
+
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState
+    ){
         LazyColumn(
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            modifier = Modifier
+                .height(200.dp)
+                .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            items(3){
+            items(wishlistAccesses.value){
                 key(it) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            text = "PERSON $it",
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.profilo),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                        )
+                    SwipeToDismissUserRow(guest = it) {
+                        wishListViewModel.deleteWishlistAccess(it.id)
                     }
                 }
             }
 
-            item {
-                CustomButton(text = stringResource(id = R.string.share), background = R.color.secondary) {
-                    if(sheetState.isVisible)
-                        scope.launch {
-                            TODO("logica view model")
-                            sheetState.hide()
-                            setBottomSheet(false)
-                        }
+        }
+
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+        ){
+            CustomButton(text = stringResource(id = R.string.share), background = R.color.secondary) {
+                wishListViewModel.createSharedToken()
+                val sendIntent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, "Here is your invite token: ${sharedToken.value}")
+                    type = "text/plain"
                 }
+
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                context.startActivity(shareIntent)
+                setBottomSheet(false)
             }
+        }
+
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwipeToDismissUserRow(guest: CustomerSummary, onRemove: () -> Unit){
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { state ->
+            if(state == SwipeToDismissBoxValue.EndToStart){
+                onRemove()
+                true
+            }
+            else false
+        }
+    )
+    SwipeToDismissBox(
+        state = dismissState,
+        backgroundContent = {
+            if(dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart)
+                SwipeToDismissDeleteRow()
+        }
+    ) {
+        SharedWithUserRow(guest = guest)
+    }
+}
+
+@Composable
+fun SharedWithUserRow(guest: CustomerSummary){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = guest.username,
+            style = MaterialTheme.typography.labelMedium
+        )
+
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(25.dp))
+                .size(25.dp)
+        ){
+            Image(
+                bitmap = guest.profilePic.asImageBitmap(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+            )
         }
     }
 }
@@ -405,3 +481,4 @@ fun AddItemToCart(
         }
     }
 }
+
