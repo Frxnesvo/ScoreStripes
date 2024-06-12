@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +38,8 @@ fun CustomerProfile(
     navHostController: NavHostController,
     customerFormViewModel: CustomerFormViewModel
 ){
-    val customer = customerFormViewModel.customer.collectAsState()
+    val customer by customerFormViewModel.customer.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,12 +53,12 @@ fun CustomerProfile(
         ) { navHostController.popBackStack() }
 
         BoxProfilePic(
-            name = customer.value.username,
-            pic = customer.value.profilePic     //todo prima c'èera Uri.EMPTY, va bene così?p
+            name = customer.username,
+            pic = customer.profilePic
         )
 
         Text(
-            text = customer.value.username,
+            text = customer.username,
             color = colorResource(id = R.color.black),
             style = MaterialTheme.typography.titleMedium
         )

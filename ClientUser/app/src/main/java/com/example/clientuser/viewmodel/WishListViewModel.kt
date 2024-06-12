@@ -143,4 +143,18 @@ class WishListViewModel : ViewModel() {
             println("Exception delete wishlist access: ${e.message}")
         }
     }.flowOn(Dispatchers.IO)
+
+    fun deleteItem(productId: String): Flow<String> = flow {
+        try{
+            val response = RetrofitHandler.wishListApi.deleteItem(productId).awaitResponse()
+            if(response.isSuccessful) response.body()?.let { result ->
+                _myWishList.value.removeIf { it.product.id == productId}
+                emit(result)
+            }
+            else println("Error delete wishlist item: ${response.message()}")
+        }
+        catch (e : Exception){
+            println("Exception delete wishlist item: ${e.message}")
+        }
+    }.flowOn(Dispatchers.IO)
 }

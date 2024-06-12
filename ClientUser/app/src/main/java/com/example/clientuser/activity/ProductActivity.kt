@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,19 +11,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -87,6 +95,11 @@ fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHo
     //TODO serve il view model e capire come gestire il like
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val productFormViewModel = ProductFormViewModel()
+    val wishlist = wishListViewModel.myWishList.collectAsState()
+    val inWishlist = remember { mutableStateOf(wishlist.value.any() { it.product.id == product.id}) }
+
+
+    //todo Icona wishlist, va la recompsition, ma non cambia l'icona
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -94,11 +107,21 @@ fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHo
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         IconButtonBar(
-            imageVector = Icons.Outlined.Favorite, //todo fillarlo al click
+            imageVector = Icons.Filled.Favorite,
             navHostController = navHostController
         ) {
-            wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.id))
+
+            if(inWishlist.value){
+                wishListViewModel.deleteItem(product.id)
+                inWishlist.value = false
+            }
+            else {
+                wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.id))
+                inWishlist.value = true
+            }
         }
+
+
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -109,7 +132,7 @@ fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHo
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = product.club,
+                text = product.name,
                 style = MaterialTheme.typography.titleLarge
             )
         }
@@ -129,7 +152,7 @@ fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHo
             )
 
             Text(
-                text = "89.99€",
+                text = "${product.price}",
                 style = textStyle,
                 color = colorResource(id = R.color.secondary)
             )
@@ -152,27 +175,27 @@ fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHo
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+            Text(
+                text = product.description,
+                style = MaterialTheme.typography.bodyMedium
+            )
 
+            Text(
+                text = product.brand,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Text(
+                text = "${product.gender}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Text(
+                text = "${product.productCategory}",
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
-        Text(
-            text = product.description,
-            style = MaterialTheme.typography.bodyMedium
-        )
 
-        Text(
-            text = product.brand,
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Text(
-            text = "${product.gender}",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Text(
-            text = "${product.productCategory}",
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 
     if (isOpenSheet)

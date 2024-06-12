@@ -8,6 +8,7 @@ import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
 import com.example.springbootapp.exceptions.IllegalWishlistVisibility;
+import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.WishlistService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -90,5 +91,17 @@ public class WishlistServiceImpl implements WishlistService {
         WishlistAccess wishlistAccess = wishlistAccessDao.findByWishlistIdAndGuestId(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId(), guestId)
                 .orElseThrow(() -> new EntityNotFoundException("Access not found"));
         wishlistAccessDao.delete(wishlistAccess);
+    }
+
+    @Override
+    public void deleteItemFromWishlist(String productId) {
+        Customer customer = (Customer) userDetailsService.getCurrentUser();
+        //cerca nella wishlist un item che ha un prodotto con l'id passato`usando gli stream e se lo trova lo rimuove
+        WishlistItem item = customer.getWishlist().getItems().stream()
+                .filter(wishlistItem -> wishlistItem.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new RequestValidationException("product not found in wishlist"));
+        customer.getWishlist().getItems().remove(item);
+        wishlistDao.save(customer.getWishlist());
     }
 }

@@ -38,4 +38,7 @@ interface WishListApiService {
 
     @DELETE("/api/v1/wishlists/my-wishlist/accesses/{GuestId}")
     fun deleteWishlistAccess(@Path("GuestId") guestId: String): Call<String>
+
+    @DELETE("/api/v1/wishlists/my-wishlist/item/{productId}")
+    fun deleteItem(@Path("productId") productId: String): Call<String>
 }
