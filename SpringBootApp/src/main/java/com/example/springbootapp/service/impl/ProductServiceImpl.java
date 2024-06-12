@@ -5,6 +5,7 @@ import com.example.springbootapp.data.dto.ProductCreateRequestDto;
 import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.dto.ProductSummaryDto;
 import com.example.springbootapp.data.dao.ProductDao;
+import com.example.springbootapp.data.dto.ProductUpdateDto;
 import com.example.springbootapp.data.entities.Club;
 import com.example.springbootapp.data.entities.Product;
 import com.example.springbootapp.data.entities.ProductPic;
@@ -59,6 +60,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto createProduct(ProductCreateRequestDto productCreateRequestDto) {
         Product product = new Product();
         Club club = clubDao.findByName(productCreateRequestDto.getClubName()).orElseThrow(() -> new RequestValidationException("Club not found"));
+        if(productDao.existsByName(productCreateRequestDto.getName())) {  //TODO: potrei spostare questo controllo in un'annotazione custom come ho fatto per le immagini
+            throw new RequestValidationException("Product with this name already exists");
+        }
         modelMapper.map(productCreateRequestDto, product);
         product.setClub(club);
         String principalPicUrl = awsS3Service.uploadFile(productCreateRequestDto.getPicPrincipal(), "products", productCreateRequestDto.getName() + "_principal");
@@ -86,5 +90,42 @@ public class ProductServiceImpl implements ProductService {
         return productDao.findByClubName(clubName).stream()
                 .map(product -> modelMapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override   //TODO: al momento sto mappando a mano perchè usando il modelMapper con tutta la gestione dei campi nulli è troppo complesso. Da ricontrollare per better method
+    @Transactional
+    public ProductDto updateProduct(String id, ProductUpdateDto productUpdateDto) {
+        Product product = productDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        if(productUpdateDto.getDescription() != null) {product.setDescription(productUpdateDto.getDescription());}
+        if(productUpdateDto.getVariantStocks() != null) {
+            List<ProductWithVariant> variants = productUpdateDto.getVariantStocks().entrySet().stream()
+                    .map(entry -> new ProductWithVariant(entry.getKey(), entry.getValue(), product))
+                    .collect(Collectors.toList());
+            product.setVariants(variants);
+        }
+        if(productUpdateDto.getPrice() != null) {product.setPrice(productUpdateDto.getPrice());}
+        if(productUpdateDto.getPicPrincipal() != null) {
+            ProductPic principalPic = product.getPics().stream()
+                    .filter(ProductPic::getPrincipal)
+                    .findFirst()
+                    .orElseThrow(() -> new EntityNotFoundException("Principal picture not found"));
+            String newPrincipalPicUrl = awsS3Service.uploadFile(productUpdateDto.getPicPrincipal(), "products", product.getName() + "_principal");
+            principalPic.setPicUrl(newPrincipalPicUrl);
+        }
+        if(productUpdateDto.getPic2() != null) {
+            ProductPic pic2 = product.getPics().stream()
+                    .filter(pic -> !pic.getPrincipal())
+                    .findFirst().orElse(null);
+            if (pic2 == null) {
+                String pic2Url = awsS3Service.uploadFile(productUpdateDto.getPic2(), "products", product.getName() + "_2");
+                ProductPic newPic2 = new ProductPic(pic2Url, false, product);
+                product.getPics().add(newPic2);
+            } else {
+                String newPic2Url = awsS3Service.uploadFile(productUpdateDto.getPic2(), "products", product.getName() + "_2");
+                pic2.setPicUrl(newPic2Url);
+            }
+        }
+        productDao.save(product);
+        return modelMapper.map(product, ProductDto.class);
     }
 }

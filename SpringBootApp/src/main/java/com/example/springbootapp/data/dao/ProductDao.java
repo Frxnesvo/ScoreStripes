@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ProductDao extends JpaRepository<Product, String> {
     List<Product> findByClubName(String clubName);
+    Boolean existsByName(String name);
 }

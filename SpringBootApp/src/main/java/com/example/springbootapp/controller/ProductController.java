@@ -3,6 +3,7 @@ package com.example.springbootapp.controller;
 import com.example.springbootapp.data.dto.ProductCreateRequestDto;
 import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.dto.ProductSummaryDto;
+import com.example.springbootapp.data.dto.ProductUpdateDto;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.ProductService;
@@ -38,7 +39,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @PostMapping(consumes = {"multipart/form-data"})
+    @PostMapping(consumes = {"multipart/form-data"})                                  //TODO: controllare se posso togliere il throws
     public ResponseEntity<ProductDto> createProduct(@Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         if (bindingResult.hasErrors()) {
             throw new RequestValidationException("Input validation failed");
@@ -52,6 +53,14 @@ public class ProductController {
     @GetMapping()
     public ResponseEntity<List<ProductDto>> getProductsByClub(@RequestParam() String clubName){
         return ResponseEntity.ok(productService.getProductsByClub(clubName));
+    }
+
+    @PatchMapping(value = "/{id}", consumes = {"multipart/form-data"})  //TODO: da proteggere, solo admin                          //TODO: controllare se posso togliere il throws
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable String id, @Valid @ModelAttribute ProductUpdateDto productUpdateDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
+        if (bindingResult.hasErrors()) {
+            throw new RequestValidationException("Input validation failed");
+        }
+        return ResponseEntity.ok(productService.updateProduct(id, productUpdateDto));
     }
 
 }
