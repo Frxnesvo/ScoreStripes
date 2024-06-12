@@ -2,7 +2,6 @@ package com.example.clientuser.activity
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -22,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material3.Button
@@ -61,7 +61,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
 
 import java.time.LocalDate
@@ -406,5 +405,22 @@ fun CustomDatePicker(
             readOnly = true,
             selectedOption = "${date.value.year}"
         ) { onValueChange(LocalDate.of(it.toInt(), date.value.month, date.value.dayOfMonth)) }
+    }
+}
+
+@Composable
+fun SwipeToDismissDeleteRow(){
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.secondary50)),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = null,
+            tint = colorResource(id = R.color.primary)
+        )
     }
 }

@@ -90,6 +90,7 @@ fun Navigation(
         ){
             it.arguments?.getString("customer").let { customerJson ->
 
+                //TODO vedere come fare per la conversione dell'immagine
                 val customer = customerJson?.let {
                     Gson().fromJson(it, Customer::class.java)
                     Json.decodeFromString<Customer>(it)

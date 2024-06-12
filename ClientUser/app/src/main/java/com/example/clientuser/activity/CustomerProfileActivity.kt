@@ -52,7 +52,7 @@ fun CustomerProfile(
 
         BoxProfilePic(
             name = customer.value.username,
-            pic = customer.value.profilePic     //prima c'èera Uri.EMPTY, va bene così?p
+            pic = customer.value.profilePic     //todo prima c'èera Uri.EMPTY, va bene così?p
         )
 
         Text(

@@ -1,12 +1,10 @@
 package com.example.clientuser.activity
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -230,26 +227,9 @@ fun SwipeToDismissItem(item: CartItem, cartViewModel: CartViewModel, onRemove : 
         state = dismissState,
         backgroundContent = {
             if(dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart)
-                CartDeleteItemRow()
+                SwipeToDismissDeleteRow()
         }
     ) {
         ItemCart(cartItem = item, cartViewModel = cartViewModel )
-    }
-}
-
-@Composable
-fun CartDeleteItemRow(){
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(id = R.color.secondary50)),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Delete,
-            contentDescription = null,
-            tint = colorResource(id = R.color.primary)
-        )
     }
 }
