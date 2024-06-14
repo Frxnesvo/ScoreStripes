@@ -1,5 +1,6 @@
 package com.example.springbootapp.controller;
 
+import com.example.springbootapp.data.dao.AdminDao;
 import com.example.springbootapp.data.dto.AdminCreateRequestDto;
 import com.example.springbootapp.data.entities.Admin;
 import com.example.springbootapp.data.entities.User;
@@ -16,6 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +34,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthController {
     private final AdminServiceImpl adminService;
+
+    private final AdminDao adminDao;
 
     @GetMapping("/admin-login")
     public ResponseEntity<?> login(HttpServletResponse response, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
@@ -50,6 +57,21 @@ public class AuthController {
 
         Admin user = adminService.register(userDto, authHeader, response);
         return ResponseEntity.ok(user);
+    }
+
+
+    @GetMapping("/login")
+    public ResponseEntity<String> login(
+            @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient oAuth2AuthorizedClient,
+            @AuthenticationPrincipal OAuth2User oauth2User
+    ){
+
+        String email = oauth2User.getAttributes().get("email").toString();
+        Optional<Admin> admin = adminDao.findByEmail(email);
+
+        if(admin.isPresent())
+            return ResponseEntity.ok("utente inserito");
+        return ResponseEntity.ok("utente non inserito");
     }
 
 }
