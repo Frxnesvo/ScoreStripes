@@ -255,7 +255,7 @@ fun NavigationScaffold(
         composable(
             route = "addProduct"
         ){
-            ProductDetails(productViewModel = productViewModel, clubViewModel = clubViewModel, productFormViewModel = ProductFormViewModel(), navHostController = navHostController, isAdd = true)
+            ProductDetails(productViewModel = productViewModel, clubViewModel = clubViewModel, productFormViewModel = ProductFormViewModel(), navHostController = navHostController)
         }
         composable(
             route = "addLeague"
@@ -284,7 +284,8 @@ fun NavigationScaffold(
                         productViewModel = productViewModel,
                         clubViewModel = clubViewModel,
                         productFormViewModel = ProductFormViewModel(product = product),
-                        navHostController = navHostController
+                        navHostController = navHostController,
+                        id = id
                     )
                 }
             }

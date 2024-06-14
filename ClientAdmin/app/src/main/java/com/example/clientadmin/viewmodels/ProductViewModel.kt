@@ -8,12 +8,11 @@ import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductSummary
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductSummaryDto
+import com.example.clientadmin.model.dto.ProductUpdateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
@@ -81,6 +80,7 @@ class ProductViewModel: ViewModel() {
     }.flowOn(Dispatchers.IO)
 
     fun addProduct(productCreateRequestDto: ProductCreateRequestDto, pic1: Bitmap, pic2: Bitmap): Boolean {
+        var returnValue = false
         try {
             Product(
                 name = productCreateRequestDto.name,
@@ -106,17 +106,37 @@ class ProductViewModel: ViewModel() {
                     pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),
                     club = productCreateRequestDto.club
                 ).awaitResponse()
-
-                if (response.isSuccessful) {
-                    response.body()?.let { TODO("vedere se salvare il product") }
-                } else {
-                    println("Error creating product: ${response.message()}")
-                }
+                if (!response.isSuccessful) println("Error creating product: ${response.message()}")
+                else returnValue = true
             }
-            return true
+            return returnValue
         } catch (e: IllegalArgumentException) {
             _addError.value = e.message ?: "Unknown error"
-            return false
+            return returnValue
         }
     }
+
+    fun updateProduct(id: String, productUpdateRequestDto: ProductUpdateRequestDto, pic1: Bitmap, pic2: Bitmap): Boolean {
+        var returnValue = false
+        //TODO fare controlli sulle modifiche
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.productApi.updateProduct(
+                    id = id,
+                    description = productUpdateRequestDto.description,
+                    price = productUpdateRequestDto.price,
+                    picPrincipal = ConverterBitmap.convert(bitmap = pic1, fieldName = "picPrincipal"),
+                    pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),
+                    variants = productUpdateRequestDto.variants
+                ).awaitResponse()
+                if (!response.isSuccessful) println("Error creating product: ${response.message()}")
+                else returnValue = true
+            }
+            return returnValue
+        } catch (e: Exception) {
+            _addError.value = e.message ?: "Unknown error"
+            return returnValue
+        }
+    }
+
 }

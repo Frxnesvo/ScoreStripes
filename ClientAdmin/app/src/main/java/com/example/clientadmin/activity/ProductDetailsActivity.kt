@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
+import com.example.clientadmin.model.dto.ProductUpdateRequestDto
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductState
 import com.example.clientadmin.viewmodels.ProductViewModel
@@ -39,7 +40,7 @@ fun ProductDetails(
     productFormViewModel: ProductFormViewModel,
     clubViewModel: ClubViewModel,
     navHostController: NavHostController,
-    isAdd: Boolean = false
+    id: String? = null
 ){
     val productState by productFormViewModel.productState.collectAsState()
     val clubs by clubViewModel.clubNames.collectAsState()
@@ -134,10 +135,10 @@ fun ProductDetails(
         }
 
         CustomButton(
-            text = if(isAdd) stringResource(id = R.string.create) else stringResource(id = R.string.update),
+            text = if(id == null) stringResource(id = R.string.create) else stringResource(id = R.string.update),
             background = R.color.secondary
         ) {
-            if (isAdd) {
+            if (id == null) {
                 val productRequestDto = ProductCreateRequestDto(
                     name = productState.name,
                     club = productState.club,
@@ -152,7 +153,12 @@ fun ProductDetails(
                     navHostController.popBackStack()
                 }
             } else {
-                TODO("serve il controller per l'update")
+                val productUpdateRequestDto = ProductUpdateRequestDto(
+                    description = productState.description,
+                    price = productState.price,
+                    variants = productState.variants,
+                )
+                productViewModel.updateProduct(id, productUpdateRequestDto, productState.pic1, productState.pic2)
             }
         }
     }
