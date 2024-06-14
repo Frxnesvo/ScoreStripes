@@ -41,7 +41,6 @@ import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
-import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
@@ -258,7 +257,6 @@ fun NavigationScaffold(
         ) {
             Addresses(
                 customerViewModel = customerViewModel,
-                addressFormViewModel = AddressFormViewModel(),
                 navHostController = navHostController
             )
         }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,21 +22,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.model.dto.AddressDto
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 
 @Composable
 fun Addresses(
     customerViewModel: CustomerViewModel,
-    addressFormViewModel: AddressFormViewModel,
     navHostController: NavHostController
 ){
     val (isOpenSheetAdd, setBottomSheetAdd) = remember { mutableStateOf(false) }
-    val (isOpenSheetSet, setBottomSheetSet) = remember { mutableStateOf(false) }
-
-    val addressToSetDefault = remember { mutableStateOf("") }
 
     val addresses by customerViewModel.addresses.collectAsState()
+    var addressToUpdate: AddressDto? by remember { mutableStateOf(null) }
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -47,6 +46,7 @@ fun Addresses(
                 imageVector = Icons.Outlined.Add,
                 navHostController = navHostController
             ) {
+                addressToUpdate = null
                 setBottomSheetAdd(true)
             }
         }
@@ -71,27 +71,18 @@ fun Addresses(
                 address ->
                 key(address.id) {
                     AddressItem(addressDto = address){
-                        setBottomSheetSet(true)
-                        addressToSetDefault.value = address.id
+                        addressToUpdate = address
+                        setBottomSheetAdd(true)
                     }
                 }
             }
     }
 
-    if (isOpenSheetSet)
-        SetDefaultAddress(
-            onDismissRequest = { setBottomSheetSet(false) },
-            setBottomSheet = setBottomSheetSet
-        ) {
-            if(addressToSetDefault.value.isNotEmpty())
-                customerViewModel.setDefaultAddress(addressToSetDefault.value)
-        }
-
     if (isOpenSheetAdd)
         AddAddress(
             onDismissRequest = { setBottomSheetAdd(false) },
             setBottomSheet = setBottomSheetAdd,
-            addressFormViewModel = addressFormViewModel,
+            addressFormViewModel = AddressFormViewModel(addressToUpdate),
             customerViewModel = customerViewModel
         )
 }

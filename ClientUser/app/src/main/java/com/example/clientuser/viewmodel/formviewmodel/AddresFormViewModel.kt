@@ -1,6 +1,7 @@
 package com.example.clientuser.viewmodel.formviewmodel
 
 import com.example.clientuser.model.Address
+import com.example.clientuser.model.dto.AddressDto
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class AddressState(
@@ -18,9 +19,20 @@ data class AddressState(
     val isStateError: Boolean = Address.validateState(state),
 )
 
-class AddressFormViewModel {
+class AddressFormViewModel(addressDto: AddressDto?) {
     private val _addressState = MutableStateFlow(AddressState())
     val addressState = _addressState
+
+    init {
+        if (addressDto != null) {
+            updateStreet(addressDto.street)
+            updateCity(addressDto.city)
+            updateCivicNumber(addressDto.civicNumber)
+            updateZipCode(addressDto.zipCode)
+            updateState(addressDto.state)
+            updateDefaultAddress(addressDto.defaultAddress)
+        }
+    }
 
     fun updateStreet(street: String) {
         _addressState.value = _addressState.value.copy(
