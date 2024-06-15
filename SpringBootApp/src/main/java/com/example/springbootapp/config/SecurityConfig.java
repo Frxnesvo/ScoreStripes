@@ -30,13 +30,20 @@ public class SecurityConfig{
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/auth/**").authenticated()
-                .anyRequest().permitAll()
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/oauth2/**").permitAll()
+                .requestMatchers("/oauth2login").permitAll()
+                .anyRequest().authenticated()
         );
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
 
-        http.oauth2Login(Customizer.withDefaults())
+        http.oauth2Login(oauth2Login ->
+                        oauth2Login
+                                .loginPage("/oauth2/authorization/google")   // Specifica l'URL di login per Google
+                                .defaultSuccessUrl("")          // Reindirizza all'endpoint dopo il successo del login
+                                .failureUrl("/loginFailure")                 // URL di fallback in caso di errore
+                )
                 .oauth2Client(Customizer.withDefaults());
 
 //        http.addFilterBefore(new CustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

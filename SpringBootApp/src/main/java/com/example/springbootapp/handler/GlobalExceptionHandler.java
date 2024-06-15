@@ -2,6 +2,7 @@ package com.example.springbootapp.handler;
 
 import com.example.springbootapp.data.dto.ErrorDto;
 import com.example.springbootapp.exceptions.*;
+import com.google.auth.oauth2.TokenVerifier;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -80,11 +81,23 @@ public class GlobalExceptionHandler {
     public ErrorDto onInvalidTokenException(WebRequest req, InvalidTokenException e) {
         return createErrorRespose(req, e.getMessage());
     }
+
+    @ExceptionHandler(VerificationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDto onVerificationException(WebRequest req, TokenVerifier.VerificationException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
+    @ExceptionHandler(NoAccountException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDto onNoAccountException(WebRequest req, NoAccountException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto onException(WebRequest req, Exception e) {
         return createErrorRespose(req, e.getMessage());
     }
-
 
 }
