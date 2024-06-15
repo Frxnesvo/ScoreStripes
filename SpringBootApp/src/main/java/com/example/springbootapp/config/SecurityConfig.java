@@ -4,6 +4,7 @@ import com.example.springbootapp.security.filter.CustomAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,10 +31,20 @@ public class SecurityConfig{
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .anyRequest().permitAll()
+                .requestMatchers("/oauth2/**").permitAll()
+                .requestMatchers("/oauth2login").permitAll()
+                .anyRequest().authenticated()
         );
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
+
+        http.oauth2Login(oauth2Login ->
+                        oauth2Login
+                                .loginPage("/oauth2/authorization/google")   // Specifica l'URL di login per Google
+                                .defaultSuccessUrl("")          // Reindirizza all'endpoint dopo il successo del login
+                                .failureUrl("/loginFailure")                 // URL di fallback in caso di errore
+                )
+                .oauth2Client(Customizer.withDefaults());
 
 //        http.addFilterBefore(new CustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         //http.oauth2ResourceServer(AbstractHttpConfigurer::disable);     //disabilita la configurazione del resource server OAuth2
