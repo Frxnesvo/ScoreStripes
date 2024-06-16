@@ -3,6 +3,7 @@ package com.example.springbootapp.controller;
 import com.example.springbootapp.data.dto.ClubDto;
 import com.example.springbootapp.data.dto.ClubRequestDto;
 import com.example.springbootapp.exceptions.RequestValidationException;
+import com.example.springbootapp.utils.ExceptionUtils;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.ClubService;
 import jakarta.validation.Valid;
@@ -22,11 +23,12 @@ import java.util.List;
 public class ClubController {
 
     private final ClubService clubService;
+    private final ExceptionUtils exceptionUtils;
 
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ClubDto> createClub(@Valid @ModelAttribute ClubRequestDto clubRequestDto, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            throw new RequestValidationException("Input validation failed");
+            throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
         }
         ClubDto createdClub = clubService.createClub(clubRequestDto);
         return ResponseEntity

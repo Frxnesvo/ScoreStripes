@@ -13,9 +13,15 @@ public class CustomImageValidator implements ConstraintValidator<ValidImageExten
 
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context){
+        System.out.println("STO VALIDANDO L'IMMAGINE");
         if(file == null) return true;
+        System.out.println("IL FILE NON E' NULLO");
         if(!allowedMimeType.contains(file.getContentType())){
-            throw new RequestValidationException("Invalid image file extension. Allowed extensions are: jpg, jpeg, png");
+            System.out.println("IL FILE NON E' UN'IMMAGINE");
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Invalid image file extension. Allowed extensions are: jpg, jpeg, png")
+                    .addConstraintViolation();
+            return false;
         }
         return true;
     }

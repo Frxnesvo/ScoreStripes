@@ -6,6 +6,7 @@ import com.example.springbootapp.data.dto.AuthResponseDto;
 import com.example.springbootapp.data.dto.CustomerRegisterDto;
 import com.example.springbootapp.exceptions.InvalidTokenException;
 import com.example.springbootapp.exceptions.RequestValidationException;
+import com.example.springbootapp.utils.ExceptionUtils;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.AuthService;
 import com.google.auth.oauth2.TokenVerifier;
@@ -27,6 +28,7 @@ import java.util.Map;
     @RequiredArgsConstructor
     public class AuthController {
         private final AuthService authService;
+        private final ExceptionUtils exceptionUtils;
 
         @PostMapping("/login")
         public ResponseEntity<AuthResponseDto> login(@RequestBody Map<String,String> request) throws GeneralSecurityException, TokenVerifier.VerificationException, IOException {
@@ -41,7 +43,7 @@ import java.util.Map;
         @PostMapping(path = "/register-admin", consumes = {"multipart/form-data"})
         public ResponseEntity<String> registerAdmin(@Valid @ModelAttribute AdminRegisterDto adminRegisterDto, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
-                throw new RequestValidationException("Input validation failed");
+                throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
             }
             authService.registerAdmin(adminRegisterDto);
             return ResponseEntity.ok("Admin registered successfully");
@@ -50,11 +52,13 @@ import java.util.Map;
         @PostMapping(path = "/register-customer", consumes = {"multipart/form-data"})
         public ResponseEntity<String> registerCustomer(@Valid @ModelAttribute CustomerRegisterDto customerRegisterDto, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
-                throw new RequestValidationException("Input validation failed");
+                throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
             }
             authService.registerCustomer(customerRegisterDto);
             return ResponseEntity.ok("Customer registered successfully");
         }
+
+
 
 
 

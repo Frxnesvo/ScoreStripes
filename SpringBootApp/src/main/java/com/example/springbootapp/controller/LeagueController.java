@@ -3,6 +3,7 @@ package com.example.springbootapp.controller;
 import com.example.springbootapp.data.dto.LeagueDto;
 import com.example.springbootapp.data.dto.LeagueRequestDto;
 import com.example.springbootapp.exceptions.RequestValidationException;
+import com.example.springbootapp.utils.ExceptionUtils;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.LeagueService;
 import jakarta.validation.Valid;
@@ -22,11 +23,12 @@ import java.util.List;
 public class LeagueController {
 
     private final LeagueService leagueService;
+    private final ExceptionUtils exceptionUtils;
 
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<LeagueDto> createLeague(@Valid @ModelAttribute LeagueRequestDto leagueRequestDto, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            throw new RequestValidationException("Input validation failed");
+            throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
         }
         LeagueDto createdLeague = leagueService.createLeague(leagueRequestDto);
         return ResponseEntity
