@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
         return createErrorRespose(req, e.getMessage());
     }
 
-    @ExceptionHandler(VerificationException.class)
+    @ExceptionHandler(VerificationException.class)    //FIXME: cercare di capire perchè questa non viene catturata
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto onVerificationException(WebRequest req, TokenVerifier.VerificationException e) {
         return createErrorRespose(req, e.getMessage());

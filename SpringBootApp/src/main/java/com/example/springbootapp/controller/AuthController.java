@@ -3,6 +3,7 @@ package com.example.springbootapp.controller;
 
 import com.example.springbootapp.data.dto.AdminRegisterDto;
 import com.example.springbootapp.data.dto.AuthResponseDto;
+import com.example.springbootapp.data.dto.CustomerRegisterDto;
 import com.example.springbootapp.exceptions.InvalidTokenException;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.security.RateLimited;
@@ -44,6 +45,15 @@ import java.util.Map;
             }
             authService.registerAdmin(adminRegisterDto);
             return ResponseEntity.ok("Admin registered successfully");
+        }
+
+        @PostMapping(path = "/register-customer", consumes = {"multipart/form-data"})
+        public ResponseEntity<String> registerCustomer(@Valid @ModelAttribute CustomerRegisterDto customerRegisterDto, BindingResult bindingResult) {
+            if (bindingResult.hasErrors()) {
+                throw new RequestValidationException("Input validation failed");
+            }
+            authService.registerCustomer(customerRegisterDto);
+            return ResponseEntity.ok("Customer registered successfully");
         }
 
 

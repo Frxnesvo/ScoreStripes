@@ -9,6 +9,7 @@ import com.example.springbootapp.data.dto.CustomerRegisterDto;
 import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Enums.Role;
 import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
+import com.example.springbootapp.exceptions.InvalidTokenException;
 import com.example.springbootapp.exceptions.NoAccountException;
 import com.example.springbootapp.exceptions.UserAlreadyExistsException;
 import com.example.springbootapp.exceptions.VerificationException;
@@ -127,7 +128,7 @@ public class AuthServiceImpl implements AuthService {    //TODO: DA VEDERE COME 
         try {
             GoogleIdToken googleIdToken = verifier.verify(customerRegisterDto.getIdToken());
             if (googleIdToken == null) {
-                throw new VerificationException("Invalid token");
+                throw new InvalidTokenException("Invalid token");
             }
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
             if (userDao.existsByEmail(payload.getEmail())) {
