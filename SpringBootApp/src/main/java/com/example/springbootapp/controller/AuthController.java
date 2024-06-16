@@ -6,6 +6,7 @@ import com.example.springbootapp.data.dto.AuthResponseDto;
 import com.example.springbootapp.data.dto.CustomerRegisterDto;
 import com.example.springbootapp.exceptions.InvalidTokenException;
 import com.example.springbootapp.exceptions.RequestValidationException;
+import com.example.springbootapp.service.impl.UserDetailsServiceImpl;
 import com.example.springbootapp.utils.ExceptionUtils;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.AuthService;
@@ -29,6 +30,7 @@ import java.util.Map;
     public class AuthController {
         private final AuthService authService;
         private final ExceptionUtils exceptionUtils;
+        private final UserDetailsServiceImpl userDetailsService;
 
         @PostMapping("/login")
         public ResponseEntity<AuthResponseDto> login(@RequestBody Map<String,String> request) throws GeneralSecurityException, TokenVerifier.VerificationException, IOException {
@@ -56,6 +58,13 @@ import java.util.Map;
             }
             authService.registerCustomer(customerRegisterDto);
             return ResponseEntity.ok("Customer registered successfully");
+        }
+
+        @GetMapping("/printme")  //TODO: da eliminare
+        public ResponseEntity<String> printMe(){
+            System.out.println(userDetailsService.getCurrentUser().getId());
+            System.out.println(userDetailsService.getCurrentUser().getEmail());
+            return ResponseEntity.ok("ok");
         }
 
 

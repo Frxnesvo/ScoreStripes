@@ -6,12 +6,14 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.util.Date;
 
 @Component
@@ -42,6 +44,29 @@ public class JwtHandler {
             return signedJWT.serialize();
         } catch (JOSEException e) {
             throw new RuntimeException("Error while generating JWT token");  //TODO: da fare custom e gestire nel global exception handler
+        }
+    }
+
+    public boolean validateToken(String authToken) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(authToken);
+            MACVerifier verifier = new MACVerifier(secret);
+            if(!signedJWT.verify(verifier)){
+                return false;
+            }
+            Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+            return expirationTime != null && !expirationTime.before(new Date());
+        } catch (ParseException | JOSEException  e) {
+            throw new RuntimeException("Invalid token"); //TODO: cambiare eccezione con una custom
+        }
+    }
+
+    public String getEmailFromJwt(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return signedJWT.getJWTClaimsSet().getSubject();
+        } catch (ParseException e) {
+            throw new RuntimeException("Invalid token");  //TODO: cambiare eccezione con una custom
         }
     }
 }
