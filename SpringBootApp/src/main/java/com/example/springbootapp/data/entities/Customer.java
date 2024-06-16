@@ -21,11 +21,11 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Address> addresses;
 
-    @OneToOne
+    @OneToOne(cascade =  CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "cart_id")  //vorrei mettere nullable = false ma da problemi con la singletable e admin
     private Cart cart;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wishlist_id")  //vorrei mettere nullable = false ma da problemi con la singletable e admin
     private Wishlist wishlist;
 

@@ -1,6 +1,6 @@
 package com.example.springbootapp.config;
 
-import com.example.springbootapp.security.filter.CustomAuthenticationFilter;
+//import com.example.springbootapp.security.filter.CustomAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+//import org.springframework.security.web.authentication.AuthenticationFilter;
+//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,8 +27,7 @@ public class SecurityConfig{
 
     @Bean   //TODO: TUTTO DA FARE
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()));
+        http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/oauth2/**").permitAll()
@@ -38,13 +37,6 @@ public class SecurityConfig{
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
 
-        http.oauth2Login(oauth2Login ->
-                        oauth2Login
-                                .loginPage("/oauth2/authorization/google")   // Specifica l'URL di login per Google
-                                .defaultSuccessUrl("")          // Reindirizza all'endpoint dopo il successo del login
-                                .failureUrl("/loginFailure")                 // URL di fallback in caso di errore
-                )
-                .oauth2Client(Customizer.withDefaults());
 
 //        http.addFilterBefore(new CustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         //http.oauth2ResourceServer(AbstractHttpConfigurer::disable);     //disabilita la configurazione del resource server OAuth2
@@ -52,18 +44,5 @@ public class SecurityConfig{
     }
 
 
-    private CorsConfigurationSource corsConfigurationSource() {
-        // Very permissive CORS config...
-        final var configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("*"));
-
-        // Limited to API routes (neither actuator nor Swagger-UI)
-        final var source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/greet/**", configuration);
-
-        return source;
-    }
+//
 }

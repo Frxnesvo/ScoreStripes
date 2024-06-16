@@ -16,5 +16,5 @@ public class LeagueRequestDto {
     private String name;
     @NotNull
     @ValidImageExtension
-    MultipartFile pic;
+    private MultipartFile pic;
 }

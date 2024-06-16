@@ -21,6 +21,8 @@ public class JwtHandler {
     @Value("${jwt.secret}")
     private String secret;
 
+    private final Long expirationTime = (long) (1000 * 60 * 60 * 24); // 24 hours
+
 
     public String generateJwtToken(User user) {
         try {
@@ -28,7 +30,7 @@ public class JwtHandler {
                     .subject(user.getEmail())
                     .claim("role", user.getRole().name())
                     .issueTime(new Date())
-                    .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
+                    .expirationTime(new Date(System.currentTimeMillis() + expirationTime))
                     .build();
 
             SignedJWT signedJWT = new SignedJWT(

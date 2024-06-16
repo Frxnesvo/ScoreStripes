@@ -46,12 +46,12 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     @Override
     public String uploadFile(MultipartFile file, String folder, String name) {
         String key = folder + "/" + name;
-        byte[] fileBytes;
-        try {
-            fileBytes = file.getBytes();
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
+//        byte[] fileBytes;
+//        try {  //TODO DA RIMUOVERE
+//            fileBytes = file.getBytes();
+//        }catch (IOException e){
+//            throw new RuntimeException(e);
+//        }
 
         PutObjectRequest putRequest =PutObjectRequest.builder()
                 .bucket(bucketName)
@@ -64,6 +64,18 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         } catch (IOException e) {
             throw new S3PutObjectException("Error uploading file to S3");
         }
+        return s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(key)).toExternalForm();
+    }
+
+    @Override
+    public String uploadFile(byte[] file, String folder, String name){
+        String key = folder + "/" + name;
+        PutObjectRequest putRequest =PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .contentType("image/png")
+                .build();
+        s3Client.putObject(putRequest, RequestBody.fromBytes(file));
         return s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(key)).toExternalForm();
     }
 }
