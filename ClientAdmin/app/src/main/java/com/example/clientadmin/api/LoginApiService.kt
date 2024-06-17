@@ -1,9 +1,11 @@
 package com.example.clientadmin.api
 
 import com.example.clientadmin.model.dto.AdminDto
+import com.example.clientadmin.model.dto.AuthResponseDto
 import com.example.clientadmin.model.enumerator.Gender
 import okhttp3.MultipartBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -12,11 +14,12 @@ import retrofit2.http.Part
 import java.time.LocalDate
 
 interface LoginApiService {
-    @GET("/api/v1/auth/admin-login")
-    fun checkAdminLogin(@Header("Authorization") token: String): Call<AdminDto>
+
+    @POST("/api/v1/auth/login")
+    fun login(@Body idToken: Map<String, String>): Call<AuthResponseDto>
 
     @Multipart
-    @POST("/api/v1/auth/admin-register")
+    @POST("/api/v1/auth/register-admin")
     fun adminRegister(
         @Header("Authorization") token: String,
         @Part("username") username: String,

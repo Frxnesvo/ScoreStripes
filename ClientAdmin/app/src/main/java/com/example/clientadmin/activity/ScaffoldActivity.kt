@@ -54,7 +54,7 @@ import com.example.clientadmin.viewmodels.LoginViewModel
 enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
 @Composable
-fun Scaffold(loginViewModel: LoginViewModel, token: String) {
+fun Scaffold(loginViewModel: LoginViewModel) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 

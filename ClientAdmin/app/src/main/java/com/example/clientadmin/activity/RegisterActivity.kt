@@ -43,6 +43,7 @@ fun Register(
             .verticalScroll(rememberScrollState())
     ) {
         Back {
+            loginViewModel.goToLogin()
             navController.navigate("index")
         }
 
@@ -104,7 +105,7 @@ fun Register(
                         ),
                         pic = adminState.profilePic
                     )
-                ){ navController.navigate("scaffold/${token}") }
+                ){ navController.navigate("scaffold") }
             }
         }
     }
