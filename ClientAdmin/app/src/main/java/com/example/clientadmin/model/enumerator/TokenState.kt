@@ -1,3 +1,3 @@
 package com.example.clientadmin.model.enumerator
 
-enum class TokenState { LOGIN, REGISTER, INVALID }
+enum class TokenState { REGISTER, INVALID, LOGGED }

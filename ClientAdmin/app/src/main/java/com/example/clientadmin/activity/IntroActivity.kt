@@ -71,7 +71,7 @@ fun IndexPage(
                 }
 
                 when(isLoggedIn.value){
-                    TokenState.LOGIN -> navController.navigate("scaffold")
+                    TokenState.LOGGED -> navController.navigate("scaffold")
                     TokenState.REGISTER -> navController.navigate("register/${loginViewModel.token.value}")
                     TokenState.INVALID -> println("invalid id token") //TODO
                 }
