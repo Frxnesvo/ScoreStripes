@@ -63,6 +63,13 @@ public class ModelMapperConfig {
             return awsS3Service.generatePresignedUrl(picUrl);
         };
 
+        Converter<List<Address>,Address> firstAddressConverter = context -> {
+            if(!context.getSource().isEmpty()){
+                return context.getSource().get(0);
+            }
+            return null;
+        };
+
 //        Converter<Product,BasicProductDto> productToBasicProductDto = context -> {
 //            Product source = context.getSource();
 //            BasicProductDto destination = context.getDestination();
@@ -176,6 +183,14 @@ public class ModelMapperConfig {
 //            }
 //        };
 
+        PropertyMap<Customer,RegisteredCustomerDto> customerToRegisteredCustomerDto = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                using(firstAddressConverter)
+                        .map(source.getAddresses(),destination.getAddress());
+            }
+        };
+
 
 
         modelMapper.addMappings(customerMap);
@@ -188,6 +203,7 @@ public class ModelMapperConfig {
         //modelMapper.addMappings(wishlistMap);
         modelMapper.addMappings(cartItemMap);
         //modelMapper.addMappings(cartItemToDtoMap);
+        modelMapper.addMappings(customerToRegisteredCustomerDto);
 
         modelMapper.addConverter(productPicUrlConverter);
 

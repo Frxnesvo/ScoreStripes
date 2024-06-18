@@ -1,9 +1,7 @@
 package com.example.springbootapp.controller;
 
 
-import com.example.springbootapp.data.dto.AdminRegisterDto;
-import com.example.springbootapp.data.dto.AuthResponseDto;
-import com.example.springbootapp.data.dto.CustomerRegisterDto;
+import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.exceptions.InvalidTokenException;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.impl.UserDetailsServiceImpl;
@@ -43,21 +41,19 @@ import java.util.Map;
         }
 
         @PostMapping(path = "/register-admin", consumes = {"multipart/form-data"})
-        public ResponseEntity<String> registerAdmin(@Valid @ModelAttribute AdminRegisterDto adminRegisterDto, BindingResult bindingResult) {
+        public ResponseEntity<RegisteredAdminDto> registerAdmin(@Valid @ModelAttribute AdminRegisterDto adminRegisterDto, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
                 throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
             }
-            authService.registerAdmin(adminRegisterDto);
-            return ResponseEntity.ok("Admin registered successfully");
+            return ResponseEntity.ok(authService.registerAdmin(adminRegisterDto));
         }
 
         @PostMapping(path = "/register-customer", consumes = {"multipart/form-data"})
-        public ResponseEntity<String> registerCustomer(@Valid @ModelAttribute CustomerRegisterDto customerRegisterDto, BindingResult bindingResult) {
+        public ResponseEntity<RegisteredCustomerDto> registerCustomer(@Valid @ModelAttribute CustomerRegisterDto customerRegisterDto, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
                 throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
             }
-            authService.registerCustomer(customerRegisterDto);
-            return ResponseEntity.ok("Customer registered successfully");
+            return ResponseEntity.ok(authService.registerCustomer(customerRegisterDto));
         }
 
         @GetMapping("/printme")  //TODO: da eliminare
