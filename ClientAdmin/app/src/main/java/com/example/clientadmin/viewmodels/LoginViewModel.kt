@@ -12,12 +12,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 import java.time.format.DateTimeFormatter
-import java.util.Formatter
 
 
 class LoginViewModel: ViewModel() {
