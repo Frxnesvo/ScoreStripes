@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 
 class ProductViewModel: ViewModel() {
@@ -79,7 +80,7 @@ class ProductViewModel: ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    fun addProduct(productCreateRequestDto: ProductCreateRequestDto, pic1: Bitmap, pic2: Bitmap): Boolean {
+    fun addProduct(productCreateRequestDto: ProductCreateRequestDto, pic1: Bitmap, pic2: Bitmap): Boolean { //TODO potrei evitare l'utilizzo del dto e passare o i campi singolarmente o il productState
         var returnValue = false
         try {
             Product(
@@ -100,8 +101,8 @@ class ProductViewModel: ViewModel() {
                     description = productCreateRequestDto.description,
                     price = productCreateRequestDto.price,
                     brand = productCreateRequestDto.brand,
-                    gender = productCreateRequestDto.gender,
-                    category = productCreateRequestDto.productCategory,
+                    gender = MultipartBody.Part.createFormData("gender", productCreateRequestDto.gender.name),
+                    category = MultipartBody.Part.createFormData("productCategory", productCreateRequestDto.productCategory.name),
                     picPrincipal = ConverterBitmap.convert(bitmap = pic1, fieldName = "picPrincipal"),
                     pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),
                     club = productCreateRequestDto.club
