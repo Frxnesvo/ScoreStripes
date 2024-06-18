@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,9 @@ import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
+import java.io.ByteArrayOutputStream
+
+//TODO matchare lo username con la regex
 
 @Composable
 fun Register(
@@ -99,9 +103,10 @@ fun Register(
                     loginViewModel.register(
                         token = token,
                         adminCreateRequestDto = AdminCreateRequestDto(
+                            idToken = token,
                             username = adminState.username,
                             birthDate = adminState.birthdate,
-                            gender = adminState.gender
+                            gender = adminState.gender,
                         ),
                         pic = adminState.profilePic
                     )
