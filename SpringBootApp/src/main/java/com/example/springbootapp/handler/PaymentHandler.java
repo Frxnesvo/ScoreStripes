@@ -1,10 +1,13 @@
 package com.example.springbootapp.handler;
 
+import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.entities.Order;
 import com.example.springbootapp.data.entities.OrderItem;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Product;
 import com.stripe.model.checkout.Session;
+import com.stripe.param.ProductCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -41,12 +44,19 @@ public class PaymentHandler {
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.PAYPAL)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("scorestripes://stripe_success?session_id={CHECKOUT_SESSION_ID}")  //TODO: da controllare il nome nel front end
-                .setCancelUrl("scorestripes://stripe_cancel")    //TODO: da controllare il nome nel front end
-                .putMetadata("orderId", order.getId())
+                //.setSuccessUrl("scorestripes://stripe_success?session_id={CHECKOUT_SESSION_ID}")  //TODO: da controllare il nome nel front end
+                //.setCancelUrl("scorestripes://stripe_cancel")    //TODO: da controllare il nome nel front end
+                .setSuccessUrl("http://localhost:8080/stripe_success?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl("http://localhost:8080/stripe_cancel")
+                //.putMetadata("orderId", order.getId())
                 .build();
-        Session session = Session.create(params);
-        return session.getUrl();
+        try {
+            Session session = Session.create(params);
+            return session.getUrl();
+        } catch (StripeException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public Boolean checkTransactionStatus(String sessionId) throws StripeException {
@@ -61,21 +71,55 @@ public class PaymentHandler {
 
 
     private SessionCreateParams.LineItem createLineItem(OrderItem item) {
+        // Crea il LineItem con nome e descrizione senza immagini
         return SessionCreateParams.LineItem.builder()
-                .setQuantity(item.getQuantity().longValue())
+                .setQuantity(item.getQuantity().longValue())  // Imposta la quantità dell'item
                 .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                        .setCurrency("eur")
-                        .setUnitAmount(Math.round(item.getPrice() * 100))
+                        .setCurrency("eur")  // Imposta la valuta
+                        .setUnitAmount(Math.round(item.getPrice() * 100)/ item.getQuantity().longValue())  // Calcola l'importo in centesimi
                         .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                .setName(item.getProduct().getProduct().getName())
-                                .setDescription(item.getProduct().getProduct().getDescription())
-                                .addAllImage(item.getProduct().getProduct().getPics().stream()
-                                        .map(pic -> modelMapper.map(pic, String.class))
-                                        .collect(Collectors.toList()))
-                                .build())
-                        .build())
-                .build();
+                                .setName(item.getProduct().getProduct().getName())  // Imposta il nome del prodotto
+                                .setDescription(item.getProduct().getProduct().getDescription())  // Imposta la descrizione del prodotto
+                                .build())  // Costruisce l'oggetto ProductData
+                        .build())  // Costruisce l'oggetto PriceData
+                .build();  // Costruisce l'oggetto LineItem
     }
+
+
+
+
+//    private SessionCreateParams.LineItem createLineItem(OrderItem item) { //TODO: IMPLEMENTAZIONE PER CARICARE I PRODOTTI ANCHE SU STRIPE. AL MOMENTO NON LO IMPLEMENTO (PRENDE TROPPO TEMPO)
+//        return SessionCreateParams.LineItem.builder()
+//                .setQuantity(item.getQuantity().longValue())
+//                .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+//                        .setCurrency("eur")
+//                        .setUnitAmount(Math.round(item.getPrice() * 100))
+//                        .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
+//                                .setName(item.getProduct().getProduct().getName())
+//                                .setDescription(item.getProduct().getProduct().getDescription())
+//                                .addAllImage(item.getProduct().getProduct().getPics().stream()
+//                                        .map(pic -> modelMapper.map(pic, String.class))
+//                                        .collect(Collectors.toList()))
+//                                .build())
+//                        .build())
+//                .build();
+//    }
+
+//    public String createProductInStripe(ProductDto product){  //TODO: IMPLEMENTAZIONE PER CARICARE I PRODOTTI ANCHE SU STRIPE. AL MOMENTO NON LO IMPLEMENTO (PRENDE TROPPO TEMPO)
+//        ProductCreateParams params = ProductCreateParams.builder()
+//                .setName(product.getName())
+//                .setDescription(product.getDescription())
+//                .addAllImage(product.getPics().stream()
+//                        .map(pic -> modelMapper.map(pic, String.class))
+//                        .collect(Collectors.toList()))
+//                .build();
+//        try {
+//            Product stripeProduct = Product.create(params);
+//            return stripeProduct.getId();
+//        } catch (StripeException e) {
+//            throw new RuntimeException(e);  //TODO: da cambiare
+//        }
+//    }
 
 
 }

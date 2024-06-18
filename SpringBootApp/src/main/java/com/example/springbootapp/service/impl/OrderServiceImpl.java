@@ -1,5 +1,7 @@
 package com.example.springbootapp.service.impl;
 
+import com.example.springbootapp.data.dao.AddressDao;
+import com.example.springbootapp.data.dao.CartDao;
 import com.example.springbootapp.data.dto.EmailInfosDto;
 import com.example.springbootapp.data.dto.OrderDto;
 import com.example.springbootapp.data.dao.OrderDao;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
+    private final AddressDao addressDao;
+    private final CartDao cartDao;
     private final ModelMapper modelMapper;
     private final UserDetailsServiceImpl userDetailsService;
     private final PaymentHandler paymentHandler;
@@ -56,31 +60,42 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public String createOrderFromCart(OrderInfosRequestDto orderInfos) {
         Customer loggedCustomer = (Customer) userDetailsService.getCurrentUser();
-        List<Address> addresses = loggedCustomer.getAddresses();
+        List<Address> addresses = addressDao.findByCustomerId(loggedCustomer.getId());
         Address address = addresses.stream()
                 .filter(a -> a.getId().equals(orderInfos.getAddressId()))
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("Address not found"));
+        Cart cart = cartDao.findById(loggedCustomer.getCart().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+        if(cart.getCartItems().isEmpty()) {
+            throw new RequestValidationException("Cart is empty");
+        }
         OrderInformations resilientInfos = modelMapper.map(address, OrderInformations.class);
         resilientInfos.setCustomerEmail(loggedCustomer.getEmail());
         resilientInfos.setCustomerFirstName(loggedCustomer.getFirstName());
         resilientInfos.setCustomerLastName(loggedCustomer.getLastName());
-
-        Cart cart = loggedCustomer.getCart();
+        System.out.println("OK CI SONO");
         Order order = new Order();
         order.setResilientInfos(resilientInfos);
+        System.out.println("HO SETTATO LE INFO RESILIENTI");
         order.setCustomer(loggedCustomer);
+        System.out.println("HO SETTATO IL CUSTOMER");
         order.setDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
+        System.out.println("HO SETTATO L'ORDINE");
         order= orderDao.save(order);  //salvo l'ordine per avere l'id
+        System.out.println("HO SALVATO L'ORDINE");
         Order finalOrder = order;  //finalOrder è usata solo per la lambda (non può essere modificata)
+        System.out.println("STO PER FARE IL MAPPING");
         List<OrderItem> items= cart.getCartItems().stream()
                 .map(cartItem -> modelMapper.map(cartItem, OrderItem.class))
                 .peek(orderItem -> orderItem.setOrder(finalOrder))
                 .collect(Collectors.toList());
+        System.out.println("HO FATTO IL MAPPING");
         order.setItems(items);
+        System.out.println("HO AGGIUNTO GLI ITEM");
         order= orderDao.save(order);  //salvo l'ordine con gli item
-
+        System.out.println("HO SALVATO L'ORDINE CON GLI ITEM");
         try{
             return paymentHandler.startCheckoutProcess(order);
         }

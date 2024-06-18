@@ -30,6 +30,8 @@ public class SecurityConfig{
 
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/stripe_success").permitAll()
+                .requestMatchers("/stripe_cancel").permitAll()
                 .anyRequest().authenticated()
         );
         http.sessionManagement(sess -> sess.sessionCreationPolicy(

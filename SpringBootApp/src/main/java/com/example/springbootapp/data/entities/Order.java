@@ -67,6 +67,10 @@ public class Order {
     @PrePersist
     @PreUpdate
     public void calculateTotalPrice() {
+        if(items == null || items.isEmpty()){
+            this.totalPrice = 0.0;
+            return;
+        }
         this.totalPrice = items.stream().mapToDouble(OrderItem::getPrice).sum();
     }
 
