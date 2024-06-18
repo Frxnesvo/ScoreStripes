@@ -2,8 +2,6 @@ package com.example.clientadmin.api
 
 import com.example.clientadmin.model.dto.ProductDto
 import com.example.clientadmin.model.dto.ProductSummaryDto
-import com.example.clientadmin.model.enumerator.Gender
-import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -27,8 +25,8 @@ interface ProductApiService {
         @Part("description") description: String,
         @Part("price") price: Double,
         @Part("brand") brand: String,
-        @Part("gender") gender: Gender,
-        @Part("productCategory") category: ProductCategory,
+        @Part gender: MultipartBody.Part,
+        @Part category: MultipartBody.Part,
         @Part picPrincipal: MultipartBody.Part,
         @Part pic2: MultipartBody.Part,
         @Part("clubName") club: String,

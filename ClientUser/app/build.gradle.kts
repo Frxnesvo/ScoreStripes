@@ -79,16 +79,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(libs.ui)
-    implementation(libs.androidx.material)
-    implementation(libs.androidx.foundation)
-    implementation(libs.androidx.runtime.livedata)
-    implementation(libs.gson)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.pager.indicators)
-
-    implementation (libs.androidx.material.icons.core)
-    implementation (libs.androidx.material.icons.extended)
 }
