@@ -6,33 +6,17 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import com.example.clientuser.viewmodel.OrderViewModel
 import com.example.clientuser.R
-import kotlinx.coroutines.delay
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -48,14 +32,8 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
                     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                         request?.url?.let { uri ->
                             when (uri.host) {
-                                "stripe_success" -> {
-                                    uri.getQueryParameter("session_id")?.let { sessionId ->
-                                        navController.navigate("splash_screen/$sessionId")
-                                    }
-                                }
-                                "stripe_cancel" -> {
-                                    navController.navigate("payment_failure")
-                                }
+                                "stripe_success" -> { navController.navigate("payment_success") }
+                                "stripe_cancel" -> { navController.navigate("payment_failure") }
                                 else -> { return false }
                             }
                             onFinish()
@@ -83,14 +61,14 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
 }
 
 @Composable
-fun PaymentSuccessScreen(result: String, navHostController: NavHostController) {
+fun PaymentSuccessScreen(navHostController: NavHostController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = result
+            text = "Payment successful"
         )
         CustomButton(
             text = "go back to shopping",
@@ -112,11 +90,11 @@ fun PaymentFailureScreen(navHostController: NavHostController) {
         CustomButton(
             text = "go back to shopping",
             background = R.color.secondary
-        ) { navHostController.navigate("home") }
+        ) { navHostController.navigate("home") } //TODO da vedere
     }
 }
 
-@Composable
+/*@Composable
 fun SplashScreen(navController: NavHostController, orderViewModel: OrderViewModel) {
     val validate by orderViewModel.validateTransactionResult.collectAsState()
 
@@ -152,4 +130,4 @@ fun SplashScreen(navController: NavHostController, orderViewModel: OrderViewMode
                 )
         )
     }
-}
+}*/

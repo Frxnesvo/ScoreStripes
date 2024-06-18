@@ -305,21 +305,10 @@ fun NavigationScaffold(
 
         //PAYMENT
         composable(
-            route = "splash_screen/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
-        ) {
-            it.arguments?.getString("id")?.let {
-                sessionId -> orderViewModel.validateTransaction(sessionId)
-                SplashScreen(navHostController, orderViewModel = orderViewModel)
-            }
-        }
-        composable(
-            route = "payment/{result}",
+            route = "payment_success",
             arguments = listOf(navArgument("result"){ type = NavType.StringType })
         ) {
-            it.arguments?.getString("result")?.let {
-                result -> PaymentSuccessScreen(result = result, navHostController = navHostController)
-            }
+            PaymentSuccessScreen(navHostController = navHostController)
         }
         composable(
             route = "payment_failure"
