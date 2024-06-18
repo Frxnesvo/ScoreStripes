@@ -1,5 +1,8 @@
 package com.example.clientadmin.activity
 
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,11 +26,23 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.authentication.GoogleAuth
 import com.example.clientadmin.viewmodels.LoginViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import kotlinx.coroutines.launch
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
+import com.example.clientadmin.viewmodels.TokenState
+import kotlin.math.log
 
 @Composable
-fun IndexPage(navController : NavHostController, loginViewModel: LoginViewModel) {
-    val coroutineScope = rememberCoroutineScope()
+fun IndexPage(
+    signInLauncher: ActivityResultLauncher<Intent>,
+    navController : NavHostController,
+    loginViewModel: LoginViewModel
+) {
+
+    val context = LocalContext.current
+    val isLoggedIn = loginViewModel.isLoggedIn
+
 
     Box(
         modifier = Modifier
@@ -54,22 +69,19 @@ fun IndexPage(navController : NavHostController, loginViewModel: LoginViewModel)
                 verticalArrangement = Arrangement.spacedBy(25.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val context = LocalContext.current
-
                 CustomButton(
                     background = R.color.secondary50,
                     text = stringResource(id = R.string.sign_in)
                 ) {
-                    val auth = GoogleAuth(context)
-                    coroutineScope.launch {
-                        val token = auth.getGoogleCredential()
-                        if (token != null) {
-                            loginViewModel.getAdminFromToken(token)
-                            val admin = loginViewModel.user.value
-                            if (admin != null) navController.navigate("scaffold")
-                            else navController.navigate("register/${token}")
-                        }
-                    }
+                    val signInIntent = GoogleAuth.getClient(context).signInIntent
+                    signInLauncher.launch(signInIntent)
+                    println("IS LOGGED IN: ${isLoggedIn.value}")
+                }
+
+                when(isLoggedIn.value){
+                    TokenState.LOGIN -> navController.navigate("scaffold")
+                    TokenState.REGISTER -> navController.navigate("register/${loginViewModel.token.value}")
+                    TokenState.INVALID -> println("invalid id token") //TODO
                 }
 
                 /*TextButton(onClick = { globalIndex.intValue = 3 }) {

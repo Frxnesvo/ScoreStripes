@@ -11,8 +11,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
+
+enum class TokenState { LOGIN, REGISTER, INVALID }
 
 class LoginViewModel: ViewModel() {
     private val _user = MutableStateFlow<Admin?>(null)
@@ -21,19 +24,43 @@ class LoginViewModel: ViewModel() {
     private val _addError = mutableStateOf("")
     val addError = _addError
 
-    fun getAdminFromToken(token: String){
-        try {
-            CoroutineScope(Dispatchers.IO).launch {
-                val response = RetrofitHandler.loginApi.checkAdminLogin("Bearer $token").awaitResponse()
-                if (response.isSuccessful) {
-                    response.body()?.let { _user.value = Admin.fromDto(it) }
-                } else {
-                    println("Error checking admin login: ${response.message()}")
+    private val _isLoggedIn = mutableStateOf(TokenState.INVALID)
+    val isLoggedIn = _isLoggedIn
+
+    private val _token = mutableStateOf("")
+    val token = _token
+
+
+    fun login(idToken: String?){
+        if(idToken != null) {
+            try {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val response = RetrofitHandler.loginApi.login(
+                        mapOf(pair = Pair<String, String>("idToken", idToken))
+                    ).awaitResponse()
+                    if (response.isSuccessful) {
+                        //TODO salvare il token
+                        _isLoggedIn.value = TokenState.LOGIN
+                    } else {
+                        //todo controllare che l'errore sia legato allo stato 409
+                        _isLoggedIn.value = TokenState.REGISTER
+                        _token.value = idToken
+                        println("STATE: ${_isLoggedIn.value}")
+                        println("Error login: ${response.message()}")
+                    }
                 }
+            } catch (e: Exception) {
+                println("Exception login: ${e.message}")
             }
-        } catch (e: Exception) {
-            println("Exception checking admin login: ${e.message}")
         }
+        else{
+            _isLoggedIn.value = TokenState.INVALID
+            println("invalid id token")
+        }
+    }
+
+    fun goToLogin(){
+        _isLoggedIn.value = TokenState.INVALID
     }
 
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
@@ -56,7 +83,7 @@ class LoginViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let { _user.value = Admin.fromDto(it) }
                 } else {
-                    ("Error registering admin: ${response.message()}")
+                    println("Error registering admin: ${response.message()}")
                 }
             }
             return true
