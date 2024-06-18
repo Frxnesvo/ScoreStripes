@@ -13,7 +13,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import retrofit2.awaitResponse
+import java.time.format.DateTimeFormatter
+import java.util.Formatter
 
 enum class TokenState { LOGIN, REGISTER, INVALID }
 
@@ -42,11 +45,11 @@ class LoginViewModel: ViewModel() {
                         //TODO salvare il token
                         _isLoggedIn.value = TokenState.LOGIN
                     } else {
-                        //todo controllare che l'errore sia legato allo stato 409
-                        _isLoggedIn.value = TokenState.REGISTER
-                        _token.value = idToken
-                        println("STATE: ${_isLoggedIn.value}")
-                        println("Error login: ${response.message()}")
+                        if(response.code() == 409) {
+                            _isLoggedIn.value = TokenState.REGISTER
+                            _token.value = idToken
+                        }
+                        else println("Error login: ${response.message()}")
                     }
                 }
             } catch (e: Exception) {
@@ -65,6 +68,7 @@ class LoginViewModel: ViewModel() {
 
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
         try {
+            var returnValue: Boolean = false
             Admin(
                 username = adminCreateRequestDto.username,
                 birthDate = adminCreateRequestDto.birthDate,
@@ -73,20 +77,22 @@ class LoginViewModel: ViewModel() {
             )
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.adminRegister(
-                    "Bearer $token",
-                    adminCreateRequestDto.username,
-                    adminCreateRequestDto.birthDate,
-                    adminCreateRequestDto.gender,
+                    MultipartBody.Part.createFormData("idToken", token),
+                    MultipartBody.Part.createFormData("username", adminCreateRequestDto.username),
+                    MultipartBody.Part.createFormData("birthDate", adminCreateRequestDto.birthDate.format(DateTimeFormatter.ISO_LOCAL_DATE)),
+                    MultipartBody.Part.createFormData("gender", adminCreateRequestDto.gender.name),
                     ConverterBitmap.convert(bitmap = pic, fieldName = "profilePic")
                 ).awaitResponse()
 
                 if (response.isSuccessful) {
                     response.body()?.let { _user.value = Admin.fromDto(it) }
+                    returnValue = true
                 } else {
                     println("Error registering admin: ${response.message()}")
+                    returnValue = false
                 }
             }
-            return true
+            return  returnValue
         }
         catch (e: IllegalArgumentException) {
             _addError.value = e.message ?: "Unknown error"

@@ -21,10 +21,10 @@ interface LoginApiService {
     @Multipart
     @POST("/api/v1/auth/register-admin")
     fun adminRegister(
-        @Header("Authorization") token: String,
-        @Part("username") username: String,
-        @Part("birthDate") birthDate: LocalDate,
-        @Part("gender") gender: Gender,
+        @Part idToken: MultipartBody.Part,
+        @Part username: MultipartBody.Part,
+        @Part birthDate: MultipartBody.Part,
+        @Part gender: MultipartBody.Part,
         @Part imageProfile: MultipartBody.Part
     ): Call<AdminDto>
 }

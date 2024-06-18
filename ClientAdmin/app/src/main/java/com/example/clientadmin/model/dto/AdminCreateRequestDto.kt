@@ -6,8 +6,8 @@ import java.time.LocalDate
 
 @JsonClass(generateAdapter = true)
 data class AdminCreateRequestDto (
+    val idToken: String,
     val username: String,
     val birthDate: LocalDate,
     val gender: Gender,
-    //val pic: String
 )
