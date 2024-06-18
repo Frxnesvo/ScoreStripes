@@ -21,7 +21,7 @@ class CustomerSummary (
             return CustomerSummary(
                 id = customerSummaryDto.id,
                 username = customerSummaryDto.username,
-                pic = S3ImageDownloader.download(customerSummaryDto.picUrl).first()
+                pic = S3ImageDownloader.getImageForBucket(customerSummaryDto.picUrl)
             )
         }
         fun fromQueryString(queryString: String): CustomerSummary {

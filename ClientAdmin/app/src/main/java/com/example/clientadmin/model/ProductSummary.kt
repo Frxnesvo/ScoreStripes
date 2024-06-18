@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.ProductSummaryDto
 import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.utils.S3ImageDownloader
-import kotlinx.coroutines.flow.first
 
 class ProductSummary(
     val id: String,
@@ -21,7 +20,7 @@ class ProductSummary(
                 name = productSummaryDto.name,
                 club = productSummaryDto.clubName,
                 league = productSummaryDto.leagueName,
-                pic = S3ImageDownloader.download(productSummaryDto.picUrl).first(),
+                pic = S3ImageDownloader.getImageForBucket(productSummaryDto.picUrl),
                 variants = productSummaryDto.variants
             )
         }

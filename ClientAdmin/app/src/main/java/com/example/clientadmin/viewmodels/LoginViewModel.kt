@@ -18,7 +18,7 @@ import retrofit2.awaitResponse
 import java.time.format.DateTimeFormatter
 import java.util.Formatter
 
-enum class TokenState { LOGIN, REGISTER, INVALID }
+enum class TokenState { LOGGED, REGISTER, INVALID }
 
 class LoginViewModel: ViewModel() {
     private val _user = MutableStateFlow<Admin?>(null)
@@ -43,7 +43,7 @@ class LoginViewModel: ViewModel() {
                     ).awaitResponse()
                     if (response.isSuccessful) {
                         //TODO salvare il token
-                        _isLoggedIn.value = TokenState.LOGIN
+                        _isLoggedIn.value = TokenState.LOGGED
                     } else {
                         if(response.code() == 409) {
                             _isLoggedIn.value = TokenState.REGISTER
@@ -68,7 +68,7 @@ class LoginViewModel: ViewModel() {
 
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
         try {
-            var returnValue: Boolean = false
+            var returnValue = false
             Admin(
                 username = adminCreateRequestDto.username,
                 birthDate = adminCreateRequestDto.birthDate,
@@ -86,16 +86,19 @@ class LoginViewModel: ViewModel() {
 
                 if (response.isSuccessful) {
                     response.body()?.let { _user.value = Admin.fromDto(it) }
+                    _isLoggedIn.value = TokenState.LOGGED
                     returnValue = true
                 } else {
                     println("Error registering admin: ${response.message()}")
                     returnValue = false
+                    _isLoggedIn.value = TokenState.INVALID
                 }
             }
-            return  returnValue
+            return returnValue
         }
         catch (e: IllegalArgumentException) {
             _addError.value = e.message ?: "Unknown error"
+            _isLoggedIn.value = TokenState.INVALID
             return false
         }
     }
