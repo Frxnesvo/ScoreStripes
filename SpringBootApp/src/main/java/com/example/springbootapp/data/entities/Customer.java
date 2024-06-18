@@ -25,7 +25,7 @@ public class Customer extends User {
     @JoinColumn(name = "cart_id")  //vorrei mettere nullable = false ma da problemi con la singletable e admin
     private Cart cart;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)  //TODO: HO TOLTO LAZY PERCHE' DAVA PROBLEMI, VEDERE SE RISOLVO
     @JoinColumn(name = "wishlist_id")  //vorrei mettere nullable = false ma da problemi con la singletable e admin
     private Wishlist wishlist;
 

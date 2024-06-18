@@ -14,5 +14,6 @@ public interface WishlistAccessDao extends JpaRepository<WishlistAccess, String>
     List<WishlistAccess> findAllByGuestId(String id);
     List<WishlistAccess> findAllByWishlistId(String id);
     Optional<WishlistAccess> findByWishlistIdAndGuestId(String id, String guestId);
+    Boolean existsByWishlistIdAndGuestId(String id, String guestId);
 }
 

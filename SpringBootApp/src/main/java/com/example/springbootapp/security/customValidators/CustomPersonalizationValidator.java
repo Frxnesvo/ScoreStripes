@@ -11,9 +11,6 @@ import org.springframework.validation.annotation.Validated;
 public class CustomPersonalizationValidator implements ConstraintValidator<ValidPersonalization, AddToCartRequestDto> {
     @Override
     public boolean isValid(AddToCartRequestDto addToCartRequestDto, ConstraintValidatorContext context){
-        if(addToCartRequestDto.getCategory() == ProductCategory.SHORTS && addToCartRequestDto.getPersonalization().getPlayerName() != null){
-            throw new RequestValidationException("Shorts cannot be personalized with player name");
-        }
-        return true;
+        return addToCartRequestDto.getCategory() != ProductCategory.SHORTS || addToCartRequestDto.getPersonalization().getPlayerName() == null;
     }
 }

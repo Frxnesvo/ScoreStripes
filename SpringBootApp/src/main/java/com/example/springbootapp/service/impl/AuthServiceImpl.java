@@ -21,7 +21,9 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.auth.oauth2.TokenVerifier;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.example.springbootapp.handler.JwtHandler;
@@ -39,7 +41,8 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {    //TODO: DA VEDERE COME RIFATTORIZZARE LE 2 REGISTER
+public class AuthServiceImpl implements AuthService {
+    private final ModelMapper modelMapper;    //TODO: DA VEDERE COME RIFATTORIZZARE LE 2 REGISTER
 
     @Value("${google.clientId}")
     private String googleClientId;
@@ -121,6 +124,7 @@ public class AuthServiceImpl implements AuthService {    //TODO: DA VEDERE COME 
     }
 
     @Override
+    @Transactional
     public void registerCustomer(CustomerRegisterDto customerRegisterDto) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
@@ -156,9 +160,12 @@ public class AuthServiceImpl implements AuthService {    //TODO: DA VEDERE COME 
             customer.setFavouriteTeam(customerRegisterDto.getFavoriteTeam());
             customer.setCart(new Cart());
             Wishlist wishlist = new Wishlist();
-            wishlist.setOwner(customer);
+            //wishlist.setOwner(customer);
             wishlist.setVisibility(WishlistVisibility.PRIVATE);
             customer.setWishlist(wishlist);
+            Address address = modelMapper.map(customerRegisterDto.getAddress(), Address.class);
+            address.setCustomer(customer);
+            customer.getAddresses().add(address);
             customerDao.save(customer);
         } catch (GeneralSecurityException | IOException e) {
             throw new VerificationException("Invalid token");

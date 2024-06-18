@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderInfosRequestDto {
     @NotNull
-    private String AddressId;
+    private String addressId;
 }

@@ -4,6 +4,7 @@ import com.example.springbootapp.data.entities.Enums.Size;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Objects;
@@ -33,6 +34,7 @@ public class ProductWithVariant {
     private Integer availability;
 
     @ManyToOne(fetch = FetchType.LAZY)  //devo caricare lazy perchè altrimenti dato che dal prodotto carico eager le varianti mi ritrovo in un loop
+    @ToString.Exclude  //TODO: STO TESTANDO
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

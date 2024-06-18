@@ -10,8 +10,11 @@ import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
 import com.example.springbootapp.exceptions.IllegalWishlistVisibility;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.WishlistService;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -44,13 +47,22 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public WishlistItemDto addItemToWishlist(AddToWishlistRequestDto requestDto) {
+        System.out.println("SONO NELL'ADDITEMTOWISHLIST");
         Product product= productDao.findById(requestDto.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        System.out.println("HO TROVATO IL PRODOTTO");
         Wishlist wishlist =((Customer) userDetailsService.getCurrentUser()).getWishlist();
+        System.out.println("HO TROVATO LA WISHLIST");
         WishlistItem wishlistItem = new WishlistItem();
+        System.out.println("HO CREATO IL WISHLISTITEM");
         wishlistItem.setDateAdded(LocalDate.now());
+        System.out.println("HO SETTATO LA DATA");
         wishlistItem.setWishlist(wishlist);
+        System.out.println("HO SETTATO LA WISHLIST");
         wishlistItem.setProduct(product);
+        System.out.println("HO SETTATO IL PRODOTTO");
+        System.out.println("STO PER FAR IL SAVE");
         wishlistItemDao.save(wishlistItem);  //Ho preferito iniettare anche il dao per il WishlistItem per evitare di fare una save di wishlist e usare il cascade poichè meno efficiente
+        System.out.println("HO FATTO IL SAVE");
         return modelMapper.map(wishlistItem, WishlistItemDto.class);
     }
 

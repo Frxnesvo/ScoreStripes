@@ -4,6 +4,7 @@ import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
@@ -21,12 +22,13 @@ public class Wishlist {
     @Enumerated(EnumType.STRING)
     private WishlistVisibility visibility;
 
-    @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY) // Mantengo la bidirezionalità al momento perchè potrebbe servire
-    private Customer owner;
-
+    //@OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY) // Mantengo la bidirezionalità al momento perchè potrebbe servire
+    //private Customer owner;
+    @ToString.Exclude  //TODO: STO TESTANDO
     @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<WishlistItem> items;
 
+    @ToString.Exclude  //TODO: STO TESTANDO
     @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<WishlistAccess> accesses;
 

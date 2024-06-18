@@ -5,6 +5,7 @@ import com.example.springbootapp.data.entities.Enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -47,13 +48,16 @@ public class Product {
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude  //TODO: STO TESTANDO
     private List<ProductPic> pics;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)  // TODO: ho tolto il fetch = FetchType.LAZY, da provare
+    @ToString.Exclude  //TODO: STO TESTANDO
     @JoinColumn(name = "club_id", nullable = false)
     private Club club;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude  //TODO: STO TESTANDO
     private List<ProductWithVariant> variants;
 
     @Column(name = "created_date")

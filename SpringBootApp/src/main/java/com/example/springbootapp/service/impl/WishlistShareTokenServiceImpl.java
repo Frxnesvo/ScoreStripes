@@ -50,9 +50,17 @@ public class WishlistShareTokenServiceImpl implements WishlistShareTokenService 
     @Override    //TODO: proteggere da admin
     @Transactional
     public String validateShareAccess(String token) {
+        System.out.println("Token: "+token);
         WishlistShareToken wishlistShareToken = wishlistShareTokenDao.findByToken(token).orElseThrow(() -> new EntityNotFoundException("Token not found"));
         if(wishlistShareToken.getExpirationDate().isBefore(LocalDateTime.now())) {
             throw new TokenExpiredException("Token expired");
+        }
+        if(wishlistShareToken.getWishlist().getVisibility()== WishlistVisibility.PRIVATE) {
+            throw new IllegalWishlistVisibility("Cannot access a private wishlist");
+        }
+        Customer guest = (Customer) userDetailsService.getCurrentUser();
+        if(wishlistAccessDao.existsByWishlistIdAndGuestId(wishlistShareToken.getWishlist().getId(), guest.getId()) || wishlistShareToken.getWishlist().getId().equals(guest.getWishlist().getId())) {
+            return "Already granted"; //TODO: dovrei farlo come eccezione? penso di si. Da rivedere
         }
         WishlistAccess wishlistAccess = new WishlistAccess();
         wishlistAccess.setGuest((Customer) userDetailsService.getCurrentUser());

@@ -3,6 +3,7 @@ package com.example.springbootapp.data.entities;
 import  jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,10 +31,12 @@ public class WishlistItem {
     private LocalDate dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude  //TODO: STO TESTANDO
     @JoinColumn(name = "wishlist_id", nullable = false)
     private Wishlist wishlist;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @ToString.Exclude  //TODO: STO TESTANDO
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

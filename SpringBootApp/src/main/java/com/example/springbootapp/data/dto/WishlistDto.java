@@ -9,6 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 public class WishlistDto {
     private String id;
-    private String ownerUsername;
+    //private String ownerUsername;
     private List<WishlistItemDto> items;
 }

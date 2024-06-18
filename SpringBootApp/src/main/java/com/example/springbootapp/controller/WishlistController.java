@@ -23,6 +23,7 @@ public class WishlistController {
 
     @PatchMapping("/change-visibility")
     public ResponseEntity<String> changeVisibility(@Valid @RequestBody WishlistVisibilityDto visibilityDto){
+        System.out.println(visibilityDto.getVisibility().name());
         wishlistService.changeVisibility(visibilityDto);
         return ResponseEntity.ok("Visibility changed");
     }
@@ -37,7 +38,7 @@ public class WishlistController {
         return ResponseEntity.ok(wishlistShareTokenService.validateShareAccess(token));
     }
 
-    @PostMapping("/add-Item")
+    @PostMapping("/add-item")
     public ResponseEntity<WishlistItemDto> addItemToWishlist(@Valid @RequestBody AddToWishlistRequestDto requestDto){
          return ResponseEntity.ok(wishlistService.addItemToWishlist(requestDto));
     }

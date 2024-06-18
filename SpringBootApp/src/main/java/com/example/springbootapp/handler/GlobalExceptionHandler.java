@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto onMethodArgumentNotValidException(WebRequest req, MethodArgumentNotValidException e) {
-        return createErrorRespose(req, e.getMessage());
+        return createErrorRespose(req, "Validation failed for request body");  //TODO: invece di generalizzare, devo mettere per ogni validazione il messaggio (es  @NotBlank(message = "username cannot be blank"))
     }
 
     @ExceptionHandler(RequestValidationException.class)

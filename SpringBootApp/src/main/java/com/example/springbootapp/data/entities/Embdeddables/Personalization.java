@@ -13,15 +13,15 @@ public class Personalization {
 
     private static final Double PLAYER_NAME_PRICE = 10.0;
     private static final Double PLAYER_NUMBER_PRICE = 5.0;
-    private String PlayerName;
-    private Integer PlayerNumber;
+    private String playerName;
+    private Integer playerNumber;
 
     public double getPrice() {
         double price = 0.0;
-        if (PlayerName != null) {
+        if (playerName != null) {
             price += PLAYER_NAME_PRICE;
         }
-        if (PlayerNumber != null) {
+        if (playerNumber != null) {
             price += PLAYER_NUMBER_PRICE;
         }
         return price;
@@ -32,12 +32,12 @@ public class Personalization {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Personalization that = (Personalization) o;
-        return PlayerName.equals(that.PlayerName) &&
-                PlayerNumber.equals(that.PlayerNumber);
+        return playerName.equals(that.playerName) &&
+                playerNumber.equals(that.playerNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(PlayerName, PlayerNumber);
+        return Objects.hash(playerName, playerNumber);
     }
 }

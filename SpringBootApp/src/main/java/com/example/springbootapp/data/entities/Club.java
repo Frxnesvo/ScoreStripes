@@ -3,6 +3,7 @@ package com.example.springbootapp.data.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,11 +31,12 @@ public class Club {
     private String picUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude  //TODO: STO TESTANDO
     @JoinColumn(name = "league_id", nullable = false)
     private League league;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Product> products;
+    //@OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    //private List<Product> products;
 
     @Column(name = "created_date")
     @CreatedDate

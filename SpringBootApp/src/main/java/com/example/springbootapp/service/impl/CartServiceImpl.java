@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,22 +35,30 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartItemDto addProductToCart(AddToCartRequestDto requestDto) {
+        System.out.println("personalizzazione "+requestDto.getPersonalization().toString());
         Product product = productDao.findById(requestDto.getProductId())
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
         ProductWithVariant variant = product.getVariants().stream().filter(p -> p.getSize()
                 .equals(requestDto.getSize())).findFirst().orElseThrow(() -> new EntityNotFoundException("Variant not found"));
-        Cart cart = ((Customer) userDetailsService.getCurrentUser()).getCart();
+        Optional<Cart> cart = cartDao.findById(((Customer) userDetailsService.getCurrentUser()).getCart().getId());
+        if(cart.isEmpty()){
+            throw new RequestValidationException("Cart not found"); //impossibile
+        }
         CartItem newItem = new CartItem();
         newItem.setProduct(variant);
         newItem.setQuantity(1);
         newItem.setPersonalization(requestDto.getPersonalization());
-        newItem.setCart(cart);
-        if(cart.getCartItems().contains(newItem)){
-            cart.getCartItems().stream().filter(i -> i.equals(newItem)).findFirst().ifPresent(item -> item.setQuantity(item.getQuantity() + 1));
-        }else{
-            cart.getCartItems().add(newItem);
+        newItem.setCart(cart.get());
+        Optional<CartItem> existingItem = cart.get().getCartItems().stream()
+                .filter(newItem::equals)
+                .findFirst();
+        if(existingItem.isPresent()){
+            existingItem.get().setQuantity(existingItem.get().getQuantity() + 1);
+            newItem=cartItemDao.save(existingItem.get());
         }
-        cartDao.save(cart);
+        else {
+            newItem = cartItemDao.save(newItem);
+        }
         return modelMapper.map(newItem, CartItemDto.class);
     }
 
