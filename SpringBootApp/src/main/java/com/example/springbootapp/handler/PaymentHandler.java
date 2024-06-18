@@ -44,11 +44,9 @@ public class PaymentHandler {
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.PAYPAL)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                //.setSuccessUrl("scorestripes://stripe_success?session_id={CHECKOUT_SESSION_ID}")  //TODO: da controllare il nome nel front end
-                //.setCancelUrl("scorestripes://stripe_cancel")    //TODO: da controllare il nome nel front end
                 .setSuccessUrl("http://localhost:8080/stripe_success?session_id={CHECKOUT_SESSION_ID}")
                 .setCancelUrl("http://localhost:8080/stripe_cancel")
-                //.putMetadata("orderId", order.getId())
+                .putMetadata("orderId", order.getId())
                 .build();
         try {
             Session session = Session.create(params);

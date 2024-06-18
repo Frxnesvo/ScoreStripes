@@ -188,6 +188,16 @@ public class ModelMapperConfig {
             protected void configure() {
                 using(firstAddressConverter)
                         .map(source.getAddresses(),destination.getAddress());
+                using(profilePicUrlConverter)
+                        .map(source.getProfilePicUrl(),destination.getProfilePicUrl());
+            }
+        };
+
+        PropertyMap<Admin,RegisteredAdminDto> adminToRegisteredAdminDto = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                using(profilePicUrlConverter)
+                        .map(source.getProfilePicUrl(),destination.getProfilePicUrl());
             }
         };
 
@@ -204,6 +214,7 @@ public class ModelMapperConfig {
         modelMapper.addMappings(cartItemMap);
         //modelMapper.addMappings(cartItemToDtoMap);
         modelMapper.addMappings(customerToRegisteredCustomerDto);
+        modelMapper.addMappings(adminToRegisteredAdminDto);
 
         modelMapper.addConverter(productPicUrlConverter);
 

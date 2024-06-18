@@ -74,28 +74,19 @@ public class OrderServiceImpl implements OrderService {
         resilientInfos.setCustomerEmail(loggedCustomer.getEmail());
         resilientInfos.setCustomerFirstName(loggedCustomer.getFirstName());
         resilientInfos.setCustomerLastName(loggedCustomer.getLastName());
-        System.out.println("OK CI SONO");
         Order order = new Order();
         order.setResilientInfos(resilientInfos);
-        System.out.println("HO SETTATO LE INFO RESILIENTI");
         order.setCustomer(loggedCustomer);
-        System.out.println("HO SETTATO IL CUSTOMER");
         order.setDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
-        System.out.println("HO SETTATO L'ORDINE");
         order= orderDao.save(order);  //salvo l'ordine per avere l'id
-        System.out.println("HO SALVATO L'ORDINE");
         Order finalOrder = order;  //finalOrder è usata solo per la lambda (non può essere modificata)
-        System.out.println("STO PER FARE IL MAPPING");
         List<OrderItem> items= cart.getCartItems().stream()
                 .map(cartItem -> modelMapper.map(cartItem, OrderItem.class))
                 .peek(orderItem -> orderItem.setOrder(finalOrder))
                 .collect(Collectors.toList());
-        System.out.println("HO FATTO IL MAPPING");
         order.setItems(items);
-        System.out.println("HO AGGIUNTO GLI ITEM");
         order= orderDao.save(order);  //salvo l'ordine con gli item
-        System.out.println("HO SALVATO L'ORDINE CON GLI ITEM");
         try{
             return paymentHandler.startCheckoutProcess(order);
         }
