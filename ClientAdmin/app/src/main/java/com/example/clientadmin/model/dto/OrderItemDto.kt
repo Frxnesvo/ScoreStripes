@@ -1,6 +1,6 @@
 package com.example.clientadmin.model.dto
 
-import com.example.clientadmin.model.Personalization
+import com.example.clientadmin.model.embdeddables.Personalization
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)

@@ -27,7 +27,7 @@ class Admin(
             return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         }
         fun validateUsername(username: String): Boolean {
-            return username.length in 3..20
+            return username.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$".toRegex()) && username.isNotBlank()
         }
 
         fun validateBirthdate(birthdate: LocalDate): Boolean {

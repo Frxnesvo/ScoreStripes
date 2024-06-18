@@ -272,7 +272,7 @@ fun NavigationScaffold(
         composable(
             route = "products"
         ){
-            Products(navHostController = navHostController, productViewModel = productViewModel, leagueViewModel = leagueViewModel)
+            Products(navHostController = navHostController, productViewModel = productViewModel, leagueViewModel = leagueViewModel, clubViewModel = clubViewModel)
         }
         composable(
             route= "product/{id}",

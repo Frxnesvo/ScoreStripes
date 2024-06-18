@@ -1,8 +1,19 @@
 package com.example.clientadmin.activity
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -11,31 +22,88 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.clientadmin.model.enumerator.FilterType
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.model.Club
+import com.example.clientadmin.model.League
+import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
 
 @Composable
-fun Products(navHostController: NavHostController, productViewModel: ProductViewModel, leagueViewModel: LeagueViewModel) {
+fun Products(
+    navHostController: NavHostController,
+    productViewModel: ProductViewModel,
+    leagueViewModel: LeagueViewModel,
+    clubViewModel: ClubViewModel
+) {
     val products by productViewModel.productSummaries.collectAsState()
+    val leagues: List<League> = listOf() //todo by leagueViewModel.leagues.collectAsState()
+    val clubs: List<Club> = listOf() //todo by clubViewModel.clubs.collectAsState()
+
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
+
+    var control by remember { mutableStateOf(false) }
+    var filterType by remember { mutableStateOf(FilterType.PRODUCTS) }
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),
     ) {
         item { Title() }
 
-        item { Search(name = stringResource(R.string.list_all_products)) { setBottomSheet(true) } }
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Box {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .clickable {
+                                control = true
+                                filterType = FilterType.PRODUCTS
+                            }
+                    ){
+                        Text(
+                            text = filterType.name,
+                            color = colorResource(id = R.color.black),
+                            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
+                        )
+                        Icon(imageVector = Icons.Outlined.ArrowDropDown, contentDescription = null)
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(colorResource(id = R.color.white), CircleShape)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ){ setBottomSheet(true) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Rounded.Search, contentDescription = null, tint = colorResource(id = R.color.secondary))
+                }
+            }
+        }
 
-        if(products.isEmpty())
+        if(
+            (filterType == FilterType.PRODUCTS && products.isEmpty()) //||
+            //(filterType == FilterType.CLUBS && clubViewModel.clubs.isEmpty()) ||
+            //(filterType == FilterType.LEAGUES && leagueViewModel.leagues.isEmpty())
+        )
             item{
                 Text(
                     text = stringResource(id = R.string.list_empty),
@@ -44,33 +112,60 @@ fun Products(navHostController: NavHostController, productViewModel: ProductView
                 )
             }
         else {
-            items(products) {
-                key(it.id) {
-                    ProductItemColumn(productSummary = it) { navHostController.navigate("product/${it.id}") }
+            if (FilterType.PRODUCTS == filterType) {
+                items(products) {
+                    key(it.id) {
+                        ProductItemColumn(productSummary = it) { navHostController.navigate("product/${it.id}") }
+                    }
+                }
+            } else if (FilterType.CLUBS == filterType) {
+                items(clubs) {
+                    key(it) { //todo da gestire con id
+                        ClubItem(club = it) { navHostController.navigate("club/${it}") } //TODO
+                    }
+                }
+            } else if (FilterType.LEAGUES == filterType) {
+                items(leagues) {
+                    key(it) {//todo da gestire con id
+                        LeagueItem(league = it) { navHostController.navigate("league/${it}") } //TODO
+                    }
                 }
             }
 
             item {
-                TextButton(onClick = { productViewModel.incrementPage() }) {
-                    Text(
-                        text = "enter as guest",
-                        color = colorResource(id = R.color.white50),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            letterSpacing = 5.sp
+                if (FilterType.PRODUCTS == filterType)
+                    TextButton(onClick = { productViewModel.incrementPage() }) {
+                        Text(
+                            text = stringResource(id = R.string.more),
+                            color = colorResource(id = R.color.white50),
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                letterSpacing = 5.sp
+                            )
                         )
-                    )
-                }
+                    }
             }
         }
     }
+
+    if (FilterType.LEAGUES == filterType)
+        SearchByNameSheet(
+            onDismissRequest = { setBottomSheet(false) },
+            setBottomSheet = setBottomSheet,
+            filterType = filterType
+        ){ leagueViewModel.setFilter(it) }
 
     if (isOpenSheet)
         SearchPanelProducts(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
-            leagueViewModel = leagueViewModel,
-            productViewModel = productViewModel
-        )
+            leaguesNames = leagueViewModel.leaguesNames,
+            filterType = filterType
+        ){
+            if (FilterType.LEAGUES == filterType)
+                productViewModel.setFilter(it)
+            else
+                clubViewModel.setFilter(it)
+        }
 }

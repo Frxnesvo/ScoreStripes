@@ -31,16 +31,16 @@ class Product (
 
     companion object{
         fun validateName(name: String): Boolean{
-            return name.length in 3..40
+            return name.length in 3..40 && name.isNotBlank()
         }
         fun validatePrice(price: Double): Boolean{
             return price > 0
         }
         fun validateDescription(description: String): Boolean{
-            return description.length in 10..500
+            return description.length in 10..500 && description.isNotBlank()
         }
         fun validateBrand(brand: String): Boolean{
-            return brand.length in 2..40
+            return brand.length in 2..40 && brand.isNotBlank()
         }
         fun validatePic(pic: Bitmap): Boolean{
             return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)

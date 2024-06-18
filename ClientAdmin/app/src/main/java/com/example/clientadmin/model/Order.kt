@@ -2,6 +2,7 @@ package com.example.clientadmin.model
 
 import com.example.clientadmin.model.dto.OrderDto
 import com.example.clientadmin.model.dto.OrderItemDto
+import com.example.clientadmin.model.embdeddables.Personalization
 import com.example.clientadmin.model.dto.ProductWithVariantDto
 import com.example.clientadmin.model.embdeddables.OrderInformations
 import com.example.clientadmin.model.enumerator.OrderStatus

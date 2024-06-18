@@ -5,20 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
+import com.example.clientadmin.model.enumerator.TokenState
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 import java.time.format.DateTimeFormatter
-import java.util.Formatter
-
-enum class TokenState { LOGIN, REGISTER, INVALID }
 
 class LoginViewModel: ViewModel() {
     private val _user = MutableStateFlow<Admin?>(null)
@@ -39,7 +36,7 @@ class LoginViewModel: ViewModel() {
             try {
                 CoroutineScope(Dispatchers.IO).launch {
                     val response = RetrofitHandler.loginApi.login(
-                        mapOf(pair = Pair<String, String>("idToken", idToken))
+                        mapOf(pair = Pair("idToken", idToken))
                     ).awaitResponse()
                     if (response.isSuccessful) {
                         //TODO salvare il token
@@ -68,7 +65,7 @@ class LoginViewModel: ViewModel() {
 
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
         try {
-            var returnValue: Boolean = false
+            var returnValue = false
             Admin(
                 username = adminCreateRequestDto.username,
                 birthDate = adminCreateRequestDto.birthDate,
