@@ -6,7 +6,6 @@ import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.utils.S3ImageDownloader
-import kotlinx.coroutines.flow.first
 
 class Product (
     val name: String,
@@ -54,8 +53,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.productCategory,
-                pic1 = S3ImageDownloader.download(productDto.pics[0]).first(),
-                pic2 = S3ImageDownloader.download(productDto.pics[1]).first(),
+                pic1 = S3ImageDownloader.getImageForBucket(productDto.pics[0]),
+                pic2 = S3ImageDownloader.getImageForBucket(productDto.pics[1]),
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

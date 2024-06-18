@@ -12,6 +12,6 @@ data class AdminDto (
     val lastName: String,
     val email: String,
     val gender: Gender,
-    val picUrl: String,
+    val profilePicUrl: String,
     val birthDate: LocalDate,
 )
