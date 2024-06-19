@@ -23,27 +23,23 @@ import com.example.clientadmin.ui.theme.ClientAdminTheme
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val loginViewModel = LoginViewModel()
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("774497332630-engaqhas88dv6rpmrpjfnad09i6jloef.apps.googleusercontent.com")
-            .requestEmail()
-            .build()
 
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val token = GoogleAuth.manageLoginResult(result)
             if (token != null)
                 loginViewModel.login(token, this.applicationContext)
+            else
+                println("Token is null")
+            GoogleAuth.signOut(this)
         }
+
 
         super.onCreate(savedInstanceState)
         setContent {

@@ -11,6 +11,7 @@ import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.model.enumerator.TokenState
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
+import com.example.clientadmin.utils.TokenStoreUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +38,8 @@ class LoginViewModel: ViewModel() {
 
 
     fun login(idToken: String?, context: Context){
+        println("SONO NEL LOGIN VIEW MODEL")
+        println("ID TOKEN: $idToken")
         if(idToken != null) {
             try {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -47,9 +50,9 @@ class LoginViewModel: ViewModel() {
                         val responseBody = response.body()
                         if (responseBody != null) {
                             val jwt = responseBody.jwt
-                            val username = responseBody.username
                             withContext(Dispatchers.Main) {
-                                saveToken(context, username, jwt)
+                                val tokenStoreUtils = TokenStoreUtils(context)
+                                tokenStoreUtils.storeToken(jwt)
                             }
                         }
                         //TODO verificare che l'utente loggato sia un admin
