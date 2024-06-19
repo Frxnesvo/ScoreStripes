@@ -1,6 +1,5 @@
 package com.example.clientadmin.activity
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,8 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -25,9 +22,6 @@ import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
-import java.io.ByteArrayOutputStream
-
-//TODO matchare lo username con la regex
 
 @Composable
 fun Register(
@@ -75,7 +69,7 @@ fun Register(
             }
 
             CustomDatePicker(
-                date = remember { mutableStateOf(adminState.birthdate) },
+                date = adminState.birthdate,
                 text = stringResource(id = R.string.birth_date)
             ){
                 loginFormViewModel.updateBirthdate(it)

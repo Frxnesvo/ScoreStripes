@@ -38,7 +38,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -219,6 +218,7 @@ fun CustomComboBox(
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(200.dp)
                     .background(colorResource(id = R.color.white))
             ) {
 
@@ -357,7 +357,7 @@ fun CustomTextField(
 
 @Composable
 fun CustomDatePicker(
-    date: MutableState<LocalDate> = mutableStateOf(LocalDate.now()),
+    date: LocalDate,
     text: String,
     onValueChange: (LocalDate) -> Unit
 ) {
@@ -367,15 +367,15 @@ fun CustomDatePicker(
         Text(text = text)
         CustomComboBox(
             options = (1..31).toList(),
-            selectedOption = date.value.dayOfMonth.toString()
-        ) { onValueChange(LocalDate.of(date.value.year, date.value.month, it.toInt())) }
+            selectedOption = date.dayOfMonth.toString()
+        ) { onValueChange(LocalDate.of(date.year, date.month, it.toInt())) }
         CustomComboBox(
             options = (1..12).toList(),
-            selectedOption = date.value.monthValue.toString()
-        ) { onValueChange(LocalDate.of(date.value.year, it.toInt(), date.value.dayOfMonth)) }
+            selectedOption = date.monthValue.toString()
+        ) { onValueChange(LocalDate.of(date.year, it.toInt(), date.dayOfMonth)) }
         CustomComboBox(
             options = (LocalDate.now().year downTo 1900).toList(),
-            selectedOption = date.value.year.toString()
-        ) { onValueChange(LocalDate.of(it.toInt(), date.value.month, date.value.dayOfMonth)) }
+            selectedOption = date.year.toString()
+        ) { onValueChange(LocalDate.of(it.toInt(), date.month, date.dayOfMonth)) }
     }
 }
