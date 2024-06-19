@@ -28,7 +28,6 @@ import java.util.Map;
     public class AuthController {
         private final AuthService authService;
         private final ExceptionUtils exceptionUtils;
-        private final UserDetailsServiceImpl userDetailsService;
 
         @PostMapping("/login")
         public ResponseEntity<AuthResponseDto> login(@RequestBody Map<String,String> request) throws GeneralSecurityException, TokenVerifier.VerificationException, IOException {
