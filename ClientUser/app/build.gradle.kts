@@ -51,6 +51,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.play.services.auth)
+
+    implementation(libs.gson.v288)
+
     implementation (libs.retrofit)
     implementation (libs.converter.moshi)
 

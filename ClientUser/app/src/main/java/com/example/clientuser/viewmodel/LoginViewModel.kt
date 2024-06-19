@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.Address
 import com.example.clientuser.model.Customer
-import com.example.clientuser.model.dto.CustomerCreateRequestDto
 import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.model.enumerator.Gender
 import com.example.clientuser.utils.ConverterBitmap
 import com.example.clientuser.utils.RetrofitHandler
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +34,7 @@ class LoginViewModel: ViewModel() {
     private val _token = mutableStateOf("")
     val token = _token
 
-    fun login(idToken: String){
+    fun login(idToken: String, context: Context){
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.login(mapOf(Pair("idToken", idToken))).awaitResponse()
@@ -69,7 +69,7 @@ class LoginViewModel: ViewModel() {
                     username = username,
                     birthDate = MultipartBody.Part.createFormData("birthDate", birthDate.format(DateTimeFormatter.ISO_LOCAL_DATE)),
                     gender = MultipartBody.Part.createFormData("gender", gender.name),
-                    address = , //TODO mapparlo come un json
+                    address = MultipartBody.Part.createFormData("address", Gson().toJson(address)),
                     favouriteTeam = favouriteTeam,
                     imageProfile = ConverterBitmap.convert(bitmap = pic, fieldName = "profilePic")
                 ).awaitResponse()

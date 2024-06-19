@@ -1,5 +1,7 @@
 package com.example.clientuser.activity
 
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,10 +26,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.authentication.GoogleAuth
+import com.example.clientuser.viewmodel.LoginState
 import com.example.clientuser.viewmodel.LoginViewModel
 
 @Composable
-fun IndexPage(navController : NavHostController, loginViewModel: LoginViewModel) {
+fun IndexPage(
+    navController: NavHostController,
+    loginViewModel: LoginViewModel,
+    signInLauncher: ActivityResultLauncher<Intent>
+) {
+    val context = LocalContext.current
+    val isLoggedIn = loginViewModel.isLoggedIn
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +69,14 @@ fun IndexPage(navController : NavHostController, loginViewModel: LoginViewModel)
                     background = R.color.secondary50,
                     text = stringResource(id = R.string.sign_in)
                 ) {
-                    //TODO("gestire tutta la login")
+                    val signInIntent = GoogleAuth.getClient(context).signInIntent
+                    signInLauncher.launch(signInIntent)
+                }
+
+                when(isLoggedIn.value){
+                    LoginState.LOGGED -> navController.navigate("scaffold")
+                    LoginState.REGISTER -> navController.navigate("register/${loginViewModel.token.value}")
+                    LoginState.NULL -> println("invalid id token") //TODO
                 }
 
                 TextButton(

@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,12 +64,14 @@ fun Scaffold(loginViewModel: LoginViewModel) {
     ) {
         Box(
             modifier = Modifier
+                //.background(colorResource(id = R.color.primary))
                 .padding(
                     top = it.calculateTopPadding() + 10.dp,
                     bottom = it.calculateBottomPadding(),
                     start = 10.dp,
                     end = 10.dp,
-                ),
+                )
+                //.fillMaxSize(), //TODO fillMaxWidth()?
         ){
             loginViewModel.user.collectAsState().value.let {
                 admin ->
@@ -157,7 +160,7 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ){ function() }
+            ) { function() }
             .background(
                 if (background != null) colorResource(id = background) else Color.Transparent,
                 RoundedCornerShape(20.dp)
