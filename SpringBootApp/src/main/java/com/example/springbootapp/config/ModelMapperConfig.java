@@ -183,23 +183,24 @@ public class ModelMapperConfig {
 //            }
 //        };
 
-        PropertyMap<Customer,RegisteredCustomerDto> customerToRegisteredCustomerDto = new PropertyMap<>() {
+
+        PropertyMap<Admin,AuthResponseDto> adminLoginMap = new PropertyMap<>() {
             @Override
             protected void configure() {
-                using(firstAddressConverter)
-                        .map(source.getAddresses(),destination.getAddress());
                 using(profilePicUrlConverter)
-                        .map(source.getProfilePicUrl(),destination.getProfilePicUrl());
+                        .map(source.getProfilePicUrl(), destination.getProfilePicUrl());
+                System.out.println("Stampa model mapper: " + destination.getProfilePicUrl());
             }
         };
 
-        PropertyMap<Admin,RegisteredAdminDto> adminToRegisteredAdminDto = new PropertyMap<>() {
+        PropertyMap<Customer,AuthResponseDto> customerLoginMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 using(profilePicUrlConverter)
-                        .map(source.getProfilePicUrl(),destination.getProfilePicUrl());
+                        .map(source.getProfilePicUrl(), destination.getProfilePicUrl());
             }
         };
+
 
 
 
@@ -213,8 +214,8 @@ public class ModelMapperConfig {
         //modelMapper.addMappings(wishlistMap);
         modelMapper.addMappings(cartItemMap);
         //modelMapper.addMappings(cartItemToDtoMap);
-        modelMapper.addMappings(customerToRegisteredCustomerDto);
-        modelMapper.addMappings(adminToRegisteredAdminDto);
+        modelMapper.addMappings(customerLoginMap);
+        modelMapper.addMappings(adminLoginMap);
 
         modelMapper.addConverter(productPicUrlConverter);
 

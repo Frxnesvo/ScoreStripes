@@ -9,17 +9,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChevronLeft
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.model.Address
 import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 import com.example.clientuser.model.enumerator.Gender
@@ -37,8 +39,11 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
 
         BoxIcon(
             iconColor = colorResource(id = R.color.secondary),
-            content = Icons.Outlined.ChevronLeft
-        ) { navController.popBackStack() }
+            content = Icons.AutoMirrored.Outlined.KeyboardArrowLeft
+        ) {
+            loginViewModel.goToLogin()
+            navController.navigate("login")
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -97,7 +102,25 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {
-                TODO("fare navigate e passare il customer allo scaffold")
+                if (
+                    loginViewModel.register(
+                        token = token,
+                        username = customerState.username,
+                        birthDate = customerState.birthdate,
+                        favouriteTeam = customerState.favouriteTeam,
+                        gender = customerState.gender,
+                        address = Address(
+                            state = "STATE",
+                            street = "STREET",
+                            city = "CITY",
+                            civicNumber = "CIVIC NUMBER",
+                            zipCode = "ZIPCODE",
+                            defaultAddress = false
+                        ), //TODO farlo inserire durante la register
+                        pic = customerState.profilePic
+                    )
+                ){ navController.navigate("index") }
+
             }
         }
     }

@@ -55,20 +55,20 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponseDto login(String idToken) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
-                .build();{
-        }
+                .build();
         try {
             GoogleIdToken googleIdToken = verifier.verify(idToken);
             if (googleIdToken == null) {
                 throw new VerificationException("Invalid token");
             }
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
-            System.out.println(payload.getEmail());
             System.out.println(payload.toPrettyString());
             Optional<User> user = userDao.findByEmail(payload.getEmail());
             if (user.isPresent()) {
                 String jwtToken = jwtHandler.generateJwtToken(user.get());
-                return new AuthResponseDto(jwtToken,"Login successful");
+                AuthResponseDto response = modelMapper.map(user.get(), AuthResponseDto.class);
+                response.setJwt(jwtToken);
+                return response;
             }
             else {
                 throw new NoAccountException("No account found");
@@ -80,7 +80,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RegisteredAdminDto registerAdmin(AdminRegisterDto adminRegisterDto) {
+    public String registerAdmin(AdminRegisterDto adminRegisterDto) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
                 .build();
@@ -113,8 +113,8 @@ public class AuthServiceImpl implements AuthService {
                 String url = awsS3Service.uploadFile(adminRegisterDto.getProfilePic(), "users", adminRegisterDto.getUsername());
                 admin.setProfilePicUrl(url);
             }
-            admin=adminDao.save(admin);
-            return modelMapper.map(admin, RegisteredAdminDto.class);
+            adminDao.save(admin);
+            return  "Admin registered successfully";
         }
         catch (GeneralSecurityException | IOException e) {
             throw new VerificationException("Invalid token");
@@ -123,7 +123,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public RegisteredCustomerDto registerCustomer(CustomerRegisterDto customerRegisterDto) {
+    public String registerCustomer(CustomerRegisterDto customerRegisterDto) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
                 .build();
@@ -164,9 +164,8 @@ public class AuthServiceImpl implements AuthService {
             Address address = modelMapper.map(customerRegisterDto.getAddress(), Address.class);
             address.setCustomer(customer);
             customer.getAddresses().add(address);
-            customer=customerDao.save(customer);
-            Hibernate.initialize(customer.getAddresses());
-            return modelMapper.map(customer, RegisteredCustomerDto.class);
+            customerDao.save(customer);
+            return "Customer registered successfully";
         } catch (GeneralSecurityException | IOException e) {
             throw new VerificationException("Invalid token");
         }

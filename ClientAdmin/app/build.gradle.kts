@@ -62,7 +62,6 @@ dependencies {
     implementation (libs.logging.interceptor)
 
     implementation(libs.play.services.auth)
-    implementation(libs.play.services.basement)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

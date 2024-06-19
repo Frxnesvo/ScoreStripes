@@ -2,7 +2,7 @@ package com.example.clientuser.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.dto.OrderInfoDto
-import com.example.clientuser.service.RetrofitHandler
+import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

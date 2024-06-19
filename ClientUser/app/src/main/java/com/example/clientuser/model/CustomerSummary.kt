@@ -1,9 +1,8 @@
 package com.example.clientuser.model
 
 import android.graphics.Bitmap
-import com.example.clientuser.S3ImageDownloader
+import com.example.clientuser.utils.S3ImageDownloader
 import com.example.clientuser.model.dto.CustomerSummaryDto
-import kotlinx.coroutines.flow.first
 
 class CustomerSummary(
     val id: String,
@@ -16,7 +15,7 @@ class CustomerSummary(
             return CustomerSummary(
                 id = customerSummaryDto.id,
                 username = customerSummaryDto.username,
-                profilePic = S3ImageDownloader.download(customerSummaryDto.profilePic).first()
+                profilePic = S3ImageDownloader.getImageForBucket(customerSummaryDto.profilePic)
             )
         }
     }

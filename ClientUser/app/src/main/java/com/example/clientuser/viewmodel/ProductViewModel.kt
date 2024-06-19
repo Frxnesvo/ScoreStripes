@@ -5,7 +5,7 @@ import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.ProductSummary
 import com.example.clientuser.model.dto.ProductSummaryDto
-import com.example.clientuser.service.RetrofitHandler
+import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

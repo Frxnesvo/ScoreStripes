@@ -1,14 +1,11 @@
 package com.example.clientuser.model
 
 import android.graphics.Bitmap
-import android.net.Uri
-import com.example.clientuser.S3ImageDownloader
+import com.example.clientuser.utils.S3ImageDownloader
 import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.model.enumerator.Gender
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 class Product (
     val id: String,
@@ -33,8 +30,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.productCategory,
-                pic1 = S3ImageDownloader.download(productDto.pics[0]).first(),
-                pic2 = S3ImageDownloader.download(productDto.pics[1]).first(),
+                pic1 = S3ImageDownloader.getImageForBucket(productDto.pics[0]),
+                pic2 = S3ImageDownloader.getImageForBucket(productDto.pics[1]),
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

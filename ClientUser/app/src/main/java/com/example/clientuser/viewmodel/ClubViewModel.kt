@@ -1,16 +1,11 @@
 package com.example.clientuser.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.clientuser.model.dto.ClubDto
-import com.example.clientuser.service.RetrofitHandler
-import kotlinx.coroutines.CoroutineScope
+import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class ClubViewModel: ViewModel() {

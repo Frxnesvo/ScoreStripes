@@ -1,10 +1,9 @@
 package com.example.clientuser.model
 
 import android.graphics.Bitmap
-import com.example.clientuser.S3ImageDownloader
+import com.example.clientuser.utils.S3ImageDownloader
 import com.example.clientuser.model.dto.ProductSummaryDto
 import com.example.clientuser.model.enumerator.Size
-import kotlinx.coroutines.flow.first
 
 class ProductSummary(
     val id: String,
@@ -21,7 +20,7 @@ class ProductSummary(
             return ProductSummary(
                 id = productSummaryDto.id,
                 name = productSummaryDto.name,
-                picUrl = S3ImageDownloader.download(productSummaryDto.picUrl).first(),
+                picUrl = S3ImageDownloader.getImageForBucket(productSummaryDto.picUrl),
 
                 //TODO si posso rimuovere i campi qui sotto?
                 clubName = productSummaryDto.clubName,

@@ -2,8 +2,7 @@ package com.example.clientuser.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.League
-import com.example.clientuser.model.dto.LeagueDto
-import com.example.clientuser.service.RetrofitHandler
+import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

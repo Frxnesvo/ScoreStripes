@@ -7,7 +7,7 @@ import com.example.clientuser.model.Wishlist
 import com.example.clientuser.model.WishlistItem
 import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.dto.WishlistVisibilityDto
-import com.example.clientuser.service.RetrofitHandler
+import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +26,7 @@ class WishListViewModel : ViewModel() {
 
     private val _myWishList = MutableStateFlow<List<WishlistItem>>(emptyList())
     val myWishList = _myWishList
+    //TODO val myWishList = _myWishList.asStateFlow()
 
     private val _wishlistSharedToken = MutableStateFlow("")
     val wishlistSharedToken = _wishlistSharedToken
