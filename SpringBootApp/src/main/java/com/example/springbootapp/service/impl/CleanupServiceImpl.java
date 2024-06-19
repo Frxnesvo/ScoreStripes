@@ -2,6 +2,7 @@ package com.example.springbootapp.service.impl;
 
 import com.example.springbootapp.data.dao.WishlistShareTokenDao;
 import com.example.springbootapp.service.interfaces.CleanupService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class CleanupServiceImpl implements CleanupService {
 
     @Override
     @Scheduled(fixedRateString = "${cleanup.rate}")
+    @Transactional
     public void cleanupExpiredTokens() {          //potrei fare il metodo della repository int cosi che ritorni il numero di token eliminati e loggarlo
         wishlistShareTokenDao.deleteByExpirationDateBefore(LocalDateTime.now());
     }
