@@ -72,7 +72,9 @@ fun Scaffold(loginViewModel: LoginViewModel) {
         ){
             loginViewModel.user.collectAsState().value.let {
                 admin ->
+                println("ADMIN: $admin")
                 if (admin != null) {
+                    println("ADMIN: $admin")
                     NavigationScaffold(
                         navHostController = navController,
                         customerViewModel = CustomerViewModel(),

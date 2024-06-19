@@ -1,4 +1,4 @@
-package com.example.clientuser.service.interfaces
+package com.example.clientuser.api
 
 import com.example.clientuser.model.dto.AddToCartRequestDto
 import com.example.clientuser.model.dto.CartItemDto

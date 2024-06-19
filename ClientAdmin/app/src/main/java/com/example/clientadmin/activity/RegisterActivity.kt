@@ -110,7 +110,7 @@ fun Register(
                         ),
                         pic = adminState.profilePic
                     )
-                ){ navController.navigate("scaffold") }
+                ){ navController.navigate("index") }
             }
         }
     }

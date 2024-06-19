@@ -1,6 +1,8 @@
 package com.example.clientuser.model
 
 import android.graphics.Bitmap
+import com.example.clientuser.utils.S3ImageDownloader
+import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.model.enumerator.Gender
 
 import java.time.LocalDate
@@ -14,7 +16,8 @@ class Customer(
     val birthDate: LocalDate,
     val gender: Gender,
     val pic: Bitmap,
-    val favoriteTeam: String
+    val favoriteTeam: String,
+    val address: Address
 ) {
     init {
         require(validateProfilePic(pic)) { "Invalid profile picture" }
@@ -27,7 +30,21 @@ class Customer(
 
 
     companion object {
-        //todo aggiungere fromDto
+        suspend fun fromDto(customerDto: CustomerDto): Customer {
+            return Customer(
+                id = customerDto.id,
+                username = customerDto.username,
+                firstName = customerDto.firstName,
+                lastName = customerDto.lastName,
+                email = customerDto.email,
+                birthDate = customerDto.birthDate,
+                gender = customerDto.gender,
+                favoriteTeam = customerDto.favouriteTeam,
+                address = customerDto.address,
+                pic = S3ImageDownloader.getImageForBucket(customerDto.profilePicUrl)
+            )
+        }
+
 
         //TODO matchare i controlli di validazione con quelli del backend
         fun validateProfilePic(pic: Bitmap): Boolean {

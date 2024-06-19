@@ -68,7 +68,9 @@ public class AuthServiceImpl implements AuthService {
             Optional<User> user = userDao.findByEmail(payload.getEmail());
             if (user.isPresent()) {
                 String jwtToken = jwtHandler.generateJwtToken(user.get());
+                System.out.println("STAMPA IMMAGINE PICCOLA: " + user.get().getProfilePicUrl());
                 AuthResponseDto response = modelMapper.map(user.get(), AuthResponseDto.class);
+                System.out.println("STAMPA IMMAGINE GRANDE: " + response.getProfilePicUrl());
                 response.setJwt(jwtToken);
                 return response;
             }

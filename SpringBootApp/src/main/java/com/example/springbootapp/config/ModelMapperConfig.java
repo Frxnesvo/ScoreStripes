@@ -183,7 +183,17 @@ public class ModelMapperConfig {
 //            }
 //        };
 
-        PropertyMap<User,AuthResponseDto> userMap = new PropertyMap<>() {
+
+        PropertyMap<Admin,AuthResponseDto> adminLoginMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                using(profilePicUrlConverter)
+                        .map(source.getProfilePicUrl(), destination.getProfilePicUrl());
+                System.out.println("Stampa model mapper: " + destination.getProfilePicUrl());
+            }
+        };
+
+        PropertyMap<Customer,AuthResponseDto> customerLoginMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 using(profilePicUrlConverter)
@@ -204,7 +214,8 @@ public class ModelMapperConfig {
         //modelMapper.addMappings(wishlistMap);
         modelMapper.addMappings(cartItemMap);
         //modelMapper.addMappings(cartItemToDtoMap);
-        modelMapper.addMappings(userMap);
+        modelMapper.addMappings(customerLoginMap);
+        modelMapper.addMappings(adminLoginMap);
 
         modelMapper.addConverter(productPicUrlConverter);
 

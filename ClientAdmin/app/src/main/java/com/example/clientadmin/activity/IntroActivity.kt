@@ -23,7 +23,7 @@ import com.example.clientadmin.R
 import com.example.clientadmin.authentication.GoogleAuth
 import com.example.clientadmin.viewmodels.LoginViewModel
 import androidx.activity.result.ActivityResultLauncher
-import com.example.clientadmin.model.enumerator.TokenState
+import com.example.clientadmin.viewmodels.LoginState
 
 @Composable
 fun IndexPage(
@@ -71,9 +71,9 @@ fun IndexPage(
                 }
 
                 when(isLoggedIn.value){
-                    TokenState.LOGGED -> navController.navigate("scaffold")
-                    TokenState.REGISTER -> navController.navigate("register/${loginViewModel.token.value}")
-                    TokenState.INVALID -> println("invalid id token") //TODO
+                    LoginState.LOGGED -> navController.navigate("scaffold")
+                    LoginState.REGISTER -> navController.navigate("register/${loginViewModel.token.value}")
+                    LoginState.NULL -> println("invalid id token") //TODO
                 }
             }
         }

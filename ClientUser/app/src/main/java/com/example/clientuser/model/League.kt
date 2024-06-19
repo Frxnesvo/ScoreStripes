@@ -1,11 +1,8 @@
 package com.example.clientuser.model
 
 import android.graphics.Bitmap
-import android.net.Uri
-import com.example.clientuser.S3ImageDownloader
+import com.example.clientuser.utils.S3ImageDownloader
 import com.example.clientuser.model.dto.LeagueDto
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 class League(
     val id: String,
@@ -18,7 +15,7 @@ class League(
             return League(
                 id = leagueDto.id,
                 name = leagueDto.name,
-                image = S3ImageDownloader.download(leagueDto.picUrl).first()
+                image = S3ImageDownloader.getImageForBucket(leagueDto.picUrl)
             )
         }
     }

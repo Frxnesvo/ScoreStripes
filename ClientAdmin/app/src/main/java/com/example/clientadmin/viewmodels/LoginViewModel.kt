@@ -17,7 +17,7 @@ import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 import java.time.format.DateTimeFormatter
 
-
+enum class LoginState { LOGGED, REGISTER, NULL }
 class LoginViewModel: ViewModel() {
     private val _user = MutableStateFlow<Admin?>(null)
     val user: StateFlow<Admin?> = _user
@@ -25,7 +25,7 @@ class LoginViewModel: ViewModel() {
     private val _addError = mutableStateOf("")
     val addError = _addError
 
-    private val _isLoggedIn = mutableStateOf(TokenState.INVALID)
+    private val _isLoggedIn = mutableStateOf(LoginState.NULL)
     val isLoggedIn = _isLoggedIn
 
     private val _token = mutableStateOf("")
@@ -41,10 +41,17 @@ class LoginViewModel: ViewModel() {
                     ).awaitResponse()
                     if (response.isSuccessful) {
                         //TODO salvare il token
-                        _isLoggedIn.value = TokenState.LOGGED
+                        //TODO verificare che l'utente loggato sia un admin
+
+                        response.body()?.let { authResponseDto ->
+                            println("URL IMAGE: ${authResponseDto.profilePicUrl}")
+                            _user.value = Admin.fromDto(authResponseDto)
+                            _isLoggedIn.value = LoginState.LOGGED
+                        }
+
                     } else {
                         if(response.code() == 409) {
-                            _isLoggedIn.value = TokenState.REGISTER
+                            _isLoggedIn.value = LoginState.REGISTER
                             _token.value = idToken
                         }
                         else println("Error login: ${response.message()}")
@@ -55,24 +62,18 @@ class LoginViewModel: ViewModel() {
             }
         }
         else{
-            _isLoggedIn.value = TokenState.INVALID
+            _isLoggedIn.value = LoginState.NULL
             println("invalid id token")
         }
     }
 
     fun goToLogin(){
-        _isLoggedIn.value = TokenState.INVALID
+        _isLoggedIn.value = LoginState.NULL
     }
 
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
         try {
             var returnValue = false
-            Admin(
-                username = adminCreateRequestDto.username,
-                birthDate = adminCreateRequestDto.birthDate,
-                gender = adminCreateRequestDto.gender,
-                pic = pic
-            )
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.adminRegister(
                     MultipartBody.Part.createFormData("idToken", token),
@@ -82,21 +83,18 @@ class LoginViewModel: ViewModel() {
                     ConverterBitmap.convert(bitmap = pic, fieldName = "profilePic")
                 ).awaitResponse()
 
-                if (response.isSuccessful) {
-                    response.body()?.let { _user.value = Admin.fromDto(it) }
-                    _isLoggedIn.value = TokenState.LOGGED
-                    returnValue = true
-                } else {
+                if (response.isSuccessful) returnValue = true
+                else {
                     println("Error registering admin: ${response.message()}")
                     returnValue = false
-                    _isLoggedIn.value = TokenState.INVALID
                 }
+                _isLoggedIn.value = LoginState.NULL
             }
             return returnValue
         }
         catch (e: IllegalArgumentException) {
             _addError.value = e.message ?: "Unknown error"
-            _isLoggedIn.value = TokenState.INVALID
+            _isLoggedIn.value = LoginState.NULL
             return false
         }
     }

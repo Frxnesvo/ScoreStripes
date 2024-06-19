@@ -5,7 +5,7 @@ import com.example.clientuser.model.Address
 import com.example.clientuser.model.Order
 import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.dto.AddressDto
-import com.example.clientuser.service.RetrofitHandler
+import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

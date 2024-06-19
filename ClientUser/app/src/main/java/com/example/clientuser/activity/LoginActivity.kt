@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChevronLeft
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,8 +37,11 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
 
         BoxIcon(
             iconColor = colorResource(id = R.color.secondary),
-            content = Icons.Outlined.ChevronLeft
-        ) { navController.popBackStack() }
+            content = Icons.AutoMirrored.Outlined.KeyboardArrowLeft
+        ) {
+            loginViewModel.goToLogin()
+            navController.navigate("login")
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),

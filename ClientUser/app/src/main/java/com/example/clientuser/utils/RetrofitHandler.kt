@@ -1,13 +1,13 @@
-package com.example.clientuser.service
+package com.example.clientuser.utils
 
-import com.example.clientuser.service.interfaces.CustomerApiService
-import com.example.clientuser.service.interfaces.CartApiService
-import com.example.clientuser.service.interfaces.ClubApiService
-import com.example.clientuser.service.interfaces.LeagueApiService
-import com.example.clientuser.service.interfaces.LoginApiService
-import com.example.clientuser.service.interfaces.OrderApiService
-import com.example.clientuser.service.interfaces.ProductApiService
-import com.example.clientuser.service.interfaces.WishListApiService
+import com.example.clientuser.api.CustomerApiService
+import com.example.clientuser.api.CartApiService
+import com.example.clientuser.api.ClubApiService
+import com.example.clientuser.api.LeagueApiService
+import com.example.clientuser.api.LoginApiService
+import com.example.clientuser.api.OrderApiService
+import com.example.clientuser.api.ProductApiService
+import com.example.clientuser.api.WishListApiService
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,7 +28,7 @@ object RetrofitHandler {
 
     private val retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080")
+            .baseUrl("http://192.168.178.42:8080")
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

@@ -5,7 +5,7 @@ import com.example.clientuser.model.CartItem
 import com.example.clientuser.model.dto.AddToCartRequestDto
 import com.example.clientuser.model.dto.UpdateCartItemDto
 
-import com.example.clientuser.service.RetrofitHandler
+import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
