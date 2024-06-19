@@ -1,5 +1,8 @@
 package com.example.clientadmin.viewmodels
 
+import android.accounts.Account
+import android.accounts.AccountManager
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 import java.time.format.DateTimeFormatter
@@ -32,7 +36,7 @@ class LoginViewModel: ViewModel() {
     val token = _token
 
 
-    fun login(idToken: String?){
+    fun login(idToken: String?, context: Context){
         if(idToken != null) {
             try {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -40,9 +44,15 @@ class LoginViewModel: ViewModel() {
                         mapOf(pair = Pair("idToken", idToken))
                     ).awaitResponse()
                     if (response.isSuccessful) {
-                        //TODO salvare il token
+                        val responseBody = response.body()
+                        if (responseBody != null) {
+                            val jwt = responseBody.jwt
+                            val username = responseBody.username
+                            withContext(Dispatchers.Main) {
+                                saveToken(context, username, jwt)
+                            }
+                        }
                         //TODO verificare che l'utente loggato sia un admin
-
                         response.body()?.let { authResponseDto ->
                             println("URL IMAGE: ${authResponseDto.profilePicUrl}")
                             _user.value = Admin.fromDto(authResponseDto)
@@ -96,6 +106,17 @@ class LoginViewModel: ViewModel() {
             _addError.value = e.message ?: "Unknown error"
             _isLoggedIn.value = LoginState.NULL
             return false
+        }
+    }
+
+    private fun saveToken(context: Context, accountName: String, authToken: String) {
+        val accountManager = AccountManager.get(context)
+        val account = Account(accountName, "com.example.clientadmin")
+
+        if (accountManager.addAccountExplicitly(account, null, null)) {
+            accountManager.setAuthToken(account, "Bearer", authToken)
+        } else {
+            accountManager.setAuthToken(account, "Bearer", authToken)
         }
     }
 }
