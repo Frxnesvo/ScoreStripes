@@ -1,8 +1,6 @@
 package com.example.clientadmin.activity
 
-import android.app.Activity
 import android.content.Intent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -26,12 +22,8 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.authentication.GoogleAuth
 import com.example.clientadmin.viewmodels.LoginViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import kotlinx.coroutines.launch
-import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
-import com.example.clientadmin.viewmodels.TokenState
-import kotlin.math.log
+import com.example.clientadmin.model.enumerator.TokenState
 
 @Composable
 fun IndexPage(
@@ -79,22 +71,10 @@ fun IndexPage(
                 }
 
                 when(isLoggedIn.value){
-                    TokenState.LOGIN -> navController.navigate("scaffold")
+                    TokenState.LOGGED -> navController.navigate("scaffold")
                     TokenState.REGISTER -> navController.navigate("register/${loginViewModel.token.value}")
                     TokenState.INVALID -> println("invalid id token") //TODO
                 }
-
-                /*TextButton(onClick = { globalIndex.intValue = 3 }) {
-                    Text(
-                        text = "enter as guest",
-                        color = colorResource(id = R.color.white50),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            letterSpacing = 5.sp
-                        )
-                    )
-                }*/
             }
         }
     }

@@ -23,7 +23,7 @@ object RetrofitHandler {
         .build()
 
     private val moshi = Moshi.Builder()
-        //.add(LocalDateAdapter)
+        .add(LocalDateAdapter)
         .build()
 
     private val retrofit by lazy {

@@ -10,12 +10,13 @@ import com.example.clientadmin.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class LeagueViewModel: ViewModel() {
     private val _leaguesNames = MutableStateFlow<List<String>>(emptyList())
-    val leaguesNames = _leaguesNames
+    val leaguesNames: StateFlow<List<String>> = _leaguesNames
 
     private val _addError =  mutableStateOf("")
     val addError = _addError
@@ -54,6 +55,10 @@ class LeagueViewModel: ViewModel() {
             _addError.value = e.message ?: "Unknown error"
             return false
         }
+    }
+
+    fun setFilter(filter: Map<String, String?>) {
+        //TODO
     }
 
 }

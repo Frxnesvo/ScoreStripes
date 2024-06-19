@@ -13,7 +13,7 @@ class League(
 
     companion object{
         fun validateName(name: String): Boolean{
-            return name.length in 3..25
+            return name.length in 3..25 && name.isNotBlank()
         }
         fun validateImage(image: Bitmap): Boolean{
             return image != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)

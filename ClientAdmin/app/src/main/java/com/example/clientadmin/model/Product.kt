@@ -6,7 +6,6 @@ import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.utils.S3ImageDownloader
-import kotlinx.coroutines.flow.first
 
 class Product (
     val name: String,
@@ -31,16 +30,16 @@ class Product (
 
     companion object{
         fun validateName(name: String): Boolean{
-            return name.length in 3..40
+            return name.length in 3..40 && name.isNotBlank()
         }
         fun validatePrice(price: Double): Boolean{
             return price > 0
         }
         fun validateDescription(description: String): Boolean{
-            return description.length in 10..500
+            return description.length in 10..500 && description.isNotBlank()
         }
         fun validateBrand(brand: String): Boolean{
-            return brand.length in 2..40
+            return brand.length in 2..40 && brand.isNotBlank()
         }
         fun validatePic(pic: Bitmap): Boolean{
             return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
@@ -54,8 +53,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.productCategory,
-                pic1 = S3ImageDownloader.download(productDto.pics[0]).first(),
-                pic2 = S3ImageDownloader.download(productDto.pics[1]).first(),
+                pic1 = S3ImageDownloader.getImageForBucket(productDto.pics[0]),
+                pic2 = S3ImageDownloader.getImageForBucket(productDto.pics[1]),
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

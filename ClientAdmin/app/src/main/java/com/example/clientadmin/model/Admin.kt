@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.AdminDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.utils.S3ImageDownloader
-import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 
 class Admin(
@@ -27,7 +26,7 @@ class Admin(
             return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         }
         fun validateUsername(username: String): Boolean {
-            return username.length in 3..20
+            return username.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$".toRegex()) && username.isNotBlank()
         }
 
         fun validateBirthdate(birthdate: LocalDate): Boolean {
@@ -35,6 +34,7 @@ class Admin(
         }
 
         suspend fun fromDto(adminDto: AdminDto): Admin{
+            println("Url image: ${adminDto.profilePicUrl}")
             return Admin(
                 username = adminDto.username,
                 firstName = adminDto.firstName,
@@ -42,7 +42,7 @@ class Admin(
                 email = adminDto.email,
                 birthDate = adminDto.birthDate,
                 gender = adminDto.gender,
-                pic = S3ImageDownloader.download(adminDto.picUrl).first()
+                pic = S3ImageDownloader.getImageForBucket(adminDto.profilePicUrl)
             )
         }
     }

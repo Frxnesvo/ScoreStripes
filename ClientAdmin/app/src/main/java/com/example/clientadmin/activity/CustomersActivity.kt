@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.model.enumerator.FilterType
 import com.example.clientadmin.viewmodels.CustomerViewModel
 
 @Composable
@@ -66,9 +67,9 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
     }
 
     if (isOpenSheet)
-        SearchPanelCostumers(
+        SearchByNameSheet(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
-            customerViewModel = customerViewModel
-        )
+            filterType = FilterType.CUSTOMERS
+        ){ customerViewModel.setFilters(it) }
 }

@@ -60,4 +60,8 @@ class ClubViewModel : ViewModel() {
         }
 
     }
+
+    fun setFilter(filter: Map<String, String?>) {
+        //TODO
+    }
 }

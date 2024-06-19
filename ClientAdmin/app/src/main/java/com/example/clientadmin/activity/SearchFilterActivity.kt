@@ -19,18 +19,18 @@ import androidx.compose.ui.unit.dp
 import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.R
 import com.example.clientadmin.model.FilterBuilder
+import com.example.clientadmin.model.enumerator.FilterType
 import com.example.clientadmin.model.enumerator.ProductCategory
-import com.example.clientadmin.viewmodels.CustomerViewModel
-import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.ProductViewModel
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchPanelCostumers(
+fun SearchByNameSheet(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
-    customerViewModel: CustomerViewModel
+    filterType: FilterType,
+    onSearch: (Map<String, String?>) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -43,7 +43,7 @@ fun SearchPanelCostumers(
         ) {
             CustomTextField(
                 value = "",
-                text = stringResource(id = R.string.search_for_username),
+                text = stringResource(id = if(filterType == FilterType.CUSTOMERS) R.string.search_for_username else R.string.search_for_name),
                 leadingIcon = Icons.Outlined.Search
             ) { filterBuilder.setName(it) }
 
@@ -55,7 +55,7 @@ fun SearchPanelCostumers(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        customerViewModel.setFilters(filterBuilder.build())
+                        onSearch(filterBuilder.build())
                     }
                 }
             }
@@ -69,13 +69,14 @@ fun SearchPanelCostumers(
 fun SearchPanelProducts(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
-    leagueViewModel: LeagueViewModel,
-    productViewModel: ProductViewModel
+    leaguesNames: StateFlow<List<String>>,
+    filterType: FilterType,
+    onSearch: (Map<String, String?>) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val filterBuilder = remember { FilterBuilder() }
-    val leagues by leagueViewModel.leaguesNames.collectAsState()
+    val leagues by leaguesNames.collectAsState()
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
@@ -93,15 +94,17 @@ fun SearchPanelProducts(
                 selectedOption = ""
             ) { filterBuilder.setLeague(it) }
 
-            CustomComboBox(
-                options = ProductCategory.entries,
-                selectedOption = ""
-            ) { filterBuilder.setCategory(it) }
+            if(filterType == FilterType.PRODUCTS) {
+                CustomComboBox(
+                    options = ProductCategory.entries,
+                    selectedOption = ""
+                ) { filterBuilder.setCategory(it) }
 
-            CustomComboBox(
-                options = Size.entries,
-                selectedOption = ""
-            ) { filterBuilder.setSize(it) }
+                CustomComboBox(
+                    options = Size.entries,
+                    selectedOption = ""
+                ) { filterBuilder.setSize(it) }
+            }
 
             CustomButton(
                 text = stringResource(id = R.string.search),
@@ -111,7 +114,7 @@ fun SearchPanelProducts(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        productViewModel.setFilter(filterBuilder.build())
+                        onSearch(filterBuilder.build())
                     }
                 }
             }
