@@ -18,7 +18,7 @@ class Admin(
 ) {
     init {
         require(validateProfilePic(pic)) { "Invalid profile picture" }
-        require(validateUsername(username)) { "Invalid username: must be between 3 and 20 characters" }
+        require(validateUsername(username)) { "Invalid username: must be between 3 and 20 characters. At least 1 upper case character" }
         require(validateBirthdate(birthDate)) { "Invalid birthdate: must be before the current date" }
     }
 
@@ -27,7 +27,7 @@ class Admin(
             return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         }
         fun validateUsername(username: String): Boolean {
-            return username.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$".toRegex()) && username.isNotBlank()
+            return username.matches("^(?=.*[a-z])(?=.*[A-Z]).+$".toRegex()) && username.isNotBlank()
         }
 
         fun validateBirthdate(birthdate: LocalDate): Boolean {

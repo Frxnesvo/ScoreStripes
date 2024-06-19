@@ -40,21 +40,21 @@ import java.util.Map;
         }
 
         @PostMapping(path = "/register-admin", consumes = {"multipart/form-data"})
-        public ResponseEntity<String> registerAdmin(@Valid @ModelAttribute AdminRegisterDto adminRegisterDto, BindingResult bindingResult) {
+        public ResponseEntity<Map<String,String>> registerAdmin(@Valid @ModelAttribute AdminRegisterDto adminRegisterDto, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
                 throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
             }
 
-            return ResponseEntity.ok(authService.registerAdmin(adminRegisterDto));
+            return ResponseEntity.ok(Map.of("message",authService.registerAdmin(adminRegisterDto)));
         }
 
         @PostMapping(path = "/register-customer", consumes = {"multipart/form-data"})
-        public ResponseEntity<String> registerCustomer(@Valid @ModelAttribute CustomerRegisterDto customerRegisterDto, BindingResult bindingResult) {
+        public ResponseEntity<Map<String,String>> registerCustomer(@Valid @ModelAttribute CustomerRegisterDto customerRegisterDto, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
                 throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
             }
 
-            return ResponseEntity.ok(authService.registerCustomer(customerRegisterDto));
+            return ResponseEntity.ok(Map.of("message",authService.registerCustomer(customerRegisterDto)));
         }
 
 

@@ -114,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
                 admin.setProfilePicUrl(url);
             }
             adminDao.save(admin);
-            return  "Admin registered successfully";
+            return "Admin registered successfully";
         }
         catch (GeneralSecurityException | IOException e) {
             throw new VerificationException("Invalid token");

@@ -12,6 +12,9 @@ import com.example.clientadmin.model.enumerator.TokenState
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.utils.TokenStoreUtils
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +50,7 @@ class LoginViewModel: ViewModel() {
                         mapOf(pair = Pair("idToken", idToken))
                     ).awaitResponse()
                     if (response.isSuccessful) {
+                        println("Response server: ${response.body()}")
                         val responseBody = response.body()
                         if (responseBody != null) {
                             val jwt = responseBody.jwt
@@ -96,7 +100,11 @@ class LoginViewModel: ViewModel() {
                     ConverterBitmap.convert(bitmap = pic, fieldName = "profilePic")
                 ).awaitResponse()
 
-                if (response.isSuccessful) returnValue = true
+                if (response.isSuccessful) {
+                    val responseMap = response.body()
+                    println("Response server: ${responseMap?.get("message")}")
+                    returnValue = true
+                }
                 else {
                     println("Error registering admin: ${response.message()}")
                     returnValue = false

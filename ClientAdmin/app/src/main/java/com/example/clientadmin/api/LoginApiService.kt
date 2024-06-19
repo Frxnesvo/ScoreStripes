@@ -26,5 +26,5 @@ interface LoginApiService {
         @Part birthDate: MultipartBody.Part,
         @Part gender: MultipartBody.Part,
         @Part imageProfile: MultipartBody.Part
-    ): Call<String>
+    ): Call<Map<String, String>>
 }
