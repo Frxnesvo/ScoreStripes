@@ -10,6 +10,6 @@ public interface AuthService {
 
     AuthResponseDto login(String idToken) throws GeneralSecurityException, IOException, TokenVerifier.VerificationException;
 
-    RegisteredAdminDto registerAdmin(AdminRegisterDto adminRegisterDto);
-    RegisteredCustomerDto registerCustomer(CustomerRegisterDto customerRegisterDto);
+    String registerAdmin(AdminRegisterDto adminRegisterDto);
+    String registerCustomer(CustomerRegisterDto customerRegisterDto);
 }

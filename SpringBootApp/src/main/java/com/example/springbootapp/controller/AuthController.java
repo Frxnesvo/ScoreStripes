@@ -41,27 +41,23 @@ import java.util.Map;
         }
 
         @PostMapping(path = "/register-admin", consumes = {"multipart/form-data"})
-        public ResponseEntity<RegisteredAdminDto> registerAdmin(@Valid @ModelAttribute AdminRegisterDto adminRegisterDto, BindingResult bindingResult) {
+        public ResponseEntity<String> registerAdmin(@Valid @ModelAttribute AdminRegisterDto adminRegisterDto, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
                 throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
             }
+
             return ResponseEntity.ok(authService.registerAdmin(adminRegisterDto));
         }
 
         @PostMapping(path = "/register-customer", consumes = {"multipart/form-data"})
-        public ResponseEntity<RegisteredCustomerDto> registerCustomer(@Valid @ModelAttribute CustomerRegisterDto customerRegisterDto, BindingResult bindingResult) {
+        public ResponseEntity<String> registerCustomer(@Valid @ModelAttribute CustomerRegisterDto customerRegisterDto, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
                 throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
             }
+
             return ResponseEntity.ok(authService.registerCustomer(customerRegisterDto));
         }
 
-        @GetMapping("/printme")  //TODO: da eliminare
-        public ResponseEntity<String> printMe(){
-            System.out.println(userDetailsService.getCurrentUser().getId());
-            System.out.println(userDetailsService.getCurrentUser().getEmail());
-            return ResponseEntity.ok("ok");
-        }
 
 
 
