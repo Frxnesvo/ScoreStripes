@@ -65,9 +65,11 @@ fun IndexPage(
                     background = R.color.secondary50,
                     text = stringResource(id = R.string.sign_in)
                 ) {
-                    val signInIntent = GoogleAuth.getClient(context).signInIntent
-                    signInLauncher.launch(signInIntent)
-                    println("IS LOGGED IN: ${isLoggedIn.value}")
+                    val googleSignInClient = GoogleAuth.getClient(context)
+                    googleSignInClient.signOut().addOnCompleteListener {
+                        val signInIntent = googleSignInClient.signInIntent
+                        signInLauncher.launch(signInIntent)
+                    }
                 }
 
                 when(isLoggedIn.value){

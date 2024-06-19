@@ -34,11 +34,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val loginViewModel = LoginViewModel()
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("774497332630-engaqhas88dv6rpmrpjfnad09i6jloef.apps.googleusercontent.com")
-            .requestEmail()
-            .build()
-
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val token = GoogleAuth.manageLoginResult(result)
             if (token != null)

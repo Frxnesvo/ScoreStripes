@@ -1,8 +1,11 @@
 package com.example.clientuser.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -16,17 +19,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
+import com.example.clientuser.authentication.GoogleAuth
 import com.example.clientuser.model.Customer
 import com.example.clientuser.ui.theme.ClientUserTheme
 import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 import com.google.gson.Gson
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val loginViewModel = LoginViewModel()
+
+        val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val token = GoogleAuth.manageLoginResult(result)
+            if (token != null)
+                loginViewModel.login(token, this.applicationContext)
+        }
         setContent {
             ClientUserTheme {
                 Surface(
@@ -35,8 +44,9 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Navigation(
                         navController = rememberNavController(),
-                        loginViewModel = LoginViewModel(),
-                        loginFormViewModel = LoginFormViewModel()
+                        loginViewModel = loginViewModel,
+                        loginFormViewModel = LoginFormViewModel(),
+                        signInLauncher = signInLauncher
                     )
                 }
             }
@@ -44,12 +54,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 @Composable
 fun Navigation(
     navController: NavHostController,
-    loginViewModel : LoginViewModel,
-    loginFormViewModel: LoginFormViewModel
+    loginViewModel: LoginViewModel,
+    loginFormViewModel: LoginFormViewModel,
+    signInLauncher: ActivityResultLauncher<Intent>
 ){
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -62,7 +72,8 @@ fun Navigation(
         ){
             IndexPage(
                 navController = navController,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
+                signInLauncher = signInLauncher
             )
         }
 
@@ -93,7 +104,6 @@ fun Navigation(
                 //TODO vedere come fare per la conversione dell'immagine
                 val customer = customerJson?.let {
                     Gson().fromJson(it, Customer::class.java)
-                    Json.decodeFromString<Customer>(it)
                 }
 
                 Scaffold(customer!!)

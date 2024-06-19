@@ -1,4 +1,4 @@
-package com.example.clientadmin.authentication
+package com.example.clientuser.authentication
 
 import android.app.Activity
 import android.content.Context
@@ -25,13 +25,11 @@ class GoogleAuth{
 
         fun manageLoginResult(result: ActivityResult): String?{
             try {
-                print("CODE: ${result.resultCode}")
                 val data: Intent? = result.data
 
                 if (result.resultCode == Activity.RESULT_OK) {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                     val account = task.getResult(ApiException::class.java)
-                    println("TOKEN: ${account.idToken}")
                     return account.idToken
                 }
             }

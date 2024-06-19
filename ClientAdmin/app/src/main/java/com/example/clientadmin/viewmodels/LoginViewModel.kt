@@ -44,14 +44,14 @@ class LoginViewModel: ViewModel() {
                         mapOf(pair = Pair("idToken", idToken))
                     ).awaitResponse()
                     if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        if (responseBody != null) {
-                            val jwt = responseBody.jwt
-                            val username = responseBody.username
-                            withContext(Dispatchers.Main) {
-                                saveToken(context, username, jwt)
-                            }
-                        }
+//                        val responseBody = response.body()
+//                        if (responseBody != null) {
+//                            val jwt = responseBody.jwt
+//                            val username = responseBody.username
+//                            withContext(Dispatchers.Main) {
+//                                saveToken(context, username, jwt)
+//                            }
+//                        }
                         //TODO verificare che l'utente loggato sia un admin
                         response.body()?.let { authResponseDto ->
                             println("URL IMAGE: ${authResponseDto.profilePicUrl}")

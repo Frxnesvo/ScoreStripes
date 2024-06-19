@@ -5,6 +5,7 @@ coilCompose = "2.0.0"
 converterMoshi = "2.9.0"
 foundation = "1.6.7"
 gson = "2.10.1"
+gsonVersion = "2.8.8"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -25,9 +26,11 @@ navigationCompose = "2.7.7"
 okhttp = "4.9.3"
 retrofit = "2.9.0"
 runtimeLivedata = "1.6.7"
+playServicesAuth = "21.2.0"
 ui = "1.6.7"
 
 [libraries]
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPager" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +42,7 @@ androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedat
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+gson-v288 = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
