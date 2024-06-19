@@ -17,7 +17,7 @@ public class AdminRegisterDto {
 
     @NotBlank
     @Size(min = 3, max = 20)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$") //almeno una lettera maiuscola, una minuscola e un numero
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z]).+$") //almeno una lettera maiuscola, una minuscola e un numero
     private String username;
 
     @Past

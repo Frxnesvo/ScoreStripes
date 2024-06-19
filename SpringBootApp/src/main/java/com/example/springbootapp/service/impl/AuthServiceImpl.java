@@ -55,22 +55,18 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponseDto login(String idToken) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
-                .build();{
-        }
+                .build();
         try {
             GoogleIdToken googleIdToken = verifier.verify(idToken);
             if (googleIdToken == null) {
                 throw new VerificationException("Invalid token");
             }
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
-            System.out.println(payload.getEmail());
             System.out.println(payload.toPrettyString());
             Optional<User> user = userDao.findByEmail(payload.getEmail());
             if (user.isPresent()) {
                 String jwtToken = jwtHandler.generateJwtToken(user.get());
-                System.out.println("STAMPA IMMAGINE PICCOLA: " + user.get().getProfilePicUrl());
                 AuthResponseDto response = modelMapper.map(user.get(), AuthResponseDto.class);
-                System.out.println("STAMPA IMMAGINE GRANDE: " + response.getProfilePicUrl());
                 response.setJwt(jwtToken);
                 return response;
             }
