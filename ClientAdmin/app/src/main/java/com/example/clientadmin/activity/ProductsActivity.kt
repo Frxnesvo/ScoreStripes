@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,16 +30,23 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientadmin.model.enumerator.FilterType
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.Club
-import com.example.clientadmin.model.League
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
+
+@Preview
+@Composable
+fun P(){
+    Products(navHostController = rememberNavController(), productViewModel = ProductViewModel(), leagueViewModel = LeagueViewModel(), clubViewModel = ClubViewModel())
+}
 
 @Composable
 fun Products(
@@ -48,8 +56,8 @@ fun Products(
     clubViewModel: ClubViewModel
 ) {
     val products by productViewModel.productSummaries.collectAsState()
-    val leagues: List<League> = listOf() //todo by leagueViewModel.leagues.collectAsState()
-    val clubs: List<Club> = listOf() //todo by clubViewModel.clubs.collectAsState()
+    val leagues by leagueViewModel.leagues.collectAsState()
+    val clubs by clubViewModel.clubs.collectAsState()
 
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
@@ -64,7 +72,8 @@ fun Products(
         item {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Box {
                     Row(
@@ -100,15 +109,17 @@ fun Products(
         }
 
         if(
-            (filterType == FilterType.PRODUCTS && products.isEmpty()) //||
-            //(filterType == FilterType.CLUBS && clubViewModel.clubs.isEmpty()) ||
-            //(filterType == FilterType.LEAGUES && leagueViewModel.leagues.isEmpty())
+            (filterType == FilterType.PRODUCTS && products.isEmpty()) ||
+            (filterType == FilterType.CLUBS && clubs.isEmpty()) ||
+            (filterType == FilterType.LEAGUES && leagues.isEmpty())
         )
             item{
                 Text(
                     text = stringResource(id = R.string.list_empty),
                     color = colorResource(id = R.color.black),
-                    style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp)
+                    style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         else {
@@ -120,14 +131,14 @@ fun Products(
                 }
             } else if (FilterType.CLUBS == filterType) {
                 items(clubs) {
-                    key(it) { //todo da gestire con id
-                        ClubItem(club = it) { navHostController.navigate("club/${it}") } //TODO
+                    key(it.name) { //todo non so se name è unique
+                        ClubItem(club = it) { navHostController.navigate("club/${it}") } //TODO fare la navigazione
                     }
                 }
             } else if (FilterType.LEAGUES == filterType) {
                 items(leagues) {
-                    key(it) {//todo da gestire con id
-                        LeagueItem(league = it) { navHostController.navigate("league/${it}") } //TODO
+                    key(it.name) {//todo non so se name è unique
+                        LeagueItem(league = it) { navHostController.navigate("league/${it}") } //TODO fare la navigazione
                     }
                 }
             }

@@ -1,6 +1,8 @@
 package com.example.clientadmin.model
 
 import android.graphics.Bitmap
+import com.example.clientadmin.model.dto.LeagueDto
+import com.example.clientadmin.utils.S3ImageDownloader
 
 class League(
     val name: String,
@@ -17,6 +19,13 @@ class League(
         }
         fun validateImage(image: Bitmap): Boolean{
             return image != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        }
+        fun fromDto(leagueDto: LeagueDto): League{
+
+            return League(
+                name = leagueDto.name,
+                image = S3ImageDownloader.getImageForBucket(leagueDto.picUrl)
+            )
         }
     }
 }
