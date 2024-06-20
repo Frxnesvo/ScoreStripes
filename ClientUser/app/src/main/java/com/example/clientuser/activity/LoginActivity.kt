@@ -119,7 +119,10 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                         ), //TODO farlo inserire durante la register
                         pic = customerState.profilePic
                     )
-                ){ navController.navigate("index") }
+                ){
+                    loginViewModel.goToLogin()
+                    navController.navigate("index")
+                }
 
             }
         }

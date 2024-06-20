@@ -1,5 +1,7 @@
 [versions]
 accompanistPager = "0.28.0"
+accompanistPagerIndicators = "0.30.1"
+accompanistPagerVersion = "0.30.1"
 agp = "8.4.1"
 coilCompose = "2.0.0"
 converterMoshi = "2.9.0"
@@ -30,6 +32,8 @@ playServicesAuth = "21.2.0"
 ui = "1.6.7"
 
 [libraries]
+accompanist-pager-indicators-v0301 = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPagerIndicators" }
+accompanist-pager-v0301 = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPagerVersion" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPager" }

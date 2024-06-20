@@ -457,3 +457,33 @@ fun AddItemToCart(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InsertWishlistTokenPanel(onDismissRequest: () -> Unit, setBottomSheet: (Boolean) -> Unit){
+    val sheetState = rememberModalBottomSheetState()
+
+    ModalBottomSheet(onDismissRequest = { onDismissRequest() }, sheetState = sheetState) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            CustomTextField(
+                value = "",
+                text = stringResource(id = R.string.insert_token)
+            ) {
+                TODO("logica view model")
+            }
+
+            CustomButton(
+                text = stringResource(id = R.string.enter),
+                background = R.color.secondary
+            ) {
+                //TODO logica view model
+                setBottomSheet(false)
+            }
+        }
+    }
+}

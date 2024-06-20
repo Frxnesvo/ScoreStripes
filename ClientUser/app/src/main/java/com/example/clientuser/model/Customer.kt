@@ -1,14 +1,16 @@
 package com.example.clientuser.model
 
 import android.graphics.Bitmap
+import com.example.clientuser.model.dto.AuthResponseDto
 import com.example.clientuser.utils.S3ImageDownloader
 import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.model.enumerator.Gender
+import com.google.android.gms.auth.api.Auth
 
 import java.time.LocalDate
 
 class Customer(
-    val id: String,
+    val id: String = "",
     val username: String,
     val firstName: String,
     val lastName: String,
@@ -30,17 +32,16 @@ class Customer(
 
 
     companion object {
-        suspend fun fromDto(customerDto: CustomerDto): Customer {
+        suspend fun fromDto(customerDto: AuthResponseDto): Customer {
             return Customer(
-                id = customerDto.id,
                 username = customerDto.username,
                 firstName = customerDto.firstName,
                 lastName = customerDto.lastName,
                 email = customerDto.email,
                 birthDate = customerDto.birthDate,
                 gender = customerDto.gender,
-                favoriteTeam = customerDto.favouriteTeam,
-                address = customerDto.address,
+                favoriteTeam = "",
+                address = Address(),
                 pic = S3ImageDownloader.getImageForBucket(customerDto.profilePicUrl)
             )
         }

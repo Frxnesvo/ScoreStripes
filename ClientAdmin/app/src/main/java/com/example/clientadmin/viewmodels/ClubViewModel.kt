@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 
 class ClubViewModel : ViewModel() {
@@ -56,9 +57,9 @@ class ClubViewModel : ViewModel() {
             Club(name = clubCreateRequestDto.name, league = clubCreateRequestDto.league, pic = pic)
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.createClub(
-                    name = clubCreateRequestDto.name,
-                    league = clubCreateRequestDto.league,
-                    pic = ConverterBitmap.convert(bitmap = pic, fieldName = "picLeague")
+                    name = MultipartBody.Part.createFormData("name", clubCreateRequestDto.name),
+                    league = MultipartBody.Part.createFormData("leagueName", clubCreateRequestDto.league),
+                    pic = ConverterBitmap.convert(bitmap = pic, fieldName = "pic")
                 ).awaitResponse()
 
                 if (response.isSuccessful)

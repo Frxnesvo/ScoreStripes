@@ -12,8 +12,8 @@ interface ClubApiService {
     @Multipart
     @POST("/api/v1/clubs")
     fun createClub(
-        @Part("name") name: String,
-        @Part("leagueName") league: String,
+        @Part name: MultipartBody.Part,
+        @Part league: MultipartBody.Part,
         @Part pic: MultipartBody.Part,
     ): Call<ClubDto>
 

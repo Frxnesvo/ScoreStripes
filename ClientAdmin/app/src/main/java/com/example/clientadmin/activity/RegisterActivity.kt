@@ -104,7 +104,10 @@ fun Register(
                         ),
                         pic = adminState.profilePic
                     )
-                ){ navController.navigate("index") }
+                ){
+                    loginViewModel.goToLogin()
+                    navController.navigate("index")
+                }
             }
         }
     }
