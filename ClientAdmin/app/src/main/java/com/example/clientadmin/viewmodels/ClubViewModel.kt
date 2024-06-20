@@ -16,21 +16,34 @@ import retrofit2.awaitResponse
 
 class ClubViewModel : ViewModel() {
     private val _clubNames = MutableStateFlow<List<String>>(emptyList())
+    private val _clubs = MutableStateFlow<List<Club>>(emptyList())
+
+    val clubs: StateFlow<List<Club>> = _clubs
     val clubNames: StateFlow<List<String>> = _clubNames
+
+    private var filter: Map<String, String?> = emptyMap()
 
     private val _addError =  mutableStateOf("")
     val addError = _addError
 
-    init {
-        fetchClubNames()
+    init { fetchClubs() }
+
+    fun setFilter(filter: Map<String, String?>) {
+        this.filter = filter
+        _clubNames.value = emptyList()
+        _clubs.value = emptyList()
+        fetchClubs()
     }
 
-    private fun fetchClubNames() {
+    private fun fetchClubs() { //todo settare i filtri
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.getClubNames().awaitResponse()
                 if (response.isSuccessful) {
-                    response.body()?.let { _clubNames.value = it }
+                    response.body()?.let {clubs ->
+                        _clubs.value = clubs.map { Club.fromDto(it) }
+                        _clubNames.value = clubs.map { it.name }
+                    }
                 } else println(response.message())
             }
         } catch (e: Exception) {
@@ -40,7 +53,7 @@ class ClubViewModel : ViewModel() {
 
     fun addClub(clubCreateRequestDto: ClubCreateRequestDto, pic: Bitmap): Boolean{
         try {
-            Club(name = clubCreateRequestDto.name, league = clubCreateRequestDto.league, image = pic)
+            Club(name = clubCreateRequestDto.name, league = clubCreateRequestDto.league, pic = pic)
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.createClub(
                     name = clubCreateRequestDto.name,
@@ -49,7 +62,10 @@ class ClubViewModel : ViewModel() {
                 ).awaitResponse()
 
                 if (response.isSuccessful)
-                    response.body()?.let { club -> _clubNames.value += club.name }
+                    response.body()?.let { club ->
+                        _clubs.value += Club.fromDto(club)
+                        _clubNames.value += club.name
+                    }
                 else println(response.message())
             }
             return true
@@ -59,9 +75,5 @@ class ClubViewModel : ViewModel() {
             return false
         }
 
-    }
-
-    fun setFilter(filter: Map<String, String?>) {
-        //TODO
     }
 }

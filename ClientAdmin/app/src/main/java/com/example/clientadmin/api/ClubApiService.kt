@@ -17,6 +17,6 @@ interface ClubApiService {
         @Part pic: MultipartBody.Part,
     ): Call<ClubDto>
 
-    @GET("/api/v1/clubs/names")
-    fun getClubNames(): Call<List<String>>
+    @GET("/api/v1/clubs")
+    fun getClubNames(): Call<List<ClubDto>>
 }

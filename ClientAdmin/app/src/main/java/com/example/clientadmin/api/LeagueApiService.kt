@@ -16,6 +16,9 @@ interface LeagueApiService {
         @Part pic: MultipartBody.Part
     ): Call<LeagueDto>
 
-    @GET("/api/v1/leagues/names")
-    fun getLeagueNames(): Call<List<String>>
+    @GET("/api/v1/leagues")
+    fun getLeagues() : Call<List<LeagueDto>>
+
+//    @GET("/api/v1/leagues/names")
+//    fun getLeagueNames(): Call<List<String>>
 }

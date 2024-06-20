@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,9 +39,9 @@ import com.example.clientadmin.viewmodels.HomeViewModel
 
 @Composable
 fun Home(selectedScreen: MutableState<Screen>, homeViewModel: HomeViewModel, navHostController: NavHostController) {
-    val numNewOrders = homeViewModel.countNewOrders().collectAsState(initial = 0).value
-    val numProductOutOfStoke = homeViewModel.countVariantsOutOfStock().collectAsState(initial = 0).value
-    val numNewUser = homeViewModel.countNewAccounts().collectAsState(initial = 0).value
+    val numNewOrders by homeViewModel.countNewOrders().collectAsState(initial = 0)
+    val numProductOutOfStoke by homeViewModel.countVariantsOutOfStock().collectAsState(initial = 0)
+    val numNewUser by homeViewModel.countNewAccounts().collectAsState(initial = 0)
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),

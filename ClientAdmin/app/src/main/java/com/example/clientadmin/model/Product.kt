@@ -45,7 +45,7 @@ class Product (
             return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         }
 
-        suspend fun fromDto(productDto: ProductDto): Product{
+        fun fromDto(productDto: ProductDto): Product{
             return Product(
                 name = productDto.name,
                 description = productDto.description,

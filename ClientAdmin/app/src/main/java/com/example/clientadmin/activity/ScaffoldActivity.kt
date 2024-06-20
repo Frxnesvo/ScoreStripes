@@ -41,7 +41,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Admin
+import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.CustomerSummary
+import com.example.clientadmin.model.League
 import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
@@ -293,6 +295,26 @@ fun NavigationScaffold(
                         id = id
                     )
                 }
+            }
+        }
+        composable(
+            route = "league/{league}",
+            arguments = listOf(navArgument("costumer"){ type = NavType.StringType })
+        ){
+            it.arguments?.getString("costumer")?.let {
+                leagueString ->
+                val league = League.fromQueryString(leagueString)
+                LeagueDetails(navHostController = navHostController, leagueViewModel = leagueViewModel, leagueFormViewModel = LeagueFormViewModel(league))
+            }
+        }
+        composable(
+            route = "club/{club}",
+            arguments = listOf(navArgument("costumer"){ type = NavType.StringType })
+        ){
+            it.arguments?.getString("costumer")?.let {
+                clubString ->
+                val club = Club.fromQueryString(clubString)
+                ClubDetails(navHostController = navHostController, clubViewModel = clubViewModel, leagueViewModel = leagueViewModel, clubFormViewModel = ClubFormViewModel(club))
             }
         }
 
