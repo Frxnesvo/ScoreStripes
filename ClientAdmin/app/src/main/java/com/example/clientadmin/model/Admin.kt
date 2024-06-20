@@ -1,7 +1,6 @@
 package com.example.clientadmin.model
 
 import android.graphics.Bitmap
-import com.example.clientadmin.model.dto.AdminDto
 import com.example.clientadmin.model.dto.AuthResponseDto
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.utils.S3ImageDownloader
@@ -34,7 +33,7 @@ class Admin(
             return birthdate.isBefore(LocalDate.now())
         }
 
-        suspend fun fromDto(adminDto: AuthResponseDto): Admin{
+        fun fromDto(adminDto: AuthResponseDto): Admin{
             return Admin(
                 username = adminDto.username,
                 firstName = adminDto.firstName,

@@ -13,10 +13,16 @@ data class LeagueState(
     //error
     val isNameError: Boolean = !League.validateName(name)
 )
-class LeagueFormViewModel{
+class LeagueFormViewModel(league: League? = null){
     private val _leagueState = MutableStateFlow(LeagueState())
     val leagueState: StateFlow<LeagueState> = _leagueState.asStateFlow()
 
+    init {
+        if (league != null) {
+            updateName(league.name)
+            updateImage(league.pic)
+        }
+    }
     fun updateName(name: String) {
         val hasError = !League.validateName(name)
         _leagueState.value = _leagueState.value.copy(

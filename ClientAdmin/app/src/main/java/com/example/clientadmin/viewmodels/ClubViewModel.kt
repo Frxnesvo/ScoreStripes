@@ -53,7 +53,7 @@ class ClubViewModel : ViewModel() {
 
     fun addClub(clubCreateRequestDto: ClubCreateRequestDto, pic: Bitmap): Boolean{
         try {
-            Club(name = clubCreateRequestDto.name, league = clubCreateRequestDto.league, image = pic)
+            Club(name = clubCreateRequestDto.name, league = clubCreateRequestDto.league, pic = pic)
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.createClub(
                     name = clubCreateRequestDto.name,

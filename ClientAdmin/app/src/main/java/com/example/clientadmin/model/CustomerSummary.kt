@@ -4,20 +4,18 @@ import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.S3ImageDownloader
-import kotlinx.coroutines.flow.first
 
 class CustomerSummary (
     val id: String,
     val username: String,
     val pic: Bitmap
 ){
-
     fun toQueryString(): String {
         val picBase64 = ConverterBitmap.bitmapToBase64(pic)
         return "id=$id&username=$username&pic=$picBase64"
     }
     companion object{
-        suspend fun fromDto(customerSummaryDto: CustomerSummaryDto): CustomerSummary{
+        fun fromDto(customerSummaryDto: CustomerSummaryDto): CustomerSummary{
             return CustomerSummary(
                 id = customerSummaryDto.id,
                 username = customerSummaryDto.username,

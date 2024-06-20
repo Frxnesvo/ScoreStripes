@@ -13,9 +13,17 @@ data class ClubState(
     //error
     val isNameError: Boolean = !Club.validateName(name)
 )
-class ClubFormViewModel {
+class ClubFormViewModel(club: Club? = null) {
     private val _clubState = MutableStateFlow(ClubState())
     val clubState: StateFlow<ClubState> = _clubState.asStateFlow()
+
+    init {
+        if (club != null) {
+            updateNameClub(club.name)
+            updateImage(club.pic)
+            updateLeague(club.league)
+        }
+    }
 
     fun updateNameClub(nameTeam: String) {
         val hasError = !Club.validateName(nameTeam)

@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,22 +34,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientadmin.model.enumerator.FilterType
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
-
-@Preview
-@Composable
-fun P(){
-    Products(navHostController = rememberNavController(), productViewModel = ProductViewModel(), leagueViewModel = LeagueViewModel(), clubViewModel = ClubViewModel())
-}
 
 @Composable
 fun Products(
@@ -66,6 +61,7 @@ fun Products(
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),
+        modifier = Modifier.fillMaxSize()
     ) {
         item { Title() }
 
@@ -92,6 +88,24 @@ fun Products(
                         )
                         Icon(imageVector = Icons.Outlined.ArrowDropDown, contentDescription = null)
                     }
+                    DropdownMenu(expanded = control, onDismissRequest = { control = false }) {
+                        FilterType.entries.forEach {
+                            if (it != FilterType.CUSTOMERS)
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = it.name,
+                                            color = colorResource(id = R.color.black),
+                                            style = TextStyle(fontSize = 12.sp, letterSpacing = 5.sp)
+                                        )
+                                    },
+                                    onClick = {
+                                        filterType = it
+                                        control = false
+                                    }
+                                )
+                        }
+                    }
                 }
                 Box(
                     modifier = Modifier
@@ -100,7 +114,7 @@ fun Products(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
-                        ){ setBottomSheet(true) },
+                        ) { setBottomSheet(true) },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(Icons.Rounded.Search, contentDescription = null, tint = colorResource(id = R.color.secondary))
@@ -132,13 +146,13 @@ fun Products(
             } else if (FilterType.CLUBS == filterType) {
                 items(clubs) {
                     key(it.name) { //todo non so se name è unique
-                        ClubItem(club = it) { navHostController.navigate("club/${it}") } //TODO fare la navigazione
+                        ClubItem(club = it) { navHostController.navigate("club/${it.toQueryString()}") }
                     }
                 }
             } else if (FilterType.LEAGUES == filterType) {
                 items(leagues) {
                     key(it.name) {//todo non so se name è unique
-                        LeagueItem(league = it) { navHostController.navigate("league/${it}") } //TODO fare la navigazione
+                        LeagueItem(league = it) { navHostController.navigate("league/${it.toQueryString()}") }
                     }
                 }
             }
@@ -148,7 +162,7 @@ fun Products(
                     TextButton(onClick = { productViewModel.incrementPage() }) {
                         Text(
                             text = stringResource(id = R.string.more),
-                            color = colorResource(id = R.color.white50),
+                            color = colorResource(id = R.color.black50),
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -160,14 +174,13 @@ fun Products(
         }
     }
 
-    if (FilterType.LEAGUES == filterType)
+    if (isOpenSheet && FilterType.LEAGUES == filterType)
         SearchByNameSheet(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
             filterType = filterType
         ){ leagueViewModel.setFilter(it) }
-
-    if (isOpenSheet)
+    else if (isOpenSheet)
         SearchPanelProducts(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,

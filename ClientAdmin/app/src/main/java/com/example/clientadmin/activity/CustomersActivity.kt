@@ -59,7 +59,7 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
                 TextButton(onClick = { customerViewModel.incrementPage() }) {
                     Text(
                         text = stringResource(id = R.string.more),
-                        color = colorResource(id = R.color.white50),
+                        color = colorResource(id = R.color.black50),
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,

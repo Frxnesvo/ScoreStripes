@@ -53,7 +53,7 @@ class LeagueViewModel: ViewModel() {
 
     fun addLeague(leagueCreateRequestDto: LeagueCreateRequestDto, pic: Bitmap): Boolean{
         try {
-            League(name = leagueCreateRequestDto.name, image = pic)
+            League(name = leagueCreateRequestDto.name, pic = pic)
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.leagueApi.createLeague(
                     name = leagueCreateRequestDto.name,
