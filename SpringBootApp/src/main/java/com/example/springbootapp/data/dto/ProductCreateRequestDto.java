@@ -3,10 +3,7 @@ package com.example.springbootapp.data.dto;
 import com.example.springbootapp.data.entities.Enums.Gender;
 import com.example.springbootapp.data.entities.Enums.ProductCategory;
 import com.example.springbootapp.security.customValidators.ValidImageExtension;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +16,7 @@ public class ProductCreateRequestDto {
 
     @NotBlank
     @Size(min = 3, max = 40)
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Name can only contain letters, numbers, and underscores")
     private String name;
 
     @NotBlank

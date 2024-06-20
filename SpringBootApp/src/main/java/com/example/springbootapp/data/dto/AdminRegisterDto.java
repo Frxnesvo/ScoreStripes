@@ -17,7 +17,7 @@ public class AdminRegisterDto {
 
     @NotBlank
     @Size(min = 3, max = 20)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z]).+$") //almeno una lettera maiuscola, una minuscola e un numero
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9_]+$", message = "Name must contain at least one lowercase letter, one uppercase letter, and can only contain letters, numbers, and underscores")
     private String username;
 
     @Past

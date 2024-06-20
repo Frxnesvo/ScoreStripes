@@ -4,6 +4,7 @@ import com.example.springbootapp.data.dto.ProductCreateRequestDto;
 import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.dto.ProductSummaryDto;
 import com.example.springbootapp.data.dto.ProductUpdateDto;
+import com.example.springbootapp.data.entities.Enums.ProductCategory;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.utils.ExceptionUtils;
 import com.example.springbootapp.security.RateLimited;
@@ -63,6 +64,11 @@ public class ProductController {
             throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
         }
         return ResponseEntity.ok(productService.updateProduct(id, productUpdateDto));
+    }
+
+    @GetMapping("/more-sold")
+    public ResponseEntity<List<ProductDto>> getMoreSoldProducts(@RequestParam() ProductCategory category){
+        return ResponseEntity.ok(productService.getMoreSoldProducts(category));
     }
 
 }

@@ -40,6 +40,9 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
         ProductWithVariant variant = product.getVariants().stream().filter(p -> p.getSize()
                 .equals(requestDto.getSize())).findFirst().orElseThrow(() -> new EntityNotFoundException("Variant not found"));
+        if(variant.getAvailability() <= 0){
+            throw new RequestValidationException("Product out of stock"); //TODO: cambiare eccezione
+        }
         Optional<Cart> cart = cartDao.findById(((Customer) userDetailsService.getCurrentUser()).getCart().getId());
         if(cart.isEmpty()){
             throw new RequestValidationException("Cart not found"); //impossibile
@@ -54,6 +57,9 @@ public class CartServiceImpl implements CartService {
                 .findFirst();
         if(existingItem.isPresent()){
             existingItem.get().setQuantity(existingItem.get().getQuantity() + 1);
+            if(variant.getAvailability() < existingItem.get().getQuantity()){
+                throw new RequestValidationException("Product out of stock");  //TODO: cambiare eccezione
+            }
             newItem=cartItemDao.save(existingItem.get());
         }
         else {
@@ -85,10 +91,14 @@ public class CartServiceImpl implements CartService {
     @Override
     public void updateItemQuantity(String itemId, CartItemUpdateDto updateDto) {
         Customer customer = (Customer) userDetailsService.getCurrentUser();
-        CartItem item = customer.getCart().getCartItems().stream()
+        Cart cart= cartDao.findById(customer.getCart().getId()).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+        CartItem item = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("Item not found in cart"));
+        if(item.getProduct().getAvailability() < updateDto.getQuantity()){
+            throw new RequestValidationException("Product stock not sufficient");  //TODO: cambiare eccezione
+        }
         item.setQuantity(updateDto.getQuantity());
         cartDao.save(customer.getCart());
     }

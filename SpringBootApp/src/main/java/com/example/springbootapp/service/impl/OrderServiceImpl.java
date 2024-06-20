@@ -1,10 +1,8 @@
 package com.example.springbootapp.service.impl;
 
-import com.example.springbootapp.data.dao.AddressDao;
-import com.example.springbootapp.data.dao.CartDao;
+import com.example.springbootapp.data.dao.*;
 import com.example.springbootapp.data.dto.EmailInfosDto;
 import com.example.springbootapp.data.dto.OrderDto;
-import com.example.springbootapp.data.dao.OrderDao;
 import com.example.springbootapp.data.dto.OrderInfosRequestDto;
 import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Embdeddables.OrderInformations;
@@ -40,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserDetailsServiceImpl userDetailsService;
     private final PaymentHandler paymentHandler;
     private final EmailService emailService;
+    private final ProductWithVariantDao productWithVariantDao;
 
 
     @Override
@@ -70,6 +69,11 @@ public class OrderServiceImpl implements OrderService {
         if(cart.getCartItems().isEmpty()) {
             throw new RequestValidationException("Cart is empty");
         }
+        cart.getCartItems().forEach(cartItem -> {
+            if(cartItem.getProduct().getAvailability() < cartItem.getQuantity()) {
+                throw new RequestValidationException("One or more products are out of stock"); //TODO: cambiare eccezione
+            }
+        });
         OrderInformations resilientInfos = modelMapper.map(address, OrderInformations.class);
         resilientInfos.setCustomerEmail(loggedCustomer.getEmail());
         resilientInfos.setCustomerFirstName(loggedCustomer.getFirstName());
@@ -95,12 +99,26 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    @Transactional
     public String validateOrder (String sessionId) {        //TODO: forse voglio ritornare un dto
         try {
             String orderId = paymentHandler.getOrderIdFromSession(sessionId);
             Order order = orderDao.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found"));
+            order.getItems().forEach(orderItem -> {
+                if(orderItem.getProduct().getAvailability() < orderItem.getQuantity()) {
+                    order.setStatus(OrderStatus.CANCELLED);
+                    orderDao.save(order);
+                    throw new RequestValidationException("One or more products are out of stock"); //TODO: cambiare eccezione
+                }
+            });
             if (paymentHandler.checkTransactionStatus(sessionId)) {
                 order.setStatus(OrderStatus.COMPLETED);
+                order.getItems().forEach(orderItem -> {
+                    ProductWithVariant product = orderItem.getProduct();
+                    product.setAvailability(product.getAvailability() - orderItem.getQuantity());
+                    productWithVariantDao.save(product);
+                });
                 orderDao.save(order);
                 EmailInfosDto emailInfos = new EmailInfosDto();          //TODO: maybe potrei usare il modelMapper per fare il mapping
                 emailInfos.setTo(order.getResilientInfos().getCustomerEmail());

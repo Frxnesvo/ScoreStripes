@@ -4,6 +4,7 @@ import com.example.springbootapp.data.dto.ProductCreateRequestDto;
 import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.dto.ProductSummaryDto;
 import com.example.springbootapp.data.dto.ProductUpdateDto;
+import com.example.springbootapp.data.entities.Enums.ProductCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,6 +20,8 @@ public interface ProductService {
     List<ProductDto> getProductsByClub(String clubName);
 
     ProductDto updateProduct(String id, ProductUpdateDto productUpdateDto);
+
+    List<ProductDto> getMoreSoldProducts(ProductCategory category);
 }
 
 

@@ -7,13 +7,16 @@ import com.example.springbootapp.data.dto.ProductSummaryDto;
 import com.example.springbootapp.data.dao.ProductDao;
 import com.example.springbootapp.data.dto.ProductUpdateDto;
 import com.example.springbootapp.data.entities.Club;
+import com.example.springbootapp.data.entities.Enums.ProductCategory;
 import com.example.springbootapp.data.entities.Product;
 import com.example.springbootapp.data.entities.ProductPic;
 import com.example.springbootapp.data.entities.ProductWithVariant;
+import com.example.springbootapp.data.specification.ProductSpecification;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ProductService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -127,5 +131,17 @@ public class ProductServiceImpl implements ProductService {
         }
         productDao.save(product);
         return modelMapper.map(product, ProductDto.class);
+    }
+
+    @Override
+    public List<ProductDto> getMoreSoldProducts(ProductCategory category) {
+        Specification<Product> spec = ProductSpecification.topSellingProducts(category);
+        Pageable pageable = PageRequest.of(0,5);
+        Page<Product> page= productDao.findAll(spec, pageable);
+        List<Product> result = page.getContent();
+        return result.stream()
+                .map(product -> modelMapper.map(product, ProductDto.class))
+                .collect(Collectors.toList());
+
     }
 }
