@@ -86,6 +86,7 @@ fun Scaffold(loginViewModel: LoginViewModel) {
                         productViewModel = ProductViewModel(),
                         clubViewModel = ClubViewModel(),
                         leagueViewModel = LeagueViewModel(),
+                        homeViewModel = HomeViewModel(),
                         selectedScreen = selectedScreen,
                         admin = admin
                     )
@@ -192,6 +193,7 @@ fun NavigationScaffold(
     productViewModel: ProductViewModel,
     clubViewModel: ClubViewModel,
     leagueViewModel: LeagueViewModel,
+    homeViewModel: HomeViewModel,
     selectedScreen: MutableState<Screen>,
     admin: Admin
 ) {
@@ -204,7 +206,7 @@ fun NavigationScaffold(
         composable(
             route = "home"
         ){
-            Home(selectedScreen = selectedScreen, navHostController = navHostController, homeViewModel = HomeViewModel())
+            Home(selectedScreen = selectedScreen, navHostController = navHostController, homeViewModel = homeViewModel)
         }
 
         //USERS
