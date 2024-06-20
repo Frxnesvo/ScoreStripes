@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChevronLeft
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,7 +46,7 @@ fun WishlistProducts(
     ) {
         BoxIcon(
             iconColor = colorResource(id = R.color.secondary),
-            content = Icons.Outlined.ChevronLeft
+            content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
         ) { navHostController.popBackStack() }
 
         Text(
@@ -81,7 +81,7 @@ fun WishlistDiscover(
         item {
             BoxIcon(
                 iconColor = colorResource(id = R.color.secondary),
-                content = Icons.Outlined.ChevronLeft
+                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
             ) { navHostController.popBackStack() }
         }
 

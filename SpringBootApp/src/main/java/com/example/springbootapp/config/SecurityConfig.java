@@ -32,7 +32,7 @@ public class SecurityConfig{
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/stripe_success").permitAll()
                 .requestMatchers("/stripe_cancel").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
         );
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));

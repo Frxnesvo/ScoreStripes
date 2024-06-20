@@ -13,7 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.RemoveCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -172,7 +172,7 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                     horizontalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.RemoveCircle,
+                        imageVector = Icons.Filled.Clear,
                         contentDescription = null,
                         tint = colorResource(id = R.color.secondary),
                         modifier = Modifier.clickable {

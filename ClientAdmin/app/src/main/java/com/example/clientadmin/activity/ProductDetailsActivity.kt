@@ -81,7 +81,7 @@ fun ProductDetails(
             CustomComboBox(
                 options = clubs,
                 expandable = clubs.isNotEmpty(),
-                selectedOption = productState.club
+                selectedOption = if (clubs.isNotEmpty()) clubs[0] else ""
             ){ productFormViewModel.updateClub(it) }
 
             CustomComboBox(
@@ -139,10 +139,12 @@ fun ProductDetails(
             text = if(id == null) stringResource(id = R.string.create) else stringResource(id = R.string.update),
             background = R.color.secondary
         ) {
+            //TODO vanno fatti tutti i vari controlli?
             if (id == null) {
+                val club = if(productState.club != "") productState.club else clubs[0]
                 val productRequestDto = ProductCreateRequestDto(
                     name = productState.name,
-                    club = productState.club,
+                    club = club,
                     brand = productState.brand,
                     gender = productState.gender,
                     productCategory = productState.productCategory,

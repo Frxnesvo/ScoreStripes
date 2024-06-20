@@ -1,12 +1,12 @@
 package com.example.clientuser.model
 
 class Address(
-    val street: String,
-    val city: String,
-    val civicNumber: String,
-    val zipCode: String,
-    val state: String,
-    val defaultAddress: Boolean
+    val street: String = "",
+    val city: String = "",
+    val civicNumber: String = "",
+    val zipCode: String = "",
+    val state: String = "",
+    val defaultAddress: Boolean = false
 ) {
     init {
         require(validateStreet(street)) { "Invalid street" }

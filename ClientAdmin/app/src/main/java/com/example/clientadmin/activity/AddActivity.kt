@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -170,7 +171,12 @@ fun ClubDetails(
         }
 
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
-            val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, clubState.league)
+            //TODO controllo leagues non sia vuoto, immagine non vuota e nome non vuoto
+
+            println("CLUB PIC null? --> ${clubState.image == Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)}")
+
+            val league = if(clubState.league != "") clubState.league else leagues[0]
+            val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, league)
             if (clubViewModel.addClub(clubCreateRequestDto, clubState.image)){
                 navHostController.popBackStack()
             }

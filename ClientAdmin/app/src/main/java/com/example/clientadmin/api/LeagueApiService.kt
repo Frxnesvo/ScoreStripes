@@ -12,7 +12,7 @@ interface LeagueApiService {
     @Multipart
     @POST("/api/v1/leagues")
     fun createLeague(
-        @Part("name") name: String,
+        @Part name: MultipartBody.Part,
         @Part pic: MultipartBody.Part
     ): Call<LeagueDto>
 

@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Admin
@@ -47,14 +48,14 @@ class LoginViewModel: ViewModel() {
                     ).awaitResponse()
                     if (response.isSuccessful) {
                         println("Response server: ${response.body()}")
-                        val responseBody = response.body()
-                        if (responseBody != null) {
-                            val jwt = responseBody.jwt
-                            withContext(Dispatchers.Main) {
-                                val tokenStoreUtils = TokenStoreUtils(context)
-                                tokenStoreUtils.storeToken(jwt)
-                            }
-                        }
+//                        val responseBody = response.body()
+//                        if (responseBody != null) {
+//                            val jwt = responseBody.jwt
+//                            withContext(Dispatchers.Main) {
+//                                val tokenStoreUtils = TokenStoreUtils(context)
+//                                tokenStoreUtils.storeToken(jwt)
+//                            }
+//                        }
                         //TODO verificare che l'utente loggato sia un admin
                         response.body()?.let { authResponseDto ->
                             println("URL IMAGE: ${authResponseDto.profilePicUrl}")

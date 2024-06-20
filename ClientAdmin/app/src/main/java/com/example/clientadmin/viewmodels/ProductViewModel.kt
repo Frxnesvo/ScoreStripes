@@ -97,15 +97,15 @@ class ProductViewModel: ViewModel() {
             )
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.productApi.createProduct(
-                    name = productCreateRequestDto.name,
-                    description = productCreateRequestDto.description,
-                    price = productCreateRequestDto.price,
-                    brand = productCreateRequestDto.brand,
+                    name = MultipartBody.Part.createFormData("name", productCreateRequestDto.name) ,
+                    description = MultipartBody.Part.createFormData("description", productCreateRequestDto.description) ,
+                    price = MultipartBody.Part.createFormData("price", productCreateRequestDto.price.toString()),
+                    brand = MultipartBody.Part.createFormData("brand", productCreateRequestDto.brand) ,
                     gender = MultipartBody.Part.createFormData("gender", productCreateRequestDto.gender.name),
-                    category = MultipartBody.Part.createFormData("productCategory", productCreateRequestDto.productCategory.name),
+                    category = MultipartBody.Part.createFormData("category", productCreateRequestDto.productCategory.name),
                     picPrincipal = ConverterBitmap.convert(bitmap = pic1, fieldName = "picPrincipal"),
                     pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),
-                    club = productCreateRequestDto.club,
+                    club = MultipartBody.Part.createFormData("clubName", productCreateRequestDto.club),
                     variants = MultipartBody.Part.createFormData("variantStocks", productCreateRequestDto.variants.toString())
                 ).awaitResponse()
                 if (!response.isSuccessful) println("Error creating product: ${response.message()}")
