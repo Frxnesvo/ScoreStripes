@@ -32,6 +32,7 @@ import com.example.clientadmin.viewmodels.formViewModel.ProductState
 import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
+import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.viewmodels.ClubViewModel
 
 @Composable
@@ -117,13 +118,13 @@ fun ProductDetails(
         ) {
             Text(text = stringResource(id = R.string.quantities), style = style)
 
-            productState.variants.forEach{
+            Size.entries.forEach{
                 variant ->
                 CustomTextField(
-                    value = variant.value.toString(),
-                    text = variant.key.name,
+                    value = if(productState.variants.isNotEmpty()) productState.variants[variant].toString() else "0",
+                    text = variant.name,
                     keyboardType = KeyboardType.Number
-                ) { productFormViewModel.updateVariant(variant.key, it.toInt()) }
+                ) { productFormViewModel.updateVariant(variant, it.toInt()) }
             }
         }
 

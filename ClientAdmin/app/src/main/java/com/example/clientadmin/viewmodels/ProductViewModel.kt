@@ -105,7 +105,8 @@ class ProductViewModel: ViewModel() {
                     category = MultipartBody.Part.createFormData("productCategory", productCreateRequestDto.productCategory.name),
                     picPrincipal = ConverterBitmap.convert(bitmap = pic1, fieldName = "picPrincipal"),
                     pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),
-                    club = productCreateRequestDto.club
+                    club = productCreateRequestDto.club,
+                    variants = MultipartBody.Part.createFormData("variantStocks", productCreateRequestDto.variants.toString())
                 ).awaitResponse()
                 if (!response.isSuccessful) println("Error creating product: ${response.message()}")
                 else returnValue = true

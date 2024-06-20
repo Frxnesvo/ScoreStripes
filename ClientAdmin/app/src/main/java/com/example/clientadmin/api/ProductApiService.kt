@@ -30,6 +30,7 @@ interface ProductApiService {
         @Part picPrincipal: MultipartBody.Part,
         @Part pic2: MultipartBody.Part,
         @Part("clubName") club: String,
+        @Part variants: MultipartBody.Part,
     ): Call<ProductDto>
 
     @Multipart
