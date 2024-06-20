@@ -45,6 +45,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     @Override
     public String uploadFile(MultipartFile file, String folder, String name) {
+        name=name.replace(" ", "_");
         String key = folder + "/" + name;
 //        byte[] fileBytes;
 //        try {  //TODO DA RIMUOVERE
