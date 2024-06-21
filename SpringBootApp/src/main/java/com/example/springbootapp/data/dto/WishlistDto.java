@@ -1,5 +1,6 @@
 package com.example.springbootapp.data.dto;
 
+import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 public class WishlistDto {
     private String id;
-    //private String ownerUsername;
+    private WishlistVisibility visibility;
     private List<WishlistItemDto> items;
 }

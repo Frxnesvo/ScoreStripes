@@ -34,7 +34,7 @@ public class WishlistController {
     }
 
     @PostMapping("/validate-shareAccess")
-    public ResponseEntity<String> validateShareAccess(@RequestBody String token){  //TODO: Ha senso inglobare il token in un Dto e validarlo per evitare query?
+    public ResponseEntity<WishlistDto> validateShareAccess(@RequestBody String token){  //TODO: Ha senso inglobare il token in un Dto e validarlo per evitare query?
         return ResponseEntity.ok(wishlistShareTokenService.validateShareAccess(token));
     }
 
@@ -54,7 +54,7 @@ public class WishlistController {
     }
 
     @GetMapping("/my-wishlist")
-    public ResponseEntity<List<WishlistItemDto>> getMyWishlist(){
+    public ResponseEntity<WishlistDto> getMyWishlist(){
         return ResponseEntity.ok(wishlistService.getMyWishlist());
     }
 

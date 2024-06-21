@@ -3,6 +3,7 @@ package com.example.springbootapp.service.impl;
 import com.example.springbootapp.data.dao.WishlistAccessDao;
 import com.example.springbootapp.data.dao.WishlistDao;
 import com.example.springbootapp.data.dao.WishlistShareTokenDao;
+import com.example.springbootapp.data.dto.WishlistDto;
 import com.example.springbootapp.data.dto.WishlistShareTokenDto;
 import com.example.springbootapp.data.entities.Customer;
 import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
@@ -10,6 +11,7 @@ import com.example.springbootapp.data.entities.Wishlist;
 import com.example.springbootapp.data.entities.WishlistAccess;
 import com.example.springbootapp.data.entities.WishlistShareToken;
 import com.example.springbootapp.exceptions.IllegalWishlistVisibility;
+import com.example.springbootapp.exceptions.InvalidTokenException;
 import com.example.springbootapp.exceptions.TokenExpiredException;
 import com.example.springbootapp.service.interfaces.WishlistShareTokenService;
 import jakarta.persistence.EntityNotFoundException;
@@ -49,7 +51,7 @@ public class WishlistShareTokenServiceImpl implements WishlistShareTokenService 
 
     @Override    //TODO: proteggere da admin
     @Transactional
-    public String validateShareAccess(String token) {
+    public WishlistDto validateShareAccess(String token) {
         System.out.println("Token: "+token);
         WishlistShareToken wishlistShareToken = wishlistShareTokenDao.findByToken(token).orElseThrow(() -> new EntityNotFoundException("Token not found"));
         if(wishlistShareToken.getExpirationDate().isBefore(LocalDateTime.now())) {
@@ -60,13 +62,13 @@ public class WishlistShareTokenServiceImpl implements WishlistShareTokenService 
         }
         Customer guest = (Customer) userDetailsService.getCurrentUser();
         if(wishlistAccessDao.existsByWishlistIdAndGuestId(wishlistShareToken.getWishlist().getId(), guest.getId()) || wishlistShareToken.getWishlist().getId().equals(guest.getWishlist().getId())) {
-            return "Already granted"; //TODO: dovrei farlo come eccezione? penso di si. Da rivedere
+            throw new InvalidTokenException("Already have access to this wishlist"); //TODO: maybe cambio eccezione
         }
         WishlistAccess wishlistAccess = new WishlistAccess();
         wishlistAccess.setGuest((Customer) userDetailsService.getCurrentUser());
         wishlistAccess.setWishlist(wishlistShareToken.getWishlist());
         wishlistAccessDao.save(wishlistAccess);
         wishlistShareTokenDao.delete(wishlistShareToken);
-        return "Access granted";
+        return modelMapper.map(wishlistAccess.getWishlist(), WishlistDto.class);
     }
 }

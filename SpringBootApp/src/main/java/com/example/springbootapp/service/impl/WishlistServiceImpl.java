@@ -67,11 +67,10 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public List<WishlistItemDto> getMyWishlist() {
-        List<WishlistItem> wishlistItems = wishlistItemDao.findAllByWishlistId(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId());
-        return wishlistItems.stream()
-                .map(wishlistItem -> modelMapper.map(wishlistItem, WishlistItemDto.class))
-                .toList();
+    public WishlistDto getMyWishlist() {
+        Wishlist wishlist= wishlistDao.findById(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId()).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
+        Hibernate.initialize(wishlist.getItems());
+        return modelMapper.map(wishlist, WishlistDto.class);
     }
 
     @Override

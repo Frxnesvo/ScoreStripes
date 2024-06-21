@@ -9,7 +9,7 @@ public interface WishlistService {
 
     WishlistItemDto addItemToWishlist(AddToWishlistRequestDto requestDto);
 
-    List<WishlistItemDto> getMyWishlist();
+    WishlistDto getMyWishlist();
 
     List<WishlistDto> getPublicWishlists();
 
