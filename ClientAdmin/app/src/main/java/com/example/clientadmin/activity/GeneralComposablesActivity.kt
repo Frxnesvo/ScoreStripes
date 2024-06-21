@@ -195,11 +195,14 @@ fun CustomComboBox(
                 expanded = if (expandable) !expanded else false
             }
         ) {
+
+            val interactionSource = remember { MutableInteractionSource() }
+
             OutlinedTextField(
                 value = selectedOption,
                 onValueChange = {  },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
-                readOnly = readOnly,
+                readOnly = true,
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
@@ -210,7 +213,8 @@ fun CustomComboBox(
                     unfocusedTextColor = colorResource(id = R.color.black),
                     focusedBorderColor = colorResource(id = R.color.secondary),
                     unfocusedBorderColor = colorResource(id = R.color.white),
-                    errorContainerColor = colorResource(id = R.color.secondary50)
+                    errorContainerColor = colorResource(id = R.color.secondary50),
+                    cursorColor = Color.Transparent
                 )
             )
             DropdownMenu(
