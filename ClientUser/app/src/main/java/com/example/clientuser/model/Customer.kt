@@ -3,9 +3,7 @@ package com.example.clientuser.model
 import android.graphics.Bitmap
 import com.example.clientuser.model.dto.AuthResponseDto
 import com.example.clientuser.utils.S3ImageDownloader
-import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.model.enumerator.Gender
-import com.google.android.gms.auth.api.Auth
 
 import java.time.LocalDate
 
@@ -19,7 +17,7 @@ class Customer(
     val gender: Gender,
     val pic: Bitmap,
     val favoriteTeam: String,
-    val address: Address
+    val addresses: List<Address>
 ) {
     init {
         require(validateProfilePic(pic)) { "Invalid profile picture" }
@@ -34,6 +32,7 @@ class Customer(
     companion object {
         suspend fun fromDto(customerDto: AuthResponseDto): Customer {
             return Customer(
+                id = customerDto.id,
                 username = customerDto.username,
                 firstName = customerDto.firstName,
                 lastName = customerDto.lastName,
@@ -41,7 +40,7 @@ class Customer(
                 birthDate = customerDto.birthDate,
                 gender = customerDto.gender,
                 favoriteTeam = "",
-                address = Address(),
+                addresses = emptyList(),
                 pic = S3ImageDownloader.getImageForBucket(customerDto.profilePicUrl)
             )
         }
@@ -65,6 +64,15 @@ class Customer(
         }
         fun validateBirthdate(birthdate: LocalDate): Boolean {
             return birthdate.isBefore(LocalDate.now())
+        }
+
+        fun validateFavouriteTeam(favouriteTeam: String): Boolean {
+            return favouriteTeam.isEmpty()
+        }
+
+        fun validateAddress(address: Address): Boolean {
+            return Address.validateStreet(address.street) && Address.validateCity(address.city) && Address.validateState(address.state)
+                    && Address.validateZipCode(address.zipCode) && Address.validateCivicNumber(address.civicNumber)
         }
 
     }

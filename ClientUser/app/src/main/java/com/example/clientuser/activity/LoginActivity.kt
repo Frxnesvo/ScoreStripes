@@ -15,7 +15,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -25,9 +24,16 @@ import com.example.clientuser.model.Address
 import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 import com.example.clientuser.model.enumerator.Gender
+import com.example.clientuser.viewmodel.ClubViewModel
 
 @Composable
-fun Login(token: String, navController : NavHostController, loginViewModel: LoginViewModel, loginFormViewModel: LoginFormViewModel) {
+fun Login(
+    token: String,
+    navController : NavHostController,
+    loginViewModel: LoginViewModel,
+    loginFormViewModel: LoginFormViewModel,
+    clubViewModel: ClubViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,6 +42,7 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
             .verticalScroll(rememberScrollState())
     ) {
         val customerState by loginFormViewModel.customerState.collectAsState()
+        val clubs = clubViewModel.clubNames.collectAsState(initial = emptyList())
 
         BoxIcon(
             iconColor = colorResource(id = R.color.secondary),
@@ -69,22 +76,6 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 loginFormViewModel.updateUsername(it)
             }
 
-            CustomTextField(
-                value = customerState.firstName,
-                isError = customerState.isFirstNameError,
-                text = stringResource(id = R.string.first_name)
-            ){
-                loginFormViewModel.updateFirstName(it)
-            }
-
-            CustomTextField(
-                value = customerState.lastName,
-                isError = customerState.isLastNameError,
-                text = stringResource(id = R.string.last_name)
-            ){
-                loginFormViewModel.updateLastName(it)
-            }
-
             CustomDatePicker(
                 text = stringResource(id = R.string.birth_date)
             ){
@@ -98,23 +89,32 @@ fun Login(token: String, navController : NavHostController, loginViewModel: Logi
                 loginFormViewModel.updateGender(Gender.valueOf(it))
             }
 
+            CustomComboBox(
+                options = clubs.value,
+                expandable = clubs.value.isNotEmpty(),
+                selectedOption = if (clubs.value.isNotEmpty()) clubs.value[0] else ""
+            ) {
+                loginFormViewModel.updateFavouriteTeam(it)
+            }
+
             CustomButton(
                 text = stringResource(id = R.string.sign_up),
                 background = R.color.secondary
             ) {
+                val club = if(customerState.favouriteTeam != "") customerState.favouriteTeam else clubs.value[0]
                 if (
                     loginViewModel.register(
                         token = token,
                         username = customerState.username,
                         birthDate = customerState.birthdate,
-                        favouriteTeam = customerState.favouriteTeam,
+                        favouriteTeam = club,
                         gender = customerState.gender,
                         address = Address(
                             state = "STATE",
                             street = "STREET",
                             city = "CITY",
-                            civicNumber = "CIVIC NUMBER",
-                            zipCode = "ZIPCODE",
+                            civicNumber = "13",
+                            zipCode = "87036",
                             defaultAddress = false
                         ), //TODO farlo inserire durante la register
                         pic = customerState.profilePic

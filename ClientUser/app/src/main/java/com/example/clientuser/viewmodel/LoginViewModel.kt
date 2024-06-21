@@ -14,7 +14,6 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import retrofit2.awaitResponse
@@ -26,7 +25,7 @@ enum class LoginState { LOGGED, REGISTER, NULL}
 class LoginViewModel: ViewModel() {
     //todo mettere il customerDto
     private val _user = MutableStateFlow<Customer?>(null)
-    val user: StateFlow<Customer?> = _user
+    val user = _user
 
     private val _isLoggedIn = mutableStateOf(LoginState.NULL)
     val isLoggedIn = _isLoggedIn
@@ -65,12 +64,12 @@ class LoginViewModel: ViewModel() {
             var returnValue = false
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.customerRegister(
-                    idToken = token,
-                    username = username,
+                    idToken = MultipartBody.Part.createFormData("idToken", token),
+                    username = MultipartBody.Part.createFormData("username", username),
                     birthDate = MultipartBody.Part.createFormData("birthDate", birthDate.format(DateTimeFormatter.ISO_LOCAL_DATE)),
                     gender = MultipartBody.Part.createFormData("gender", gender.name),
                     address = MultipartBody.Part.createFormData("address", Gson().toJson(address)),
-                    favouriteTeam = favouriteTeam,
+                    favouriteTeam = MultipartBody.Part.createFormData("favouriteTeam", favouriteTeam),
                     imageProfile = ConverterBitmap.convert(bitmap = pic, fieldName = "profilePic")
                 ).awaitResponse()
 

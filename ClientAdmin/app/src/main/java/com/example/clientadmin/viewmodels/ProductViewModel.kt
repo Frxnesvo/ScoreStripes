@@ -95,6 +95,7 @@ class ProductViewModel: ViewModel() {
                 club = productCreateRequestDto.club,
                 variants = productCreateRequestDto.variants
             )
+
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.productApi.createProduct(
                     name = MultipartBody.Part.createFormData("name", productCreateRequestDto.name) ,
@@ -107,6 +108,7 @@ class ProductViewModel: ViewModel() {
                     pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),
                     club = MultipartBody.Part.createFormData("clubName", productCreateRequestDto.club),
                     variants = MultipartBody.Part.createFormData("variantStocks", productCreateRequestDto.variants.toString())
+                    //TODO vedere come creare il multipart per la mappa, così non va
                 ).awaitResponse()
                 if (!response.isSuccessful) println("Error creating product: ${response.message()}")
                 else returnValue = true

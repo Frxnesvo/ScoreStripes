@@ -20,11 +20,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.authentication.GoogleAuth
-import com.example.clientuser.model.Customer
 import com.example.clientuser.ui.theme.ClientUserTheme
+import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
-import com.google.gson.Gson
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +45,8 @@ class MainActivity : ComponentActivity() {
                         navController = rememberNavController(),
                         loginViewModel = loginViewModel,
                         loginFormViewModel = LoginFormViewModel(),
-                        signInLauncher = signInLauncher
+                        signInLauncher = signInLauncher,
+                        clubViewModel = ClubViewModel()
                     )
                 }
             }
@@ -59,7 +59,8 @@ fun Navigation(
     navController: NavHostController,
     loginViewModel: LoginViewModel,
     loginFormViewModel: LoginFormViewModel,
-    signInLauncher: ActivityResultLauncher<Intent>
+    signInLauncher: ActivityResultLauncher<Intent>,
+    clubViewModel: ClubViewModel
 ){
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -89,25 +90,18 @@ fun Navigation(
                         token = token,
                         navController = navController,
                         loginViewModel = loginViewModel,
-                        loginFormViewModel = loginFormViewModel
+                        loginFormViewModel = loginFormViewModel,
+                        clubViewModel = clubViewModel
                     )
             }
         }
 
         //SCAFFOLD
         composable(
-            route = "scaffold/{customer}",
+            route = "scaffold",
             arguments = listOf(navArgument("customer") { type = NavType.StringType })
         ){
-            it.arguments?.getString("customer").let { customerJson ->
-
-                //TODO vedere come fare per la conversione dell'immagine
-                val customer = customerJson?.let {
-                    Gson().fromJson(it, Customer::class.java)
-                }
-
-                Scaffold(customer!!)
-            }
+            Scaffold(loginViewModel = loginViewModel)
         }
     }
 }

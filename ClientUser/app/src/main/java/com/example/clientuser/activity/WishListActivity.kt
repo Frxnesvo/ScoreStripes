@@ -16,7 +16,6 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.Wishlist
-import com.example.clientuser.model.dto.WishListDto
 import com.example.clientuser.viewmodel.WishListViewModel
 
 @Composable
@@ -39,7 +37,11 @@ fun Wishlist(
     navHostController: NavHostController,
     wishListViewModel: WishListViewModel
 ){
-    val sharedLists = wishListViewModel.sharedWithMeWishlists.collectAsState(initial = emptyList())
+    val sharedLists = wishListViewModel.sharedWithMeWishlists
+    val myWishlist = wishListViewModel.myWishList
+    val (isOpenTokenSheet, setTokenBottomSheet) = remember { mutableStateOf(false) }
+
+    val wishlistToAddToken = StringBuilder("")
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -83,7 +85,7 @@ fun Wishlist(
                     iconColor = colorResource(id = R.color.primary),
                     content = Icons.Outlined.Add
                 ) {
-                    TODO()
+                    setTokenBottomSheet(true)
                 }
             }
         }
@@ -93,6 +95,22 @@ fun Wishlist(
                 WishListItem(it){ navHostController.navigate("sharedWishlistProducts/${it.id}") }
             }
         }
+    }
+
+    if(isOpenTokenSheet){
+        //TODO gestione degli errori
+        InsertWishlistTokenPanel(
+            onDismissRequest = { setTokenBottomSheet(false) },
+            onValueChange = {
+                wishlistToAddToken.setLength(0)
+                wishlistToAddToken.append(it)
+            },
+            onClick = {
+                wishListViewModel.validateShareToken(wishlistToAddToken.toString())
+                setTokenBottomSheet(false)
+                wishlistToAddToken.setLength(0)
+            }
+        )
     }
 }
 
@@ -152,33 +170,41 @@ fun WishListItem(wishlist: Wishlist, onClick: () -> Unit) {
 fun Preview(){
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
-    Column (modifier = Modifier.fillMaxSize()){
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         Row (
             modifier = Modifier
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             Text(
-                text = stringResource(id = R.string.shared_with_me),
+                text = stringResource(id = R.string.my_wishlist),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
 
-            BoxIcon(
-                background = colorResource(id = R.color.secondary),
-                iconColor = colorResource(id = R.color.primary),
-                content = Icons.Outlined.Add
-            ) {
-                setBottomSheet(true)
-            }
+            Text(
+                modifier = Modifier
+                    .clickable {
+                        setBottomSheet(true)
+                        //TODO logica view model
+                   },
+                text = stringResource(id = R.string.shared),
+                style = MaterialTheme.typography.titleMedium,
+                color = colorResource(id = R.color.secondary50),
+            )
         }
     }
 
     if(isOpenSheet){
-        InsertWishlistTokenPanel(
+        WishlistVisibilityPanel(
+            currentVisibility = TODO() ,
             onDismissRequest = { setBottomSheet(false) },
-            setBottomSheet = setBottomSheet
+            onValueChange = { },
+            onClick = {
+                setBottomSheet(false)
+            }
         )
     }
 

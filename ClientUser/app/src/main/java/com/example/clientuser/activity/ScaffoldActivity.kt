@@ -32,12 +32,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
-import com.example.clientuser.model.Customer
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
+import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
@@ -46,9 +46,10 @@ import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
 @Composable
-fun Scaffold(customer: Customer) {
+fun Scaffold(loginViewModel: LoginViewModel) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
+    val customer = loginViewModel.user.collectAsState()
 
     Scaffold(
         bottomBar = { BottomBar(navController, selectedScreen) }
@@ -63,8 +64,8 @@ fun Scaffold(customer: Customer) {
                 )
         ) {
             NavigationScaffold(
-                customerFormViewModel = CustomerFormViewModel(customer),
-                customerViewModel = CustomerViewModel(customer.id),
+                customerFormViewModel = CustomerFormViewModel(customer.value!!),
+                customerViewModel = CustomerViewModel(customer.value!!.id),
                 clubViewModel = ClubViewModel(),
                 leagueViewModel = LeagueViewModel(),
                 productViewModel = ProductViewModel(),
@@ -178,7 +179,7 @@ fun NavigationScaffold(
         composable(
             route = "myWishlist",
         ) {
-            val myList by wishlistViewModel.myWishList.collectAsState()
+            val myList by wishlistViewModel.myWishList
             WishlistProducts(
                 name = stringResource(id = R.string.my_wishlist),
                 items = myList,
@@ -191,11 +192,11 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("id")?.let { id ->
-                val wishlists by wishlistViewModel.sharedWithMeWishlists.collectAsState(initial = emptyList())
+                val wishlists by wishlistViewModel.sharedWithMeWishlists
                 val wishlist = wishlists.find { it.id == id }
                 WishlistProducts(
                     name = wishlist?.ownerUsername ?: "",
-                    items = wishlist?.items ?: emptyList(),
+                    items = wishlist!!, //wishlist?.items ?: emptyList(), TODO
                     navHostController = navHostController
                 )
             }
@@ -210,7 +211,7 @@ fun NavigationScaffold(
                 val wishlist = wishlists.find { it.id == id }
                 WishlistProducts(
                     name = wishlist?.ownerUsername ?: "", //faccio così per gli aggiornamenti in tempo reale, ma non è il massimo
-                    items = wishlist?.items ?: emptyList(),
+                    items = wishlist!!, //TODO come sopra?
                     navHostController = navHostController
                 )
             }

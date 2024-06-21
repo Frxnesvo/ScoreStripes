@@ -121,10 +121,13 @@ fun ProductDetails(
             Size.entries.forEach{
                 variant ->
                 CustomTextField(
-                    value = if(productState.variants.isNotEmpty()) productState.variants[variant].toString() else "0",
+                    value = productState.variants[variant].toString(),
                     text = variant.name,
                     keyboardType = KeyboardType.Number
-                ) { productFormViewModel.updateVariant(variant, it.toInt()) }
+                ) {
+                    val quantity = if(it != "") it.toInt() else 0
+                    productFormViewModel.updateVariant(variant, quantity)
+                }
             }
         }
 

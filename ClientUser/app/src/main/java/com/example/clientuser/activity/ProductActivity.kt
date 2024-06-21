@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -86,8 +85,8 @@ fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHo
     //TODO serve il view model e capire come gestire il like
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val productFormViewModel = ProductFormViewModel()
-    val wishlist = wishListViewModel.myWishList.collectAsState()
-    val inWishlist = remember { mutableStateOf(wishlist.value.any() { it.product.id == product.id}) }
+    val wishlist = wishListViewModel.myWishList
+    val inWishlist = remember { mutableStateOf(wishlist.value.items.any() { it.product.id == product.id}) }
 
 
     //todo Icona wishlist, va la recompsition, ma non cambia l'icona

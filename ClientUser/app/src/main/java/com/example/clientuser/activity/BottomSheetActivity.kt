@@ -53,6 +53,7 @@ import com.example.clientuser.model.dto.AddToCartRequestDto
 import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
+import com.example.clientuser.model.enumerator.WishListVisibility
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
@@ -73,7 +74,7 @@ fun SharedWithPanel(
     val sheetState = rememberModalBottomSheetState()
     val context = LocalContext.current
 
-    val sharedToken = wishListViewModel.wishlistSharedToken.collectAsState()
+    val sharedToken = wishListViewModel.wishlistSharedToken
     val wishlistAccesses = wishListViewModel.myWishlistAccesses.collectAsState()
 
     ModalBottomSheet(
@@ -460,7 +461,11 @@ fun AddItemToCart(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsertWishlistTokenPanel(onDismissRequest: () -> Unit, setBottomSheet: (Boolean) -> Unit){
+fun InsertWishlistTokenPanel(
+    onDismissRequest: () -> Unit,
+    onValueChange: (String) -> Unit,
+    onClick: () -> Unit
+){
     val sheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(onDismissRequest = { onDismissRequest() }, sheetState = sheetState) {
@@ -474,16 +479,46 @@ fun InsertWishlistTokenPanel(onDismissRequest: () -> Unit, setBottomSheet: (Bool
                 value = "",
                 text = stringResource(id = R.string.insert_token)
             ) {
-                TODO("logica view model")
+                onValueChange(it)
             }
 
             CustomButton(
                 text = stringResource(id = R.string.enter),
                 background = R.color.secondary
+            ) { onClick() }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WishlistVisibilityPanel(
+    currentVisibility: WishListVisibility,
+    onDismissRequest: () -> Unit,
+    onValueChange: (WishListVisibility) -> Unit,
+    onClick: () -> Unit
+){
+    val sheetState = rememberModalBottomSheetState()
+
+    ModalBottomSheet(onDismissRequest = { onDismissRequest() }, sheetState = sheetState) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            CustomComboBox(
+                options = WishListVisibility.entries,
+                readOnly = true,
+                selectedOption = currentVisibility.name
             ) {
-                //TODO logica view model
-                setBottomSheet(false)
+                onValueChange(WishListVisibility.valueOf(it))
             }
+
+            CustomButton(
+                text = stringResource(id = R.string.change_visibility),
+                background = R.color.secondary
+            ) { onClick() }
         }
     }
 }

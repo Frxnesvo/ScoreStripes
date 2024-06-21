@@ -1,7 +1,6 @@
 package com.example.clientuser.api
 
 import com.example.clientuser.model.dto.AuthResponseDto
-import com.example.clientuser.model.dto.CustomerDto
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -16,12 +15,13 @@ interface LoginApiService {
     @Multipart
     @POST("/api/v1/auth/register-customer")
     fun customerRegister(
-        @Part idToken: String,
-        @Part username: String,
+        @Part idToken: MultipartBody.Part,
+        @Part username: MultipartBody.Part,
         @Part birthDate: MultipartBody.Part,
         @Part gender: MultipartBody.Part,
         @Part imageProfile: MultipartBody.Part,
         @Part address: MultipartBody.Part,
-        @Part favouriteTeam: String
+        @Part favouriteTeam: MultipartBody.Part
+        //TODO fare l'aggiunta dell'address
     ): Call<Map<String,String>>
 }

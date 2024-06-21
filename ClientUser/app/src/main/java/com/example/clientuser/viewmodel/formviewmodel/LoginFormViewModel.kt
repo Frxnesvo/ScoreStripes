@@ -21,10 +21,9 @@ data class CustomerState(
     //error
     val isProfilePicError: Boolean = !Customer.validateProfilePic(profilePic),
     val isUsernameError: Boolean = !Customer.validateUsername(username),
-    val isFirstNameError: Boolean = !Customer.validateFirstName(firstName),
-    val isLastNameError: Boolean = !Customer.validateLastName(lastName),
     val isEmailError: Boolean = !Customer.validateEmail(email),
     val isBirthdateError: Boolean = !Customer.validateBirthdate(birthdate),
+    val isFavouriteTeamError: Boolean = !Customer.validateFavouriteTeam(favouriteTeam)
 )
 class LoginFormViewModel {
     private val _customerState = MutableStateFlow(CustomerState())
@@ -40,20 +39,6 @@ class LoginFormViewModel {
         _customerState.value = _customerState.value.copy(
             username = username,
             isUsernameError = !Customer.validateUsername(username)
-        )
-    }
-
-    fun updateFirstName(firstName: String){
-        _customerState.value = _customerState.value.copy(
-            firstName = firstName,
-            isFirstNameError = !Customer.validateFirstName(firstName)
-        )
-    }
-
-    fun updateLastName(lastName: String){
-        _customerState.value = _customerState.value.copy(
-            lastName = lastName,
-            isLastNameError = !Customer.validateLastName(lastName)
         )
     }
 

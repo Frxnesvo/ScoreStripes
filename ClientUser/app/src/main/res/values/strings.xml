@@ -50,13 +50,20 @@
     <string name="my_wishlist">MY WISHLIST</string>
     <string name="discover_wishlists">DISCOVER WISHLISTS</string>
     <string name="shared_with_me">SHARED WITH ME</string>
+    <string name="insert_token">Insert token</string>
     <string name="share">SHARE</string>
 
     <string name="create">CREATE</string>
     <string name="edit">EDIT</string>
     <string name="update">UPDATE</string>
     <string name="search">SEARCH</string>
+    <string name="enter">ENTER</string>
     <string name="go_to_payment">GO TO PAYMENT</string>
     <string name="search_for_name">SEARCH FOR NAME</string>
     <string name="set_default">SET DEFAULT</string>
+
+    <string name="shared">SHARED</string>
+    <string name="public_wishlist">PUBLIC</string>
+    <string name="private_wishlist">PRIVATE</string>
+    <string name="change_visibility">CHANGE VISIBILITY</string>
 </resources>

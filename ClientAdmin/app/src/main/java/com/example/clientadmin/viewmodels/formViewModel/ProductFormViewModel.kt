@@ -19,7 +19,14 @@ data class ProductState(
     val productCategory: ProductCategory = ProductCategory.entries[0],
     val description: String = "",
     val price: Double = 0.0,
-    val variants: Map<Size, Int> = mapOf(),
+    val variants: Map<Size, Int> = mapOf(
+        Pair(Size.XS, 0),
+        Pair(Size.S, 0),
+        Pair(Size.M, 0),
+        Pair(Size.L, 0),
+        Pair(Size.XL, 0),
+    ),
+
     //error
     val isNameError: Boolean = !Product.validateName(name),
     val isLeagueError: Boolean = !Product.validateBrand(brand),
