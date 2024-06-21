@@ -21,9 +21,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -104,7 +104,7 @@ fun IconButtonBar(
     ){
         BoxIcon(
             iconColor = colorResource(id = R.color.secondary),
-            content = Icons.Outlined.ChevronLeft
+            content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
         ) { navHostController.popBackStack() }
 
         if (imageVector != null) {

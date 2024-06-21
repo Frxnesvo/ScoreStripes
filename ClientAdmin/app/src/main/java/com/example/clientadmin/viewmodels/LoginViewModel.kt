@@ -4,17 +4,14 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
-import com.example.clientadmin.model.enumerator.TokenState
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.utils.TokenStoreUtils
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,14 +48,14 @@ class LoginViewModel: ViewModel() {
                     ).awaitResponse()
                     if (response.isSuccessful) {
                         println("Response server: ${response.body()}")
-                        val responseBody = response.body()
-                        if (responseBody != null) {
-                            val jwt = responseBody.jwt
-                            withContext(Dispatchers.Main) {
-                                val tokenStoreUtils = TokenStoreUtils(context)
-                                tokenStoreUtils.storeToken(jwt)
-                            }
-                        }
+//                        val responseBody = response.body()
+//                        if (responseBody != null) {
+//                            val jwt = responseBody.jwt
+//                            withContext(Dispatchers.Main) {
+//                                val tokenStoreUtils = TokenStoreUtils(context)
+//                                tokenStoreUtils.storeToken(jwt)
+//                            }
+//                        }
                         //TODO verificare che l'utente loggato sia un admin
                         response.body()?.let { authResponseDto ->
                             println("URL IMAGE: ${authResponseDto.profilePicUrl}")
@@ -90,6 +87,9 @@ class LoginViewModel: ViewModel() {
 
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
         try {
+            require(Admin.validateProfilePic(pic)) { "Invalid profile picture" }
+            require(Admin.validateUsername(adminCreateRequestDto.username)) { "Invalid username: must be between 3 and 20 characters. At least 1 upper case character" }
+            require(Admin.validateBirthdate(adminCreateRequestDto.birthDate)) { "Invalid birthdate: must be before the current date" }
             var returnValue = false
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.adminRegister(

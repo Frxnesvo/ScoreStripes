@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChevronLeft
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +33,7 @@ fun Orders(customerViewModel: CustomerViewModel, navHostController: NavHostContr
         item {
             BoxIcon(
                 iconColor = colorResource(id = R.color.secondary),
-                content = Icons.Outlined.ChevronLeft
+                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
             ) { navHostController.popBackStack() }
         }
 

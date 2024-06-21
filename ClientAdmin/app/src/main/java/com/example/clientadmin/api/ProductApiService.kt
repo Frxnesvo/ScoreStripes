@@ -21,15 +21,16 @@ interface ProductApiService {
     @Multipart
     @POST("/api/v1/products")
     fun createProduct(
-        @Part("name") name: String,
-        @Part("description") description: String,
-        @Part("price") price: Double,
-        @Part("brand") brand: String,
+        @Part name: MultipartBody.Part,
+        @Part description: MultipartBody.Part,
+        @Part price: MultipartBody.Part,
+        @Part brand: MultipartBody.Part,
         @Part gender: MultipartBody.Part,
         @Part category: MultipartBody.Part,
         @Part picPrincipal: MultipartBody.Part,
         @Part pic2: MultipartBody.Part,
-        @Part("clubName") club: String,
+        @Part club: MultipartBody.Part,
+        @Part variants: MultipartBody.Part,
     ): Call<ProductDto>
 
     @Multipart

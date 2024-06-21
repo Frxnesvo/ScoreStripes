@@ -80,7 +80,7 @@ class ProductFormViewModel(product: Product? = null) {
     fun updateBrand(brand: String) {
         val hasError = !Product.validateDescription(brand)
         _productState.value = _productState.value.copy(
-            description = brand,
+            brand = brand,
             isBrandError = hasError
         )
     }

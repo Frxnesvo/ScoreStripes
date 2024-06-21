@@ -51,6 +51,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.accompanist.pager.v0301)
+    implementation(libs.accompanist.pager.indicators.v0301)
+
     implementation(libs.play.services.auth)
 
     implementation(libs.gson.v288)
