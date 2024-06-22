@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.WishlistItem
+import com.example.clientuser.model.Wishlist
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
@@ -36,7 +36,7 @@ import com.example.clientuser.viewmodel.WishListViewModel
 @Composable
 fun WishlistProducts(
     name: String,
-    items: List<WishlistItem>,
+    items: Wishlist,
     navHostController: NavHostController
 ){
     Column(
@@ -58,7 +58,7 @@ fun WishlistProducts(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(25.dp)
         ) {
-            items(items){
+            items(items.items){
                 key(it.product.id) {
                     ProductItem(it.product){ navHostController.navigate("product/${it.product.id}") }
                 }

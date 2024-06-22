@@ -1,5 +1,6 @@
 package com.example.clientadmin.api
 
+import com.example.clientadmin.model.dto.PageResponseDto
 import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
 import com.example.clientadmin.model.dto.CustomerSummaryDto
@@ -25,5 +26,5 @@ interface CustomerApiService {
         @Query("page") page: Int,
         @Query("size") size: Int,
         @QueryMap filters: Map<String, String?>
-    ): Call<List<CustomerSummaryDto>>
+    ): Call<PageResponseDto<CustomerSummaryDto>>
 }

@@ -10,7 +10,8 @@ import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductSummaryDto
 import com.example.clientadmin.model.dto.ProductUpdateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
-import com.example.clientadmin.utils.RetrofitHandler
+import com.example.clientadmin.api.RetrofitHandler
+import com.example.clientadmin.model.dto.PageResponseDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -46,16 +47,14 @@ class ProductViewModel: ViewModel() {
 
     private fun loadMoreProductSummaries() {
         CoroutineScope(Dispatchers.IO).launch {
-            getProductSummaries(page).collect {
-                val newSummaries = it.map {
-                    dto ->  ProductSummary.fromDto(dto)
-                }
+            getProductSummaries(page).collect { summaries ->
+                val newSummaries = summaries.content.map { dto ->  ProductSummary.fromDto(dto) }
                 _productSummaries.value += newSummaries
             }
         }
     }
 
-    private fun getProductSummaries(page: Int): Flow<List<ProductSummaryDto>> = flow {
+    private fun getProductSummaries(page: Int): Flow<PageResponseDto<ProductSummaryDto>> = flow {
         try {
             val response = RetrofitHandler.productApi.getProductsSummary(
                 page,
@@ -95,6 +94,7 @@ class ProductViewModel: ViewModel() {
                 club = productCreateRequestDto.club,
                 variants = productCreateRequestDto.variants
             )
+
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.productApi.createProduct(
                     name = MultipartBody.Part.createFormData("name", productCreateRequestDto.name) ,
@@ -106,7 +106,10 @@ class ProductViewModel: ViewModel() {
                     picPrincipal = ConverterBitmap.convert(bitmap = pic1, fieldName = "picPrincipal"),
                     pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),
                     club = MultipartBody.Part.createFormData("clubName", productCreateRequestDto.club),
-                    variants = MultipartBody.Part.createFormData("variantStocks", productCreateRequestDto.variants.toString())
+                    variants = productCreateRequestDto.variants.map { (key, value) ->
+                        MultipartBody.Part.createFormData("variantStocks[${key.name}]", value.toString())
+                    }.toTypedArray()
+
                 ).awaitResponse()
                 if (!response.isSuccessful) println("Error creating product: ${response.message()}")
                 else returnValue = true
@@ -120,7 +123,6 @@ class ProductViewModel: ViewModel() {
 
     fun updateProduct(id: String, productUpdateRequestDto: ProductUpdateRequestDto, pic1: Bitmap, pic2: Bitmap): Boolean {
         var returnValue = false
-        //TODO fare controlli sulle modifiche
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.productApi.updateProduct(

@@ -1,12 +1,5 @@
-package com.example.clientadmin.utils
+package com.example.clientadmin.api
 
-import com.example.clientadmin.api.ClubApiService
-import com.example.clientadmin.api.CustomerApiService
-import com.example.clientadmin.api.LeagueApiService
-import com.example.clientadmin.api.LoginApiService
-import com.example.clientadmin.api.OrdersApiService
-import com.example.clientadmin.api.ProductApiService
-import com.example.clientadmin.api.ProductVariantApiService
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

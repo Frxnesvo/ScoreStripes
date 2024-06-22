@@ -16,7 +16,7 @@ import retrofit2.http.Path
 
 interface WishListApiService {
     @GET("/api/v1/wishlists/my-wishlist")
-    fun getMyWishList() : Call<List<WishlistItemDto>>
+    fun getMyWishList() : Call<WishListDto>
 
     @GET("/api/v1/wishlists/public")
     fun getPublicWishlists() : Call<List<WishListDto>>
@@ -41,4 +41,7 @@ interface WishListApiService {
 
     @DELETE("/api/v1/wishlists/my-wishlist/item/{productId}")
     fun deleteItem(@Path("productId") productId: String): Call<String>
+
+    @POST("/api/v1/wishlists/validate-shareAccess")
+    fun validateShareToken(@Body token: String) : Call<WishListDto>
 }

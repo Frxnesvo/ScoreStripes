@@ -7,6 +7,7 @@ import java.time.LocalDate
 @JsonClass(generateAdapter = true)
 data class AuthResponseDto(
     val jwt: String,
+    val id: String,
     val username: String,
     val firstName: String,
     val lastName: String,

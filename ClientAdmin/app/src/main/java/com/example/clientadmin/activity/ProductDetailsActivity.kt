@@ -75,6 +75,7 @@ fun ProductDetails(
 
             CustomTextField(
                 value = productState.name,
+                isError = productState.isNameError,
                 text = stringResource(id = R.string.name)
             ){ productFormViewModel.updateName(it) }
 
@@ -96,17 +97,25 @@ fun ProductDetails(
 
             CustomTextField(
                 value = productState.brand,
+                isError = productState.isBrandError,
                 text = stringResource(id = R.string.brand)
             ){ productFormViewModel.updateBrand(it) }
 
             CustomTextField(
-                value = productState.price.toString(),
+                value = if (productState.price != null) productState.price.toString() else "",
+                isError = productState.isPriceError,
                 text = stringResource(id = R.string.price),
-                keyboardType = KeyboardType.Decimal
-            ){ productFormViewModel.updatePrice(it.toDouble()) }
+                keyboardType = KeyboardType.Number
+            ) {
+                if (it.isEmpty())
+                    productFormViewModel.updatePrice(null)
+                else if (it.toDoubleOrNull() != null)
+                    productFormViewModel.updatePrice(it.toDouble())
+            }
 
             CustomTextField(
                 value = productState.description,
+                isError = productState.isDescriptionError,
                 text = stringResource(id = R.string.description),
                 lines = 10
             ){ productFormViewModel.updateDescription(it) }
@@ -119,12 +128,17 @@ fun ProductDetails(
             Text(text = stringResource(id = R.string.quantities), style = style)
 
             Size.entries.forEach{
-                variant ->
+                size ->
                 CustomTextField(
-                    value = if(productState.variants.isNotEmpty()) productState.variants[variant].toString() else "0",
-                    text = variant.name,
+                    value = productState.variants[size].toString(),
+                    text = size.name,
                     keyboardType = KeyboardType.Number
-                ) { productFormViewModel.updateVariant(variant, it.toInt()) }
+                ) {
+                    if (it.isEmpty())
+                        productFormViewModel.updateVariant(size, 0)
+                    else if (it.toIntOrNull() != null)
+                        productFormViewModel.updateVariant(size, it.toInt())
+                }
             }
         }
 
@@ -139,7 +153,6 @@ fun ProductDetails(
             text = if(id == null) stringResource(id = R.string.create) else stringResource(id = R.string.update),
             background = R.color.secondary
         ) {
-            //TODO vanno fatti tutti i vari controlli?
             if (id == null) {
                 val club = if(productState.club != "") productState.club else clubs[0]
                 val productRequestDto = ProductCreateRequestDto(
@@ -149,16 +162,16 @@ fun ProductDetails(
                     gender = productState.gender,
                     productCategory = productState.productCategory,
                     description =  productState.description,
-                    price = productState.price,
+                    price = productState.price ?: 0.0,
                     variants = productState.variants
                 )
                 if (productViewModel.addProduct(productRequestDto, productState.pic1, productState.pic2)) {
-                    navHostController.popBackStack()
+                    navHostController.navigate("home")
                 }
             } else {
                 val productUpdateRequestDto = ProductUpdateRequestDto(
                     description = productState.description,
-                    price = productState.price,
+                    price = productState.price ?: 0.0,
                     variants = productState.variants,
                 )
                 productViewModel.updateProduct(id, productUpdateRequestDto, productState.pic1, productState.pic2)

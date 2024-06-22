@@ -1,6 +1,5 @@
 package com.example.clientadmin.activity
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +50,7 @@ fun AddPanel(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
+                        //TODO controllare se ci siano club
                         navHostController.navigate("addProduct")
                     }
                 }
@@ -71,6 +71,7 @@ fun AddPanel(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
+                        //TODO controllare che ci siano leghe
                         navHostController.navigate("addTeam")
                     }
                 }
@@ -119,7 +120,7 @@ fun LeagueDetails(
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
             val leagueCreateRequestDto = LeagueCreateRequestDto(leagueState.name)
             if (leagueViewModel.addLeague(leagueCreateRequestDto, leagueState.image)) {
-                navHostController.popBackStack()
+                navHostController.navigate("home")
             }
         }
     }
@@ -171,14 +172,9 @@ fun ClubDetails(
         }
 
         CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
-            //TODO controllo leagues non sia vuoto, immagine non vuota e nome non vuoto
-
-            println("CLUB PIC null? --> ${clubState.image == Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)}")
-
-            val league = if(clubState.league != "") clubState.league else leagues[0]
-            val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, league)
+            val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, clubState.league)
             if (clubViewModel.addClub(clubCreateRequestDto, clubState.image)){
-                navHostController.popBackStack()
+                navHostController.navigate("home")
             }
         }
     }

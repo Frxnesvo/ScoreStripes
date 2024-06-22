@@ -1,5 +1,6 @@
 package com.example.clientadmin.api
 
+import com.example.clientadmin.model.dto.PageResponseDto
 import com.example.clientadmin.model.dto.ProductDto
 import com.example.clientadmin.model.dto.ProductSummaryDto
 import com.example.clientadmin.model.enumerator.Size
@@ -30,7 +31,7 @@ interface ProductApiService {
         @Part picPrincipal: MultipartBody.Part,
         @Part pic2: MultipartBody.Part,
         @Part club: MultipartBody.Part,
-        @Part variants: MultipartBody.Part,
+        @Part vararg variants: MultipartBody.Part,
     ): Call<ProductDto>
 
     @Multipart
@@ -50,5 +51,5 @@ interface ProductApiService {
         @Query("page") page: Int,
         @Query("size") size: Int,
         @QueryMap filters: Map<String, String?>
-    ): Call<List<ProductSummaryDto>>
+    ): Call<PageResponseDto<ProductSummaryDto>>
 }
