@@ -27,6 +27,7 @@ class LoginFormViewModel {
     fun updateProfilePic(profilePic: Bitmap){
         _adminState.value = _adminState.value.copy(
             profilePic = profilePic,
+            isProfilePicError = !Admin.validateProfilePic(profilePic)
         )
     }
 

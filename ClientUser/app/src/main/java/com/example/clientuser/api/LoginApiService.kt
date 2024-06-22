@@ -20,8 +20,7 @@ interface LoginApiService {
         @Part birthDate: MultipartBody.Part,
         @Part gender: MultipartBody.Part,
         @Part imageProfile: MultipartBody.Part,
-        @Part address: MultipartBody.Part,
-        @Part favouriteTeam: MultipartBody.Part
-        //TODO fare l'aggiunta dell'address
+        @Part favoriteTeam: MultipartBody.Part,
+        @Part address: MultipartBody.Part
     ): Call<Map<String,String>>
 }

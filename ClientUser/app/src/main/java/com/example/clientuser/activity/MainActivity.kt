@@ -23,6 +23,7 @@ import com.example.clientuser.authentication.GoogleAuth
 import com.example.clientuser.ui.theme.ClientUserTheme
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
+import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 class MainActivity : ComponentActivity() {
@@ -91,7 +92,8 @@ fun Navigation(
                         navController = navController,
                         loginViewModel = loginViewModel,
                         loginFormViewModel = loginFormViewModel,
-                        clubViewModel = clubViewModel
+                        clubViewModel = clubViewModel,
+                        addressFormViewModel = AddressFormViewModel(null)
                     )
             }
         }

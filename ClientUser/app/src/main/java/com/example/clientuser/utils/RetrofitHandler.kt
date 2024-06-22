@@ -24,11 +24,13 @@ object RetrofitHandler {
         .build()
 
     private val moshi = Moshi.Builder()
+        .add(LocalDateAdapter)
+        .add(AddressAdapter)
         .build()
 
     private val retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://192.168.178.42:8080")
+            .baseUrl("http://192.168.1.33:8080")
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

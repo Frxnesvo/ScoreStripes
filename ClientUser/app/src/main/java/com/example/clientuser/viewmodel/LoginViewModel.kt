@@ -8,9 +8,11 @@ import com.example.clientuser.model.Address
 import com.example.clientuser.model.Customer
 import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.model.enumerator.Gender
+import com.example.clientuser.utils.AddressAdapter
 import com.example.clientuser.utils.ConverterBitmap
 import com.example.clientuser.utils.RetrofitHandler
 import com.google.gson.Gson
+import com.squareup.moshi.JsonWriter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,14 +65,16 @@ class LoginViewModel: ViewModel() {
         try{
             var returnValue = false
             CoroutineScope(Dispatchers.IO).launch {
+                println("ADDRESS TO JSON: ${AddressAdapter.toJson(address)}")
+
                 val response = RetrofitHandler.loginApi.customerRegister(
                     idToken = MultipartBody.Part.createFormData("idToken", token),
                     username = MultipartBody.Part.createFormData("username", username),
                     birthDate = MultipartBody.Part.createFormData("birthDate", birthDate.format(DateTimeFormatter.ISO_LOCAL_DATE)),
                     gender = MultipartBody.Part.createFormData("gender", gender.name),
-                    address = MultipartBody.Part.createFormData("address", Gson().toJson(address)),
-                    favouriteTeam = MultipartBody.Part.createFormData("favouriteTeam", favouriteTeam),
-                    imageProfile = ConverterBitmap.convert(bitmap = pic, fieldName = "profilePic")
+                    favoriteTeam = MultipartBody.Part.createFormData("favoriteTeam", favouriteTeam),
+                    imageProfile = ConverterBitmap.convert(bitmap = pic, fieldName = "profilePic"),
+                    address = MultipartBody.Part.createFormData("address", AddressAdapter.toJson(address)) //TODO aggiungere l'adapter per convertire l'address in json
                 ).awaitResponse()
 
                 if(response.isSuccessful) returnValue = true

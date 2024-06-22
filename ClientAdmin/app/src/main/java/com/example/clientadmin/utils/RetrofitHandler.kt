@@ -28,7 +28,7 @@ object RetrofitHandler {
 
     private val retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://192.168.1.55:8080")
+            .baseUrl("http://192.168.1.33:8080")
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
@@ -39,7 +39,6 @@ object RetrofitHandler {
     val customerApi: CustomerApiService by lazy { retrofit.create(CustomerApiService::class.java) }
     val productApi: ProductApiService by lazy { retrofit.create(ProductApiService::class.java) }
     val ordersApi: OrdersApiService by lazy { retrofit.create(OrdersApiService::class.java) }
-    val productVariantApi: ProductVariantApiService by lazy { retrofit.create(
-        ProductVariantApiService::class.java) }
+    val productVariantApi: ProductVariantApiService by lazy { retrofit.create(ProductVariantApiService::class.java) }
     val loginApi: LoginApiService by lazy { retrofit.create(LoginApiService::class.java) }
 }

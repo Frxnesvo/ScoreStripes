@@ -1,6 +1,7 @@
 package com.example.clientuser.viewmodel.formviewmodel
 
 import android.graphics.Bitmap
+import com.example.clientuser.model.Address
 import com.example.clientuser.model.Customer
 import com.example.clientuser.model.enumerator.Gender
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,7 @@ data class CustomerState(
     val isUsernameError: Boolean = !Customer.validateUsername(username),
     val isEmailError: Boolean = !Customer.validateEmail(email),
     val isBirthdateError: Boolean = !Customer.validateBirthdate(birthdate),
-    val isFavouriteTeamError: Boolean = !Customer.validateFavouriteTeam(favouriteTeam)
+    val isFavouriteTeamError: Boolean = !Customer.validateFavouriteTeam(favouriteTeam),
 )
 class LoginFormViewModel {
     private val _customerState = MutableStateFlow(CustomerState())
@@ -32,6 +33,7 @@ class LoginFormViewModel {
     fun updateProfilePic(uri: Bitmap){
         _customerState.value = _customerState.value.copy(
             profilePic = uri,
+            isProfilePicError = !Customer.validateProfilePic(uri)
         )
     }
 
@@ -57,7 +59,8 @@ class LoginFormViewModel {
 
     fun updateFavouriteTeam(favouriteTeam: String){
         _customerState.value = _customerState.value.copy(
-            favouriteTeam = favouriteTeam
+            favouriteTeam = favouriteTeam,
+            isFavouriteTeamError = !Customer.validateFavouriteTeam(favouriteTeam)
         )
     }
 }
