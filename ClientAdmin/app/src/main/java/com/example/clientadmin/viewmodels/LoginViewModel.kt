@@ -10,11 +10,13 @@ import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.api.RetrofitHandler
+import com.example.clientadmin.utils.TokenStoreUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 import java.time.format.DateTimeFormatter
@@ -34,7 +36,7 @@ class LoginViewModel: ViewModel() {
     val token = _token
 
 
-    fun login(idToken: String?, context: Context){
+    fun login(idToken: String? /* , context: Context */ ){
         println("SONO NEL LOGIN VIEW MODEL")
         println("ID TOKEN: $idToken")
         if(idToken != null) {
@@ -45,19 +47,19 @@ class LoginViewModel: ViewModel() {
                     ).awaitResponse()
                     if (response.isSuccessful) {
                         println("Response server: ${response.body()}")
-//                        val responseBody = response.body()
-//                        if (responseBody != null) {
-//                            val jwt = responseBody.jwt
-//                            withContext(Dispatchers.Main) {
-//                                val tokenStoreUtils = TokenStoreUtils(context)
-//                                tokenStoreUtils.storeToken(jwt)
-//                            }
-//                        }
                         //TODO verificare che l'utente loggato sia un admin
+
                         response.body()?.let { authResponseDto ->
-                            println("URL IMAGE: ${authResponseDto.profilePicUrl}")
                             _user.value = Admin.fromDto(authResponseDto)
                             _isLoggedIn.value = LoginState.LOGGED
+                            _token.value = ""
+
+                            withContext(Dispatchers.Main) {
+                                TokenStoreUtils.storeToken(authResponseDto.jwt)
+
+//                                val tokenStoreUtils = TokenStoreUtils(context)
+//                                tokenStoreUtils.storeToken(jwt)
+                            }
                         }
 
                     } else {
@@ -98,6 +100,7 @@ class LoginViewModel: ViewModel() {
                 ).awaitResponse()
 
                 if (response.isSuccessful) {
+                    _token.value = ""
                     val responseMap = response.body()
                     println("Response server: ${responseMap?.get("message")}")
                     returnValue = true
@@ -113,18 +116,8 @@ class LoginViewModel: ViewModel() {
         catch (e: IllegalArgumentException) {
             _addError.value = e.message ?: "Unknown error"
             _isLoggedIn.value = LoginState.NULL
+            _token.value = ""
             return false
-        }
-    }
-
-    private fun saveToken(context: Context, accountName: String, authToken: String) {
-        val accountManager = AccountManager.get(context)
-        val account = Account(accountName, "com.example.clientadmin")
-
-        if (accountManager.addAccountExplicitly(account, null, null)) {
-            accountManager.setAuthToken(account, "Bearer", authToken)
-        } else {
-            accountManager.setAuthToken(account, "Bearer", authToken)
         }
     }
 }

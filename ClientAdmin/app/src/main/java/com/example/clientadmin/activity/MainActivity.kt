@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
 import com.example.clientadmin.authentication.GoogleAuth
 import com.example.clientadmin.ui.theme.ClientAdminTheme
+import com.example.clientadmin.utils.TokenStoreUtils
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -28,13 +29,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        TokenStoreUtils.initialize(this.applicationContext)
         val loginViewModel = LoginViewModel()
-
 
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val token = GoogleAuth.manageLoginResult(result)
             if (token != null)
-                loginViewModel.login(token, this.applicationContext)
+                loginViewModel.login(token /* , this.applicationContext */ )
             else
                 println("Token is null")
             GoogleAuth.signOut(this)
