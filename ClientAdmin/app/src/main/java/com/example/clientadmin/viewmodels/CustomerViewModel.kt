@@ -7,7 +7,8 @@ import com.example.clientadmin.model.CustomerSummary
 import com.example.clientadmin.model.FilterBuilder
 import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.dto.CustomerSummaryDto
-import com.example.clientadmin.utils.RetrofitHandler
+import com.example.clientadmin.api.RetrofitHandler
+import com.example.clientadmin.model.dto.PageResponseDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -42,13 +43,13 @@ class CustomerViewModel : ViewModel() {
     private fun loadMoreCustomerSummaries() {
         CoroutineScope(Dispatchers.IO).launch {
             getCustomerSummaries().collect {
-                val newSummaries = it.map { summary -> CustomerSummary.fromDto(summary) }
+                val newSummaries = it.content.map { summary -> CustomerSummary.fromDto(summary) }
                 _customerSummaries.value += newSummaries
             }
         }
     }
 
-    private fun getCustomerSummaries(): Flow<List<CustomerSummaryDto>> = flow {
+    private fun getCustomerSummaries(): Flow<PageResponseDto<CustomerSummaryDto>> = flow {
         try {
             val response = RetrofitHandler.customerApi
                 .getCustomersSummary(

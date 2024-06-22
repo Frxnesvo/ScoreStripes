@@ -32,8 +32,8 @@ class Product (
         fun validateName(name: String): Boolean{
             return name.length in 3..40 && name.isNotBlank()
         }
-        fun validatePrice(price: Double): Boolean{
-            return price > 0
+        fun validatePrice(price: Double?): Boolean{
+            return price != null && price > 0
         }
         fun validateDescription(description: String): Boolean{
             return description.length in 10..500 && description.isNotBlank()

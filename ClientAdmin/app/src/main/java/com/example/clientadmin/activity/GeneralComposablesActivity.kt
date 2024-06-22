@@ -37,6 +37,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +57,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -180,7 +182,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
 fun CustomComboBox(
     options: List<Any>,
     selectedOption: String,
-    readOnly: Boolean = false,
+    readOnly: Boolean = true,
     expandable: Boolean = true,
     onValueChange: (String) -> Unit
 ) {
@@ -195,14 +197,12 @@ fun CustomComboBox(
                 expanded = if (expandable) !expanded else false
             }
         ) {
-
-            val interactionSource = remember { MutableInteractionSource() }
-
             OutlinedTextField(
                 value = selectedOption,
-                onValueChange = {  },
+                onValueChange = {
+                },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
-                readOnly = true,
+                readOnly = readOnly,
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
@@ -382,4 +382,25 @@ fun CustomDatePicker(
             selectedOption = date.year.toString()
         ) { onValueChange(LocalDate.of(it.toInt(), date.month, date.dayOfMonth)) }
     }
+}
+
+@Preview
+@Composable
+fun NumberTextField() {
+    var text by remember { mutableStateOf("0.0") }
+    TextField(
+        value = text,
+        onValueChange = {
+            if (it.isEmpty()){
+                text = it
+            } else {
+                text = when (it.toDoubleOrNull()) {
+                    null -> text
+                    else -> it
+                }
+            }
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+    )
 }

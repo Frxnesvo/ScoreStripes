@@ -18,7 +18,7 @@ data class ProductState(
     val brand: String = "",
     val productCategory: ProductCategory = ProductCategory.entries[0],
     val description: String = "",
-    val price: Double = 0.0,
+    val price: Double? = null,
     val variants: Map<Size, Int> = mapOf(
         Pair(Size.XS, 0),
         Pair(Size.S, 0),
@@ -85,7 +85,7 @@ class ProductFormViewModel(product: Product? = null) {
         )
     }
     fun updateBrand(brand: String) {
-        val hasError = !Product.validateDescription(brand)
+        val hasError = !Product.validateBrand(brand)
         _productState.value = _productState.value.copy(
             brand = brand,
             isBrandError = hasError
@@ -101,7 +101,7 @@ class ProductFormViewModel(product: Product? = null) {
             pic2 = pic
         )
     }
-    fun updatePrice(price: Double) {
+    fun updatePrice(price: Double?) {
         val hasError = !Product.validatePrice(price)
         _productState.value = _productState.value.copy(
             price = price,
