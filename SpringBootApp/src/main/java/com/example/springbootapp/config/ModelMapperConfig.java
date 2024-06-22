@@ -2,6 +2,7 @@ package com.example.springbootapp.config;
 
 import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.data.entities.*;
+import com.example.springbootapp.data.entities.Enums.Size;
 import com.example.springbootapp.service.impl.AwsS3ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.*;
@@ -38,12 +39,12 @@ public class ModelMapperConfig {
             return null;
         };
         //converter personalizzato per gestire la conversione da una lista di varianti a una mappa di stock (taglia -> disponibilità)
-        Converter<List<ProductWithVariant>, Map<String,Integer>> variantStockConverter = context -> {
-            Map<String,Integer> stockMap = new HashMap<>();
+        Converter<List<ProductWithVariant>, Map<Size,Integer>> variantStockConverter = context -> {
+            Map<Size,Integer> stockMap = new HashMap<>();
             List<ProductWithVariant> variants = context.getSource();
             if (variants != null) {
                 for (ProductWithVariant variant : variants) {
-                    stockMap.put(variant.getSize().name(), variant.getAvailability());
+                    stockMap.put(variant.getSize(), variant.getAvailability());
                 }
             }
             return stockMap;

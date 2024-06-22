@@ -1,5 +1,6 @@
 package com.example.springbootapp.data.dto;
 
+import com.example.springbootapp.data.entities.Enums.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,5 +14,5 @@ public class ProductSummaryDto {
     private String name;
     private String picUrl;
     private String leagueName;  //Non serve per la visualizzazione ma serve per il filtraggio
-    private Map<String,Integer> variantStock;
+    private Map<Size,Integer> variantStock;
 }

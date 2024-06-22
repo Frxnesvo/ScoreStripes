@@ -1,4 +1,4 @@
-package com.example.clientadmin.utils
+package com.example.clientadmin.api
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
