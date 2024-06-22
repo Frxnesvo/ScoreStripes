@@ -7,7 +7,7 @@ import com.example.clientadmin.model.CustomerSummary
 import com.example.clientadmin.model.FilterBuilder
 import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.dto.CustomerSummaryDto
-import com.example.clientadmin.api.RetrofitHandler
+import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.model.dto.PageResponseDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

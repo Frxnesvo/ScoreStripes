@@ -1,15 +1,12 @@
 package com.example.clientadmin.viewmodels
 
-import android.accounts.Account
-import android.accounts.AccountManager
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
-import com.example.clientadmin.api.RetrofitHandler
+import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.utils.TokenStoreUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +53,6 @@ class LoginViewModel: ViewModel() {
 
                             withContext(Dispatchers.Main) {
                                 TokenStoreUtils.storeToken(authResponseDto.jwt)
-
 //                                val tokenStoreUtils = TokenStoreUtils(context)
 //                                tokenStoreUtils.storeToken(jwt)
                             }

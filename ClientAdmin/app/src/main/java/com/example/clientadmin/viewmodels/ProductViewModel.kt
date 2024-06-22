@@ -10,7 +10,7 @@ import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductSummaryDto
 import com.example.clientadmin.model.dto.ProductUpdateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
-import com.example.clientadmin.api.RetrofitHandler
+import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.model.dto.PageResponseDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
