@@ -66,7 +66,7 @@ fun AddPanel(
                 }
             }
 
-            CustomButton(text = "CREATE TEAM", background = R.color.transparent) {
+            CustomButton(text = "CREATE CLUB", background = R.color.transparent) {
                 if(sheetState.isVisible) {
                     scope.launch {
                         sheetState.hide()
