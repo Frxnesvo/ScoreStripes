@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.authentication.GoogleAuth
+import com.example.clientuser.authentication.UserSession
 import com.example.clientuser.ui.theme.ClientUserTheme
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
@@ -28,14 +29,17 @@ import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val loginViewModel = LoginViewModel()
+        val userSession = UserSession()
+        val loginViewModel = LoginViewModel(userSession)
 
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val token = GoogleAuth.manageLoginResult(result)
             if (token != null)
                 loginViewModel.login(token, this.applicationContext)
         }
+
+        super.onCreate(savedInstanceState)
+
         setContent {
             ClientUserTheme {
                 Surface(

@@ -53,7 +53,7 @@ fun Login(
             content = Icons.AutoMirrored.Outlined.KeyboardArrowLeft
         ) {
             loginViewModel.goToLogin()
-            navController.navigate("login")
+            navController.navigate("index")
         }
 
         Column(
