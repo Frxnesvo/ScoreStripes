@@ -47,6 +47,7 @@ class LogoutViewModel(userSession: UserSession){
 //                    TokenStoreUtils.clearToken()
 //                    _logoutEvent.emit(Unit)
 //                    _user.value = null
+//                    _isLoggedIn.value = false
 //                }
 //                else println("Error logout: ${response.message()}")
 //            }

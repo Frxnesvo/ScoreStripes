@@ -76,11 +76,9 @@ fun IndexPage(
                     }
                 }
 
-                when(isLoggedIn.value){
-                    LoginState.LOGGED -> navController.navigate("scaffold")
-                    LoginState.REGISTER -> navController.navigate("register/${loginViewModel.token.value}")
-                    LoginState.NULL -> println("invalid id token") //TODO
-                }
+                if(isLoggedIn.value) navController.navigate("scaffold")
+                else if(loginViewModel.goToRegister.value)navController.navigate("register/${loginViewModel.token.value}")
+                else println("invalid id token") //TODO
 
                 TextButton(
                     onClick = {
