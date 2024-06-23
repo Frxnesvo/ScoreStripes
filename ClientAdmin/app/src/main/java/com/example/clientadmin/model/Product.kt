@@ -46,6 +46,16 @@ class Product (
         }
 
         fun fromDto(productDto: ProductDto): Product{
+            val principal: String
+            val secondary: String
+            if(productDto.pics[0].principal){
+                principal = productDto.pics[0].picUrl
+                secondary = productDto.pics[1].picUrl
+            }else{
+                principal = productDto.pics[1].picUrl
+                secondary = productDto.pics[0].picUrl
+            }
+
             return Product(
                 name = productDto.name,
                 description = productDto.description,
@@ -53,8 +63,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.productCategory,
-                pic1 = S3ImageDownloader.getImageForBucket(productDto.pics[0]),
-                pic2 = S3ImageDownloader.getImageForBucket(productDto.pics[1]),
+                pic1 = S3ImageDownloader.getImageForBucket(principal),
+                pic2 = S3ImageDownloader.getImageForBucket(secondary),
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

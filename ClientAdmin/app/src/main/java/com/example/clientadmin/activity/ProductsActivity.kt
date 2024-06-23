@@ -145,13 +145,13 @@ fun Products(
                 }
             } else if (FilterType.CLUBS == filterType) {
                 items(clubs) {
-                    key(it.name) { //todo non so se name è unique
+                    key(it.name) {
                         ClubItem(club = it) { navHostController.navigate("club/${it.toQueryString()}") }
                     }
                 }
             } else if (FilterType.LEAGUES == filterType) {
                 items(leagues) {
-                    key(it.name) {//todo non so se name è unique
+                    key(it.name) {
                         LeagueItem(league = it) { navHostController.navigate("league/${it.toQueryString()}") }
                     }
                 }
