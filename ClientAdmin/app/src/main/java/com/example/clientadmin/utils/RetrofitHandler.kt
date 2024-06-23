@@ -4,6 +4,7 @@ import com.example.clientadmin.api.ClubApiService
 import com.example.clientadmin.api.CustomerApiService
 import com.example.clientadmin.api.LeagueApiService
 import com.example.clientadmin.api.LoginApiService
+import com.example.clientadmin.api.LogoutApi
 import com.example.clientadmin.api.OrdersApiService
 import com.example.clientadmin.api.ProductApiService
 import com.example.clientadmin.api.ProductVariantApiService
@@ -44,4 +45,5 @@ object RetrofitHandler {
     val productVariantApi: ProductVariantApiService by lazy { retrofit.create(
         ProductVariantApiService::class.java) }
     val loginApi: LoginApiService by lazy { retrofit.create(LoginApiService::class.java) }
+    val logoutApi: LogoutApi by lazy { retrofit.create(LogoutApi::class.java)}
 }

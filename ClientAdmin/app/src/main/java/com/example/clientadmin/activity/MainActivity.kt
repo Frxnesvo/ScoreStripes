@@ -10,8 +10,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,28 +19,32 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.clientadmin.R
 import com.example.clientadmin.authentication.GoogleAuth
+import com.example.clientadmin.authentication.LogoutManager
+import com.example.clientadmin.authentication.UserSession
 import com.example.clientadmin.ui.theme.ClientAdminTheme
 import com.example.clientadmin.utils.TokenStoreUtils
 import com.example.clientadmin.viewmodels.LoginViewModel
+import com.example.clientadmin.viewmodels.LogoutViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-
+import androidx.compose.runtime.LaunchedEffect
+import kotlin.math.log
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val userSession = UserSession()
+
         TokenStoreUtils.initialize(this.applicationContext)
-        val loginViewModel = LoginViewModel()
+
+        val loginViewModel = LoginViewModel(userSession)
+        LogoutManager.initialize(LogoutViewModel(userSession))
 
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val token = GoogleAuth.manageLoginResult(result)
             if (token != null)
                 loginViewModel.login(token /* , this.applicationContext */ )
-            else
-                println("Token is null")
+            else println("Token is null")
             GoogleAuth.signOut(this)
         }
-
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -96,8 +100,13 @@ fun Navigation(signInLauncher: ActivityResultLauncher<Intent>, navController: Na
 
         //SCAFFOLD
         composable(route = "scaffold"){
-            Scaffold(loginViewModel = loginViewModel)
+            Scaffold(
+                loginViewModel = loginViewModel,
+                navHostController = navController
+            )
         }
     }
 }
+
+
 

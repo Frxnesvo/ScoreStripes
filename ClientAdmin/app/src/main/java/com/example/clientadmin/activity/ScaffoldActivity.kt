@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +41,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientadmin.R
+import com.example.clientadmin.authentication.LogoutManager
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.CustomerSummary
@@ -57,7 +59,7 @@ import com.example.clientadmin.viewmodels.LoginViewModel
 enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
 @Composable
-fun Scaffold(loginViewModel: LoginViewModel) {
+fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostController) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
@@ -77,19 +79,21 @@ fun Scaffold(loginViewModel: LoginViewModel) {
         ){
             loginViewModel.user.collectAsState().value.let {
                 admin ->
-                println("ADMIN: $admin")
                 if (admin != null) {
-                    println("ADMIN: $admin")
-                    NavigationScaffold(
-                        navHostController = navController,
-                        customerViewModel = CustomerViewModel(),
-                        productViewModel = ProductViewModel(),
-                        clubViewModel = ClubViewModel(),
-                        leagueViewModel = LeagueViewModel(),
-                        homeViewModel = HomeViewModel(),
-                        selectedScreen = selectedScreen,
-                        admin = admin
-                    )
+
+                    AuthAwareComposable(navController = navHostController) {
+                        NavigationScaffold(
+                            navHostController = navController,
+                            customerViewModel = CustomerViewModel(),
+                            productViewModel = ProductViewModel(),
+                            clubViewModel = ClubViewModel(),
+                            leagueViewModel = LeagueViewModel(),
+                            homeViewModel = HomeViewModel(),
+                            selectedScreen = selectedScreen,
+                            admin = admin
+                        )
+                    }
+
                 }
             }
         }
@@ -327,4 +331,22 @@ fun NavigationScaffold(
             Settings(admin = admin)
         }
     }
+}
+
+@Composable
+fun AuthAwareComposable(
+    navController: NavHostController,
+    content: @Composable () -> Unit
+){
+    val logoutManager = remember { LogoutManager.instance }
+
+    LaunchedEffect(logoutManager) {
+        logoutManager.logoutEvent.collect {
+            navController.navigate("index") {
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+            }
+        }
+    }
+
+    content()
 }

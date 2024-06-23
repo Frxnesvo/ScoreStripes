@@ -11,7 +11,7 @@ class Admin(
     val firstName: String = "",
     val lastName: String = "",
     val email: String = "",
-    val birthDate: LocalDate,
+    val birthDate: LocalDate ,
     val gender: Gender,
     val pic: Bitmap
 ) {
