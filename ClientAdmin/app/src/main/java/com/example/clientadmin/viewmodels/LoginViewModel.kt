@@ -82,6 +82,8 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
         _goToRegister.value = false
     }
 
+
+    //TODO controllare perchè non naviga indietro alla login una volta completata la registrazione
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
         try {
             var returnValue = false

@@ -23,7 +23,7 @@ class Customer(
         require(validateProfilePic(pic)) { "Invalid profile picture" }
         require(validateUsername(username)) { "Invalid username: must be between 3 and 20 characters" }
         require(validateFirstName(firstName)) { "Invalid first name: must be between 3 and 20 characters" }
-        require(validateLastName(lastName)) { "Invalid last name: must be between 3 and 20 characters" }
+        //require(validateLastName(lastName)) { "Invalid last name: must be between 3 and 20 characters" }
         require(validateEmail(email)) { "Invalid email format" }
         require(validateBirthdate(birthDate)) { "Invalid birthdate: must be before the current date" }
     }

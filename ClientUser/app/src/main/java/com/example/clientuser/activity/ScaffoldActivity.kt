@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
+import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
@@ -46,7 +49,7 @@ import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
 @Composable
-fun Scaffold(loginViewModel: LoginViewModel) {
+fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostController) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
     val customer = loginViewModel.user.collectAsState()
@@ -56,24 +59,29 @@ fun Scaffold(loginViewModel: LoginViewModel) {
     ) {
         Box(
             modifier = Modifier
+                .fillMaxSize()
+                .background(colorResource(id = R.color.primary))
                 .padding(
                     top = it.calculateTopPadding() + 10.dp,
                     bottom = it.calculateBottomPadding(),
                     start = 10.dp,
                     end = 10.dp
                 )
+
         ) {
-            NavigationScaffold(
-                customerFormViewModel = CustomerFormViewModel(customer.value!!),
-                customerViewModel = CustomerViewModel(customer.value!!.id),
-                clubViewModel = ClubViewModel(),
-                leagueViewModel = LeagueViewModel(),
-                productViewModel = ProductViewModel(),
-                orderViewModel = OrderViewModel(),
-                wishlistViewModel = WishListViewModel(),
-                cartViewModel = CartViewModel(),
-                navHostController = navController
-            )
+            AuthAwareComposable(navController = navHostController) {
+                NavigationScaffold(
+                    customerFormViewModel = CustomerFormViewModel(customer.value!!),
+                    customerViewModel = CustomerViewModel(customer.value!!.id),
+                    clubViewModel = ClubViewModel(),
+                    leagueViewModel = LeagueViewModel(),
+                    productViewModel = ProductViewModel(),
+                    orderViewModel = OrderViewModel(),
+                    wishlistViewModel = WishListViewModel(),
+                    cartViewModel = CartViewModel(),
+                    navHostController = navController
+                )
+            }
         }
     }
 }
@@ -317,4 +325,22 @@ fun NavigationScaffold(
             PaymentFailureScreen(navHostController = navHostController)
         }
     }
+}
+
+@Composable
+fun AuthAwareComposable(
+    navController: NavHostController,
+    content: @Composable () -> Unit
+){
+    val logoutManager = remember { LogoutManager.instance }
+
+    LaunchedEffect(logoutManager) {
+        logoutManager.logoutEvent.collect {
+            navController.navigate("index") {
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+            }
+        }
+    }
+
+    content()
 }

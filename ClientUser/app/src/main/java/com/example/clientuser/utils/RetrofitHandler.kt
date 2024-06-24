@@ -8,11 +8,13 @@ import com.example.clientuser.api.LoginApiService
 import com.example.clientuser.api.OrderApiService
 import com.example.clientuser.api.ProductApiService
 import com.example.clientuser.api.WishListApiService
+import com.example.clientuser.authentication.TokenInterceptor
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitHandler {
     private val logging = HttpLoggingInterceptor().apply {
@@ -21,11 +23,11 @@ object RetrofitHandler {
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(logging)
+        .addInterceptor(TokenInterceptor())
         .build()
 
     private val moshi = Moshi.Builder()
         .add(LocalDateAdapter)
-        .add(AddressAdapter)
         .build()
 
     private val retrofit by lazy {

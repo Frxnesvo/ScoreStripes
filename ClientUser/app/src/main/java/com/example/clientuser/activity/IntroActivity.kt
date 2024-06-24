@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.authentication.GoogleAuth
-import com.example.clientuser.viewmodel.LoginState
 import com.example.clientuser.viewmodel.LoginViewModel
 
 @Composable

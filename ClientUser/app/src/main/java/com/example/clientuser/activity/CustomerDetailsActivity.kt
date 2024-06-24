@@ -68,8 +68,8 @@ fun Details(
     customerFormViewModel: CustomerFormViewModel,
     onClick: () -> Unit
 ){
-    val customer = customerFormViewModel.customer.collectAsState().value
-    val clubsName by clubViewModel.clubNames.collectAsState(initial = emptyList())
+    val customer by customerFormViewModel.customer.collectAsState()
+    val clubsNames by clubViewModel.clubNames.collectAsState(initial = emptyList())
     val isEditable = remember { mutableStateOf(false) }
 
     Column(
@@ -121,7 +121,7 @@ fun Details(
         ){}
 
         CustomComboBox(
-            options = clubsName,
+            options = clubsNames,
             selectedOption = customer.favouriteTeam,
         ){
             customerFormViewModel.updateFavouriteTeam(it)

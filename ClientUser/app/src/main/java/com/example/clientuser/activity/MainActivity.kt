@@ -20,10 +20,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.authentication.GoogleAuth
+import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.authentication.UserSession
 import com.example.clientuser.ui.theme.ClientUserTheme
+import com.example.clientuser.utils.TokenStoreUtils
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
+import com.example.clientuser.viewmodel.LogoutViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 
@@ -31,6 +34,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val userSession = UserSession()
         val loginViewModel = LoginViewModel(userSession)
+        TokenStoreUtils.initialize(this.applicationContext)
+        LogoutManager.initialize(LogoutViewModel(userSession))
 
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val token = GoogleAuth.manageLoginResult(result)
@@ -104,10 +109,9 @@ fun Navigation(
 
         //SCAFFOLD
         composable(
-            route = "scaffold",
-            arguments = listOf(navArgument("customer") { type = NavType.StringType })
+            route = "scaffold"
         ){
-            Scaffold(loginViewModel = loginViewModel)
+            Scaffold(loginViewModel = loginViewModel, navHostController = navController)
         }
     }
 }

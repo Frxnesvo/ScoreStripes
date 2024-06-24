@@ -12,28 +12,22 @@ import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.model.enumerator.Gender
 import com.example.clientuser.utils.ConverterBitmap
 import com.example.clientuser.utils.RetrofitHandler
-import com.google.gson.Gson
-import com.squareup.moshi.JsonWriter
+import com.example.clientuser.utils.TokenStoreUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.awaitResponse
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-enum class LoginState { LOGGED, REGISTER, NULL}
 
 class LoginViewModel(userSession: UserSession): ViewModel() {
 
     private val _addError = mutableStateOf("")
-    val addError = _addError                            //TODO da usare
+    val addError = _addError                            //TODO da usare e controllare gli errori nella register
 
     private val _goToRegister = mutableStateOf(false)
     val goToRegister: State<Boolean> = _goToRegister
@@ -59,6 +53,10 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                         _user.value = Customer.fromDto(customerDto)
                         _isLoggedIn.value = true
                         _token.value = ""
+
+                        withContext(Dispatchers.Main) {
+                            TokenStoreUtils.storeToken(customerDto.jwt)
+                        }
                     }
                 }
                 else{
@@ -76,6 +74,8 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
         }
     }
 
+
+    //TODO controllare perchè non naviga indietro alla login una volta completata la registrazione
     fun register(token: String, username: String, birthDate: LocalDate, gender: Gender, address: Address, favouriteTeam: String, pic: Bitmap): Boolean{
         try{
             println("TOKEN GOOGLE register: $token")
