@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Map;
 
 @RateLimited(permitsPerSecond = 10)
 @RestController
@@ -32,9 +33,9 @@ public class ProductController {
     private final ProductService productService;
     private final ExceptionUtils exceptionUtils;
 
-    @GetMapping("/summary")
-    public ResponseEntity<Page<ProductSummaryDto>> getProductsSummary(Pageable pageable){
-        return ResponseEntity.ok(productService.getProductsSummary(pageable));
+    @GetMapping("/summary")             //TODO: filtri per: nome, lega, club, categoria, size
+    public ResponseEntity<Page<ProductSummaryDto>> getProductsSummary(Pageable pageable, @RequestParam(required = false) Map<String,String> filters){
+        return ResponseEntity.ok(productService.getProductsSummary(pageable, filters));
     }
 
     @GetMapping("/{id}")

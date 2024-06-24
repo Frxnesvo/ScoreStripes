@@ -32,6 +32,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,12 +47,18 @@ public class ProductServiceImpl implements ProductService {
     private final ClubDao clubDao;
 
     @Override
-    public Page<ProductSummaryDto> getProductsSummary(Pageable pageable) {
+    public Page<ProductSummaryDto> getProductsSummary(Pageable pageable, Map<String, String> filters) {
         if(pageable.getSort().isUnsorted()) {
             Sort sort = Sort.by(Sort.Direction.ASC, "clubName");
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         }
-        return productDao.findAll(pageable).map(product -> modelMapper.map(product, ProductSummaryDto.class));
+        String name = filters.get("name");
+        String league = filters.get("league");
+        String category = filters.get("category");
+        String size = filters.get("size");
+        Specification<Product> spec = ProductSpecification.withFilters(name, league, category, size);
+        return productDao.findAll(spec,pageable)
+                .map(product -> modelMapper.map(product, ProductSummaryDto.class));
     }
 
     @Override

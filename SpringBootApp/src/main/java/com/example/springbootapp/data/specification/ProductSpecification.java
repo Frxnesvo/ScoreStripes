@@ -10,6 +10,9 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProductSpecification {
     public static Specification<Product> topSellingProducts(ProductCategory category) {
         return (root, query, builder) -> {
@@ -24,6 +27,25 @@ public class ProductSpecification {
             query.orderBy(builder.desc(builder.count(orders.get("id"))));
 
             return builder.and(productTypePredicate, orderStatusPredicate);
+        };
+    }
+
+    public static Specification<Product> withFilters(String name, String league, String category, String size) {
+        return (root, query, builder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (name != null && !name.isEmpty()) {
+                predicates.add(builder.like(builder.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+            }
+            if (league != null && !league.isEmpty()) {
+                predicates.add(builder.equal(root.get("league"), league));
+            }
+            if (category != null && !category.isEmpty()) {
+                predicates.add(builder.equal(root.get("category"), category));
+            }
+            if (size != null && !size.isEmpty()) {
+                predicates.add(builder.equal(root.get("size"), size));
+            }
+            return builder.and(predicates.toArray(new Predicate[0]));   // Converte i filtri in una singola clausola con AND
         };
     }
 }
