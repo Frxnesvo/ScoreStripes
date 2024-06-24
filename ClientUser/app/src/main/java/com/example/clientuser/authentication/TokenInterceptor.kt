@@ -13,6 +13,9 @@ class TokenInterceptor: Interceptor {
         if(accessToken != null){
             request = request.newBuilder()
                 .addHeader("Authorization", "Bearer $accessToken")
+                .header("Cache-Control", "no-cache")
+                .header("Cache-Control", "no-store")
+                .header("Pragma", "no-cache")
                 .build()
         }
 
