@@ -164,11 +164,9 @@ fun Products(
                         Text(
                             text = stringResource(id = R.string.more),
                             color = colorResource(id = R.color.black50),
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                letterSpacing = 5.sp
-                            )
+                            style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
             }

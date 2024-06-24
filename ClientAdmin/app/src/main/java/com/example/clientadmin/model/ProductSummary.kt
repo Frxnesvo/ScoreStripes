@@ -21,7 +21,7 @@ class ProductSummary(
                 club = productSummaryDto.clubName,
                 league = productSummaryDto.leagueName,
                 pic = S3ImageDownloader.getImageForBucket(productSummaryDto.picUrl),
-                variants = productSummaryDto.variants
+                variants = productSummaryDto.variantStock
             )
         }
     }

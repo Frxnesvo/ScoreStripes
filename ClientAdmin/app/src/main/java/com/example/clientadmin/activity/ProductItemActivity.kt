@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +43,7 @@ fun ProductItemRow(product: Product, onClick: () -> Unit) { //TODO probabilmente
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ){ onClick() },
+            ) { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -75,7 +76,7 @@ fun ProductItemColumn(productSummary: ProductSummary, onClick: () -> Unit) {
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ){ onClick() },
+            ) { onClick() },
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Row(
@@ -138,7 +139,7 @@ fun ColumnAvailability(size: Size, availability: Int? = 0){
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Box(
-            modifier = modifier,
+            modifier = modifier.background(colorResource(id = R.color.secondary), shape = CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(

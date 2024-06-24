@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,11 +60,9 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
                     Text(
                         text = stringResource(id = R.string.more),
                         color = colorResource(id = R.color.black50),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            letterSpacing = 5.sp
-                        )
+                        style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }

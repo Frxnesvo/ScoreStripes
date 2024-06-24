@@ -15,5 +15,5 @@ data class ProductDto (
     val productCategory: ProductCategory,
     val pics: List<String>,
     val clubName: String,
-    val variants: List<ProductWithVariantAvailabilityDto>
+    val variantStock: List<ProductWithVariantAvailabilityDto>
 )

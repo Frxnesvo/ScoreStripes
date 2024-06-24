@@ -1,5 +1,6 @@
 package com.example.clientuser.api
 
+import com.example.clientuser.model.dto.PageResponseDto
 import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.model.dto.ProductSummaryDto
 import retrofit2.Call
@@ -16,5 +17,5 @@ interface ProductApiService {
         @Query("page") page: Int,
         @Query("size") size: Int,
         @QueryMap filters: Map<String, String?>
-    ): Call<List<ProductSummaryDto>>
+    ): Call<PageResponseDto<ProductSummaryDto>>
 }

@@ -10,5 +10,5 @@ data class ProductSummaryDto(
     val clubName: String,
     val leagueName: String,
     val picUrl: String,
-    val variants: Map<Size, Int>
+    val variantStock: Map<Size, Int>
 )

@@ -66,7 +66,7 @@ class ProductViewModel: ViewModel() {
                 filter
             ).awaitResponse()
 
-            if (response.isSuccessful) response.body()?.let { emit(it) }
+            if (response.isSuccessful) response.body()?.let { emit(it.content) }
             else println("Error fetching product summaries: ${response.message()}")
         } catch (e: Exception) {
             println("Exception fetching product summaries: ${e.message}")

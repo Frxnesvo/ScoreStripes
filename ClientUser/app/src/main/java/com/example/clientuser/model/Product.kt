@@ -21,7 +21,7 @@ class Product (
     val variants: Map<Size, Int>
 ){
     companion object{
-        suspend fun fromDto(productDto: ProductDto): Product {
+        fun fromDto(productDto: ProductDto): Product {
             return Product(
                 id = productDto.id,
                 name = productDto.name,
@@ -33,7 +33,7 @@ class Product (
                 pic1 = S3ImageDownloader.getImageForBucket(productDto.pics[0]),
                 pic2 = S3ImageDownloader.getImageForBucket(productDto.pics[1]),
                 club = productDto.clubName,
-                variants = productDto.variants.associate { it.size to it.availability }
+                variants = productDto.variantStock.associate { it.size to it.availability }
             )
         }
     }
