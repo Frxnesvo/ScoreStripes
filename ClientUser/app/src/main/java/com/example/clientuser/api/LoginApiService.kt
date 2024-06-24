@@ -10,7 +10,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface LoginApiService {
-    @POST("/api/v1/auth/login")
+    @POST("/api/v1/auth/login/customer")
     fun login(@Body idToken: Map<String, String>): Call<AuthResponseDto> //TODO prendere il dto dell'utente
 
     @Multipart

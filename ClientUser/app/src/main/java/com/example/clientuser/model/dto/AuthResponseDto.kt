@@ -1,5 +1,6 @@
 package com.example.clientuser.model.dto
 
+import com.example.clientuser.model.Address
 import com.example.clientuser.model.enumerator.Gender
 import com.squareup.moshi.JsonClass
 import java.time.LocalDate
@@ -14,5 +15,7 @@ data class AuthResponseDto(
     val birthDate: LocalDate,
     val email: String,
     val gender: Gender,
-    val profilePicUrl: String
+    val profilePicUrl: String,
+    val favouriteTeam: String,
+    val address: Address
 )
