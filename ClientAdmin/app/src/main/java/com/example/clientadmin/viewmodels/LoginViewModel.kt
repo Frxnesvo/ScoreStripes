@@ -9,6 +9,7 @@ import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
+import com.example.clientadmin.utils.ToastManager
 import com.example.clientadmin.utils.TokenStoreUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,9 +46,6 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                         mapOf(pair = Pair("idToken", idToken))
                     ).awaitResponse()
                     if (response.isSuccessful) {
-                        println("Response server: ${response.body()}")
-                        //TODO verificare che l'utente loggato sia un admin
-
                         response.body()?.let { authResponseDto ->
                             _user.value = Admin.fromDto(authResponseDto)
                             _isLoggedIn.value = true
@@ -57,6 +55,7 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                                 TokenStoreUtils.storeToken(authResponseDto.jwt)
                             }
                         }
+                        ToastManager.show("Login successful")
 
                     } else {
                         if(response.code() == 409) {
