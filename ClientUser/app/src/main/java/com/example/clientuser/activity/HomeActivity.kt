@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.model.Customer
 import com.example.clientuser.model.League
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.ClubDto
@@ -30,20 +32,22 @@ import com.example.clientuser.model.dto.ProductDto
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 
 @Composable
 fun Home(
+    customerFormViewModel: CustomerFormViewModel,
     leagueViewModel: LeagueViewModel,
     navHostController: NavHostController,
-    clubViewModel: ClubViewModel,
     productViewModel: ProductViewModel
 ){
+    val customer by customerFormViewModel.customer.collectAsState()
     val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
     val mostSoldProduct = productViewModel.mostSoldProducts.collectAsState(initial = emptyList())
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
@@ -60,7 +64,7 @@ fun Home(
                 fontWeight = FontWeight.Normal
             )
             Text(
-                text = "CIRO",
+                text = customer.username,
                 color = colorResource(id = R.color.secondary),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold

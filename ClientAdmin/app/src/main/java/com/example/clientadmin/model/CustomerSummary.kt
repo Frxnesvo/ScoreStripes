@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.S3ImageDownloader
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 class CustomerSummary (
     val id: String,
@@ -12,14 +14,17 @@ class CustomerSummary (
 ){
     fun toQueryString(): String {
         val picBase64 = ConverterBitmap.bitmapToBase64(pic)
-        return "id=$id&username=$username&pic=$picBase64"
+        val encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8.toString())
+        val encodedId = URLEncoder.encode(id, StandardCharsets.UTF_8.toString())
+        val encodedPic = URLEncoder.encode(picBase64, StandardCharsets.UTF_8.toString())
+        return "id=$encodedId&username=$encodedUsername&pic=$encodedPic"
     }
     companion object{
         fun fromDto(customerSummaryDto: CustomerSummaryDto): CustomerSummary{
             return CustomerSummary(
                 id = customerSummaryDto.id,
                 username = customerSummaryDto.username,
-                pic = S3ImageDownloader.getImageForBucket(customerSummaryDto.picUrl)
+                pic = S3ImageDownloader.getImageForBucket(customerSummaryDto.profilePicUrl)
             )
         }
         fun fromQueryString(queryString: String): CustomerSummary {

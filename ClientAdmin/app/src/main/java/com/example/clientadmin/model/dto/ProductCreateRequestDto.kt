@@ -13,6 +13,6 @@ data class ProductCreateRequestDto (
     val club: String,
     val brand: String,
     val gender: Gender,
-    val productCategory: ProductCategory,
+    val category: ProductCategory,
     val variants: Map<Size, Int>
 )
