@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
-public class ProductSummaryDto {
+public class ProductSummaryDto {       //TODO: da cambiare il nome. Questo serve per la visualizzazione veloce dello stock da parte degli admin
     private String id;
     private String clubName;
     private String name;

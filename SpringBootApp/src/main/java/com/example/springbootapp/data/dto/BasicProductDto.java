@@ -14,4 +14,5 @@ public class BasicProductDto {
     private Gender gender;
     private String picUrl;
     private String club;
+    private String league;
 }

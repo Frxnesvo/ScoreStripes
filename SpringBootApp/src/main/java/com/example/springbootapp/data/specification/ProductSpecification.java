@@ -30,7 +30,7 @@ public class ProductSpecification {
         };
     }
 
-    public static Specification<Product> withFilters(String name, String league, String category, String size) {
+    public static Specification<Product> withFilters(String name, String league, String category, String clubName) {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (name != null && !name.isEmpty()) {
@@ -42,8 +42,8 @@ public class ProductSpecification {
             if (category != null && !category.isEmpty()) {
                 predicates.add(builder.equal(root.get("category"), category));
             }
-            if (size != null && !size.isEmpty()) {
-                predicates.add(builder.equal(root.get("size"), size));
+            if (clubName != null && !clubName.isEmpty()) {
+                predicates.add(builder.equal(root.get("club").get("name"), clubName));
             }
             return builder.and(predicates.toArray(new Predicate[0]));   // Converte i filtri in una singola clausola con AND
         };

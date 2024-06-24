@@ -35,7 +35,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
-import com.example.clientuser.model.Customer
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
@@ -281,6 +280,23 @@ fun NavigationScaffold(
                 leagueViewModel = leagueViewModel,
                 navHostController = navHostController
             )
+        }
+
+
+        composable(
+            route = "list/club/{name}",
+            arguments = listOf(navArgument("name"){ type = NavType.StringType })
+        ) {
+            it.arguments?.getString("name")?.let {
+                club ->
+                productViewModel.setFilter(FilterBuilder().setClub(club).build())
+                ListDiscover(
+                    name = club,
+                    productViewModel = productViewModel,
+                    leagueViewModel = leagueViewModel,
+                    navHostController = navHostController
+                )
+            }
         }
 
         composable(
