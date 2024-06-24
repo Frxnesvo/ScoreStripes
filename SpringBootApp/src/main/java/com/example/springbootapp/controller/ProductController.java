@@ -1,9 +1,6 @@
 package com.example.springbootapp.controller;
 
-import com.example.springbootapp.data.dto.ProductCreateRequestDto;
-import com.example.springbootapp.data.dto.ProductDto;
-import com.example.springbootapp.data.dto.ProductSummaryDto;
-import com.example.springbootapp.data.dto.ProductUpdateDto;
+import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.data.entities.Enums.ProductCategory;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.utils.ExceptionUtils;
@@ -38,6 +35,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductsSummary(pageable, filters));
     }
 
+    @GetMapping()     //questo è per la ricerca nella home del customer
+    public ResponseEntity<Page<BasicProductDto>> getProducts(Pageable pageable, @RequestParam(required = false) Map<String,String> filters){
+        return ResponseEntity.ok(productService.getProducts(pageable, filters));
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable String id){
         return ResponseEntity.ok(productService.getProductById(id));
@@ -52,11 +55,6 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdProduct);
-    }
-
-    @GetMapping()
-    public ResponseEntity<List<ProductDto>> getProductsByClub(@RequestParam() String clubName){
-        return ResponseEntity.ok(productService.getProductsByClub(clubName));
     }
 
     @PatchMapping(value = "/{id}", consumes = {"multipart/form-data"})  //TODO: da proteggere, solo admin                          //TODO: controllare se posso togliere il throws

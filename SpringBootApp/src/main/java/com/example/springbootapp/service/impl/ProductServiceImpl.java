@@ -1,11 +1,8 @@
 package com.example.springbootapp.service.impl;
 
 import com.example.springbootapp.data.dao.ClubDao;
-import com.example.springbootapp.data.dto.ProductCreateRequestDto;
-import com.example.springbootapp.data.dto.ProductDto;
-import com.example.springbootapp.data.dto.ProductSummaryDto;
+import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.data.dao.ProductDao;
-import com.example.springbootapp.data.dto.ProductUpdateDto;
 import com.example.springbootapp.data.entities.Club;
 import com.example.springbootapp.data.entities.Enums.ProductCategory;
 import com.example.springbootapp.data.entities.Product;
@@ -16,21 +13,16 @@ import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ProductService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -55,10 +47,24 @@ public class ProductServiceImpl implements ProductService {
         String name = filters.get("name");
         String league = filters.get("league");
         String category = filters.get("category");
-        String size = filters.get("size");
-        Specification<Product> spec = ProductSpecification.withFilters(name, league, category, size);
+        Specification<Product> spec = ProductSpecification.withFilters(name, league, category, null);
         return productDao.findAll(spec,pageable)
                 .map(product -> modelMapper.map(product, ProductSummaryDto.class));
+    }
+
+    @Override
+    public Page<BasicProductDto> getProducts(Pageable pageable, Map<String, String> filters) {
+        if(pageable.getSort().isUnsorted()) {
+            Sort sort = Sort.by(Sort.Direction.ASC, "club");
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        }
+        String name = filters.get("name");
+        String category = filters.get("category");
+        String club = filters.get("club");
+        String league = filters.get("league");
+        Specification<Product> spec = ProductSpecification.withFilters(name, league, category, club);
+        return productDao.findAll(spec,pageable)
+                .map(product -> modelMapper.map(product, BasicProductDto.class));
     }
 
     @Override
@@ -151,4 +157,6 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
 
     }
+
+
 }

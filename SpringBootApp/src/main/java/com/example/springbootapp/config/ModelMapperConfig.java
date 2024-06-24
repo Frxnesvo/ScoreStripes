@@ -78,6 +78,7 @@ public class ModelMapperConfig {
             @Override
             protected void configure() {
                 map().setClub(source.getClub().getName());
+                map().setLeague(source.getClub().getLeague().getName());
                 using(firstPicUrlConverter)
                         .map(source, destination.getPicUrl());
             }
