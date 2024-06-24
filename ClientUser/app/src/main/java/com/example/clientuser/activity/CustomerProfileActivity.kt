@@ -6,7 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,10 +49,17 @@ fun CustomerProfile(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BoxIcon(
-            iconColor = colorResource(id = R.color.secondary),
-            content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
-        ) { navHostController.popBackStack() }
+        Row (
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+
+        ){
+            BoxIcon(
+                iconColor = colorResource(id = R.color.secondary),
+                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
+            ) { navHostController.popBackStack() }
+        }
 
         BoxProfilePic(
             name = customer.username,

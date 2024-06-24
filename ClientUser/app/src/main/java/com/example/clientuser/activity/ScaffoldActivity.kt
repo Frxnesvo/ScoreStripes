@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
+import com.example.clientuser.model.Customer
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
@@ -159,8 +160,8 @@ fun NavigationScaffold(
             route = "home"
         ) {
             Home(
+                customerFormViewModel = customerFormViewModel,
                 leagueViewModel = leagueViewModel,
-                clubViewModel = clubViewModel,
                 productViewModel = productViewModel,
                 navHostController = navHostController
             )
@@ -281,21 +282,7 @@ fun NavigationScaffold(
                 navHostController = navHostController
             )
         }
-        composable(
-            route = "list/club/{name}",
-            arguments = listOf(navArgument("name"){ type = NavType.StringType })
-        ) {
-            it.arguments?.getString("name")?.let {
-                club ->
-                productViewModel.setFilter(FilterBuilder().setClub(club).build())
-                ListDiscover(
-                    name = stringResource(id = R.string.discover),
-                    productViewModel = productViewModel,
-                    leagueViewModel = leagueViewModel,
-                    navHostController = navHostController
-                )
-            }
-        }
+
         composable(
             route = "list/league/{name}",
             arguments = listOf(navArgument("name"){ type = NavType.StringType })
@@ -304,7 +291,7 @@ fun NavigationScaffold(
                 league ->
                 productViewModel.setFilter(FilterBuilder().setLeague(league).build())
                 ListDiscover(
-                    name = stringResource(id = R.string.discover),
+                    name = league,
                     productViewModel = productViewModel,
                     leagueViewModel = leagueViewModel,
                     navHostController = navHostController

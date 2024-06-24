@@ -3,7 +3,6 @@ package com.example.clientuser.model
 class FilterBuilder {
     private var name: String? = null
     private var league: String? = null
-    private var club: String? = null
     private var category: String? = null
     private var size: String? = null
 
@@ -14,11 +13,6 @@ class FilterBuilder {
 
     fun setLeague(league: String?): FilterBuilder {
         this.league = league
-        return this
-    }
-
-    fun setClub(club: String?): FilterBuilder {
-        this.club = club
         return this
     }
 

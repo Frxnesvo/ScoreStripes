@@ -495,7 +495,6 @@ fun InsertWishlistTokenPanel(
 fun WishlistVisibilityPanel(
     currentVisibility: WishListVisibility,
     onDismissRequest: () -> Unit,
-    onValueChange: (WishListVisibility) -> Unit,
     onClick: () -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
@@ -512,7 +511,7 @@ fun WishlistVisibilityPanel(
                 readOnly = true,
                 selectedOption = currentVisibility.name
             ) {
-                onValueChange(WishListVisibility.valueOf(it))
+                WishListVisibility.valueOf(it)
             }
 
             CustomButton(

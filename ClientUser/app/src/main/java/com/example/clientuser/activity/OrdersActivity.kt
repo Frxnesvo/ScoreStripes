@@ -1,6 +1,9 @@
 package com.example.clientuser.activity
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,15 +30,25 @@ fun Orders(customerViewModel: CustomerViewModel, navHostController: NavHostContr
     val orders by customerViewModel.getCustomerOrders().collectAsState(initial = emptyList())
 
     LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp),
         state = rememberLazyListState(),
     ) {
+
         item {
-            BoxIcon(
-                iconColor = colorResource(id = R.color.secondary),
-                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
-            ) { navHostController.popBackStack() }
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ){
+                BoxIcon(
+                    iconColor = colorResource(id = R.color.secondary),
+                    content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
+                ) { navHostController.popBackStack() }
+            }
+
         }
 
         item {
