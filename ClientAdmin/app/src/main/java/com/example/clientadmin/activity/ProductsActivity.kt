@@ -42,6 +42,7 @@ import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
+import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 @Composable
 fun Products(
@@ -178,6 +179,7 @@ fun Products(
         SearchByNameSheet(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
+            filterFormViewModel = FilterFormViewModel(),
             filterType = filterType
         ){ leagueViewModel.setFilter(it) }
     else if (isOpenSheet)
@@ -185,6 +187,7 @@ fun Products(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
             leaguesNames = leagueViewModel.leaguesNames,
+            filterFormViewModel = FilterFormViewModel(),
             filterType = filterType
         ){
             if (FilterType.LEAGUES == filterType)

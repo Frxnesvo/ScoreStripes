@@ -15,15 +15,9 @@ class Admin(
     val gender: Gender,
     val pic: Bitmap
 ) {
-    init {
-        require(validateProfilePic(pic)) { "Invalid profile picture" }
-        require(validateUsername(username)) { "Invalid username: must be between 3 and 20 characters. At least 1 upper case character" }
-        require(validateBirthdate(birthDate)) { "Invalid birthdate: must be before the current date" }
-    }
-
     companion object {
-        fun validateProfilePic(pic: Bitmap): Boolean {
-            return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        fun validateProfilePic(pic: Bitmap?): Boolean {
+            return pic != null
         }
         fun validateUsername(username: String): Boolean {
             return username.matches("^(?=.*[a-z])(?=.*[A-Z]).+$".toRegex()) && username.isNotBlank()

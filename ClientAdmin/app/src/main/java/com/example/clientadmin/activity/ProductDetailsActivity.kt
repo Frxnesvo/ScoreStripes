@@ -151,31 +151,33 @@ fun ProductDetails(
 
         CustomButton(
             text = if(id == null) stringResource(id = R.string.create) else stringResource(id = R.string.update),
-            background = R.color.secondary
+            background = if (
+                productState.isPicPrincipalError || productState.isPicSecondaryError || productState.isNameError || productState.isBrandError || productState.isDescriptionError || productState.isPriceError
+            ) R.color.black50 else R.color.secondary
         ) {
-            if (id == null) {
-                val club = if(productState.club != "") productState.club else clubs[0]
-                val productRequestDto = ProductCreateRequestDto(
-                    name = productState.name,
-                    club = club,
-                    brand = productState.brand,
-                    gender = productState.gender,
-                    productCategory = productState.productCategory,
-                    description =  productState.description,
-                    price = productState.price ?: 0.0,
-                    variants = productState.variants
-                )
-                if (productViewModel.addProduct(productRequestDto, productState.pic1, productState.pic2)) {
-                    navHostController.navigate("home")
+            if (!productState.isPicPrincipalError && !productState.isPicSecondaryError && !productState.isNameError && !productState.isBrandError && !productState.isDescriptionError && !productState.isPriceError)
+                if (id == null) {
+                    val club = if(productState.club != "") productState.club else clubs[0]
+                    val productRequestDto = ProductCreateRequestDto(
+                        name = productState.name,
+                        club = club,
+                        brand = productState.brand,
+                        gender = productState.gender,
+                        productCategory = productState.productCategory,
+                        description =  productState.description,
+                        price = productState.price ?: 0.0,
+                        variants = productState.variants
+                    )
+                    if (productViewModel.addProduct(productRequestDto, productState.pic1!!, productState.pic2!!))
+                        navHostController.navigate("home")
+                } else {
+                    val productUpdateRequestDto = ProductUpdateRequestDto(
+                        description = productState.description,
+                        price = productState.price ?: 0.0,
+                        variants = productState.variants,
+                    )
+                    productViewModel.updateProduct(id, productUpdateRequestDto, productState.pic1!!, productState.pic2!!)
                 }
-            } else {
-                val productUpdateRequestDto = ProductUpdateRequestDto(
-                    description = productState.description,
-                    price = productState.price ?: 0.0,
-                    variants = productState.variants,
-                )
-                productViewModel.updateProduct(id, productUpdateRequestDto, productState.pic1, productState.pic2)
-            }
         }
     }
 }
@@ -196,18 +198,16 @@ fun ImagesProduct(productFormViewModel: ProductFormViewModel, productState: Prod
     ) {
         ImagePicker(
             pic = productState.pic1,
+            isError = productState.isPicPrincipalError,
+            errorMessage = stringResource(id = R.string.pic_error),
             size = 80.dp
-        ){
-            uri ->
-            if(uri != null) productFormViewModel.updatePic1(uri)
-        }
+        ){ productFormViewModel.updatePic1(it) }
 
         ImagePicker(
             pic = productState.pic2,
+            isError = productState.isPicSecondaryError,
+            errorMessage = stringResource(id = R.string.pic_error),
             size = 80.dp
-        ){
-            uri ->
-            if(uri != null) productFormViewModel.updatePic2(uri)
-        }
+        ){ productFormViewModel.updatePic2(it) }
     }
 }

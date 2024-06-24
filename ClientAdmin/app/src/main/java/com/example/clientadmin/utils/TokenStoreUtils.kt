@@ -45,6 +45,7 @@ object TokenStoreUtils {
     fun getToken(): String? {
         val encryptedTokenBase64 = sharedPreferences.getString(PREFS_JWT, null)
         val ivBase64 = sharedPreferences.getString(PREFS_IV, null)
+        generateKey()//TODO da fixare
 
         if (encryptedTokenBase64 != null && ivBase64 != null) {
             val keyStore = KeyStore.getInstance("AndroidKeyStore")
@@ -64,6 +65,7 @@ object TokenStoreUtils {
     }
 
     fun storeToken(token: String) {
+        generateKey() //TODO da fixare
         val keyStore = KeyStore.getInstance("AndroidKeyStore")
         keyStore.load(null)
         val secretKey = keyStore.getKey(KEY_ALIAS, null) as SecretKey

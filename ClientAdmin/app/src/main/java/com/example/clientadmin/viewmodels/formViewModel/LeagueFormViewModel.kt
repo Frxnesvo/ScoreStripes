@@ -9,9 +9,10 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class LeagueState(
     val name: String = "",
-    val image: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+    val image: Bitmap? = null,
     //error
-    val isNameError: Boolean = !League.validateName(name)
+    val isNameError: Boolean = !League.validateName(name),
+    val isImageError: Boolean = !League.validateImage(image)
 )
 class LeagueFormViewModel(league: League? = null){
     private val _leagueState = MutableStateFlow(LeagueState())
@@ -24,15 +25,15 @@ class LeagueFormViewModel(league: League? = null){
         }
     }
     fun updateName(name: String) {
-        val hasError = !League.validateName(name)
         _leagueState.value = _leagueState.value.copy(
             name = name,
-            isNameError = hasError
+            isNameError = !League.validateName(name)
         )
     }
-    fun updateImage(image: Bitmap) {
+    fun updateImage(image: Bitmap?) {
         _leagueState.value = _leagueState.value.copy(
-            image = image
+            image = image,
+            isImageError = !League.validateImage(image)
         )
     }
 }

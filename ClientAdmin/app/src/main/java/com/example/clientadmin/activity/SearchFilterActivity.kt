@@ -11,16 +11,15 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.R
-import com.example.clientadmin.model.FilterBuilder
 import com.example.clientadmin.model.enumerator.FilterType
 import com.example.clientadmin.model.enumerator.ProductCategory
+import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -30,11 +29,12 @@ fun SearchByNameSheet(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
     filterType: FilterType,
+    filterFormViewModel: FilterFormViewModel,
     onSearch: (Map<String, String?>) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    val filterBuilder = remember { FilterBuilder() }
+    val filter by filterFormViewModel.filterState.collectAsState()
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
@@ -42,10 +42,10 @@ fun SearchByNameSheet(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = "",
+                value = filter.name ?: "",
                 text = stringResource(id = if(filterType == FilterType.CUSTOMERS) R.string.search_for_username else R.string.search_for_name),
                 leadingIcon = Icons.Outlined.Search
-            ) { filterBuilder.setName(it) }
+            ) { filterFormViewModel.updateName(it) }
 
             CustomButton(
                 text = stringResource(id = R.string.search),
@@ -55,7 +55,7 @@ fun SearchByNameSheet(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        onSearch(filterBuilder.build())
+                        onSearch(filterFormViewModel.asFilterBuilder().build())
                     }
                 }
             }
@@ -71,11 +71,12 @@ fun SearchPanelProducts(
     setBottomSheet: (Boolean) -> Unit,
     leaguesNames: StateFlow<List<String>>,
     filterType: FilterType,
+    filterFormViewModel: FilterFormViewModel,
     onSearch: (Map<String, String?>) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    val filterBuilder = remember { FilterBuilder() }
+    val filter by filterFormViewModel.filterState.collectAsState()
     val leagues by leaguesNames.collectAsState()
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
@@ -84,26 +85,26 @@ fun SearchPanelProducts(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = "",
+                value = filter.name ?: "",
                 text = stringResource(id = R.string.search_for_username),
                 leadingIcon = Icons.Outlined.Search
-            ) { filterBuilder.setName(it) }
+            ) { filterFormViewModel.updateName(it) }
 
             CustomComboBox(
                 options = leagues,
-                selectedOption = ""
-            ) { filterBuilder.setLeague(it) }
+                selectedOption = filter.league ?: ""
+            ) { filterFormViewModel.updateLeague(it) }
 
             if(filterType == FilterType.PRODUCTS) {
                 CustomComboBox(
                     options = ProductCategory.entries,
-                    selectedOption = ""
-                ) { filterBuilder.setCategory(it) }
+                    selectedOption = filter.category ?: ""
+                ) { filterFormViewModel.updateCategory(it) }
 
                 CustomComboBox(
                     options = Size.entries,
-                    selectedOption = ""
-                ) { filterBuilder.setSize(it) }
+                    selectedOption = filter.size ?: ""
+                ) { filterFormViewModel.updateSize(it) }
             }
 
             CustomButton(
@@ -114,7 +115,7 @@ fun SearchPanelProducts(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        onSearch(filterBuilder.build())
+                        onSearch(filterFormViewModel.asFilterBuilder().build())
                     }
                 }
             }

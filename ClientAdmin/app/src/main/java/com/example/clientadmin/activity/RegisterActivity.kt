@@ -54,15 +54,15 @@ fun Register(
 
             ImagePicker(
                 pic = adminState.profilePic,
-                size = 100.dp
-            ){
-                if (it != null) {
-                    loginFormViewModel.updateProfilePic(it)
-                }
-            }
+                isError = adminState.isProfilePicError,
+                errorMessage = stringResource(id = R.string.pic_error),
+                size = 150.dp
+            ){ loginFormViewModel.updateProfilePic(it) }
 
             CustomTextField(
                 value = adminState.username,
+                isError = adminState.isUsernameError,
+                errorMessage = stringResource(id = R.string.username_error),
                 text = stringResource(id = R.string.username)
             ){
                 loginFormViewModel.updateUsername(it)
@@ -70,6 +70,8 @@ fun Register(
 
             CustomDatePicker(
                 date = adminState.birthdate,
+                isError = adminState.isBirthdateError,
+                errorMessage = stringResource(id = R.string.date_error),
                 text = stringResource(id = R.string.birth_date)
             ){
                 loginFormViewModel.updateBirthdate(it)
@@ -91,22 +93,23 @@ fun Register(
 
             CustomButton(
                 text = stringResource(id = R.string.sign_up),
-                background = R.color.secondary
+                background = if (adminState.isUsernameError || adminState.isBirthdateError || adminState.isProfilePicError) R.color.black50 else R.color.secondary
             ) {
-                if (
-                    loginViewModel.register(
-                        token = token,
-                        adminCreateRequestDto = AdminCreateRequestDto(
-                            idToken = token,
-                            username = adminState.username,
-                            birthDate = adminState.birthdate,
-                            gender = adminState.gender,
-                        ),
-                        pic = adminState.profilePic
-                    )
-                ){
-                    navController.navigate("index")
-                }
+                if (!adminState.isUsernameError && !adminState.isBirthdateError && !adminState.isProfilePicError)
+                    if (
+                        loginViewModel.register(
+                            token = token,
+                            adminCreateRequestDto = AdminCreateRequestDto(
+                                idToken = token,
+                                username = adminState.username,
+                                birthDate = adminState.birthdate,
+                                gender = adminState.gender,
+                            ),
+                            pic = adminState.profilePic!!
+                        )
+                    ){
+                        navController.navigate("index")
+                    }
             }
         }
     }

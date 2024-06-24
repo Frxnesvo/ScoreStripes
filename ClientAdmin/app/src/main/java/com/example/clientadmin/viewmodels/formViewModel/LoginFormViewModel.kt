@@ -13,7 +13,7 @@ data class AdminState(
     val username : String = "",
     val birthdate : LocalDate = LocalDate.now(),
     val gender : Gender = Gender.entries[0],
-    val profilePic : Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+    val profilePic : Bitmap? = null,
     //error
     val isProfilePicError: Boolean = !Admin.validateProfilePic(profilePic),
     val isUsernameError: Boolean = !Admin.validateUsername(username),
@@ -24,7 +24,7 @@ class LoginFormViewModel {
     private val _adminState = MutableStateFlow(AdminState())
     val adminState: StateFlow<AdminState> = _adminState.asStateFlow()
 
-    fun updateProfilePic(profilePic: Bitmap){
+    fun updateProfilePic(profilePic: Bitmap?){
         _adminState.value = _adminState.value.copy(
             profilePic = profilePic,
             isProfilePicError = !Admin.validateProfilePic(profilePic)

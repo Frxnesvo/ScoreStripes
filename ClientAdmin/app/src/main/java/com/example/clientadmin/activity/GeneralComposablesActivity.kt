@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -37,7 +38,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,7 +57,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -110,7 +109,7 @@ fun Search(name: String, onClick: () -> Unit){
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ){ onClick() },
+                ) { onClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.Rounded.Search, contentDescription = null, tint = colorResource(id = R.color.secondary))
@@ -133,7 +132,7 @@ fun Back(onClick: () -> Unit){
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ){ onClick() },
+                ) { onClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.AutoMirrored.Rounded.KeyboardArrowLeft, contentDescription = null, tint = colorResource(id = R.color.secondary))
@@ -150,7 +149,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ){ onClick()},
+            ) { onClick() },
         shape = RoundedCornerShape(30.dp),
         elevation = CardDefaults.cardElevation(2.dp)
     )
@@ -276,7 +275,9 @@ fun CustomButton(text: String, background: Int, onClick: () -> Unit) {
 
 @Composable
 fun ImagePicker(
-    pic: Bitmap,
+    pic: Bitmap?,
+    isError: Boolean = false,
+    errorMessage: String = "",
     size: Dp,
     onChange: (Bitmap?) -> Unit
 ) {
@@ -286,32 +287,46 @@ fun ImagePicker(
             onChange(BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri)))
         }
     }
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(size)
-            .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ){ launcher.launch("image/*") }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
-            Image(
-                bitmap = pic.asImageBitmap(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(30.dp))
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(size)
+                .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
+                .border(
+                    width = 1.5.dp,
+                    color = colorResource(id = if (isError) R.color.secondary else R.color.transparent),
+                    shape = RoundedCornerShape(30.dp)
+                )
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { launcher.launch("image/*") }
+        ) {
+            if (pic != null)
+                Image(
+                    bitmap = pic.asImageBitmap(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(30.dp))
+                )
+            else
+                Icon(
+                    imageVector = Icons.Outlined.AddCircle,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.red)
+                )
+        }
+        if(isError)
+            Text(
+                text = errorMessage,
+                color = colorResource(id = R.color.red),
+                modifier = Modifier.padding(5.dp)
             )
-        else
-            Icon(
-            imageVector = Icons.Outlined.AddCircle,
-            contentDescription = null,
-            tint = colorResource(id = R.color.secondary)
-        )
     }
 }
 
@@ -320,6 +335,7 @@ fun CustomTextField(
     value: String,
     text: String,
     isError: Boolean = false,
+    errorMessage: String = "",
     readOnly: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     lines: Int = 1,
@@ -334,34 +350,45 @@ fun CustomTextField(
         unfocusedBorderColor = colorResource(id = R.color.white),
         focusedLabelColor = colorResource(id = R.color.secondary),
         unfocusedLabelColor = colorResource(id = R.color.black),
-        errorContainerColor = colorResource(id = R.color.secondary50)
+        errorBorderColor = colorResource(id = R.color.red),
     )
 
-    OutlinedTextField(
-        readOnly = readOnly,
-        value = value,
-        onValueChange = onValueChange,
-        label = {
+    Column {
+        OutlinedTextField(
+            readOnly = readOnly,
+            value = value,
+            onValueChange = onValueChange,
+            label = {
+                Text(
+                    text = text,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            isError = isError,
+            leadingIcon = leadingIcon?.let { { Icon(imageVector = it, contentDescription = null) } },
+            maxLines = lines,
+            singleLine = lines <= 1,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(30.dp),
+            colors = colors,
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType)
+        )
+
+        if(isError)
             Text(
-                text = text,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
+                text = errorMessage,
+                color = colorResource(id = R.color.red),
+                modifier = Modifier.padding(5.dp)
             )
-        },
-        isError = isError,
-        leadingIcon = leadingIcon?.let { { Icon(imageVector = it, contentDescription = null) } },
-        maxLines = lines,
-        singleLine = lines <= 1,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(30.dp),
-        colors = colors,
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType)
-    )
+    }
 }
 
 @Composable
-fun CustomDatePicker(
+fun CustomDatePicker( //TODO da migliorare esteticamente
     date: LocalDate,
+    isError: Boolean,
+    errorMessage: String,
     text: String,
     onValueChange: (LocalDate) -> Unit
 ) {
@@ -381,26 +408,11 @@ fun CustomDatePicker(
             options = (LocalDate.now().year downTo 1900).toList(),
             selectedOption = date.year.toString()
         ) { onValueChange(LocalDate.of(it.toInt(), date.month, date.dayOfMonth)) }
+        if(isError)
+            Text(
+                text = errorMessage,
+                color = colorResource(id = R.color.red),
+                modifier = Modifier.padding(5.dp)
+            )
     }
-}
-
-@Preview
-@Composable
-fun NumberTextField() {
-    var text by remember { mutableStateOf("0.0") }
-    TextField(
-        value = text,
-        onValueChange = {
-            if (it.isEmpty()){
-                text = it
-            } else {
-                text = when (it.toDoubleOrNull()) {
-                    null -> text
-                    else -> it
-                }
-            }
-        },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-    )
 }

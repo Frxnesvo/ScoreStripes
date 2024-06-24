@@ -50,7 +50,7 @@ fun AddPanel(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        //TODO controllare se ci siano club
+                        //TODO controllare che ci siano club
                         navHostController.navigate("addProduct")
                     }
                 }
@@ -100,12 +100,15 @@ fun LeagueDetails(
 
         ImagePicker(
             pic = leagueState.image,
+            isError = leagueState.isImageError,
+            errorMessage = stringResource(id = R.string.pic_error),
             size = 150.dp
-        ){ if(it != null) leagueFormViewModel.updateImage(it) }
+        ){ leagueFormViewModel.updateImage(it) }
 
         CustomTextField(
             value = leagueState.name,
             isError = leagueState.isNameError,
+            errorMessage = stringResource(id = R.string.name_error),
             text = stringResource(id = R.string.league),
             keyboardType = KeyboardType.Text
         ){ leagueFormViewModel.updateName(it) }
@@ -117,10 +120,15 @@ fun LeagueDetails(
             )
         }
 
-        CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
-            val leagueCreateRequestDto = LeagueCreateRequestDto(leagueState.name)
-            if (leagueViewModel.addLeague(leagueCreateRequestDto, leagueState.image)) {
-                navHostController.navigate("home")
+        CustomButton(
+            text = stringResource(id = R.string.create),
+            background = if(leagueState.isNameError || leagueState.isImageError) R.color.black50 else  R.color.secondary
+        ) {
+            if (!leagueState.isNameError && !leagueState.isImageError) {
+                val leagueCreateRequestDto = LeagueCreateRequestDto(leagueState.name)
+                if (leagueViewModel.addLeague(leagueCreateRequestDto, leagueState.image!!)) {
+                    navHostController.navigate("home")
+                }
             }
         }
     }
@@ -148,12 +156,15 @@ fun ClubDetails(
 
         ImagePicker(
             pic = clubState.image,
+            isError = clubState.isImageError,
+            errorMessage = stringResource(id = R.string.pic_error),
             size = 150.dp
         ){ if(it != null) clubFormViewModel.updateImage(it) }
 
         CustomTextField(
             value = clubState.name,
             isError = clubState.isNameError,
+            errorMessage = stringResource(id = R.string.name_error),
             text = stringResource(id = R.string.club),
             keyboardType = KeyboardType.Text,
         ){ clubFormViewModel.updateNameClub(it) }
@@ -171,10 +182,15 @@ fun ClubDetails(
             )
         }
 
-        CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
-            val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, clubState.league)
-            if (clubViewModel.addClub(clubCreateRequestDto, clubState.image)){
-                navHostController.navigate("home")
+        CustomButton( //todo fare l'update
+            text = stringResource(id = R.string.create),
+            background = if(clubState.isImageError || clubState.isNameError) R.color.black50 else R.color.secondary
+        ) {
+            if (!clubState.isImageError && !clubState.isNameError) {
+                val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, clubState.league)
+                if (clubViewModel.addClub(clubCreateRequestDto, clubState.image!!)) {
+                    navHostController.navigate("home")
+                }
             }
         }
     }

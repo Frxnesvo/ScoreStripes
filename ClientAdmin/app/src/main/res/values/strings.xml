@@ -53,4 +53,10 @@
     <string name="number">NUMBER</string>
     <string name="size">SIZE</string>
     <string name="default_address">DEFAULT</string>
+
+    <string name="username_error">Is required an uppercase and length between 3 and 40</string>
+    <string name="pic_error">Is required a pic</string>
+    <string name="email_error">Is required a valid email</string>
+    <string name="name_error">Is required a length between 3 and 40</string>
+    <string name="date_error">Is required a date before today</string>
 </resources>

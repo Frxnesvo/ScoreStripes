@@ -305,9 +305,9 @@ fun NavigationScaffold(
         }
         composable(
             route = "league/{league}",
-            arguments = listOf(navArgument("costumer"){ type = NavType.StringType })
+            arguments = listOf(navArgument("league"){ type = NavType.StringType })
         ){
-            it.arguments?.getString("costumer")?.let {
+            it.arguments?.getString("league")?.let {
                 leagueString ->
                 val league = League.fromQueryString(leagueString)
                 LeagueDetails(navHostController = navHostController, leagueViewModel = leagueViewModel, leagueFormViewModel = LeagueFormViewModel(league))
@@ -315,9 +315,9 @@ fun NavigationScaffold(
         }
         composable(
             route = "club/{club}",
-            arguments = listOf(navArgument("costumer"){ type = NavType.StringType })
+            arguments = listOf(navArgument("club"){ type = NavType.StringType })
         ){
-            it.arguments?.getString("costumer")?.let {
+            it.arguments?.getString("club")?.let {
                 clubString ->
                 val club = Club.fromQueryString(clubString)
                 ClubDetails(navHostController = navHostController, clubViewModel = clubViewModel, leagueViewModel = leagueViewModel, clubFormViewModel = ClubFormViewModel(club))

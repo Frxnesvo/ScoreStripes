@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.model.enumerator.FilterType
 import com.example.clientadmin.viewmodels.CustomerViewModel
+import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 @Composable
 fun Users(navHostController: NavHostController, customerViewModel: CustomerViewModel) {
@@ -75,6 +76,7 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
         SearchByNameSheet(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
-            filterType = FilterType.CUSTOMERS
+            filterType = FilterType.CUSTOMERS,
+            filterFormViewModel = FilterFormViewModel()
         ){ customerViewModel.setFilters(it) }
 }

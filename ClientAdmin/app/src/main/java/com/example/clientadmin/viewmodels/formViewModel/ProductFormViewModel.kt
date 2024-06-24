@@ -13,8 +13,8 @@ data class ProductState(
     val name: String = "",
     val club: String = "",
     val gender: Gender = Gender.entries[0],
-    val pic1: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
-    val pic2: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+    val pic1: Bitmap? = null,
+    val pic2: Bitmap? = null,
     val brand: String = "",
     val productCategory: ProductCategory = ProductCategory.entries[0],
     val description: String = "",
@@ -31,6 +31,8 @@ data class ProductState(
     val isNameError: Boolean = !Product.validateName(name),
     val isLeagueError: Boolean = !Product.validateBrand(brand),
     val isPriceError: Boolean = !Product.validatePrice(price),
+    val isPicPrincipalError: Boolean = !Product.validatePic(pic1),
+    val isPicSecondaryError: Boolean = !Product.validatePic(pic2),
     val isBrandError: Boolean = !Product.validateBrand(brand),
     val isDescriptionError: Boolean = !Product.validateDescription(description)
 )
@@ -55,10 +57,9 @@ class ProductFormViewModel(product: Product? = null) {
     }
 
     fun updateName(name: String) {
-        val hasError = !Product.validateName(name)
         _productState.value = _productState.value.copy(
             name = name,
-            isNameError = hasError
+            isNameError = !Product.validateName(name)
         )
     }
 
@@ -78,34 +79,33 @@ class ProductFormViewModel(product: Product? = null) {
         )
     }
     fun updateDescription(description: String) {
-        val hasError = !Product.validateDescription(description)
         _productState.value = _productState.value.copy(
             description = description,
-            isDescriptionError = hasError
+            isDescriptionError = !Product.validateDescription(description)
         )
     }
     fun updateBrand(brand: String) {
-        val hasError = !Product.validateBrand(brand)
         _productState.value = _productState.value.copy(
             brand = brand,
-            isBrandError = hasError
+            isBrandError = !Product.validateBrand(brand)
         )
     }
-    fun updatePic1(pic: Bitmap) {
+    fun updatePic1(pic: Bitmap?) {
         _productState.value = _productState.value.copy(
-            pic1 = pic
+            pic1 = pic,
+            isPicPrincipalError = !Product.validatePic(pic)
         )
     }
-    fun updatePic2(pic: Bitmap) {
+    fun updatePic2(pic: Bitmap?) {
         _productState.value = _productState.value.copy(
-            pic2 = pic
+            pic2 = pic,
+            isPicSecondaryError = !Product.validatePic(pic)
         )
     }
     fun updatePrice(price: Double?) {
-        val hasError = !Product.validatePrice(price)
         _productState.value = _productState.value.copy(
             price = price,
-            isPriceError = hasError
+            isPriceError = !Product.validatePrice(price)
         )
     }
     private fun updateVariants(variants: Map<Size, Int>) {

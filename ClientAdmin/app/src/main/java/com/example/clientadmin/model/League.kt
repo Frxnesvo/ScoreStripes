@@ -4,27 +4,26 @@ import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.LeagueDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.S3ImageDownloader
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 class League(
     val name: String,
     val pic: Bitmap
 ){
-    init {
-        require(validateName(name)) { "Invalid name: must be between 3 and 40 characters" }
-        require(validateImage(pic)) { "Invalid pic: cannot be empty" }
-    }
-
     fun toQueryString(): String {
         val picBase64 = ConverterBitmap.bitmapToBase64(pic)
-        return "name=$name&pic=$picBase64"
+        val encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString())
+        val encodedPic = URLEncoder.encode(picBase64, StandardCharsets.UTF_8.toString())
+        return "name=$encodedName&pic=$encodedPic"
     }
 
     companion object{
         fun validateName(name: String): Boolean{
             return name.length in 3..25 && name.isNotBlank()
         }
-        fun validateImage(image: Bitmap): Boolean{
-            return image != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        fun validateImage(image: Bitmap?): Boolean{
+            return image != null
         }
         fun fromDto(leagueDto: LeagueDto): League{
             return League(

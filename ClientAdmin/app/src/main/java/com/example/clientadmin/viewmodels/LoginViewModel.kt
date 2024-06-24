@@ -84,9 +84,6 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
 
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
         try {
-            require(Admin.validateProfilePic(pic)) { "Invalid profile picture" }
-            require(Admin.validateUsername(adminCreateRequestDto.username)) { "Invalid username: must be between 3 and 20 characters. At least 1 upper case character" }
-            require(Admin.validateBirthdate(adminCreateRequestDto.birthDate)) { "Invalid birthdate: must be before the current date" }
             var returnValue = false
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.adminRegister(
