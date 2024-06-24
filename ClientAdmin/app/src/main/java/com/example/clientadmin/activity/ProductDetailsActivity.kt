@@ -163,7 +163,7 @@ fun ProductDetails(
                         club = club,
                         brand = productState.brand,
                         gender = productState.gender,
-                        productCategory = productState.productCategory,
+                        category = productState.productCategory,
                         description =  productState.description,
                         price = productState.price ?: 0.0,
                         variants = productState.variants

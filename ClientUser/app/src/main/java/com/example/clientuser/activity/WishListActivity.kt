@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.Wishlist
+import com.example.clientuser.model.enumerator.WishListVisibility
 import com.example.clientuser.viewmodel.WishListViewModel
 
 @Composable
@@ -71,6 +72,7 @@ fun Wishlist(
 
         item {
             Row (
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
@@ -199,9 +201,8 @@ fun Preview(){
 
     if(isOpenSheet){
         WishlistVisibilityPanel(
-            currentVisibility = TODO() ,
+            currentVisibility = WishListVisibility.SHARED ,
             onDismissRequest = { setBottomSheet(false) },
-            onValueChange = { },
             onClick = {
                 setBottomSheet(false)
             }

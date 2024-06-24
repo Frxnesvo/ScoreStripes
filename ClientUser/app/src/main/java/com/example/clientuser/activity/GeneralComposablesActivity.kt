@@ -180,13 +180,17 @@ fun BoxImage(
             Image(
                 painter = painter,
                 contentDescription = null,
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                
             )
             Box(modifier = Modifier
                 .fillMaxSize()
                 .background(color = colorResource(id = R.color.black50))
                 .padding(10.dp),
-                contentAlignment = Alignment.Center) {
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
                     text = boxTitle,
                     color = colorResource(id = R.color.white),

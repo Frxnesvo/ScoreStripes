@@ -15,7 +15,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.R
 import com.example.clientadmin.model.enumerator.FilterType
 import com.example.clientadmin.model.enumerator.ProductCategory
@@ -95,17 +94,11 @@ fun SearchPanelProducts(
                 selectedOption = filter.league ?: ""
             ) { filterFormViewModel.updateLeague(it) }
 
-            if(filterType == FilterType.PRODUCTS) {
+            if(filterType == FilterType.PRODUCTS)
                 CustomComboBox(
                     options = ProductCategory.entries,
                     selectedOption = filter.category ?: ""
                 ) { filterFormViewModel.updateCategory(it) }
-
-                CustomComboBox(
-                    options = Size.entries,
-                    selectedOption = filter.size ?: ""
-                ) { filterFormViewModel.updateSize(it) }
-            }
 
             CustomButton(
                 text = stringResource(id = R.string.search),

@@ -159,8 +159,8 @@ fun NavigationScaffold(
             route = "home"
         ) {
             Home(
+                customerFormViewModel = customerFormViewModel,
                 leagueViewModel = leagueViewModel,
-                clubViewModel = clubViewModel,
                 productViewModel = productViewModel,
                 navHostController = navHostController
             )
@@ -281,6 +281,8 @@ fun NavigationScaffold(
                 navHostController = navHostController
             )
         }
+
+
         composable(
             route = "list/club/{name}",
             arguments = listOf(navArgument("name"){ type = NavType.StringType })
@@ -289,13 +291,14 @@ fun NavigationScaffold(
                 club ->
                 productViewModel.setFilter(FilterBuilder().setClub(club).build())
                 ListDiscover(
-                    name = stringResource(id = R.string.discover),
+                    name = club,
                     productViewModel = productViewModel,
                     leagueViewModel = leagueViewModel,
                     navHostController = navHostController
                 )
             }
         }
+
         composable(
             route = "list/league/{name}",
             arguments = listOf(navArgument("name"){ type = NavType.StringType })
@@ -304,7 +307,7 @@ fun NavigationScaffold(
                 league ->
                 productViewModel.setFilter(FilterBuilder().setLeague(league).build())
                 ListDiscover(
-                    name = stringResource(id = R.string.discover),
+                    name = league,
                     productViewModel = productViewModel,
                     leagueViewModel = leagueViewModel,
                     navHostController = navHostController
