@@ -16,7 +16,7 @@ public class ProductCreateRequestDto {
 
     @NotBlank
     @Size(min = 3, max = 40)
-    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Name can only contain letters, numbers, and underscores")
+    @Pattern(regexp = "^[a-zA-Z0-9_ ]+$", message = "Name can only contain letters, numbers, and underscores")
     private String name;
 
     @NotBlank
