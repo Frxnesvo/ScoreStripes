@@ -9,9 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductService {
-    Page<ProductSummaryDto> getProductsSummary(Pageable pageable);
+    Page<ProductSummaryDto> getProductsSummary(Pageable pageable, Map<String,String> filters);
 
     ProductDto getProductById(String id);
 

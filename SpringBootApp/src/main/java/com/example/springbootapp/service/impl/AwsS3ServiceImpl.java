@@ -47,19 +47,11 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     public String uploadFile(MultipartFile file, String folder, String name) {
         name=name.replace(" ", "_");
         String key = folder + "/" + name;
-//        byte[] fileBytes;
-//        try {  //TODO DA RIMUOVERE
-//            fileBytes = file.getBytes();
-//        }catch (IOException e){
-//            throw new RuntimeException(e);
-//        }
-
         PutObjectRequest putRequest =PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .contentType(file.getContentType())
                 .build();
-
         try {
             s3Client.putObject(putRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
         } catch (IOException e) {
