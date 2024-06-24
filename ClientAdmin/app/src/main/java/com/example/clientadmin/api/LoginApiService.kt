@@ -15,7 +15,7 @@ import java.time.LocalDate
 
 interface LoginApiService {
 
-    @POST("/api/v1/auth/login")
+    @POST("/api/v1/auth/login/admin")
     fun login(@Body idToken: Map<String, String>): Call<AuthResponseDto>
 
     @Multipart

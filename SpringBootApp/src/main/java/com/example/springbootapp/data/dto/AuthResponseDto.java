@@ -8,15 +8,14 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class AuthResponseDto {
-
-    private String jwt;
-    private String id;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private String profilePicUrl;
-    private String email;
-    private LocalDate birthDate;
-    private Gender gender;
+public abstract class AuthResponseDto {
+    protected String jwt;
+    protected String id;
+    protected String username;
+    protected String firstName;
+    protected String lastName;
+    protected String profilePicUrl;
+    protected String email;
+    protected LocalDate birthDate;
+    protected Gender gender;
 }

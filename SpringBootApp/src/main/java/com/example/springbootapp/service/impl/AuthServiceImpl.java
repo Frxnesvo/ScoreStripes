@@ -54,7 +54,9 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public AuthResponseDto login(String idToken) {
+    public AuthResponseDto login(String idToken, String userType) {
+        if(!userType.equals("customer") && !userType.equals("admin"))
+            throw new VerificationException("Invalid user type");
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
                 .build();
@@ -65,15 +67,36 @@ public class AuthServiceImpl implements AuthService {
             }
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
             System.out.println(payload.toPrettyString());
-            Optional<User> user = userDao.findByEmail(payload.getEmail());
-            if (user.isPresent()) {
-                String jwtToken = jwtHandler.generateJwtToken(user.get());
-                AuthResponseDto response = modelMapper.map(user.get(), AuthResponseDto.class);
-                response.setJwt(jwtToken);
-                return response;
-            }
-            else {
-                throw new NoAccountException("No account found");
+            Boolean exists = userDao.existsByEmail(payload.getEmail());
+            if(userType.equals("admin")) {
+                Optional<Admin> user = adminDao.findByEmail(payload.getEmail());
+                if (user.isPresent()) {
+                    String jwtToken = jwtHandler.generateJwtToken(user.get());
+                    AdminAuthResponseDto response= modelMapper.map(user.get(), AdminAuthResponseDto.class);
+                    response.setJwt(jwtToken);
+                    return response;
+                } else if (exists) {
+                    throw new UserAlreadyExistsException("User already exists but is not an admin");  //TODO: da chiedere
+                } else {
+                    throw new NoAccountException("No account found");
+                }
+            }                                                                       //Ho dovuto duplicare la logica per questioni di sicurezza e di ottimizzazione query
+            else{
+                Optional<Customer> user = customerDao.findByEmail(payload.getEmail());
+                if (user.isPresent()) {
+                    System.out.println("HO TROVATO L'UTENTE");
+                    Hibernate.initialize(user.get().getAddresses());
+                    String jwtToken = jwtHandler.generateJwtToken(user.get());
+                    System.out.println("JWT TOKEN: " + jwtToken);
+                    CustomerAuthResponseDto response= modelMapper.map(user.get(), CustomerAuthResponseDto.class);
+                    System.out.println(response.toString());
+                    response.setJwt(jwtToken);
+                    return response;
+                } else if (exists) {
+                    throw new UserAlreadyExistsException("User already exists but is not a customer");  //TODO: da chiedere
+                } else {
+                    throw new NoAccountException("No account found");
+                }
             }
         }
         catch (GeneralSecurityException | IOException | VerificationException e) {

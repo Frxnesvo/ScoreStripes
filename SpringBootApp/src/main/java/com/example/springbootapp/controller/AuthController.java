@@ -29,13 +29,13 @@ import java.util.Map;
         private final AuthService authService;
         private final ExceptionUtils exceptionUtils;
 
-        @PostMapping("/login")
-        public ResponseEntity<AuthResponseDto> login(@RequestBody Map<String,String> request) throws GeneralSecurityException, TokenVerifier.VerificationException, IOException {
+        @PostMapping("/login/{userType}")
+        public ResponseEntity<AuthResponseDto> login(@RequestBody Map<String,String> request, @PathVariable("userType") String userType) throws GeneralSecurityException, TokenVerifier.VerificationException, IOException {
             String idToken = request.get("idToken");
             if(idToken == null){
                 throw new InvalidTokenException("Token is null");
             }
-            AuthResponseDto response =authService.login(idToken);
+            AuthResponseDto response =authService.login(idToken,userType);
             return ResponseEntity.ok(response);
         }
 

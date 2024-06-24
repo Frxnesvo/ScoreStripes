@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface CustomerDao extends JpaRepository<Customer, String>, JpaSpecificationExecutor<Customer>{
     Long countAllByCreatedDateAfter(LocalDateTime date);
+    Optional<Customer> findByEmail(String email);
 }

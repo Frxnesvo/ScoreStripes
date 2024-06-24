@@ -39,8 +39,8 @@ class Customer(
                 email = customerDto.email,
                 birthDate = customerDto.birthDate,
                 gender = customerDto.gender,
-                favoriteTeam = "",
-                addresses = emptyList(),
+                favoriteTeam = customerDto.favouriteTeam,
+                addresses = listOf(customerDto.address),
                 pic = S3ImageDownloader.getImageForBucket(customerDto.profilePicUrl)
             )
         }

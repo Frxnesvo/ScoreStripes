@@ -64,36 +64,13 @@ public class ModelMapperConfig {
             return awsS3Service.generatePresignedUrl(picUrl);
         };
 
-        Converter<List<Address>,Address> firstAddressConverter = context -> {
+        Converter<List<Address>,AddressDto> firstAddressConverter = context -> {
             if(!context.getSource().isEmpty()){
-                return context.getSource().get(0);
+                Address addr= context.getSource().get(0);
+                return context.getMappingEngine().map(context.create(addr, AddressDto.class));
             }
             return null;
         };
-
-//        Converter<Product,BasicProductDto> productToBasicProductDto = context -> {
-//            Product source = context.getSource();
-//            BasicProductDto destination = context.getDestination();
-//            destination.setId(source.getId());
-//            destination.setName(source.getName());
-//            destination.setDescription(source.getDescription());
-//            destination.setBrand(source.getBrand());
-//            destination.setGender(source.getGender());
-//            destination.setClub(source.getClub().getName());
-//            MappingContext<Product,String> picUrlContext = context.create(source, String.class);
-//            destination.setPicUrl(firstPicUrlConverter.convert(picUrlContext));
-//            return destination;
-//        };
-
-//        Converter<ProductWithVariant, ProductWithVariantDto> productWithVariantDtoConverter = context -> {  //TODO: DOVREBBE FARLO IN AUTOMATICO
-//            ProductWithVariant source = context.getSource();
-//            ProductWithVariantDto destination = context.getDestination();
-//            destination.setId(source.getId());
-//            destination.setSize(source.getSize());
-//            MappingContext<Product,BasicProductDto> productContext = context.create(source.getProduct(), BasicProductDto.class);
-//            destination.setProduct(productToBasicProductDto.convert(productContext));
-//            return destination;
-//        };
 
 
         // Convert Product to ProductDto
@@ -185,20 +162,22 @@ public class ModelMapperConfig {
 //        };
 
 
-        PropertyMap<Admin,AuthResponseDto> adminLoginMap = new PropertyMap<>() {
+        PropertyMap<Admin,AdminAuthResponseDto> adminLoginMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 using(profilePicUrlConverter)
                         .map(source.getProfilePicUrl(), destination.getProfilePicUrl());
-                System.out.println("Stampa model mapper: " + destination.getProfilePicUrl());
+
             }
         };
 
-        PropertyMap<Customer,AuthResponseDto> customerLoginMap = new PropertyMap<>() {
+        PropertyMap<Customer,CustomerAuthResponseDto> customerLoginMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 using(profilePicUrlConverter)
                         .map(source.getProfilePicUrl(), destination.getProfilePicUrl());
+                using(firstAddressConverter)
+                        .map(source.getAddresses(), destination.getAddress());
             }
         };
 

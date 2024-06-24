@@ -25,49 +25,49 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @UuidGenerator
-    private String id;
+    protected String id;
 
     @Column(name = "username", nullable = false, unique = true)
-    private String username;
+    protected String username;
 
     @Column(name = "first_name", nullable = false)
-    private String firstName;
+    protected String firstName;
 
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    protected String lastName;
 
     @Column(name = "email", nullable = false, unique = true)
-    private String email;
+    protected String email;
 
     @Column(name = "birth_date")
-    private LocalDate birthDate;
+    protected LocalDate birthDate;
 
     @Column(name = "profile_pic_url")
-    private String profilePicUrl;
+    protected String profilePicUrl;
 
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    protected Gender gender;
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role role;
+    protected Role role;
 
     @Column(name = "created_date")
     @CreatedDate
-    private LocalDateTime createdDate;
+    protected LocalDateTime createdDate;
 
     @Column(name = "last_modified_date")
     @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
+    protected LocalDateTime lastModifiedDate;
 
     @Column(name = "created_by")
     @CreatedBy
-    private String createdBy;
+    protected String createdBy;
 
     @Column(name = "last_modified_by")
     @LastModifiedBy
-    private String lastModifiedBy;
+    protected String lastModifiedBy;
 
 //    @Override
 //    public boolean equals(Object o) {

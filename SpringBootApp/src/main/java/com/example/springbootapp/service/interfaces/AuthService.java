@@ -8,7 +8,7 @@ import java.security.GeneralSecurityException;
 
 public interface AuthService {
 
-    AuthResponseDto login(String idToken) throws GeneralSecurityException, IOException, TokenVerifier.VerificationException;
+    AuthResponseDto login(String idToken,String userType) throws GeneralSecurityException, IOException, TokenVerifier.VerificationException;
 
     String registerAdmin(AdminRegisterDto adminRegisterDto);
     String registerCustomer(CustomerRegisterDto customerRegisterDto);
