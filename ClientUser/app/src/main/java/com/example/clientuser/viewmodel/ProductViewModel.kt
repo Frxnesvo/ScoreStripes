@@ -1,5 +1,6 @@
 package com.example.clientuser.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Product
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 
 class ProductViewModel: ViewModel() {
@@ -29,6 +31,8 @@ class ProductViewModel: ViewModel() {
 
     val moreSoldJersey = fetchMoreSoldProduct(ProductCategory.JERSEY)
     val moreSoldShorts = fetchMoreSoldProduct(ProductCategory.SHORTS)
+
+    private val productById = mutableStateOf(Product())
 
     private val sizePage = 2
 
@@ -89,4 +93,23 @@ class ProductViewModel: ViewModel() {
             println("Exception fetching more sold ${category.name}: ${e.message}")
         }
     }.flowOn(Dispatchers.IO)
+
+    suspend fun getProductById(id: String): Product? {
+        return try {
+            withContext(Dispatchers.IO) {
+                val response = RetrofitHandler.productApi.getProductById(id).awaitResponse()
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        Product.fromDto(it)
+                    }
+                } else {
+                    println("Error product get: ${response.message()}")
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            println("Exception product get: ${e.message}")
+            null
+        }
+    }
 }

@@ -78,6 +78,20 @@ class ProductViewModel: ViewModel() {
     fun addProduct(productCreateRequestDto: ProductCreateRequestDto, pic1: Bitmap, pic2: Bitmap): Boolean { //TODO potrei evitare l'utilizzo del dto e passare o i campi singolarmente o il productState
         var returnValue = false
         try {
+            Product(
+                id = null.toString(),               //TODO
+                name = productCreateRequestDto.name,
+                description = productCreateRequestDto.description,
+                price = productCreateRequestDto.price,
+                brand = productCreateRequestDto.brand,
+                gender = productCreateRequestDto.gender,
+                productCategory = productCreateRequestDto.category,
+                pic1 = pic1,
+                pic2 = pic2,
+                club = productCreateRequestDto.club,
+                variants = productCreateRequestDto.variants
+            )
+
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.productApi.createProduct(
                     name = MultipartBody.Part.createFormData("name", productCreateRequestDto.name) ,

@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.MaterialTheme
@@ -59,6 +62,8 @@ fun Carousel(product: Product){
         ) {
 
             Image(
+                modifier = Modifier
+                    .size(120.dp),
                 bitmap = image.asImageBitmap(),
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth
@@ -75,24 +80,28 @@ fun Carousel(product: Product){
                     .padding(16.dp)
             )
         }
-
-
     }
 }
 
 @Composable
-fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHostController: NavHostController){
+fun ProductDetails(
+    product: Product,
+    wishListViewModel: WishListViewModel,
+    navHostController: NavHostController,
+    productFormViewModel: ProductFormViewModel
+){
     //TODO serve il view model e capire come gestire il like
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val productFormViewModel = ProductFormViewModel()
     val wishlist = wishListViewModel.myWishList
-    val inWishlist = remember { mutableStateOf(wishlist.value.items.any() { it.product.id == product.id}) }
+    val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == product.id}) }
 
 
-    //todo Icona wishlist, va la recompsition, ma non cambia l'icona
+    //todo Icona wishlist, va la recomposition, ma non cambia l'icona
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
@@ -127,7 +136,7 @@ fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHo
             )
         }
 
-        Carousel(product = product)
+        //Carousel(product = product) TODO da sistemare, scorre le immagini in automatico
 
         Row {
             val textStyle = TextStyle(
@@ -149,17 +158,25 @@ fun ProductDetails(product: Product, wishListViewModel: WishListViewModel, navHo
         }
 
 
-        for (size in Size.entries){
+        Row (
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
 
-            BoxIcon(
-                iconColor = colorResource(id = if (product.variants[size]!! > 0) R.color.secondary else R.color.black50),
-                content = size
-            ) {
-                if (product.variants[size]!! > 0)
-                    productFormViewModel.updateProductSize(size)
-                    setBottomSheet(true)
+            for (size in Size.entries){
+                BoxIcon(
+                    iconColor = colorResource(id = if (product.variants[size]!! > 0) R.color.secondary else R.color.black50),
+                    content = size.name
+                ) {
+                    if (product.variants[size]!! > 0) {
+                        productFormViewModel.updateProductSize(size)
+                        setBottomSheet(true)
+                    }
+                }
             }
         }
+
 
         Column(
             modifier = Modifier.fillMaxWidth(),

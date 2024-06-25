@@ -22,6 +22,7 @@ material = "1.6.7"
 materialIconsCore = "1.6.7"
 materialIconsExtended = "1.6.7"
 moshi = "1.13.0"
+moshiKotlin = "1.12.0"
 moshiKotlinCodegenVersion = "1.13.0"
 navigationRuntimeKtx = "2.7.7"
 navigationCompose = "2.7.7"
@@ -34,6 +35,7 @@ ui = "1.6.7"
 [libraries]
 accompanist-pager-indicators-v0301 = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPagerIndicators" }
 accompanist-pager-v0301 = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPagerVersion" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPager" }

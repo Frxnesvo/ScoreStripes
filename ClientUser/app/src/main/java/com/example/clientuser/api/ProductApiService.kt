@@ -6,10 +6,15 @@ import com.example.clientuser.model.dto.ProductSummaryDto
 import com.example.clientuser.model.enumerator.ProductCategory
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface ProductApiService {
+    @GET("/api/v1/products/{id}")
+    fun getProductById(@Path("id") id: String): Call<ProductDto>
+
+
     @GET("/api/v1/products/more-sold")
     fun getMoreSoldProduct(@Query("category") category: ProductCategory): Call<List<ProductDto>>
 

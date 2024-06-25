@@ -57,6 +57,8 @@ fun Cart(
 
     val myCart = cartViewModel.cart.collectAsState()
 
+    println("CART: $myCart")
+
     if (showWebView.value) {
         orderViewModel
             .createCartOrder(OrderInfoDto(selectedAddress.value))

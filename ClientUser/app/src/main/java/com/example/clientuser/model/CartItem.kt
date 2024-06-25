@@ -1,7 +1,6 @@
 package com.example.clientuser.model
 
 import com.example.clientuser.model.dto.CartItemDto
-import com.example.clientuser.model.dto.ProductWithVariantDto
 
 data class CartItem(
     val id: String,
@@ -17,7 +16,7 @@ data class CartItem(
                 quantity = cartItemDto.quantity,
                 personalization = cartItemDto.personalization,
                 price = cartItemDto.price,
-                productWithVariant = ProductWithVariant.fromDto(cartItemDto.productWithVariantDto)
+                productWithVariant = ProductWithVariant.fromDto(cartItemDto.product)
             )
         }
     }

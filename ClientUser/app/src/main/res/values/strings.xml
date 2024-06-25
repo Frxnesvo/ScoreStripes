@@ -66,4 +66,6 @@
     <string name="public_wishlist">PUBLIC</string>
     <string name="private_wishlist">PRIVATE</string>
     <string name="change_visibility">CHANGE VISIBILITY</string>
+    <string name="best_seller_shorts">BEST SELLER SHORTS</string>
+    <string name="best_seller_jersey">BEST SELLER JERSEY</string>
 </resources>

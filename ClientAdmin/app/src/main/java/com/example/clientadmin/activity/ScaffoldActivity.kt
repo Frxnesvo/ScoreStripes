@@ -303,6 +303,7 @@ fun NavigationScaffold(
                 }
             }
         }
+
         composable(
             route = "league/{league}",
             arguments = listOf(navArgument("league"){ type = NavType.StringType })

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -136,6 +137,14 @@ fun ListDiscover(
                     ProductItem(it){ navHostController.navigate("product/${it.id}") }
                 }
             }
+        }
+
+        Button(
+            onClick = {
+                navHostController.navigate("")
+            }
+        ) {
+
         }
     }
 

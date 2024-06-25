@@ -8,17 +8,17 @@ import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
 
 class Product (
-    val id: String,
-    val name: String,
-    val description: String,
-    val price: Double,
-    val brand: String,
-    val gender: Gender,
-    val productCategory: ProductCategory,
-    val pic1: Bitmap,
-    val pic2: Bitmap,
-    val club: String,
-    val variants: Map<Size, Int>
+    val id: String = "",
+    val name: String = "",
+    val description: String = "",
+    val price: Double = 0.0,
+    val brand: String = "",
+    val gender: Gender = Gender.MALE,
+    val productCategory: ProductCategory = ProductCategory.JERSEY,
+    val pic1: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+    val pic2: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+    val club: String = "",
+    val variants: Map<Size, Int> = emptyMap()
 ){
     companion object{
         fun fromDto(productDto: ProductDto): Product {
@@ -29,11 +29,11 @@ class Product (
                 price = productDto.price,
                 brand = productDto.brand,
                 gender = productDto.gender,
-                productCategory = productDto.productCategory,
-                pic1 = S3ImageDownloader.getImageForBucket(productDto.pics[0]),
-                pic2 = S3ImageDownloader.getImageForBucket(productDto.pics[1]),
+                productCategory = productDto.category,
+                pic1 = S3ImageDownloader.getImageForBucket(productDto.pics[0].picUrl),
+                pic2 = S3ImageDownloader.getImageForBucket(productDto.pics[1].picUrl),
                 club = productDto.clubName,
-                variants = productDto.variantStock.associate { it.size to it.availability }
+                variants = productDto.variants.associate { it.size to it.availability }
             )
         }
     }
