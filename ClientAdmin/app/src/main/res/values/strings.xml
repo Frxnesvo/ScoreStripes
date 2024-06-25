@@ -59,4 +59,9 @@
     <string name="email_error">Is required a valid email</string>
     <string name="name_error">Is required a length between 3 and 40</string>
     <string name="date_error">Is required a date before today</string>
+    <string name="best_seller_jersey">BEST SELLER JERSEY</string>
+    <string name="best_seller_shorts">BEST SELLER SHORTS</string>
+    <string name="brand_error">Is required a length between 2 and 40</string>
+    <string name="price_error">Is required a price greather than 0</string>
+    <string name="description_error">Is required a length between 10 and 500</string>
 </resources>
