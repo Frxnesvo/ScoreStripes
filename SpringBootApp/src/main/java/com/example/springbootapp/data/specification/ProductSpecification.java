@@ -8,6 +8,8 @@ import com.example.springbootapp.data.entities.Product;
 import com.example.springbootapp.data.entities.ProductWithVariant;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -15,18 +17,30 @@ import java.util.List;
 
 public class ProductSpecification {
     public static Specification<Product> topSellingProducts(ProductCategory category) {
-        return (root, query, builder) -> {
-            Join<Product, ProductWithVariant> productWithVariants = root.join("variants");
-            Join<ProductWithVariant, OrderItem> orderItems = productWithVariants.join("orderItems");
-            Join<OrderItem, Order> orders = orderItems.join("order");
+        return (root, query, criteriaBuilder) -> {
+            // Subquery per contare gli ordini completati per ogni prodotto
+            Subquery<Long> orderCountSubquery = query.subquery(Long.class);
+            Root<OrderItem> orderItemRoot = orderCountSubquery.from(OrderItem.class);
+            Join<OrderItem, ProductWithVariant> variantJoin = orderItemRoot.join("product");
+            Join<ProductWithVariant, Product> productJoin = variantJoin.join("product");
+            Join<OrderItem, Order> orderJoin = orderItemRoot.join("order");
+            orderCountSubquery.select(criteriaBuilder.count(orderItemRoot))
+                    .where(
+                            criteriaBuilder.and(
+                                    criteriaBuilder.equal(productJoin.get("id"), root.get("id")),
+                                    criteriaBuilder.equal(orderJoin.get("status"), OrderStatus.COMPLETED)
+                            )
+                    );
+            // Predicato per filtrare per categoria
+            Predicate categoryPredicate = criteriaBuilder.equal(root.get("category"), category);
 
-            Predicate productTypePredicate = builder.equal(root.get("category"), category.name());
-            Predicate orderStatusPredicate = builder.equal(orders.get("status"), OrderStatus.COMPLETED.name());
+            // Ordinamento per numero di ordini decrescente
+            query.orderBy(criteriaBuilder.desc(orderCountSubquery));
 
-            query.groupBy(root.get("id"));
-            query.orderBy(builder.desc(builder.count(orders.get("id"))));
+            // Selezione solo dei prodotti con almeno un ordine completato
+            Predicate hasOrdersPredicate = criteriaBuilder.greaterThan(orderCountSubquery, 0L);
 
-            return builder.and(productTypePredicate, orderStatusPredicate);
+            return criteriaBuilder.and(categoryPredicate, hasOrdersPredicate);
         };
     }
 
