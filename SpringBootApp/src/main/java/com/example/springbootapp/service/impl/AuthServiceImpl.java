@@ -161,7 +161,6 @@ public class AuthServiceImpl implements AuthService {
             }
 
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
-            //System.out.println(payload.get("given_name").toString() + "\n" + payload.get("family_name") != null ? payload.get("family_name").toString() : "" + "\n" + payload.getEmail());
             if (userDao.existsByEmail(payload.getEmail())) {
                 throw new UserAlreadyExistsException("User already exists");
             }

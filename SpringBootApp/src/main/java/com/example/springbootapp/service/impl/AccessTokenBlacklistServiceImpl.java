@@ -27,7 +27,8 @@ public class AccessTokenBlacklistServiceImpl implements AccessTokenBlacklistServ
             accessTokenBlacklist.setExpirationDate(expirationDate);
             accessTokenBlacklistDao.save(accessTokenBlacklist);
         }
-        throw new InvalidTokenException("Token is null");
+        else
+            throw new InvalidTokenException("Token is null");
     }
 
     @Override
