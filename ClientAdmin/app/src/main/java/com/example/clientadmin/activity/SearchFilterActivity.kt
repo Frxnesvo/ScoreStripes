@@ -29,7 +29,7 @@ fun SearchByNameSheet(
     setBottomSheet: (Boolean) -> Unit,
     filterType: FilterType,
     filterFormViewModel: FilterFormViewModel,
-    onSearch: (Map<String, String?>) -> Unit
+    onSearch: (Map<String, String>) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -41,7 +41,7 @@ fun SearchByNameSheet(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = filter.name ?: "",
+                value = filter.name,
                 text = stringResource(id = if(filterType == FilterType.CUSTOMERS) R.string.search_for_username else R.string.search_for_name),
                 leadingIcon = Icons.Outlined.Search
             ) { filterFormViewModel.updateName(it) }
@@ -54,7 +54,7 @@ fun SearchByNameSheet(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        onSearch(filterFormViewModel.asFilterBuilder().build())
+                        onSearch(filterFormViewModel.build())
                     }
                 }
             }
@@ -71,7 +71,7 @@ fun SearchPanelProducts(
     leaguesNames: StateFlow<List<String>>,
     filterType: FilterType,
     filterFormViewModel: FilterFormViewModel,
-    onSearch: (Map<String, String?>) -> Unit
+    onSearch: (Map<String, String>) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -84,20 +84,20 @@ fun SearchPanelProducts(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = filter.name ?: "",
+                value = filter.name,
                 text = stringResource(id = R.string.search_for_username),
                 leadingIcon = Icons.Outlined.Search
             ) { filterFormViewModel.updateName(it) }
 
             CustomComboBox(
                 options = leagues,
-                selectedOption = filter.league ?: ""
+                selectedOption = filter.league
             ) { filterFormViewModel.updateLeague(it) }
 
             if(filterType == FilterType.PRODUCTS)
                 CustomComboBox(
                     options = ProductCategory.entries,
-                    selectedOption = filter.category ?: ""
+                    selectedOption = filter.category
                 ) { filterFormViewModel.updateCategory(it) }
 
             CustomButton(
@@ -108,7 +108,7 @@ fun SearchPanelProducts(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        onSearch(filterFormViewModel.asFilterBuilder().build())
+                        onSearch(filterFormViewModel.build())
                     }
                 }
             }

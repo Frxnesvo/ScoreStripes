@@ -27,12 +27,14 @@ import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.LogoutViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import androidx.compose.runtime.LaunchedEffect
+import com.example.clientadmin.utils.ToastManager
 import kotlin.math.log
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val userSession = UserSession()
 
+        ToastManager.initialize(this.applicationContext)
         TokenStoreUtils.initialize(this.applicationContext)
 
         val loginViewModel = LoginViewModel(userSession)

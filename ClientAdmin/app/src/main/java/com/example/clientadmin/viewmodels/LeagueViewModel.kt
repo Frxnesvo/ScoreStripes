@@ -3,7 +3,6 @@ package com.example.clientadmin.viewmodels
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.clientadmin.model.FilterBuilder
 import com.example.clientadmin.model.League
 import com.example.clientadmin.model.dto.LeagueCreateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
@@ -23,7 +22,7 @@ class LeagueViewModel: ViewModel() {
     val leaguesNames: StateFlow<List<String>> = _leaguesNames
     val leagues: StateFlow<List<League>> = _leagues
 
-    private var filter: Map<String, String?> = FilterBuilder().build()
+    private var filter: Map<String, String?> = emptyMap()
 
     private val _addError =  mutableStateOf("")
     val addError = _addError

@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -46,7 +44,6 @@ fun ProductDetails(
 ){
     val productState by productFormViewModel.productState.collectAsState()
     val clubs by clubViewModel.clubNames.collectAsState()
-    val error by productViewModel.addError
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -145,13 +142,6 @@ fun ProductDetails(
                         productFormViewModel.updateVariant(size, it.toInt())
                 }
             }
-        }
-
-        if (error.isNotEmpty()) {
-            Text(
-                text = error,
-                color = colorResource(id = R.color.red)
-            )
         }
 
         CustomButton(

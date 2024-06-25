@@ -51,7 +51,7 @@ interface ProductApiService {
     fun getProductsSummary(
         @Query("page") page: Int,
         @Query("size") size: Int,
-        @QueryMap filters: Map<String, String?>
+        @QueryMap filters: Map<String, String>?
     ): Call<PageResponseDto<ProductSummaryDto>>
 
     @GET("/api/v1/products/more-sold")

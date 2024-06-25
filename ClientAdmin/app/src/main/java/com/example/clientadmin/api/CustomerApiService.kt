@@ -25,6 +25,6 @@ interface CustomerApiService {
     fun getCustomersSummary(
         @Query("page") page: Int,
         @Query("size") size: Int,
-        @QueryMap filters: Map<String, String?>
+        @QueryMap filters: Map<String, String>?
     ): Call<PageResponseDto<CustomerSummaryDto>>
 }

@@ -19,7 +19,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,6 +53,8 @@ fun Products(
     val products by productViewModel.productSummaries.collectAsState()
     val leagues by leagueViewModel.leagues.collectAsState()
     val clubs by clubViewModel.clubs.collectAsState()
+
+    val page by productViewModel.page.collectAsState()
 
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
@@ -159,16 +160,19 @@ fun Products(
             }
 
             item {
-                if (FilterType.PRODUCTS == filterType)
-                    TextButton(onClick = { productViewModel.incrementPage() }) {
-                        Text(
-                            text = stringResource(id = R.string.more),
-                            color = colorResource(id = R.color.black50),
-                            style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                if (FilterType.PRODUCTS == filterType && page.number < page.totalPages)
+                    Text(
+                        text = stringResource(id = R.string.more),
+                        color = colorResource(id = R.color.black50),
+                        style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ){productViewModel.incrementPage() }
+                    )
             }
         }
     }
@@ -188,7 +192,7 @@ fun Products(
             filterFormViewModel = FilterFormViewModel(),
             filterType = filterType
         ){
-            if (FilterType.LEAGUES == filterType)
+            if (FilterType.PRODUCTS == filterType)
                 productViewModel.setFilter(it)
             else
                 clubViewModel.setFilter(it)

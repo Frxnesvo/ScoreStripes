@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.dto.AddressDto
 import com.example.clientadmin.model.dto.CustomerProfileDto
 import com.example.clientadmin.model.CustomerSummary
-import com.example.clientadmin.model.FilterBuilder
 import com.example.clientadmin.model.Order
+import com.example.clientadmin.model.Page
 import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.model.dto.PageResponseDto
@@ -16,46 +16,43 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class CustomerViewModel : ViewModel() {
-    private var filter: Map<String, String?> = FilterBuilder().build()
-    private var page = 0
+    private val _page = MutableStateFlow(Page())
+    val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
+
+    private var filters: Map<String, String>? = null
 
     private val _customerSummaries = MutableStateFlow<List<CustomerSummary>>(emptyList())
     val customerSummaries: StateFlow<List<CustomerSummary>> = _customerSummaries
 
-    private val sizePage = 2
-
-    init {
-        loadMoreCustomerSummaries()
-    }
-
     fun incrementPage() {
-        page += 1
-        loadMoreCustomerSummaries()
+        if (!_page.value.last) {
+            loadMoreCustomerSummaries(_page.value.number + 1)
+        }
     }
 
-    fun setFilters(filter: Map<String, String?>) {
-        this.filter = filter
-        page = 0
+    fun setFilter(filters: Map<String, String>) {
+        this.filters = filters
         _customerSummaries.value = emptyList()
-        loadMoreCustomerSummaries()
+        _page.value = Page()
+        loadMoreCustomerSummaries(_page.value.number)
     }
 
-    private fun loadMoreCustomerSummaries() {
+    private fun loadMoreCustomerSummaries(numberPage: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            getCustomerSummaries().collect {
+            getCustomerSummaries(numberPage).collect {
                 val newSummaries = it.content.map { summary -> CustomerSummary.fromDto(summary) }
                 _customerSummaries.value += newSummaries
             }
         }
     }
 
-    private fun getCustomerSummaries(): Flow<PageResponseDto<CustomerSummaryDto>> = flow {
+    private fun getCustomerSummaries(numberPage: Int): Flow<PageResponseDto<CustomerSummaryDto>> = flow {
         try {
             val response = RetrofitHandler.customerApi
                 .getCustomersSummary(
-                    page = page,
-                    size = sizePage,
-                    filters = filter
+                    page = numberPage,
+                    size = _page.value.size,
+                    filters = filters
                 )
                 .awaitResponse()
 

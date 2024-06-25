@@ -1,9 +1,8 @@
 package com.example.clientadmin.viewmodels
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.clientadmin.model.FilterBuilder
+import com.example.clientadmin.model.Page
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductSummary
 import com.example.clientadmin.model.dto.ProductCreateRequestDto
@@ -12,6 +11,7 @@ import com.example.clientadmin.model.dto.ProductUpdateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.model.dto.PageResponseDto
+import com.example.clientadmin.utils.ToastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -20,46 +20,42 @@ import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 
 class ProductViewModel: ViewModel() {
-    private var filter: Map<String, String?> = FilterBuilder().build()
-    private var page = 0
+    private val _page = MutableStateFlow(Page())
+    val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
 
     private val _productSummaries = MutableStateFlow<List<ProductSummary>>(emptyList())
     val productSummaries: StateFlow<List<ProductSummary>> = _productSummaries
 
-    private val _addError =  mutableStateOf("")
-    val addError = _addError
-
-    private val sizePage = 2
-
-    init { loadMoreProductSummaries() }
+    private var filters: Map<String, String>? = null
+    init { loadMoreProductSummaries(_page.value.number) }
 
     fun incrementPage() {
-        page += 1
-        loadMoreProductSummaries()
+        if (!_page.value.last) {
+            loadMoreProductSummaries(_page.value.number + 1)
+        }
     }
 
-    fun setFilter(filter: Map<String, String?>) {
-        this.filter = filter
-        page = 0
+    fun setFilter(filters: Map<String, String>) {
+        this.filters = filters
         _productSummaries.value = emptyList()
-        loadMoreProductSummaries()
+        _page.value = Page()
+        loadMoreProductSummaries(_page.value.number)
     }
 
-    private fun loadMoreProductSummaries() {
+    private fun loadMoreProductSummaries(numberPage: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            getProductSummaries(page).collect { summaries ->
+            getProductSummaries(numberPage).collect { summaries ->
                 val newSummaries = summaries.content.map { dto ->  ProductSummary.fromDto(dto) }
                 _productSummaries.value += newSummaries
             }
         }
     }
-
-    private fun getProductSummaries(page: Int): Flow<PageResponseDto<ProductSummaryDto>> = flow {
+    private fun getProductSummaries(numberPage: Int): Flow<PageResponseDto<ProductSummaryDto>> = flow {
         try {
             val response = RetrofitHandler.productApi.getProductsSummary(
-                page,
-                sizePage,
-                filter
+                page = numberPage,
+                size = _page.value.size,
+                filters = filters
             ).awaitResponse()
 
             if (response.isSuccessful) response.body()?.let { emit(it) }

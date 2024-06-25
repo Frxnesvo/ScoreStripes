@@ -7,6 +7,7 @@ import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.dto.ClubCreateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
+import com.example.clientadmin.utils.ToastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,7 +68,7 @@ class ClubViewModel : ViewModel() {
                         _clubs.value += Club.fromDto(club)
                         _clubNames.value += club.name
                     }
-                else println(response.message())
+                else ToastManager.show(response.message())
             }
             return true
         }
@@ -75,6 +76,5 @@ class ClubViewModel : ViewModel() {
             _addError.value = e.message ?: "Unknown error"
             return false
         }
-
     }
 }
