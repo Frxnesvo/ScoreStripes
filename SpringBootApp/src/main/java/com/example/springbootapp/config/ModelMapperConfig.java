@@ -154,13 +154,12 @@ public class ModelMapperConfig {
         };
 
 
-//        PropertyMap<CartItem, CartItemDto> cartItemToDtoMap = new PropertyMap<>() {  TODO: DOVREBBE FARLO IN AUTOMATICO
-//            @Override
-//            protected void configure() {
-//                using(productWithVariantDtoConverter)
-//                        .map(source.getProduct(), destination.getProduct());
-//            }
-//        };
+        PropertyMap<CartItem, CartItemDto> cartItemToDtoMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setPrice(source.getPrice());
+            }
+        };
 
 
         PropertyMap<Admin,AdminAuthResponseDto> adminLoginMap = new PropertyMap<>() {
