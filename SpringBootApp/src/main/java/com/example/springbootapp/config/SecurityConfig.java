@@ -1,6 +1,7 @@
 package com.example.springbootapp.config;
 
 
+import com.example.springbootapp.security.JwtAuthenticationEntryPoint;
 import com.example.springbootapp.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig{
 
-    private  final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
     @Bean   //TODO: TUTTO DA FARE
@@ -34,13 +36,11 @@ public class SecurityConfig{
                 .requestMatchers("/stripe_cancel").permitAll()
                 .anyRequest().authenticated()
         );
+        http.exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint));
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
-//
 }

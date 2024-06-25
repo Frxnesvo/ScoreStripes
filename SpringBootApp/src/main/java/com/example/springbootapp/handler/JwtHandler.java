@@ -9,9 +9,11 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -68,5 +70,22 @@ public class JwtHandler {
         } catch (ParseException e) {
             throw new RuntimeException("Invalid token");  //TODO: cambiare eccezione con una custom
         }
+    }
+
+    public Date getExpirationDateFromJwt(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return signedJWT.getJWTClaimsSet().getExpirationTime();
+        } catch (ParseException e) {
+            throw new RuntimeException("Invalid token");  //TODO: cambiare eccezione con una custom
+        }
+    }
+
+    public String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }

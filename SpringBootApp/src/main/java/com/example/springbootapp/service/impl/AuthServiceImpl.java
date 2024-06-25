@@ -1,5 +1,6 @@
 package com.example.springbootapp.service.impl;
 
+import com.example.springbootapp.data.dao.AccessTokenBlacklistDao;
 import com.example.springbootapp.data.dao.AdminDao;
 import com.example.springbootapp.data.dao.CustomerDao;
 import com.example.springbootapp.data.dao.UserDao;
@@ -11,6 +12,7 @@ import com.example.springbootapp.exceptions.InvalidTokenException;
 import com.example.springbootapp.exceptions.NoAccountException;
 import com.example.springbootapp.exceptions.UserAlreadyExistsException;
 import com.example.springbootapp.exceptions.VerificationException;
+import com.example.springbootapp.service.interfaces.AccessTokenBlacklistService;
 import com.example.springbootapp.service.interfaces.AuthService;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -26,6 +28,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.example.springbootapp.handler.JwtHandler;
+import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,10 +36,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
     private final CustomerDao customerDao;
     private final JwtHandler jwtHandler;
     private final AwsS3Service awsS3Service;
-
+    private final AccessTokenBlacklistService accessTokenBlacklistService;
 
     @Override
     public AuthResponseDto login(String idToken, String userType) {
@@ -210,6 +210,12 @@ public class AuthServiceImpl implements AuthService {
         } catch (GeneralSecurityException | IOException e) {
             throw new VerificationException("Invalid token");
         }
+    }
+
+    @Override
+    public String logout(String jwtFromRequest) {
+        accessTokenBlacklistService.blacklistToken(jwtFromRequest);
+        return "Logged out successfully";
     }
 
     private byte[] downloadImageFromUrl(String imageUrl) throws IOException {

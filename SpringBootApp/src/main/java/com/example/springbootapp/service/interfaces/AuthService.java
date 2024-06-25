@@ -12,4 +12,5 @@ public interface AuthService {
 
     String registerAdmin(AdminRegisterDto adminRegisterDto);
     String registerCustomer(CustomerRegisterDto customerRegisterDto);
+    String logout(String jwtFromRequest);
 }

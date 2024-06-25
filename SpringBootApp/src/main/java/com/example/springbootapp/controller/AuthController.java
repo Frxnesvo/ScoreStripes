@@ -4,11 +4,13 @@ package com.example.springbootapp.controller;
 import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.exceptions.InvalidTokenException;
 import com.example.springbootapp.exceptions.RequestValidationException;
+import com.example.springbootapp.handler.JwtHandler;
 import com.example.springbootapp.service.impl.UserDetailsServiceImpl;
 import com.example.springbootapp.utils.ExceptionUtils;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.AuthService;
 import com.google.auth.oauth2.TokenVerifier;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import java.util.Map;
     public class AuthController {
         private final AuthService authService;
         private final ExceptionUtils exceptionUtils;
+        private final JwtHandler jwtHandler;
 
         @PostMapping("/login/{userType}")
         public ResponseEntity<AuthResponseDto> login(@RequestBody Map<String,String> request, @PathVariable("userType") String userType) throws GeneralSecurityException, TokenVerifier.VerificationException, IOException {
@@ -57,6 +60,10 @@ import java.util.Map;
             return ResponseEntity.ok(Map.of("message",authService.registerCustomer(customerRegisterDto)));
         }
 
+        @PostMapping("/logout")
+        public ResponseEntity<String> logout(HttpServletRequest request) {
+            return ResponseEntity.ok(authService.logout(jwtHandler.getJwtFromRequest(request)));
+        }
 
 
 
