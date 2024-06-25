@@ -30,7 +30,7 @@ public class ProductController {
     private final ProductService productService;
     private final ExceptionUtils exceptionUtils;
 
-    @GetMapping("/summary")             //TODO: filtri per: nome, lega, club, categoria, size
+    @GetMapping("/summary")             //questo è per la ricerca dei prodotti nella dashboard dell'admin. Da cambiare il nome
     public ResponseEntity<Page<ProductSummaryDto>> getProductsSummary(Pageable pageable, @RequestParam(required = false) Map<String,String> filters){
         return ResponseEntity.ok(productService.getProductsSummary(pageable, filters));
     }
@@ -39,7 +39,6 @@ public class ProductController {
     public ResponseEntity<Page<BasicProductDto>> getProducts(Pageable pageable, @RequestParam(required = false) Map<String,String> filters){
         return ResponseEntity.ok(productService.getProducts(pageable, filters));
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable String id){
