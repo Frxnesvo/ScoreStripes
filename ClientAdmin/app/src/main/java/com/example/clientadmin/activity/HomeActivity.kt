@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
+import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.dto.ProductDto
 import com.example.clientadmin.viewmodels.HomeViewModel
 
@@ -42,6 +43,8 @@ fun Home(selectedScreen: MutableState<Screen>, homeViewModel: HomeViewModel, nav
     val numNewOrders by homeViewModel.newOrders.collectAsState(initial = 0)
     val numProductOutOfStoke by homeViewModel.variantsOutOfStock.collectAsState(initial = 0)
     val numNewUser by homeViewModel.newAccounts.collectAsState(initial = 0)
+    val bestSellerJersey by homeViewModel.moreSoldJersey.collectAsState(initial = emptyList())
+    val bestSellerShorts by homeViewModel.moreSoldShorts.collectAsState(initial = emptyList())
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),
@@ -75,14 +78,14 @@ fun Home(selectedScreen: MutableState<Screen>, homeViewModel: HomeViewModel, nav
         }
 
         Section(
-            nameSection = stringResource(id = R.string.best_sellers),
-            products = listOf(), //TODO
+            nameSection = stringResource(id = R.string.best_seller_jersey),
+            products = bestSellerJersey,
             navHostController = navHostController
         )
 
         Section(
-            nameSection = stringResource(id = R.string.least_sold),
-            products = listOf(), //TODO
+            nameSection = stringResource(id = R.string.best_seller_shorts),
+            products = bestSellerShorts,
             navHostController = navHostController
         )
     }
@@ -141,7 +144,7 @@ fun Stat(text: String, value: Long, onClick: () -> Unit){
 }
 
 @Composable
-fun Section(nameSection: String, products: List<ProductDto>, navHostController: NavHostController) {
+fun Section(nameSection: String, products: List<Product>, navHostController: NavHostController) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
         modifier = Modifier
@@ -164,7 +167,7 @@ fun Section(nameSection: String, products: List<ProductDto>, navHostController: 
             items(products){
                 product ->
                 key(product.id) {
-                    //ProductItemRow(product) { navHostController.navigate("product/${product.id}") }
+                    ProductItemRow(product) { navHostController.navigate("product/${product.id}") }
                 }
             }
         }

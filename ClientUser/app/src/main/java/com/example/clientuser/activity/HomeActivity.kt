@@ -23,13 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.model.Customer
 import com.example.clientuser.model.League
 import com.example.clientuser.model.Product
-import com.example.clientuser.model.dto.ClubDto
-import com.example.clientuser.model.dto.LeagueDto
-import com.example.clientuser.model.dto.ProductDto
-import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
@@ -43,7 +38,8 @@ fun Home(
 ){
     val customer by customerFormViewModel.customer.collectAsState()
     val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
-    val mostSoldProduct = productViewModel.mostSoldProducts.collectAsState(initial = emptyList())
+    val bestSellerJersey by productViewModel.moreSoldJersey.collectAsState(initial = emptyList())
+    val bestSellerShorts by productViewModel.moreSoldShorts.collectAsState(initial = emptyList())
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -78,8 +74,14 @@ fun Home(
         ) { navHostController.navigate("list") }
 
         Section(
-            name = stringResource(id = R.string.best_seller),
-            items = mostSoldProduct.value,
+            name = stringResource(id = R.string.best_seller_jersey),
+            items = bestSellerJersey,
+            navHostController = navHostController
+        )
+
+        Section(
+            name = stringResource(id = R.string.best_seller_shorts),
+            items = bestSellerShorts,
             navHostController = navHostController
         )
 

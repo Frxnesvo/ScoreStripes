@@ -12,7 +12,7 @@ data class ProductDto (
     val price: Double,
     val brand: String,
     val gender: Gender,
-    val productCategory: ProductCategory,
+    val category: ProductCategory,
     val pics: List<ProductPicDto>,
     val clubName: String,
     val variants: List<ProductWithVariantAvailabilityDto>

@@ -8,6 +8,7 @@ import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.utils.S3ImageDownloader
 
 class Product (
+    val id: String,
     val name: String,
     val description: String,
     val price: Double,
@@ -48,12 +49,13 @@ class Product (
             }
 
             return Product(
+                id = productDto.id,
                 name = productDto.name,
                 description = productDto.description,
                 price = productDto.price,
                 brand = productDto.brand,
                 gender = productDto.gender,
-                productCategory = productDto.productCategory,
+                productCategory = productDto.category,
                 pic1 = S3ImageDownloader.getImageForBucket(principal),
                 pic2 = S3ImageDownloader.getImageForBucket(secondary),
                 club = productDto.clubName,
