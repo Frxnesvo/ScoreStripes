@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -76,6 +77,7 @@ fun ProductDetails(
             CustomTextField(
                 value = productState.name,
                 isError = productState.isNameError,
+                errorMessage = stringResource(id = R.string.name_error),
                 text = stringResource(id = R.string.name)
             ){ productFormViewModel.updateName(it) }
 
@@ -98,6 +100,7 @@ fun ProductDetails(
             CustomTextField(
                 value = productState.brand,
                 isError = productState.isBrandError,
+                errorMessage = stringResource(id = R.string.brand_error),
                 text = stringResource(id = R.string.brand)
             ){ productFormViewModel.updateBrand(it) }
 
@@ -105,6 +108,7 @@ fun ProductDetails(
                 value = if (productState.price != null) productState.price.toString() else "",
                 isError = productState.isPriceError,
                 text = stringResource(id = R.string.price),
+                errorMessage = stringResource(id = R.string.price_error),
                 keyboardType = KeyboardType.Number
             ) {
                 if (it.isEmpty())
@@ -116,6 +120,7 @@ fun ProductDetails(
             CustomTextField(
                 value = productState.description,
                 isError = productState.isDescriptionError,
+                errorMessage = stringResource(id = R.string.description_error),
                 text = stringResource(id = R.string.description),
                 lines = 10
             ){ productFormViewModel.updateDescription(it) }
@@ -190,7 +195,6 @@ fun ImagesProduct(productFormViewModel: ProductFormViewModel, productState: Prod
                 color = colorResource(id = R.color.white),
                 shape = RoundedCornerShape(30.dp)
             )
-            .height(100.dp)
             .fillMaxWidth()
             .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceAround

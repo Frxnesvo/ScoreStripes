@@ -3,6 +3,7 @@ package com.example.clientadmin.api
 import com.example.clientadmin.model.dto.PageResponseDto
 import com.example.clientadmin.model.dto.ProductDto
 import com.example.clientadmin.model.dto.ProductSummaryDto
+import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -52,4 +53,7 @@ interface ProductApiService {
         @Query("size") size: Int,
         @QueryMap filters: Map<String, String?>
     ): Call<PageResponseDto<ProductSummaryDto>>
+
+    @GET("/api/v1/products/more-sold")
+    fun getMoreSoldProduct(@Query("category") category: ProductCategory): Call<List<ProductDto>>
 }

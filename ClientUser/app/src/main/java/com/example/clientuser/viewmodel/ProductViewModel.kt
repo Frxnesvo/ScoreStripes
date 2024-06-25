@@ -5,6 +5,7 @@ import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.ProductSummary
 import com.example.clientuser.model.dto.ProductSummaryDto
+import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,11 +23,12 @@ class ProductViewModel: ViewModel() {
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     val products = _products
 
-    private val _mostSoldProducts = fetchMostSoldProducts()
-    val mostSoldProducts = _mostSoldProducts
 
     private val _productSummaries = MutableStateFlow<List<ProductSummary>>(emptyList())
     val productSummary = _productSummaries
+
+    val moreSoldJersey = fetchMoreSoldProduct(ProductCategory.JERSEY)
+    val moreSoldShorts = fetchMoreSoldProduct(ProductCategory.SHORTS)
 
     private val sizePage = 2
 
@@ -73,19 +75,18 @@ class ProductViewModel: ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-
-    //TODO usare BasicProduct?
-    private fun fetchMostSoldProducts() : Flow<List<Product>> = flow {
-        try{
-            val response = RetrofitHandler.productApi.getMostSoldProduct().awaitResponse()
-            if(response.isSuccessful) response.body()?.let {
-                val newList = it.map { Product.fromDto(it) }
-                emit(newList)
+    private fun fetchMoreSoldProduct(category: ProductCategory): Flow<List<Product>> = flow {
+        try {
+            val response = RetrofitHandler.productApi.getMoreSoldProduct(category).awaitResponse()
+            if(response.isSuccessful){
+                response.body()?.let { products ->
+                    emit(products.map { product -> Product.fromDto(product) })
+                }
             }
-            else println("Error during the get of the most selling products: ${response.message()}")
+            else println("Error fetching more sold ${category.name}: ${response.message()}")
+
+        }catch(e: Exception){
+            println("Exception fetching more sold ${category.name}: ${e.message}")
         }
-        catch (e : Exception){
-            println("Exception during the get of the most selling products: ${e.message}")
-        }
-    }
+    }.flowOn(Dispatchers.IO)
 }
