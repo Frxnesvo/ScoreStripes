@@ -89,4 +89,8 @@ class CartViewModel : ViewModel() {
 
         }
     }
+
+    fun clearCart(){
+        _cart.value = mutableMapOf()
+    }
 }

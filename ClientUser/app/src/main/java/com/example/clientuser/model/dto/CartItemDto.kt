@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 data class CartItemDto(
     val id: String,
     val quantity: Int,
-    val personalization: Personalization,
+    val personalization: Personalization?,
     val product: ProductWithVariantDto,
     val price: Double
 )

@@ -1,5 +1,6 @@
 package com.example.clientuser.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.Address
 import com.example.clientuser.model.Order
@@ -23,15 +24,17 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
         fetchAllAddress()
     }
 
-    private fun fetchAllAddress(): Flow<List<AddressDto>> = flow {
+    private fun fetchAllAddress(){
         try{
-            val response = RetrofitHandler.customerApi.getAllAddress(customerId).awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error fetching customer addresses ${response.message()}")
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.customerApi.getAllAddress(customerId).awaitResponse()
+                if(response.isSuccessful) response.body()?.let { addresses.value += it }
+                else println("Error fetching customer addresses ${response.message()}")
+            }
         } catch (e : Exception){
             println("Exception fetching customer addresses: ${e.message}")
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     fun getCustomerOrders(): Flow<List<Order>> = flow {
         try {

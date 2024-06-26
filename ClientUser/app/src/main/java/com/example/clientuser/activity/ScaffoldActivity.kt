@@ -304,15 +304,14 @@ fun NavigationScaffold(
                 var product by remember { mutableStateOf<Product?>(null) }
                 var isLoading by remember { mutableStateOf(true) }
 
-                LaunchedEffect(id) {
-                    coroutineScope.launch {
-                        product = productViewModel.getProductById(id)
-                        isLoading = false
-                    }
+
+                coroutineScope.launch {
+                    product = productViewModel.getProductById(id)
+                    isLoading = false
                 }
 
                 if (isLoading) {
-                    Text("Loading...")
+                    Text("Loading...")      //TODO
                 } else {
                     product?.let { prod ->
                         ProductDetails(

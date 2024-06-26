@@ -154,14 +154,6 @@ public class ModelMapperConfig {
         };
 
 
-        PropertyMap<CartItem, CartItemDto> cartItemToDtoMap = new PropertyMap<>() {
-            @Override
-            protected void configure() {
-                map().setPrice(source.getPrice());
-            }
-        };
-
-
         PropertyMap<Admin,AdminAuthResponseDto> adminLoginMap = new PropertyMap<>() {
             @Override
             protected void configure() {
@@ -193,7 +185,6 @@ public class ModelMapperConfig {
         modelMapper.addMappings(productDtoMap);
         //modelMapper.addMappings(wishlistMap);
         modelMapper.addMappings(cartItemMap);
-        //modelMapper.addMappings(cartItemToDtoMap);
         modelMapper.addMappings(customerLoginMap);
         modelMapper.addMappings(adminLoginMap);
 
