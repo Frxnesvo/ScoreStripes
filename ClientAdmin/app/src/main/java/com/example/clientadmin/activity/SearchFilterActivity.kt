@@ -20,7 +20,6 @@ import com.example.clientadmin.R
 import com.example.clientadmin.model.enumerator.FilterType
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,12 +94,14 @@ fun SearchPanelProducts(
 
             CustomComboBox(
                 options = leagues,
+                text = stringResource(id = R.string.league),
                 selectedOption = filter.league
             ) { filterFormViewModel.updateLeague(it) }
 
             if(filterType == FilterType.PRODUCTS)
                 CustomComboBox(
                     options = ProductCategory.entries,
+                    text = stringResource(id = R.string.category),
                     selectedOption = filter.category
                 ) { filterFormViewModel.updateCategory(it) }
 

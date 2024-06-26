@@ -79,6 +79,7 @@ fun Register(
 
             CustomComboBox(
                 options = Gender.entries,
+                text = stringResource(id = R.string.gender),
                 selectedOption = "${adminState.gender}"
             ) {
                 loginFormViewModel.updateGender(Gender.valueOf(it))

@@ -2,10 +2,10 @@ package com.example.clientadmin.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.utils.RetrofitHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,17 +29,15 @@ class HomeViewModel: ViewModel() {
     val moreSoldShorts = fetchMoreSoldProduct(ProductCategory.SHORTS)
 
     init {
-        viewModelScope.launch { // prove per capire come non fare 1000 chiamate
-            countNewOrders().collect { _newOrders.value = it }
-            countVariantsOutOfStock().collect { _variantsOutOfStock.value = it }
-        }
         countNewAccounts()
+        countNewOrders()
+        countVariantsOutOfStock()
     }
 
     private fun countNewAccounts() {
         Log.e("HomeViewModel", "countNewAccounts")
         try {
-            viewModelScope.launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.customerApi.countNewAccounts().awaitResponse()
                 if (response.isSuccessful) response.body()?.let { _newAccounts.value = it}
                 else println("Error fetching new accounts")
@@ -49,27 +47,32 @@ class HomeViewModel: ViewModel() {
         }
     }
 
-    private fun countNewOrders(): Flow<Long> = flow {
+    private fun countNewOrders() {
         Log.e("HomeViewModel", "countNewOrders")
         try {
-            val response = RetrofitHandler.ordersApi.countNewOrders().awaitResponse()
-            if (response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error fetching new orders")
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.ordersApi.countNewOrders().awaitResponse()
+                if (response.isSuccessful) response.body()?.let { _newOrders.value = it }
+                else println("Error fetching new orders")
+            }
         } catch (e: Exception) {
             println("Exception fetching new orders: ${e.message}")
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
-    private fun countVariantsOutOfStock(): Flow<Int> = flow {
+    private fun countVariantsOutOfStock() {
         Log.e("HomeViewModel", "countVariantsOutOfStock")
         try {
-            val response = RetrofitHandler.productVariantApi.countVariantsOutOfStock().awaitResponse()
-            if (response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error fetching products out of stock")
+            CoroutineScope(Dispatchers.IO).launch {
+                    val response =
+                        RetrofitHandler.productVariantApi.countVariantsOutOfStock().awaitResponse()
+                    if (response.isSuccessful) response.body()?.let { _variantsOutOfStock.value = it }
+                    else println("Error fetching products out of stock")
+            }
         } catch (e: Exception) {
             println("Exception fetching products out of stock: ${e.message}")
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     private fun fetchMoreSoldProduct(category: ProductCategory): Flow<List<Product>> = flow {
         try {
