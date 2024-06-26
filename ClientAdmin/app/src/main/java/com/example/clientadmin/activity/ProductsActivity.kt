@@ -40,21 +40,22 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.ProductViewModel
+import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 @Composable
 fun Products(
     navHostController: NavHostController,
-    productViewModel: ProductViewModel,
+    productsViewModel: ProductsViewModel,
     leagueViewModel: LeagueViewModel,
-    clubViewModel: ClubViewModel
+    clubViewModel: ClubViewModel,
+    filterFormViewModel: FilterFormViewModel
 ) {
-    val products by productViewModel.productSummaries.collectAsState()
+    val products by productsViewModel.productSummaries.collectAsState()
     val leagues by leagueViewModel.leagues.collectAsState()
     val clubs by clubViewModel.clubs.collectAsState()
 
-    val page by productViewModel.page.collectAsState()
+    val page by productsViewModel.page.collectAsState()
 
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
@@ -171,7 +172,7 @@ fun Products(
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
-                            ){productViewModel.incrementPage() }
+                            ){productsViewModel.incrementPage() }
                     )
             }
         }
@@ -181,19 +182,19 @@ fun Products(
         SearchByNameSheet(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
-            filterFormViewModel = FilterFormViewModel(),
+            filterFormViewModel = filterFormViewModel,
             filterType = filterType
         ){ leagueViewModel.setFilter(it) }
     else if (isOpenSheet)
         SearchPanelProducts(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
-            leaguesNames = leagueViewModel.leaguesNames,
-            filterFormViewModel = FilterFormViewModel(),
+            leagues = leagues.map { it.name },
+            filterFormViewModel = filterFormViewModel,
             filterType = filterType
         ){
             if (FilterType.PRODUCTS == filterType)
-                productViewModel.setFilter(it)
+                productsViewModel.setFilter(it)
             else
                 clubViewModel.setFilter(it)
         }

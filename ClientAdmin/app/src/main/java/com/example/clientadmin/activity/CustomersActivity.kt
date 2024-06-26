@@ -27,7 +27,7 @@ import com.example.clientadmin.viewmodels.CustomerViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 @Composable
-fun Users(navHostController: NavHostController, customerViewModel: CustomerViewModel) {
+fun Users(navHostController: NavHostController, customerViewModel: CustomerViewModel, filterFormViewModel: FilterFormViewModel) {
     val customers by customerViewModel.customerSummaries.collectAsState()
 
     val page by customerViewModel.page.collectAsState()
@@ -55,7 +55,7 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
             items(customers) {
                 customer ->
                 key(customer.id) {
-                    CustomerItem(customer = customer) { navHostController.navigate("user/${customer.toQueryString()}") }
+                    CustomerItem(customer = customer) { navHostController.navigate("user/${customer.id}") }
                 }
             }
 
@@ -71,7 +71,7 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
-                            ){customerViewModel.incrementPage() }
+                            ){ customerViewModel.incrementPage() }
                     )
             }
         }
@@ -82,6 +82,6 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
             filterType = FilterType.CUSTOMERS,
-            filterFormViewModel = FilterFormViewModel()
+            filterFormViewModel = filterFormViewModel
         ){ customerViewModel.setFilter(it) }
 }

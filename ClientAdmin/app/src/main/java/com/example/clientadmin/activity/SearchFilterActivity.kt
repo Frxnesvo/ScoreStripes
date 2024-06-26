@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.clientadmin.R
@@ -29,7 +30,7 @@ fun SearchByNameSheet(
     setBottomSheet: (Boolean) -> Unit,
     filterType: FilterType,
     filterFormViewModel: FilterFormViewModel,
-    onSearch: (Map<String, String>) -> Unit
+    onSearch: (Map<String, String>?) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -68,17 +69,20 @@ fun SearchByNameSheet(
 fun SearchPanelProducts(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
-    leaguesNames: StateFlow<List<String>>,
+    leagues: List<String>,
     filterType: FilterType,
     filterFormViewModel: FilterFormViewModel,
-    onSearch: (Map<String, String>) -> Unit
+    onSearch: (Map<String, String>?) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val filter by filterFormViewModel.filterState.collectAsState()
-    val leagues by leaguesNames.collectAsState()
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        containerColor = colorResource(id = R.color.white),
+    ) {
         Column(
             modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)

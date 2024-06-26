@@ -8,7 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,7 +39,11 @@ fun AddPanel(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest, 
+        sheetState = sheetState,
+        containerColor = colorResource(id = R.color.white),
+    ) {
         Column(
             modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -50,7 +53,7 @@ fun AddPanel(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        //TODO controllare che ci siano club
+
                         navHostController.navigate("addProduct")
                     }
                 }
@@ -87,7 +90,6 @@ fun LeagueDetails(
     navHostController: NavHostController
 ) {
     val leagueState by leagueFormViewModel.leagueState.collectAsState()
-    val error by leagueViewModel.addError
 
     Column(
         modifier = Modifier
@@ -113,13 +115,6 @@ fun LeagueDetails(
             keyboardType = KeyboardType.Text
         ){ leagueFormViewModel.updateName(it) }
 
-        if (error.isNotEmpty()) {
-            Text(
-                text = error,
-                color = colorResource(id = R.color.red)
-            )
-        }
-
         CustomButton(
             text = stringResource(id = R.string.create),
             background = if(leagueState.isNameError || leagueState.isImageError) R.color.black50 else  R.color.secondary
@@ -142,8 +137,7 @@ fun ClubDetails(
     navHostController: NavHostController
 ) {
     val clubState by clubFormViewModel.clubState.collectAsState()
-    val leagues by leagueViewModel.leaguesNames.collectAsState()
-    val error by clubViewModel.addError
+    val leagues by leagueViewModel.leagues.collectAsState()
 
     Column(
         modifier = Modifier
@@ -172,15 +166,8 @@ fun ClubDetails(
         CustomComboBox(
             options = leagues,
             expandable = leagues.isNotEmpty(),
-            selectedOption = if (leagues.isNotEmpty()) leagues[0] else ""
+            selectedOption = if (leagues.isNotEmpty()) leagues[0].name else ""
         ) { clubFormViewModel.updateLeague(it) }
-
-        if (error.isNotEmpty()) {
-            Text(
-                text = error,
-                color = colorResource(id = R.color.red)
-            )
-        }
 
         CustomButton( //todo fare l'update
             text = stringResource(id = R.string.create),

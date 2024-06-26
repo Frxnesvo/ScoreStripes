@@ -19,14 +19,15 @@ import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 
-class ProductViewModel: ViewModel() {
+class ProductsViewModel: ViewModel() {
     private val _page = MutableStateFlow(Page())
     val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
 
     private val _productSummaries = MutableStateFlow<List<ProductSummary>>(emptyList())
     val productSummaries: StateFlow<List<ProductSummary>> = _productSummaries
 
-    private var filters: Map<String, String>? = null
+    private var _filters: Map<String, String> = mapOf()
+
     init { loadMoreProductSummaries(_page.value.number) }
 
     fun incrementPage() {
@@ -35,8 +36,8 @@ class ProductViewModel: ViewModel() {
         }
     }
 
-    fun setFilter(filters: Map<String, String>) {
-        this.filters = filters
+    fun setFilter(filters: Map<String, String>?) {
+        _filters = filters ?: mapOf()
         _productSummaries.value = emptyList()
         _page.value = Page()
         loadMoreProductSummaries(_page.value.number)
@@ -55,7 +56,7 @@ class ProductViewModel: ViewModel() {
             val response = RetrofitHandler.productApi.getProductsSummary(
                 page = numberPage,
                 size = _page.value.size,
-                filters = filters
+                filters = _filters
             ).awaitResponse()
 
             if (response.isSuccessful) response.body()?.let { emit(it) }
