@@ -18,7 +18,7 @@ public class Personalization {
 
     public double getPrice() {
         double price = 0.0;
-        if (playerName != null) {
+        if (playerName != null && !playerName.isEmpty()) {
             price += PLAYER_NAME_PRICE;
         }
         if (playerNumber != null) {
