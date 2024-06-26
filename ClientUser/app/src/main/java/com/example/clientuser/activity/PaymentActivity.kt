@@ -42,6 +42,7 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
                         return super.shouldOverrideUrlLoading(view, request)
                     }
                 }
+                loadUrl(paymentUrl)
                 settings.javaScriptEnabled = true
                 settings.domStorageEnabled = true
                 settings.javaScriptCanOpenWindowsAutomatically = true
@@ -51,11 +52,11 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
                 settings.loadWithOverviewMode = true
             }
         },
-        update = { webView ->
-            if (paymentUrl.isNotEmpty()) {
-                webView.loadUrl(paymentUrl)
-            }
-        },
+//        update = { webView ->
+//            if (paymentUrl.isNotEmpty()) {
+//                webView.loadUrl(paymentUrl)
+//            }
+//        },
         modifier = Modifier.fillMaxSize()
     )
 }

@@ -1,5 +1,7 @@
 package com.example.clientuser.model
 
+//TODO fare jsonClass
+
 class Personalization(
     val playerName: String?,
     val playerNumber: Int?
