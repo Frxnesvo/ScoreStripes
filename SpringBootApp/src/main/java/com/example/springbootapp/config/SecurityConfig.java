@@ -31,9 +31,15 @@ public class SecurityConfig{
         http.csrf(AbstractHttpConfigurer::disable);   //disabilita CSRF perchè non usiamo sessioni
 
         http.authorizeHttpRequests((authorize) -> authorize
+                .requestMatchers("/api/v1/auth/logout").authenticated()
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/stripe_success").permitAll()
                 .requestMatchers("/stripe_cancel").permitAll()
+                .requestMatchers("/api/v1/carts/**").hasRole("CUSTOMER") //per come ho strutturato gli endpoint, solo i customer possono fare operazioni sul proprio carrello.
+                .requestMatchers("/api/v1/clubs/**").permitAll()
+                .requestMatchers("/api/v1/leagues/**").permitAll()
+                .requestMatchers("/api/v1/orders/validate-transaction").permitAll()
+                .requestMatchers("/api/v1/products/**").permitAll()
                 .anyRequest().authenticated()
         );
         http.exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint));

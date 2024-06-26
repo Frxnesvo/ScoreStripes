@@ -88,4 +88,13 @@ public class JwtHandler {
         }
         return null;
     }
+
+    public String getRoleFromJwt(String token){
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return signedJWT.getJWTClaimsSet().getStringClaim("role");
+        } catch (ParseException e) {
+            throw new RuntimeException("Invalid token");  //TODO: cambiare eccezione con una custom
+        }
+    }
 }
