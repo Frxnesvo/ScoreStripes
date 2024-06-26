@@ -19,10 +19,12 @@ class CustomerViewModel : ViewModel() {
     private val _page = MutableStateFlow(Page())
     val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
 
-    private var filters: Map<String, String>? = null
+    private var _filters: Map<String, String> = mapOf()
 
     private val _customerSummaries = MutableStateFlow<List<CustomerSummary>>(emptyList())
     val customerSummaries: StateFlow<List<CustomerSummary>> = _customerSummaries
+
+    init { loadMoreCustomerSummaries(_page.value.number) }
 
     fun incrementPage() {
         if (!_page.value.last) {
@@ -30,8 +32,8 @@ class CustomerViewModel : ViewModel() {
         }
     }
 
-    fun setFilter(filters: Map<String, String>) {
-        this.filters = filters
+    fun setFilter(filters: Map<String, String>?) {
+        this._filters = filters ?: mapOf()
         _customerSummaries.value = emptyList()
         _page.value = Page()
         loadMoreCustomerSummaries(_page.value.number)
@@ -52,7 +54,7 @@ class CustomerViewModel : ViewModel() {
                 .getCustomersSummary(
                     page = numberPage,
                     size = _page.value.size,
-                    filters = filters
+                    filters = _filters
                 )
                 .awaitResponse()
 

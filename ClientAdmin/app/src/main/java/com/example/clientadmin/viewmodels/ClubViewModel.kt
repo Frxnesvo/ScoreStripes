@@ -1,7 +1,6 @@
 package com.example.clientadmin.viewmodels
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.dto.ClubCreateRequestDto
@@ -17,34 +16,27 @@ import okhttp3.MultipartBody
 import retrofit2.awaitResponse
 
 class ClubViewModel : ViewModel() {
-    private val _clubNames = MutableStateFlow<List<String>>(emptyList())
     private val _clubs = MutableStateFlow<List<Club>>(emptyList())
-
     val clubs: StateFlow<List<Club>> = _clubs
-    val clubNames: StateFlow<List<String>> = _clubNames
-
-    private var filter: Map<String, String?> = emptyMap()
-
-    private val _addError =  mutableStateOf("")
-    val addError = _addError
 
     init { fetchClubs() }
 
-    fun setFilter(filter: Map<String, String?>) {
-        this.filter = filter
-        _clubNames.value = emptyList()
-        _clubs.value = emptyList()
-        fetchClubs()
+    fun setFilter(filter: Map<String, String>?) {
+        if (filter != null) {
+            _clubs.value = _clubs.value.filter {
+                it.name.contains(filter["name"] ?: "", ignoreCase = true) &&
+                it.league.contains(filter["league"] ?: "", ignoreCase = true)
+            }
+        } else fetchClubs()
     }
 
-    private fun fetchClubs() { //todo settare i filtri
+    private fun fetchClubs() {
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.getClubNames().awaitResponse()
                 if (response.isSuccessful) {
                     response.body()?.let {clubs ->
                         _clubs.value = clubs.map { Club.fromDto(it) }
-                        _clubNames.value = clubs.map { it.name }
                     }
                 } else println(response.message())
             }
@@ -54,8 +46,8 @@ class ClubViewModel : ViewModel() {
     }
 
     fun addClub(clubCreateRequestDto: ClubCreateRequestDto, pic: Bitmap): Boolean{
+        var returnValue = false
         try {
-            Club(name = clubCreateRequestDto.name, league = clubCreateRequestDto.league, pic = pic)
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.createClub(
                     name = MultipartBody.Part.createFormData("name", clubCreateRequestDto.name),
@@ -63,18 +55,18 @@ class ClubViewModel : ViewModel() {
                     pic = ConverterBitmap.convert(bitmap = pic, fieldName = "pic")
                 ).awaitResponse()
 
-                if (response.isSuccessful)
+                if (response.isSuccessful) {
                     response.body()?.let { club ->
                         _clubs.value += Club.fromDto(club)
-                        _clubNames.value += club.name
                     }
+                    returnValue = true
+                }
                 else ToastManager.show(response.message())
             }
-            return true
+            return returnValue
         }
-        catch (e: IllegalArgumentException) {
-            _addError.value = e.message ?: "Unknown error"
-            return false
+        catch (e: Exception) {
+            return returnValue
         }
     }
 }

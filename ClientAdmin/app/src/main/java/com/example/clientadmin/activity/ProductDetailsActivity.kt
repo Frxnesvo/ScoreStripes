@@ -28,7 +28,7 @@ import com.example.clientadmin.model.dto.ProductCreateRequestDto
 import com.example.clientadmin.model.dto.ProductUpdateRequestDto
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductState
-import com.example.clientadmin.viewmodels.ProductViewModel
+import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
@@ -36,14 +36,14 @@ import com.example.clientadmin.viewmodels.ClubViewModel
 
 @Composable
 fun ProductDetails(
-    productViewModel: ProductViewModel,
+    productsViewModel: ProductsViewModel,
     productFormViewModel: ProductFormViewModel,
     clubViewModel: ClubViewModel,
     navHostController: NavHostController,
     id: String? = null
 ){
     val productState by productFormViewModel.productState.collectAsState()
-    val clubs by clubViewModel.clubNames.collectAsState()
+    val clubs by clubViewModel.clubs.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -79,9 +79,8 @@ fun ProductDetails(
             ){ productFormViewModel.updateName(it) }
 
             CustomComboBox(
-                options = clubs,
-                expandable = clubs.isNotEmpty(),
-                selectedOption = if (clubs.isNotEmpty()) clubs[0] else ""
+                options = clubs.map { it.name },
+                selectedOption = if(productState.club.isEmpty()) productState.club else clubs[0].name,
             ){ productFormViewModel.updateClub(it) }
 
             CustomComboBox(
@@ -152,10 +151,9 @@ fun ProductDetails(
         ) {
             if (!productState.isPicPrincipalError && !productState.isPicSecondaryError && !productState.isNameError && !productState.isBrandError && !productState.isDescriptionError && !productState.isPriceError)
                 if (id == null) {
-                    val club = if(productState.club != "") productState.club else clubs[0]
                     val productRequestDto = ProductCreateRequestDto(
                         name = productState.name,
-                        club = club,
+                        club = productState.club,
                         brand = productState.brand,
                         gender = productState.gender,
                         category = productState.productCategory,
@@ -163,7 +161,7 @@ fun ProductDetails(
                         price = productState.price ?: 0.0,
                         variants = productState.variants
                     )
-                    if (productViewModel.addProduct(productRequestDto, productState.pic1!!, productState.pic2!!))
+                    if (productsViewModel.addProduct(productRequestDto, productState.pic1!!, productState.pic2!!))
                         navHostController.navigate("home")
                 } else {
                     val productUpdateRequestDto = ProductUpdateRequestDto(
@@ -171,7 +169,7 @@ fun ProductDetails(
                         price = productState.price ?: 0.0,
                         variants = productState.variants,
                     )
-                    productViewModel.updateProduct(id, productUpdateRequestDto, productState.pic1!!, productState.pic2!!)
+                    productsViewModel.updateProduct(id, productUpdateRequestDto, productState.pic1!!, productState.pic2!!)
                 }
         }
     }

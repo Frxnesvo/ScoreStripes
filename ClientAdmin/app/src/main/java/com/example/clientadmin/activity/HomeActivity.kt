@@ -39,9 +39,10 @@ import com.example.clientadmin.viewmodels.HomeViewModel
 
 @Composable
 fun Home(selectedScreen: MutableState<Screen>, homeViewModel: HomeViewModel, navHostController: NavHostController) {
-    val numNewOrders by homeViewModel.newOrders.collectAsState(initial = 0)
-    val numProductOutOfStoke by homeViewModel.variantsOutOfStock.collectAsState(initial = 0)
-    val numNewUser by homeViewModel.newAccounts.collectAsState(initial = 0)
+    val numNewOrders by homeViewModel.newOrders.collectAsState()
+    val numProductOutOfStoke by homeViewModel.variantsOutOfStock.collectAsState()
+    val numNewUser by homeViewModel.newAccounts.collectAsState()
+
     val bestSellerJersey by homeViewModel.moreSoldJersey.collectAsState(initial = emptyList())
     val bestSellerShorts by homeViewModel.moreSoldShorts.collectAsState(initial = emptyList())
 

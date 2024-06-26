@@ -46,15 +46,17 @@ import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.CustomerSummary
 import com.example.clientadmin.model.League
+import com.example.clientadmin.utils.ToastManager
 import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
-import com.example.clientadmin.viewmodels.ProductViewModel
+import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
 import com.example.clientadmin.viewmodels.HomeViewModel
 import com.example.clientadmin.viewmodels.LoginViewModel
+import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
@@ -85,7 +87,7 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
                         NavigationScaffold(
                             navHostController = navController,
                             customerViewModel = CustomerViewModel(),
-                            productViewModel = ProductViewModel(),
+                            productsViewModel = ProductsViewModel(),
                             clubViewModel = ClubViewModel(),
                             leagueViewModel = LeagueViewModel(),
                             homeViewModel = HomeViewModel(),
@@ -177,7 +179,7 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
         if (imageVector != null)
             Icon(
                 imageVector = imageVector,
-                contentDescription = "buttonIcon",
+                contentDescription = null,
                 tint = colorResource(id = indexColor)
             )
         else
@@ -194,7 +196,7 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
 fun NavigationScaffold(
     navHostController: NavHostController,
     customerViewModel: CustomerViewModel,
-    productViewModel: ProductViewModel,
+    productsViewModel: ProductsViewModel,
     clubViewModel: ClubViewModel,
     leagueViewModel: LeagueViewModel,
     homeViewModel: HomeViewModel,
@@ -217,16 +219,16 @@ fun NavigationScaffold(
         composable(
             route = "users"
         ){
-            Users(navHostController = navHostController, customerViewModel = customerViewModel)
+            Users(navHostController = navHostController, customerViewModel = customerViewModel, filterFormViewModel = FilterFormViewModel())
         }
         composable(
-            route = "user/{costumer}",
-            arguments = listOf(navArgument("costumer"){ type = NavType.StringType })
+            route = "user/{id}",
+            arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
-            it.arguments?.getString("costumer")?.let {
-                customerString ->
-                val customerSummary = CustomerSummary.fromQueryString(customerString)
-                CustomerProfile(customerSummary = customerSummary, navHostController = navHostController)
+            it.arguments?.getString("id")?.let {
+                id -> customerViewModel.customerSummaries.collectAsState().value.find { customer -> customer.id == id }?.let {
+                    customerSummary -> CustomerProfile(customerSummary = customerSummary, navHostController = navHostController)
+                }
             }
         }
         composable(
@@ -268,7 +270,14 @@ fun NavigationScaffold(
         composable(
             route = "addProduct"
         ){
-            ProductDetails(productViewModel = productViewModel, clubViewModel = clubViewModel, productFormViewModel = ProductFormViewModel(), navHostController = navHostController)
+            if (clubViewModel.clubs.collectAsState().value.isNotEmpty()) {
+                ProductDetails(
+                    productsViewModel = productsViewModel,
+                    clubViewModel = clubViewModel,
+                    productFormViewModel = ProductFormViewModel(),
+                    navHostController = navHostController
+                )
+            } else ToastManager.show("You need to add a club first")
         }
         composable(
             route = "addLeague"
@@ -278,23 +287,30 @@ fun NavigationScaffold(
         composable(
             route = "addTeam"
         ){
-            ClubDetails(leagueViewModel = leagueViewModel, clubViewModel = clubViewModel, clubFormViewModel = ClubFormViewModel(), navHostController = navHostController)
+            if (leagueViewModel.leagues.collectAsState().value.isNotEmpty()) {
+                ClubDetails(
+                    leagueViewModel = leagueViewModel,
+                    clubViewModel = clubViewModel,
+                    clubFormViewModel = ClubFormViewModel(),
+                    navHostController = navHostController
+                )
+            } else ToastManager.show("You need to add a league first")
         }
 
         //PRODUCTS
         composable(
             route = "products"
         ){
-            Products(navHostController = navHostController, productViewModel = productViewModel, leagueViewModel = leagueViewModel, clubViewModel = clubViewModel)
+            Products(navHostController = navHostController, productsViewModel = productsViewModel, leagueViewModel = leagueViewModel, clubViewModel = clubViewModel, filterFormViewModel = FilterFormViewModel())
         }
         composable(
             route= "product/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
-                id -> productViewModel.getProduct(id).collectAsState(initial = null).value?.let {
+                id -> productsViewModel.getProduct(id).collectAsState(initial = null).value?.let {
                     product-> ProductDetails(
-                        productViewModel = productViewModel,
+                        productsViewModel = productsViewModel,
                         clubViewModel = clubViewModel,
                         productFormViewModel = ProductFormViewModel(product = product),
                         navHostController = navHostController,
