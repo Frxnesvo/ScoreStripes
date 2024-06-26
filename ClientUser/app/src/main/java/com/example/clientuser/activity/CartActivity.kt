@@ -1,8 +1,10 @@
 package com.example.clientuser.activity
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,19 +24,24 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.CartItem
@@ -54,18 +61,34 @@ fun Cart(
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val selectedAddress = remember { mutableStateOf("") }
     val showWebView = remember { mutableStateOf(false) }
+    val webViewLink by orderViewModel.createdOrderWebViewLink
+
+
 
     val myCart = cartViewModel.cart.collectAsState()
 
-    println("CART: $myCart")
+    println("CART: ${myCart.value}")
 
-    if (showWebView.value) {
-        orderViewModel
-            .createCartOrder(OrderInfoDto(selectedAddress.value))
-            .collectAsState(initial = mapOf()).value["url"]?.let {
-            url -> WebViewScreen(url, navHostController) {
-                showWebView.value = false
-            }
+//    if (showWebView.value) {
+//        orderViewModel
+//            .createCartOrder(OrderInfoDto(selectedAddress.value))
+//            .collectAsState(initial = mapOf()).value["url"]?.let {
+//            url ->
+//                //TODO svuotare il cart
+//                //cartViewModel.clearCart()
+//
+//                WebViewScreen(url, navHostController) {
+//                    showWebView.value = false//messo qui genera order all'infinito
+//                }
+//
+//        }
+    if(showWebView.value && webViewLink.isNotEmpty()){
+        println("URL: $webViewLink")
+        WebViewScreen(
+            paymentUrl = webViewLink,
+            navController = navHostController
+        ) {
+            showWebView.value = false
         }
     } else {
         LazyColumn(
@@ -93,13 +116,6 @@ fun Cart(
 
             items(myCart.value.values.toList()){
                 key(it.id) {
-                    ItemCart(
-                        cartItem = it,
-                        cartViewModel = cartViewModel)
-                }
-            }
-            items(myCart.value.values.toList()){
-                key(it.id) {
                     SwipeToDismissItem(
                         item = it,
                         cartViewModel = cartViewModel
@@ -118,8 +134,10 @@ fun Cart(
             customerViewModel = customerViewModel
         ) {
             selectedAddress.value = it
-            if (selectedAddress.value != "")
+            if (selectedAddress.value != "") {
+                orderViewModel.createCartOrder(OrderInfoDto(selectedAddress.value))
                 showWebView.value = true
+            }
         }
 }
 
@@ -173,19 +191,38 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Clear,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.secondary),
-                        modifier = Modifier.clickable {
-                            cartViewModel.updateItemCartQuantity(
-                                itemId = cartItem.id,
-                                updateCartItemDto = UpdateCartItemDto(
-                                    quantity = cartItem.quantity - 1
-                                )
+
+
+                    //TODO centrare il testo "-". non ho trovato una icona con -
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .background(
+                                colorResource(id = R.color.secondary),
+                                RoundedCornerShape(30.dp)
                             )
-                        }
-                    )
+                            .clickable {
+                                cartViewModel.updateItemCartQuantity(
+                                    itemId = cartItem.id,
+                                    updateCartItemDto = UpdateCartItemDto(
+                                        quantity = cartItem.quantity - 1
+                                    )
+                                )
+                            }
+                            .size(20.dp),
+                    ){
+                        Text(
+                            textAlign = TextAlign.Center ,
+                            text = "-",
+                            style = TextStyle(
+                                color = colorResource(id = R.color.primary),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                        )
+                    }
+
+
                     Text(
                         text = "${cartItem.quantity}",
                         textAlign = TextAlign.Center,

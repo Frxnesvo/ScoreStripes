@@ -239,10 +239,12 @@ fun ChooseAddress(
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
+
             addresses.forEach {address ->
                 Row(
                     modifier = Modifier

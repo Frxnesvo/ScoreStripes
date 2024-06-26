@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +40,7 @@ fun Wishlist(
     wishListViewModel: WishListViewModel
 ){
     val sharedLists = wishListViewModel.sharedWithMeWishlists
-    val myWishlist = wishListViewModel.myWishList
+    val myWishlist by wishListViewModel.myWishList
     val (isOpenTokenSheet, setTokenBottomSheet) = remember { mutableStateOf(false) }
 
     val wishlistToAddToken = StringBuilder("")
@@ -63,11 +64,11 @@ fun Wishlist(
             ) { navHostController.navigate("discoverWishlist") }
         }
 
-        item{
-            BoxImage(
-                boxTitle = stringResource(id = R.string.my_wishlist),
-                painter = painterResource(id = R.drawable.collection) //TODO trovare un'immagine più adatta
-            ){ navHostController.navigate("myWishlist") }
+        //TODO inserire la riga My wishlist
+        if(myWishlist.items.isNotEmpty()) {
+            item {
+                WishListItem(myWishlist) { navHostController.navigate("sharedWishlistProducts/${myWishlist.id}") }
+            }
         }
 
         item {
@@ -167,6 +168,8 @@ fun WishListItem(wishlist: Wishlist, onClick: () -> Unit) {
     }
 }
 
+
+//todo da inserire
 @Preview(showBackground = true)
 @Composable
 fun Preview(){
