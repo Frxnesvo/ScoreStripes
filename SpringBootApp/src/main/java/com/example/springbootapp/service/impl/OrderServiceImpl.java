@@ -21,10 +21,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,16 +104,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     public String validateOrder (String sessionId) {        //TODO: forse voglio ritornare un dto
         try {
+            if(sessionId == null) {
+                throw new RequestValidationException("SessionId is null");
+            }
             String orderId = paymentHandler.getOrderIdFromSession(sessionId);
             Order order = orderDao.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found"));
             order.getItems().forEach(orderItem -> {
                 if(orderItem.getProduct().getAvailability() < orderItem.getQuantity()) {
                     order.setStatus(OrderStatus.CANCELLED);
                     orderDao.save(order);
-                    throw new RequestValidationException("One or more products are out of stock"); //TODO: cambiare eccezione
+                    throw new RequestValidationException("One or more products are out of stock"); //TODO: andrebbe gestito un possibile rimborso
                 }
             });
             if (paymentHandler.checkTransactionStatus(sessionId)) {
@@ -122,35 +126,42 @@ public class OrderServiceImpl implements OrderService {
                     productWithVariantDao.save(product);
                 });
                 orderDao.save(order);
-                EmailInfosDto emailInfos = new EmailInfosDto();          //TODO: maybe potrei usare il modelMapper per fare il mapping
-                emailInfos.setTo(order.getResilientInfos().getCustomerEmail());
-                emailInfos.setName(order.getResilientInfos().getCustomerFirstName());
-                emailInfos.setOrderId(order.getId());
-                emailInfos.setTotalCost(order.getTotalPrice());
-                emailInfos.setOrderDate(order.getDate().toString());
-                emailService.sendOrderConfirmationEmail(emailInfos);
-                return "Order paid";
+                sendOrderConfirmationEmailAsync(order);
+                return OrderStatus.COMPLETED.name();
             }
             else {
                 order.setStatus(OrderStatus.CANCELLED);
                 orderDao.save(order);
-                return "Order cancelled";
+                return OrderStatus.CANCELLED.name();
             }
         } catch (StripeException e) {
             throw new StripeSessionException(e.getMessage());
-        } catch (MessagingException e) {
-            throw new EmailMessagingException("Error sending email");
         }
     }
 
     private OrderDto convertToDto(Order order) {
-        //initialize the lazy loading fields
         Hibernate.initialize(order.getItems());
         order.getItems().forEach(item -> {
             Hibernate.initialize(item.getProduct().getProduct().getClub());
             Hibernate.initialize(item.getProduct().getProduct().getPics());
         });
-
         return modelMapper.map(order, OrderDto.class);
+    }
+
+    @Async
+    protected CompletableFuture<Void> sendOrderConfirmationEmailAsync(Order order) {
+        EmailInfosDto emailInfos = new EmailInfosDto();
+        emailInfos.setTo(order.getResilientInfos().getCustomerEmail());
+        emailInfos.setName(order.getResilientInfos().getCustomerFirstName());
+        emailInfos.setOrderId(order.getId());
+        emailInfos.setTotalCost(order.getTotalPrice());
+        emailInfos.setOrderDate(order.getDate().toString());
+        try {
+            emailService.sendOrderConfirmationEmail(emailInfos);
+        } catch (MessagingException e) {
+            System.out.println("Error sending email");
+            throw new EmailMessagingException("Error sending email");
+        }
+        return CompletableFuture.completedFuture(null);
     }
 }

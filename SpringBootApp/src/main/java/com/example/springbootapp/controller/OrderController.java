@@ -31,7 +31,7 @@ public class OrderController {
             return ResponseEntity.ok(Map.of("url", orderService.createOrderFromCart(orderInfos)));
     }
 
-    @PostMapping("/validate-transaction")   //non lo proteggo poichè viene chiamato dal server stesso. Non è un endpoint pericoloso se messo pubblico
+    @PostMapping("/validate-transaction")
     public ResponseEntity<String> validateTransaction(@RequestParam String sessionId) {
         return ResponseEntity.ok(orderService.validateOrder(sessionId));
     }
