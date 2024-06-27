@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -17,12 +18,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientadmin.LocalCustomerViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.dto.AddressDto
 
 @Composable
-fun List(items: List<Any>, navHostController: NavHostController){
+fun List(isAddresses: Boolean, navHostController: NavHostController){
+    val items = when(isAddresses){
+        true -> LocalCustomerViewModel.current.customerAddresses.collectAsState().value
+        false -> LocalCustomerViewModel.current.customerOrders.collectAsState().value
+    }
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp)

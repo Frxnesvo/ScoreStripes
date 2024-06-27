@@ -65,34 +65,4 @@ class CustomersViewModel : ViewModel() {
             println("Exception fetching customer summaries: ${e.message}")
         }
     }.flowOn(Dispatchers.IO)
-
-    fun getCustomerDetails(id: String): Flow<CustomerProfileDto> = flow {
-        try {
-            val response = RetrofitHandler.customerApi.getCustomerProfile(id).awaitResponse()
-            if (response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error fetching customer details: ${response.message()}")
-        } catch (e: Exception) {
-            println("Exception fetching customer details: ${e.message}")
-        }
-    }.flowOn(Dispatchers.IO)
-
-    fun getCustomerAddresses(id: String): Flow<List<AddressDto>> = flow {
-        try {
-            val response = RetrofitHandler.customerApi.getCustomerAddresses(id).awaitResponse()
-            if (response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error fetching customer addresses: ${response.message()}")
-        } catch (e: Exception) {
-            println("Exception fetching customer addresses: ${e.message}")
-        }
-    }.flowOn(Dispatchers.IO)
-
-    fun getCustomerOrders(id: String): Flow<List<Order>> = flow {
-        try {
-            val response = RetrofitHandler.customerApi.getCustomerOrders(id).awaitResponse()
-            if (response.isSuccessful) response.body()?.let { orders -> emit(orders.map{ Order.fromDto(it) }) }
-            else println("Error fetching customer orders: ${response.message()}")
-        } catch (e: Exception) {
-            println("Exception fetching customer orders: ${e.message}")
-        }
-    }.flowOn(Dispatchers.IO)
 }

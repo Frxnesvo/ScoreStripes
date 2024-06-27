@@ -20,9 +20,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.clientadmin.LocalClubViewModel
+import com.example.clientadmin.LocalLeagueViewModel
 import com.example.clientadmin.R
-import com.example.clientadmin.model.dto.ClubCreateRequestDto
-import com.example.clientadmin.model.dto.LeagueCreateRequestDto
 import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
@@ -84,10 +84,11 @@ fun AddPanel(
 
 @Composable
 fun LeagueDetails(
-    leagueViewModel: LeagueViewModel,
     leagueFormViewModel: LeagueFormViewModel,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    isAdd: Boolean
 ) {
+    val leagueViewModel = LocalLeagueViewModel.current
     val leagueState by leagueFormViewModel.leagueState.collectAsState()
 
     Column(
@@ -119,9 +120,12 @@ fun LeagueDetails(
             background = if(leagueState.isNameError || leagueState.isImageError) R.color.black50 else  R.color.secondary
         ) {
             if (!leagueState.isNameError && !leagueState.isImageError) {
-                val leagueCreateRequestDto = LeagueCreateRequestDto(leagueState.name)
-                if (leagueViewModel.addLeague(leagueCreateRequestDto, leagueState.image!!)) {
-                    navHostController.navigate("home")
+                if (isAdd){
+                    if (leagueViewModel.addLeague(leagueState.name, leagueState.image!!))
+                        navHostController.navigate("home")
+                } else {
+                    if (leagueViewModel.updateLeague(leagueState.name, leagueState.image!!))
+                        navHostController.navigate("home")
                 }
             }
         }
@@ -130,13 +134,13 @@ fun LeagueDetails(
 
 @Composable
 fun ClubDetails(
-    leagueViewModel: LeagueViewModel,
-    clubViewModel: ClubViewModel,
     clubFormViewModel: ClubFormViewModel,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    isAdd: Boolean
 ) {
+    val clubViewModel = LocalClubViewModel.current
     val clubState by clubFormViewModel.clubState.collectAsState()
-    val leagues by leagueViewModel.leagues.collectAsState()
+    val leagues by LocalLeagueViewModel.current.leagues.collectAsState()
 
     Column(
         modifier = Modifier
@@ -168,15 +172,21 @@ fun ClubDetails(
             selectedOption = if (leagues.isNotEmpty()) leagues[0].name else ""
         ) { clubFormViewModel.updateLeague(it) }
 
-        CustomButton( //todo fare l'update
-            text = stringResource(id = R.string.create),
+        CustomButton(
+            text = stringResource(id = if (isAdd) R.string.create else R.string.update),
             background = if(clubState.isImageError || clubState.isNameError) R.color.black50 else R.color.secondary
         ) {
             if (!clubState.isImageError && !clubState.isNameError) {
-                val clubCreateRequestDto = ClubCreateRequestDto(clubState.name, clubState.league)
-                if (clubViewModel.addClub(clubCreateRequestDto, clubState.image!!)) {
-                    navHostController.navigate("home")
+                if (isAdd) {
+                    if (clubViewModel.addClub(clubState.name, clubState.league, clubState.image!!)) {
+                        navHostController.navigate("home")
+                    }
+                } else {
+                    if (clubViewModel.updateClub(clubState.name, clubState.league, clubState.image!!)) {
+                        navHostController.navigate("home")
+                    }
                 }
+
             }
         }
     }

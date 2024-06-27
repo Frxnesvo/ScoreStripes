@@ -28,7 +28,6 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -150,8 +149,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             ) { onClick() },
-        shape = RoundedCornerShape(30.dp),
-        elevation = CardDefaults.cardElevation(2.dp)
+        shape = RoundedCornerShape(30.dp)
     )
     {
         Box{
@@ -198,9 +196,16 @@ fun CustomComboBox(
             }
         ) {
             OutlinedTextField(
+                enabled = !readOnly,
                 value = selectedOption,
                 onValueChange = {},
-                label = { Text(text = text) },
+                label = {
+                    Text(
+                        text = text,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
                 readOnly = readOnly,
                 modifier = Modifier
@@ -213,7 +218,8 @@ fun CustomComboBox(
                     unfocusedTextColor = colorResource(id = R.color.black),
                     focusedBorderColor = colorResource(id = R.color.secondary),
                     unfocusedBorderColor = colorResource(id = R.color.white),
-                    errorContainerColor = colorResource(id = R.color.secondary50),
+                    focusedLabelColor = colorResource(id = R.color.secondary),
+                    unfocusedLabelColor = colorResource(id = R.color.black),
                     cursorColor = Color.Transparent
                 )
             )
@@ -356,6 +362,7 @@ fun CustomTextField(
 
     Column {
         OutlinedTextField(
+            enabled = !readOnly,
             readOnly = readOnly,
             value = value,
             onValueChange = onValueChange,

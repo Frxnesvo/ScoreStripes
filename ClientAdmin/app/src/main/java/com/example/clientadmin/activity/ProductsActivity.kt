@@ -37,22 +37,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clientadmin.model.enumerator.FilterType
 import androidx.navigation.NavHostController
+import com.example.clientadmin.LocalClubViewModel
+import com.example.clientadmin.LocalLeagueViewModel
+import com.example.clientadmin.LocalProductViewModel
+import com.example.clientadmin.LocalProductsViewModel
 import com.example.clientadmin.R
-import com.example.clientadmin.viewmodels.ClubViewModel
-import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
-import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 @Composable
 fun Products(
     navHostController: NavHostController,
-    productsViewModel: ProductsViewModel,
-    productViewModel: ProductViewModel,
-    leagueViewModel: LeagueViewModel,
-    clubViewModel: ClubViewModel,
     filterFormViewModel: FilterFormViewModel
 ) {
+    val productsViewModel = LocalProductsViewModel.current
+    val leagueViewModel = LocalLeagueViewModel.current
+    val clubViewModel = LocalClubViewModel.current
+    val productViewModel = LocalProductViewModel.current
+
     val products by productsViewModel.productSummaries.collectAsState()
     val leagues by leagueViewModel.leagues.collectAsState()
     val clubs by clubViewModel.clubs.collectAsState()

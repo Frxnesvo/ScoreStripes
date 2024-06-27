@@ -23,25 +23,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientadmin.LocalClubViewModel
+import com.example.clientadmin.LocalProductViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductState
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
-import com.example.clientadmin.viewmodels.ClubViewModel
-import com.example.clientadmin.viewmodels.ProductViewModel
 
 @Composable
 fun ProductDetails(
-    clubViewModel: ClubViewModel,
     navHostController: NavHostController,
-    productViewModel: ProductViewModel,
     productFormViewModel: ProductFormViewModel,
     id: String? = null
 ){
+    val productViewModel = LocalProductViewModel.current
+
     val productState by productFormViewModel.productState.collectAsState()
-    val clubs by clubViewModel.clubs.collectAsState()
+    val clubs by LocalClubViewModel.current.clubs.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),

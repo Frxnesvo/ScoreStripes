@@ -115,7 +115,7 @@ fun ProductOrderItem(orderItem: Order.OrderItem) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            bitmap = orderItem.product.product.pic1.asImageBitmap(),
+            bitmap = orderItem.product.basicProduct.pic.asImageBitmap(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -123,7 +123,7 @@ fun ProductOrderItem(orderItem: Order.OrderItem) {
                 .clip(RoundedCornerShape(10.dp))
         )
         Text(
-            text = orderItem.product.product.name,
+            text = orderItem.product.basicProduct.name,
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Light)
         )

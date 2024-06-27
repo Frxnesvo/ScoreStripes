@@ -5,8 +5,10 @@ import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface LeagueApiService {
     @Multipart
@@ -19,6 +21,10 @@ interface LeagueApiService {
     @GET("/api/v1/leagues")
     fun getLeagues() : Call<List<LeagueDto>>
 
-//    @GET("/api/v1/leagues/names")
-//    fun getLeagueNames(): Call<List<String>>
+    @Multipart
+    @PATCH("/api/v1/leagues/{name}")
+    fun updateLeague(
+        @Path("name") name: String,
+        @Part pic: MultipartBody.Part
+    ): Call<LeagueDto>
 }

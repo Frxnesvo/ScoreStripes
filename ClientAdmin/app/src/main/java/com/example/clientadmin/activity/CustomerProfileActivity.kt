@@ -24,11 +24,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientadmin.LocalCustomerViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.model.CustomerSummary
+import com.example.clientadmin.viewmodels.CustomerViewModel
 
 @Composable
-fun CustomerProfile(customerSummary: CustomerSummary, navHostController: NavHostController){
+fun CustomerProfile(
+    customerSummary: CustomerSummary,
+    navHostController: NavHostController
+){
+    val customerViewModel = LocalCustomerViewModel.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,7 +44,7 @@ fun CustomerProfile(customerSummary: CustomerSummary, navHostController: NavHost
     ) {
         Back { navHostController.popBackStack() }
 
-        BoxProfilePic(name = customerSummary.username, pic = customerSummary.pic)
+        BoxProfilePic(pic = customerSummary.pic)
 
         Text(
             text = customerSummary.username,
@@ -49,22 +55,31 @@ fun CustomerProfile(customerSummary: CustomerSummary, navHostController: NavHost
         BoxImage(
             boxTitle = stringResource(id =R.string.list_orders),
             painter = painterResource(id = R.drawable.colombia)
-        ){ navHostController.navigate("userOrders/${customerSummary.id}") }
+        ){
+            customerViewModel.getCustomerOrders(customerSummary.id)
+            navHostController.navigate("userOrders")
+        }
 
         BoxImage(
             boxTitle = stringResource(id =R.string.personal_data),
             painter = painterResource(id = R.drawable.match)
-        ){ navHostController.navigate("userDetails/${customerSummary.id}") }
+        ){
+            customerViewModel.getCustomerDetails(customerSummary.id)
+            navHostController.navigate("userDetails")
+        }
 
         BoxImage(
             boxTitle = stringResource(id =R.string.list_addresses),
             painter = painterResource(id = R.drawable.united)
-        ){ navHostController.navigate("userAddresses/${customerSummary.id}") }
+        ){
+            customerViewModel.getCustomerAddresses(customerSummary.id)
+            navHostController.navigate("userAddresses")
+        }
     }
 }
 
 @Composable
-fun BoxProfilePic(name: String, pic: Bitmap){
+fun BoxProfilePic(pic: Bitmap){
 //    if (pic == Uri.EMPTY)
 //        Box(
 //            modifier = modifier

@@ -3,7 +3,6 @@ package com.example.clientadmin.viewmodels
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Club
-import com.example.clientadmin.model.dto.ClubCreateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.utils.ToastManager
@@ -33,7 +32,7 @@ class ClubViewModel : ViewModel() {
     private fun fetchClubs() {
         try {
             CoroutineScope(Dispatchers.IO).launch {
-                val response = RetrofitHandler.clubApi.getClubNames().awaitResponse()
+                val response = RetrofitHandler.clubApi.getClubs().awaitResponse()
                 if (response.isSuccessful) {
                     response.body()?.let {clubs ->
                         _clubs.value = clubs.map { Club.fromDto(it) }
@@ -45,13 +44,12 @@ class ClubViewModel : ViewModel() {
         }
     }
 
-    fun addClub(clubCreateRequestDto: ClubCreateRequestDto, pic: Bitmap): Boolean{
-        var returnValue = false
-        try {
+    fun addClub(name: String, league: String, pic: Bitmap): Boolean{
+        return try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.clubApi.createClub(
-                    name = MultipartBody.Part.createFormData("name", clubCreateRequestDto.name),
-                    league = MultipartBody.Part.createFormData("leagueName", clubCreateRequestDto.league),
+                    name = MultipartBody.Part.createFormData("name", name),
+                    league = MultipartBody.Part.createFormData("leagueName", league),
                     pic = ConverterBitmap.convert(bitmap = pic, fieldName = "pic")
                 ).awaitResponse()
 
@@ -59,14 +57,39 @@ class ClubViewModel : ViewModel() {
                     response.body()?.let { club ->
                         _clubs.value += Club.fromDto(club)
                     }
-                    returnValue = true
+                    ToastManager.show("Club created successfully")
                 }
-                else ToastManager.show(response.message())
+                else ToastManager.show("Error creating club")
             }
-            return returnValue
+            true
         }
         catch (e: Exception) {
-            return returnValue
+            false
         }
+    }
+
+    fun updateClub(name: String, league: String, pic: Bitmap): Boolean{
+        return try {
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.clubApi.updateClub(
+                    name = name,
+                    league = MultipartBody.Part.createFormData("league", league),
+                    pic = ConverterBitmap.convert(bitmap = pic, fieldName = "pic")
+                ).awaitResponse()
+
+                if (response.isSuccessful) {
+                    response.body()?.let { club ->
+                        _clubs.value = _clubs.value.map {
+                            if (it.name == name) Club.fromDto(club)
+                            else it
+                        }
+                        ToastManager.show("Club updated successfully")
+                    }
+                }
+                else ToastManager.show("Error updating club")
+            }
+            true
+        }
+        catch (e: Exception) { false }
     }
 }

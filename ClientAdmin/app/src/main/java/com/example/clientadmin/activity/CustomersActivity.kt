@@ -21,13 +21,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientadmin.LocalCustomersViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.model.enumerator.FilterType
-import com.example.clientadmin.viewmodels.CustomersViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 @Composable
-fun Users(navHostController: NavHostController, customersViewModel: CustomersViewModel, filterFormViewModel: FilterFormViewModel) {
+fun Users(navHostController: NavHostController, filterFormViewModel: FilterFormViewModel) {
+    val customersViewModel = LocalCustomersViewModel.current
+
     val customers by customersViewModel.customerSummaries.collectAsState()
 
     val page by customersViewModel.page.collectAsState()
@@ -55,7 +57,7 @@ fun Users(navHostController: NavHostController, customersViewModel: CustomersVie
             items(customers) {
                 customer ->
                 key(customer.id) {
-                    CustomerItem(customer = customer) { navHostController.navigate("user/${customer.id}") }
+                    CustomerItem(customerSummary = customer) { navHostController.navigate("user/${customer.id}") }
                 }
             }
 
