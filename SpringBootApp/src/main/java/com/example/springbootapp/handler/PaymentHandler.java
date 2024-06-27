@@ -44,8 +44,8 @@ public class PaymentHandler {
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.PAYPAL)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:8080/stripe_success?session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl("http://localhost:8080/stripe_cancel")
+                .setSuccessUrl("http://192.168.1.9:8080/stripe_success?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl("http://192.168.1.9:8080/stripe_cancel?session_id={CHECKOUT_SESSION_ID}")
                 .putMetadata("orderId", order.getId())
                 .build();
         try {

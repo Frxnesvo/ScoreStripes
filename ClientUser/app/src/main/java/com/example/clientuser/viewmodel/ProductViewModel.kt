@@ -2,9 +2,11 @@ package com.example.clientuser.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.clientuser.model.BasicProduct
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.ProductSummary
+import com.example.clientuser.model.dto.BasicProductDto
 import com.example.clientuser.model.dto.ProductSummaryDto
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.utils.RetrofitHandler
@@ -26,7 +28,7 @@ class ProductViewModel: ViewModel() {
     val products = _products
 
 
-    private val _productSummaries = MutableStateFlow<List<ProductSummary>>(emptyList())
+    private val _productSummaries = MutableStateFlow<List<BasicProduct>>(emptyList())
     val productSummary = _productSummaries
 
     val moreSoldJersey = fetchMoreSoldProduct(ProductCategory.JERSEY)
@@ -57,14 +59,14 @@ class ProductViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             getProductSummaries(page).collect {
                 val newSummaries = it.map {
-                        dto ->  ProductSummary.fromDto(dto)
+                        dto ->  BasicProduct.fromDto(dto)
                 }
                 _productSummaries.value += newSummaries
             }
         }
     }
 
-    private fun getProductSummaries(page: Int): Flow<List<ProductSummaryDto>> = flow {
+    private fun getProductSummaries(page: Int): Flow<List<BasicProductDto>> = flow {
         try {
             val response = RetrofitHandler.productApi.getProductsSummary(
                 page,

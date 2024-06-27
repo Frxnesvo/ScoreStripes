@@ -14,7 +14,6 @@ import com.example.springbootapp.handler.PaymentHandler;
 import com.example.springbootapp.service.interfaces.EmailService;
 import com.example.springbootapp.service.interfaces.OrderService;
 import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -104,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String validateOrder (String sessionId) {        //TODO: forse voglio ritornare un dto
+    public Map<String, String> validateOrder (String sessionId) {        //TODO: forse voglio ritornare un dto
         try {
             if(sessionId == null) {
                 throw new RequestValidationException("SessionId is null");
@@ -127,12 +127,12 @@ public class OrderServiceImpl implements OrderService {
                 });
                 orderDao.save(order);
                 sendOrderConfirmationEmailAsync(order);
-                return OrderStatus.COMPLETED.name();
+                return Map.of("orderStatus", OrderStatus.COMPLETED.name());
             }
             else {
                 order.setStatus(OrderStatus.CANCELLED);
                 orderDao.save(order);
-                return OrderStatus.CANCELLED.name();
+                return Map.of("orderStatus", OrderStatus.CANCELLED.name());
             }
         } catch (StripeException e) {
             throw new StripeSessionException(e.getMessage());

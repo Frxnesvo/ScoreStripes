@@ -88,7 +88,8 @@ fun ProductDetails(
     product: Product,
     wishListViewModel: WishListViewModel,
     navHostController: NavHostController,
-    productFormViewModel: ProductFormViewModel
+    productFormViewModel: ProductFormViewModel,
+    cartViewModel: CartViewModel
 ){
     //TODO serve il view model e capire come gestire il like
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
@@ -210,7 +211,7 @@ fun ProductDetails(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
             product = product,
-            cartViewModel = CartViewModel(),
+            cartViewModel = cartViewModel,
             productFormViewModel = productFormViewModel
         )
 }
