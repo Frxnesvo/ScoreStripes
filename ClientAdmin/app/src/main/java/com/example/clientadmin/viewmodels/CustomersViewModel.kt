@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
-class CustomerViewModel : ViewModel() {
+class CustomersViewModel : ViewModel() {
     private val _page = MutableStateFlow(Page())
     val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
 

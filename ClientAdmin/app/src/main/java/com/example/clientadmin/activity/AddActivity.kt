@@ -74,7 +74,6 @@ fun AddPanel(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        //TODO controllare che ci siano leghe
                         navHostController.navigate("addTeam")
                     }
                 }

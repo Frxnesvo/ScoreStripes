@@ -51,7 +51,7 @@ import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
-import com.example.clientadmin.viewmodels.CustomerViewModel
+import com.example.clientadmin.viewmodels.CustomersViewModel
 import com.example.clientadmin.viewmodels.HomeViewModel
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
@@ -65,7 +65,7 @@ fun Scaffold(
     loginViewModel: LoginViewModel,
     navHostController: NavHostController,
     homeViewModel: HomeViewModel,
-    customerViewModel: CustomerViewModel,
+    customersViewModel: CustomersViewModel,
     productsViewModel: ProductsViewModel,
     clubViewModel: ClubViewModel,
     leagueViewModel: LeagueViewModel,
@@ -92,7 +92,7 @@ fun Scaffold(
                     AuthAwareComposable(navController = navHostController) {
                         NavigationScaffold(
                             navHostController = navController,
-                            customerViewModel = customerViewModel,
+                            customersViewModel = customersViewModel,
                             productsViewModel = productsViewModel,
                             clubViewModel = clubViewModel,
                             leagueViewModel = leagueViewModel,
@@ -201,7 +201,7 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
 @Composable
 fun NavigationScaffold(
     navHostController: NavHostController,
-    customerViewModel: CustomerViewModel,
+    customersViewModel: CustomersViewModel,
     productsViewModel: ProductsViewModel,
     productViewModel: ProductViewModel,
     clubViewModel: ClubViewModel,
@@ -226,14 +226,14 @@ fun NavigationScaffold(
         composable(
             route = "users"
         ){
-            Users(navHostController = navHostController, customerViewModel = customerViewModel, filterFormViewModel = FilterFormViewModel())
+            Users(navHostController = navHostController, customersViewModel = customersViewModel, filterFormViewModel = FilterFormViewModel())
         }
         composable(
             route = "user/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
-                id -> customerViewModel.customerSummaries.collectAsState().value.find { customer -> customer.id == id }?.let {
+                id -> customersViewModel.customerSummaries.collectAsState().value.find { customer -> customer.id == id }?.let {
                     customerSummary -> CustomerProfile(customerSummary = customerSummary, navHostController = navHostController)
                 }
             }
@@ -243,7 +243,7 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
-                id -> customerViewModel.getCustomerDetails(id).collectAsState(initial = null).value?.let {
+                id -> customersViewModel.getCustomerDetails(id).collectAsState(initial = null).value?.let {
                     customer -> CustomerDetails(customer = customer, navHostController = navHostController)
                 }
             }
@@ -255,7 +255,7 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
-                id -> customerViewModel.getCustomerOrders(id).collectAsState(initial = null).value?.let {
+                id -> customersViewModel.getCustomerOrders(id).collectAsState(initial = null).value?.let {
                     orders -> List(items = orders, navHostController = navHostController)
                 }
             }
@@ -267,7 +267,7 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
-                id -> customerViewModel.getCustomerAddresses(id).collectAsState(initial = null).value?.let {
+                id -> customersViewModel.getCustomerAddresses(id).collectAsState(initial = null).value?.let {
                     addresses -> List(items = addresses, navHostController = navHostController)
                 }
             }

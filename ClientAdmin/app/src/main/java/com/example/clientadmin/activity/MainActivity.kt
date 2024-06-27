@@ -27,7 +27,7 @@ import com.example.clientadmin.viewmodels.LogoutViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
 import com.example.clientadmin.utils.ToastManager
 import com.example.clientadmin.viewmodels.ClubViewModel
-import com.example.clientadmin.viewmodels.CustomerViewModel
+import com.example.clientadmin.viewmodels.CustomersViewModel
 import com.example.clientadmin.viewmodels.HomeViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductsViewModel
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                         navController = navHostController,
                         loginViewModel = loginViewModel,
                         homeViewModel = HomeViewModel(),
-                        customerViewModel = CustomerViewModel(),
+                        customersViewModel = CustomersViewModel(),
                         productsViewModel = ProductsViewModel(),
                         clubViewModel = ClubViewModel(),
                         leagueViewModel = LeagueViewModel()
@@ -83,7 +83,7 @@ fun Navigation(
     navController: NavHostController,
     loginViewModel: LoginViewModel,
     homeViewModel: HomeViewModel,
-    customerViewModel: CustomerViewModel,
+    customersViewModel: CustomersViewModel,
     productsViewModel: ProductsViewModel,
     clubViewModel: ClubViewModel,
     leagueViewModel: LeagueViewModel
@@ -121,7 +121,7 @@ fun Navigation(
             Scaffold(
                 loginViewModel = loginViewModel,
                 homeViewModel = homeViewModel,
-                customerViewModel = customerViewModel,
+                customersViewModel = customersViewModel,
                 productsViewModel = productsViewModel,
                 clubViewModel = clubViewModel,
                 leagueViewModel = leagueViewModel,

@@ -26,7 +26,7 @@ class LeagueViewModel: ViewModel() {
             _leagues.value = _leagues.value.filter {
                 it.name.contains(filter["name"] ?: "", ignoreCase = true)
             }
-        else fetchLeagues() //todo preferisco rifare la chamata rispetto a tenere in memoria
+        else fetchLeagues()
     }
 
     private fun fetchLeagues(){
