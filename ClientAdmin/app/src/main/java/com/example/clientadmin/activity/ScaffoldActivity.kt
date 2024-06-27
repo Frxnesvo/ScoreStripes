@@ -44,24 +44,32 @@ import com.example.clientadmin.R
 import com.example.clientadmin.authentication.LogoutManager
 import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.Club
-import com.example.clientadmin.model.CustomerSummary
 import com.example.clientadmin.model.League
 import com.example.clientadmin.utils.ToastManager
 import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
 import com.example.clientadmin.viewmodels.HomeViewModel
 import com.example.clientadmin.viewmodels.LoginViewModel
+import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
+import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 
 enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
 @Composable
-fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostController) {
+fun Scaffold(
+    loginViewModel: LoginViewModel,
+    navHostController: NavHostController,
+    homeViewModel: HomeViewModel,
+    customerViewModel: CustomerViewModel,
+    productsViewModel: ProductsViewModel,
+    clubViewModel: ClubViewModel,
+    leagueViewModel: LeagueViewModel,
+) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
 
@@ -80,22 +88,20 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
                 )
         ){
             loginViewModel.user.collectAsState().value.let {
-                admin ->
-                if (admin != null) {
-
+                admin -> if (admin != null) {
                     AuthAwareComposable(navController = navHostController) {
                         NavigationScaffold(
                             navHostController = navController,
-                            customerViewModel = CustomerViewModel(),
-                            productsViewModel = ProductsViewModel(),
-                            clubViewModel = ClubViewModel(),
-                            leagueViewModel = LeagueViewModel(),
-                            homeViewModel = HomeViewModel(),
+                            customerViewModel = customerViewModel,
+                            productsViewModel = productsViewModel,
+                            clubViewModel = clubViewModel,
+                            leagueViewModel = leagueViewModel,
+                            homeViewModel = homeViewModel,
                             selectedScreen = selectedScreen,
+                            productViewModel = ProductViewModel(),
                             admin = admin
                         )
                     }
-
                 }
             }
         }
@@ -197,6 +203,7 @@ fun NavigationScaffold(
     navHostController: NavHostController,
     customerViewModel: CustomerViewModel,
     productsViewModel: ProductsViewModel,
+    productViewModel: ProductViewModel,
     clubViewModel: ClubViewModel,
     leagueViewModel: LeagueViewModel,
     homeViewModel: HomeViewModel,
@@ -272,10 +279,10 @@ fun NavigationScaffold(
         ){
             if (clubViewModel.clubs.collectAsState().value.isNotEmpty()) {
                 ProductDetails(
-                    productsViewModel = productsViewModel,
                     clubViewModel = clubViewModel,
-                    productFormViewModel = ProductFormViewModel(),
-                    navHostController = navHostController
+                    navHostController = navHostController,
+                    productViewModel = ProductViewModel(),
+                    productFormViewModel = ProductFormViewModel()
                 )
             } else ToastManager.show("You need to add a club first")
         }
@@ -301,22 +308,20 @@ fun NavigationScaffold(
         composable(
             route = "products"
         ){
-            Products(navHostController = navHostController, productsViewModel = productsViewModel, leagueViewModel = leagueViewModel, clubViewModel = clubViewModel, filterFormViewModel = FilterFormViewModel())
+            Products(navHostController = navHostController, productViewModel = productViewModel, productsViewModel = productsViewModel, leagueViewModel = leagueViewModel, clubViewModel = clubViewModel, filterFormViewModel = FilterFormViewModel())
         }
         composable(
             route= "product/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
-                id -> productsViewModel.getProduct(id).collectAsState(initial = null).value?.let {
-                    product-> ProductDetails(
-                        productsViewModel = productsViewModel,
-                        clubViewModel = clubViewModel,
-                        productFormViewModel = ProductFormViewModel(product = product),
-                        navHostController = navHostController,
-                        id = id
-                    )
-                }
+                id-> ProductDetails(
+                    clubViewModel = clubViewModel,
+                    productViewModel = productViewModel,
+                    productFormViewModel = ProductFormViewModel(productViewModel.product.collectAsState().value),
+                    navHostController = navHostController,
+                    id = id
+                )
             }
         }
 

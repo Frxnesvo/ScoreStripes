@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
@@ -26,9 +25,12 @@ import com.example.clientadmin.utils.TokenStoreUtils
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.LogoutViewModel
 import com.example.clientadmin.viewmodels.formViewModel.LoginFormViewModel
-import androidx.compose.runtime.LaunchedEffect
 import com.example.clientadmin.utils.ToastManager
-import kotlin.math.log
+import com.example.clientadmin.viewmodels.ClubViewModel
+import com.example.clientadmin.viewmodels.CustomerViewModel
+import com.example.clientadmin.viewmodels.HomeViewModel
+import com.example.clientadmin.viewmodels.LeagueViewModel
+import com.example.clientadmin.viewmodels.ProductsViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +62,12 @@ class MainActivity : ComponentActivity() {
                     Navigation(
                         signInLauncher = signInLauncher,
                         navController = navHostController,
-                        loginViewModel = loginViewModel
+                        loginViewModel = loginViewModel,
+                        homeViewModel = HomeViewModel(),
+                        customerViewModel = CustomerViewModel(),
+                        productsViewModel = ProductsViewModel(),
+                        clubViewModel = ClubViewModel(),
+                        leagueViewModel = LeagueViewModel()
                     )
                 }
             }
@@ -71,7 +78,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Navigation(signInLauncher: ActivityResultLauncher<Intent>, navController: NavHostController, loginViewModel: LoginViewModel){
+fun Navigation(
+    signInLauncher: ActivityResultLauncher<Intent>,
+    navController: NavHostController,
+    loginViewModel: LoginViewModel,
+    homeViewModel: HomeViewModel,
+    customerViewModel: CustomerViewModel,
+    productsViewModel: ProductsViewModel,
+    clubViewModel: ClubViewModel,
+    leagueViewModel: LeagueViewModel
+){
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
         navController = navController,
@@ -104,6 +120,11 @@ fun Navigation(signInLauncher: ActivityResultLauncher<Intent>, navController: Na
         composable(route = "scaffold"){
             Scaffold(
                 loginViewModel = loginViewModel,
+                homeViewModel = homeViewModel,
+                customerViewModel = customerViewModel,
+                productsViewModel = productsViewModel,
+                clubViewModel = clubViewModel,
+                leagueViewModel = leagueViewModel,
                 navHostController = navController
             )
         }
