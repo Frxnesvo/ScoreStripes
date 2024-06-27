@@ -11,16 +11,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.viewmodel.OrderViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish: () -> Unit) {
+fun WebViewScreen(orderViewModel: OrderViewModel, paymentUrl: String, navController: NavHostController, onFinish: () -> Unit) {
+    val scope = rememberCoroutineScope()
     AndroidView(
         factory = { context ->
             WebView(context).apply {
@@ -33,21 +39,18 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
                         request?.url?.let { uri ->
                             println("URL: ${uri.host}")
                             when (uri.host) {
-                                "192.168.1.55" -> {
+                                "192.168.1.9" -> {   //TODO ci va l'ip
                                     when (uri.path) {   //TODO: rifattorizzare i 2 case
                                         "/stripe_success" -> {
                                             val sessionId = uri.getQueryParameter("session_id")
-                                            if (sessionId != null) {
-                                                //TODO: validate transaction
-                                                onFinish()
-                                            }
+                                            if (sessionId != null)
+                                                orderViewModel.validateTransaction(sessionId)
                                             return true
                                         }
                                         "/stripe_cancel" -> {
                                             val sessionId = uri.getQueryParameter("session_id")
                                             if (sessionId != null) {
-                                                //TODO: validate transaction
-                                                onFinish()
+                                                orderViewModel.validateTransaction(sessionId)
                                             }
                                             return true
                                         }
@@ -65,7 +68,7 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
                         println("ERRORE: ${error?.description}")
                     }
                 }
-                loadUrl(paymentUrl)
+
                 settings.javaScriptEnabled = true
                 settings.domStorageEnabled = true
                 settings.javaScriptCanOpenWindowsAutomatically = true
@@ -73,6 +76,7 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
                 settings.cacheMode = WebSettings.LOAD_NO_CACHE
                 settings.useWideViewPort = true
                 settings.loadWithOverviewMode = true
+                loadUrl(paymentUrl)
             }
         },
 //        update = { webView ->
@@ -82,6 +86,13 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
 //        },
         modifier = Modifier.fillMaxSize()
     )
+
+    val navigateString by orderViewModel.validateTransactionResult.collectAsState()
+
+    if (navigateString != "") {
+        navController.navigate(navigateString)
+        onFinish()
+    }
 }
 
 @Composable

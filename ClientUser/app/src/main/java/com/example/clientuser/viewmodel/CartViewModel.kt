@@ -6,6 +6,7 @@ import com.example.clientuser.model.dto.AddToCartRequestDto
 import com.example.clientuser.model.dto.UpdateCartItemDto
 
 import com.example.clientuser.utils.RetrofitHandler
+import com.example.clientuser.utils.ToastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ class CartViewModel : ViewModel() {
                 if(response.isSuccessful){
                     val cartItem = CartItem.fromDto(response.body()!!)
                     _cart.value[cartItem.id] = cartItem
+                    ToastManager.show("product added to cart")
                 }
                 else println("Error during adding product to cart")
             }

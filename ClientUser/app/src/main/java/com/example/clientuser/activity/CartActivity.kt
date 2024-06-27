@@ -47,6 +47,7 @@ import com.example.clientuser.R
 import com.example.clientuser.model.CartItem
 import com.example.clientuser.model.dto.OrderInfoDto
 import com.example.clientuser.model.dto.UpdateCartItemDto
+import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
@@ -83,8 +84,8 @@ fun Cart(
 //
 //        }
     if(showWebView.value && webViewLink.isNotEmpty()){
-        println("URL: $webViewLink")
         WebViewScreen(
+            orderViewModel = orderViewModel,
             paymentUrl = webViewLink,
             navController = navHostController
         ) {
@@ -111,7 +112,10 @@ fun Cart(
                 CustomButton(
                     text = stringResource(id = R.string.go_to_payment),
                     background = R.color.secondary
-                ) { setBottomSheet(true) }
+                ) {
+                    if(myCart.value.isEmpty()) ToastManager.show("cart is empty")
+                    else setBottomSheet(true)
+                }
             }
 
             items(myCart.value.values.toList()){
@@ -136,6 +140,7 @@ fun Cart(
             selectedAddress.value = it
             if (selectedAddress.value != "") {
                 orderViewModel.createCartOrder(OrderInfoDto(selectedAddress.value))
+                cartViewModel.clearCart()       //TODO non so se va bene con gli errori
                 showWebView.value = true
             }
         }
