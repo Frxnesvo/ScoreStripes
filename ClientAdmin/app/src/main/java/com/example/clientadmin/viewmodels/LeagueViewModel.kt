@@ -3,7 +3,6 @@ package com.example.clientadmin.viewmodels
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.League
-import com.example.clientadmin.model.dto.LeagueCreateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.utils.ToastManager
@@ -26,7 +25,7 @@ class LeagueViewModel: ViewModel() {
             _leagues.value = _leagues.value.filter {
                 it.name.contains(filter["name"] ?: "", ignoreCase = true)
             }
-        else fetchLeagues() //todo preferisco rifare la chamata rispetto a tenere in memoria
+        else fetchLeagues()
     }
 
     private fun fetchLeagues(){
@@ -43,13 +42,11 @@ class LeagueViewModel: ViewModel() {
         }
     }
 
-    fun addLeague(leagueCreateRequestDto: LeagueCreateRequestDto, pic: Bitmap): Boolean{
-        var returnValue = false
-        try {
-            League(name = leagueCreateRequestDto.name, pic = pic)
+    fun addLeague(name:String, pic: Bitmap): Boolean{
+        return try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.leagueApi.createLeague(
-                    name = MultipartBody.Part.createFormData("name", leagueCreateRequestDto.name),
+                    name = MultipartBody.Part.createFormData("name", name),
                     pic = ConverterBitmap.convert(bitmap = pic, fieldName = "pic")
                 ).awaitResponse()
 
@@ -58,14 +55,33 @@ class LeagueViewModel: ViewModel() {
                         _leagues.value += League.fromDto(league)
                     }
                     ToastManager.show("League created successfully")
-                    returnValue = true
                 }
                 else ToastManager.show("Error creating league")
             }
-            return returnValue
-        } catch (e: Exception) {
-            println("Exception creating league: ${e.message}")
-            return returnValue
-        }
+            true
+        } catch (e: Exception) { false }
+    }
+
+    fun updateLeague(name: String, pic: Bitmap): Boolean{
+        return try {
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.leagueApi.updateLeague(
+                    name = name,
+                    pic = ConverterBitmap.convert(bitmap = pic, fieldName = "pic")
+                ).awaitResponse()
+
+                if (response.isSuccessful) {
+                    response.body()?.let { league ->
+                        _leagues.value = _leagues.value.map {
+                            if (it.name == league.name) League.fromDto(league)
+                            else it
+                        }
+                    }
+                    ToastManager.show("League updated successfully")
+                }
+                else ToastManager.show("Error updating league")
+            }
+            true
+        } catch (e: Exception) { false }
     }
 }

@@ -42,6 +42,7 @@ fun Wishlist(
     val sharedLists = wishListViewModel.sharedWithMeWishlists
     val myWishlist by wishListViewModel.myWishList
     val (isOpenTokenSheet, setTokenBottomSheet) = remember { mutableStateOf(false) }
+    val (isOpenVisibilitySheet, setVisibilityBottomSheet) = remember { mutableStateOf(false) }
 
     val wishlistToAddToken = StringBuilder("")
 
@@ -62,6 +63,32 @@ fun Wishlist(
                 boxTitle = stringResource(id = R.string.discover_wishlists),
                 painter = painterResource(id = R.drawable.collection) //TODO trovare un'immagine più adatta
             ) { navHostController.navigate("discoverWishlist") }
+        }
+
+        item {
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Text(
+                    text = stringResource(id = R.string.my_wishlist),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            setVisibilityBottomSheet(true)
+                            setTokenBottomSheet(false)
+                            //TODO logica view model
+                        },
+                    text = stringResource(id = R.string.shared),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colorResource(id = R.color.secondary50),
+                )
+            }
         }
 
         //TODO inserire la riga My wishlist
@@ -89,6 +116,7 @@ fun Wishlist(
                     content = Icons.Outlined.Add
                 ) {
                     setTokenBottomSheet(true)
+                    setVisibilityBottomSheet(false)
                 }
             }
         }
@@ -115,6 +143,17 @@ fun Wishlist(
             }
         )
     }
+
+    if(isOpenVisibilitySheet){
+        WishlistVisibilityPanel(
+            currentVisibility = WishListVisibility.SHARED ,
+            onDismissRequest = { setVisibilityBottomSheet(false) },
+            onClick = {
+                setVisibilityBottomSheet(false)
+            }
+        )
+    }
+
 }
 
 @Composable
@@ -168,48 +207,3 @@ fun WishListItem(wishlist: Wishlist, onClick: () -> Unit) {
     }
 }
 
-
-//todo da inserire
-@Preview(showBackground = true)
-@Composable
-fun Preview(){
-    val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Row (
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Text(
-                text = stringResource(id = R.string.my_wishlist),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-            )
-
-            Text(
-                modifier = Modifier
-                    .clickable {
-                        setBottomSheet(true)
-                        //TODO logica view model
-                   },
-                text = stringResource(id = R.string.shared),
-                style = MaterialTheme.typography.titleMedium,
-                color = colorResource(id = R.color.secondary50),
-            )
-        }
-    }
-
-    if(isOpenSheet){
-        WishlistVisibilityPanel(
-            currentVisibility = WishListVisibility.SHARED ,
-            onDismissRequest = { setBottomSheet(false) },
-            onClick = {
-                setBottomSheet(false)
-            }
-        )
-    }
-
-}

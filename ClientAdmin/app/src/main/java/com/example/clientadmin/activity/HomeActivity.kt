@@ -33,12 +33,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientadmin.LocalHomeViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Product
-import com.example.clientadmin.viewmodels.HomeViewModel
 
 @Composable
-fun Home(selectedScreen: MutableState<Screen>, homeViewModel: HomeViewModel, navHostController: NavHostController) {
+fun Home(selectedScreen: MutableState<Screen>, navHostController: NavHostController) {
+    val homeViewModel = LocalHomeViewModel.current
+
     val numNewOrders by homeViewModel.newOrders.collectAsState()
     val numProductOutOfStoke by homeViewModel.variantsOutOfStock.collectAsState()
     val numNewUser by homeViewModel.newAccounts.collectAsState()

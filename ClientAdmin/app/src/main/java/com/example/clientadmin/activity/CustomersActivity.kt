@@ -21,16 +21,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientadmin.LocalCustomersViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.model.enumerator.FilterType
-import com.example.clientadmin.viewmodels.CustomerViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 @Composable
-fun Users(navHostController: NavHostController, customerViewModel: CustomerViewModel, filterFormViewModel: FilterFormViewModel) {
-    val customers by customerViewModel.customerSummaries.collectAsState()
+fun Users(navHostController: NavHostController, filterFormViewModel: FilterFormViewModel) {
+    val customersViewModel = LocalCustomersViewModel.current
 
-    val page by customerViewModel.page.collectAsState()
+    val customers by customersViewModel.customerSummaries.collectAsState()
+
+    val page by customersViewModel.page.collectAsState()
 
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
@@ -55,7 +57,7 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
             items(customers) {
                 customer ->
                 key(customer.id) {
-                    CustomerItem(customer = customer) { navHostController.navigate("user/${customer.id}") }
+                    CustomerItem(customerSummary = customer) { navHostController.navigate("user/${customer.id}") }
                 }
             }
 
@@ -71,7 +73,7 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
-                            ){ customerViewModel.incrementPage() }
+                            ){ customersViewModel.incrementPage() }
                     )
             }
         }
@@ -83,5 +85,5 @@ fun Users(navHostController: NavHostController, customerViewModel: CustomerViewM
             setBottomSheet = setBottomSheet,
             filterType = FilterType.CUSTOMERS,
             filterFormViewModel = filterFormViewModel
-        ){ customerViewModel.setFilter(it) }
+        ){ customersViewModel.setFilter(it) }
 }

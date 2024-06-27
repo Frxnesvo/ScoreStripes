@@ -23,6 +23,7 @@ import com.example.clientuser.authentication.GoogleAuth
 import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.authentication.UserSession
 import com.example.clientuser.ui.theme.ClientUserTheme
+import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.utils.TokenStoreUtils
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
@@ -35,6 +36,7 @@ class MainActivity : ComponentActivity() {
         val userSession = UserSession()
         val loginViewModel = LoginViewModel(userSession)
         TokenStoreUtils.initialize(this.applicationContext)
+        ToastManager.initialize(this.applicationContext)
         LogoutManager.initialize(LogoutViewModel(userSession))
 
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

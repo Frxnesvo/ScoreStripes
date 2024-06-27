@@ -28,7 +28,7 @@ import com.example.clientadmin.R
 import com.example.clientadmin.model.CustomerSummary
 
 @Composable
-fun CustomerItem(customer: CustomerSummary, onClick: () -> Unit){
+fun CustomerItem(customerSummary: CustomerSummary, onClick: () -> Unit){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,7 +42,7 @@ fun CustomerItem(customer: CustomerSummary, onClick: () -> Unit){
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Image(
-            bitmap = customer.pic.asImageBitmap(),
+            bitmap = customerSummary.pic.asImageBitmap(),
             contentDescription = "",
             modifier = Modifier
                 .height(40.dp)
@@ -50,6 +50,10 @@ fun CustomerItem(customer: CustomerSummary, onClick: () -> Unit){
                 .clip(RoundedCornerShape(20.dp)),
             contentScale = ContentScale.FillBounds
         )
-        Text(text = customer.username, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, letterSpacing = 5.sp))
+        Text(
+            text = customerSummary.username,
+            color = colorResource(id = R.color.black),
+            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium)
+        )
     }
 }

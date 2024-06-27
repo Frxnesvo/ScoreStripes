@@ -305,10 +305,13 @@ fun NavigationScaffold(
                 var isLoading by remember { mutableStateOf(true) }
 
 
-                coroutineScope.launch {
-                    product = productViewModel.getProductById(id)
-                    isLoading = false
+                LaunchedEffect(key1 = id) {
+                    coroutineScope.launch {
+                        product = productViewModel.getProductById(id)
+                        isLoading = false
+                    }
                 }
+
 
                 if (isLoading) {
                     Text("Loading...")      //TODO
@@ -318,7 +321,8 @@ fun NavigationScaffold(
                             product = prod,
                             wishListViewModel = wishlistViewModel,
                             navHostController = navHostController,
-                            productFormViewModel = ProductFormViewModel()
+                            productFormViewModel = ProductFormViewModel(),
+                            cartViewModel = cartViewModel
                         )
                     } ?: Text("Product not found")
                 }
@@ -361,7 +365,6 @@ fun NavigationScaffold(
         //PAYMENT
         composable(
             route = "payment_success",
-            arguments = listOf(navArgument("result"){ type = NavType.StringType })
         ) {
             PaymentSuccessScreen(navHostController = navHostController)
         }

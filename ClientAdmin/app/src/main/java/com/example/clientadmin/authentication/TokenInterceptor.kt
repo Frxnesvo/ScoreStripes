@@ -18,7 +18,7 @@ class TokenInterceptor: Interceptor {
 
         val response = chain.proceed(request)
 
-        if (TokenStoreUtils.getToken() != null &&  response.code == 403) {      //TODO sostituire con 401
+        if (TokenStoreUtils.getToken() != null &&  response.code == 401) {
             println("Access token scaduto")
             LogoutManager.instance.logout()
         }

@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -40,6 +41,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.clientadmin.LocalClubViewModel
+import com.example.clientadmin.LocalCustomerViewModel
+import com.example.clientadmin.LocalCustomersViewModel
+import com.example.clientadmin.LocalLeagueViewModel
+import com.example.clientadmin.LocalProductViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.authentication.LogoutManager
 import com.example.clientadmin.model.Admin
@@ -47,12 +53,8 @@ import com.example.clientadmin.model.Club
 import com.example.clientadmin.model.League
 import com.example.clientadmin.utils.ToastManager
 import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
-import com.example.clientadmin.viewmodels.LeagueViewModel
-import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
-import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
-import com.example.clientadmin.viewmodels.HomeViewModel
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
@@ -63,12 +65,7 @@ enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 @Composable
 fun Scaffold(
     loginViewModel: LoginViewModel,
-    navHostController: NavHostController,
-    homeViewModel: HomeViewModel,
-    customerViewModel: CustomerViewModel,
-    productsViewModel: ProductsViewModel,
-    clubViewModel: ClubViewModel,
-    leagueViewModel: LeagueViewModel,
+    navHostController: NavHostController
 ) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
@@ -90,17 +87,16 @@ fun Scaffold(
             loginViewModel.user.collectAsState().value.let {
                 admin -> if (admin != null) {
                     AuthAwareComposable(navController = navHostController) {
-                        NavigationScaffold(
-                            navHostController = navController,
-                            customerViewModel = customerViewModel,
-                            productsViewModel = productsViewModel,
-                            clubViewModel = clubViewModel,
-                            leagueViewModel = leagueViewModel,
-                            homeViewModel = homeViewModel,
-                            selectedScreen = selectedScreen,
-                            productViewModel = ProductViewModel(),
-                            admin = admin
-                        )
+                        CompositionLocalProvider(
+                            LocalCustomerViewModel provides CustomerViewModel(),
+                            LocalProductViewModel provides ProductViewModel(),
+                        ) {
+                            NavigationScaffold(
+                                navHostController = navController,
+                                selectedScreen = selectedScreen,
+                                admin = admin
+                            )
+                        }
                     }
                 }
             }
@@ -201,12 +197,6 @@ fun BottomBarButton(indexColor: Int, background: Int? = null, imageVector: Image
 @Composable
 fun NavigationScaffold(
     navHostController: NavHostController,
-    customerViewModel: CustomerViewModel,
-    productsViewModel: ProductsViewModel,
-    productViewModel: ProductViewModel,
-    clubViewModel: ClubViewModel,
-    leagueViewModel: LeagueViewModel,
-    homeViewModel: HomeViewModel,
     selectedScreen: MutableState<Screen>,
     admin: Admin
 ) {
@@ -219,69 +209,62 @@ fun NavigationScaffold(
         composable(
             route = "home"
         ){
-            Home(selectedScreen = selectedScreen, navHostController = navHostController, homeViewModel = homeViewModel)
+            Home(selectedScreen = selectedScreen, navHostController = navHostController)
         }
 
         //USERS
         composable(
             route = "users"
         ){
-            Users(navHostController = navHostController, customerViewModel = customerViewModel, filterFormViewModel = FilterFormViewModel())
+            Users(navHostController = navHostController, filterFormViewModel = FilterFormViewModel())
         }
         composable(
             route = "user/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){
             it.arguments?.getString("id")?.let {
-                id -> customerViewModel.customerSummaries.collectAsState().value.find { customer -> customer.id == id }?.let {
-                    customerSummary -> CustomerProfile(customerSummary = customerSummary, navHostController = navHostController)
+                id -> LocalCustomersViewModel.current.customerSummaries.collectAsState().value.find {
+                    customer -> customer.id == id }?.let {
+                    customerSummary -> CustomerProfile(
+                        customerSummary = customerSummary,
+                        navHostController = navHostController
+                    )
                 }
             }
         }
         composable(
-            route = "userDetails/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "userDetails",
         ){
-            it.arguments?.getString("id")?.let {
-                id -> customerViewModel.getCustomerDetails(id).collectAsState(initial = null).value?.let {
-                    customer -> CustomerDetails(customer = customer, navHostController = navHostController)
-                }
-            }
+            CustomerDetails(navHostController = navHostController)
         }
 
         //ORDERS
         composable(
-            route = "userOrders/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "userOrders",
         ){
-            it.arguments?.getString("id")?.let {
-                id -> customerViewModel.getCustomerOrders(id).collectAsState(initial = null).value?.let {
-                    orders -> List(items = orders, navHostController = navHostController)
-                }
-            }
+            List(
+                navHostController = navHostController,
+                isAddresses = false
+            )
         }
 
         //ADDRESSES
         composable(
-            route = "userAddresses/{id}",
-            arguments = listOf(navArgument("id"){ type = NavType.StringType })
+            route = "userAddresses",
         ){
-            it.arguments?.getString("id")?.let {
-                id -> customerViewModel.getCustomerAddresses(id).collectAsState(initial = null).value?.let {
-                    addresses -> List(items = addresses, navHostController = navHostController)
-                }
-            }
+            List(
+                navHostController = navHostController,
+                isAddresses = true
+            )
         }
 
         //ADD
         composable(
             route = "addProduct"
         ){
-            if (clubViewModel.clubs.collectAsState().value.isNotEmpty()) {
+            if (LocalClubViewModel.current.clubs.collectAsState().value.isNotEmpty()) {
                 ProductDetails(
-                    clubViewModel = clubViewModel,
                     navHostController = navHostController,
-                    productViewModel = ProductViewModel(),
                     productFormViewModel = ProductFormViewModel()
                 )
             } else ToastManager.show("You need to add a club first")
@@ -289,17 +272,20 @@ fun NavigationScaffold(
         composable(
             route = "addLeague"
         ){
-            LeagueDetails(leagueViewModel = leagueViewModel, leagueFormViewModel = LeagueFormViewModel(), navHostController = navHostController)
+            LeagueDetails(
+                leagueFormViewModel = LeagueFormViewModel(),
+                navHostController = navHostController,
+                isAdd = true
+            )
         }
         composable(
             route = "addTeam"
         ){
-            if (leagueViewModel.leagues.collectAsState().value.isNotEmpty()) {
+            if (LocalLeagueViewModel.current.leagues.collectAsState().value.isNotEmpty()) {
                 ClubDetails(
-                    leagueViewModel = leagueViewModel,
-                    clubViewModel = clubViewModel,
                     clubFormViewModel = ClubFormViewModel(),
-                    navHostController = navHostController
+                    navHostController = navHostController,
+                    isAdd = true
                 )
             } else ToastManager.show("You need to add a league first")
         }
@@ -308,7 +294,10 @@ fun NavigationScaffold(
         composable(
             route = "products"
         ){
-            Products(navHostController = navHostController, productViewModel = productViewModel, productsViewModel = productsViewModel, leagueViewModel = leagueViewModel, clubViewModel = clubViewModel, filterFormViewModel = FilterFormViewModel())
+            Products(
+                navHostController = navHostController,
+                filterFormViewModel = FilterFormViewModel()
+            )
         }
         composable(
             route= "product/{id}",
@@ -316,9 +305,7 @@ fun NavigationScaffold(
         ){
             it.arguments?.getString("id")?.let {
                 id-> ProductDetails(
-                    clubViewModel = clubViewModel,
-                    productViewModel = productViewModel,
-                    productFormViewModel = ProductFormViewModel(productViewModel.product.collectAsState().value),
+                    productFormViewModel = ProductFormViewModel(LocalProductViewModel.current.product.collectAsState().value),
                     navHostController = navHostController,
                     id = id
                 )
@@ -332,7 +319,11 @@ fun NavigationScaffold(
             it.arguments?.getString("league")?.let {
                 leagueString ->
                 val league = League.fromQueryString(leagueString)
-                LeagueDetails(navHostController = navHostController, leagueViewModel = leagueViewModel, leagueFormViewModel = LeagueFormViewModel(league))
+                LeagueDetails(
+                    navHostController = navHostController,
+                    leagueFormViewModel = LeagueFormViewModel(league),
+                    isAdd = false
+                )
             }
         }
         composable(
@@ -342,7 +333,11 @@ fun NavigationScaffold(
             it.arguments?.getString("club")?.let {
                 clubString ->
                 val club = Club.fromQueryString(clubString)
-                ClubDetails(navHostController = navHostController, clubViewModel = clubViewModel, leagueViewModel = leagueViewModel, clubFormViewModel = ClubFormViewModel(club))
+                ClubDetails(
+                    navHostController = navHostController,
+                    clubFormViewModel = ClubFormViewModel(club),
+                    isAdd = false
+                )
             }
         }
 

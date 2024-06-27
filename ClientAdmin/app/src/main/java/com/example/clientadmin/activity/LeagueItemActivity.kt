@@ -50,6 +50,10 @@ fun LeagueItem(
                 .size(50.dp)
                 .clip(RoundedCornerShape(15.dp)),
             contentScale = ContentScale.FillBounds)
-        Text(text = league.name, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, letterSpacing = 5.sp))
+        Text(
+            text = league.name,
+            color = colorResource(id = R.color.black),
+            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium)
+        )
     }
 }

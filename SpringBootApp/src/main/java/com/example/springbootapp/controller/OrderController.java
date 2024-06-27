@@ -32,7 +32,7 @@ public class OrderController {
     }
 
     @PostMapping("/validate-transaction")
-    public ResponseEntity<String> validateTransaction(@RequestParam String sessionId) {
+    public ResponseEntity<Map<String,String>> validateTransaction(@RequestParam String sessionId) {
         return ResponseEntity.ok(orderService.validateOrder(sessionId));
     }
 

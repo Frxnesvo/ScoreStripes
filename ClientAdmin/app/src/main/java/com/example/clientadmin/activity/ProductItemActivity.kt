@@ -35,7 +35,7 @@ import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.ProductSummary
 
 @Composable
-fun ProductItemRow(product: Product, onClick: () -> Unit) { //TODO probabilmente servirà un'altro dto
+fun ProductItemRow(product: Product, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .width(150.dp)

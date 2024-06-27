@@ -11,5 +11,5 @@ interface OrderApiService {
     fun createCartOrder(@Body orderInfoDto: OrderInfoDto) : Call<Map<String, String>>
 
     @POST("/api/v1/orders/validate-transaction")
-    fun validateTransaction(@Query("sessionId") sessionId: String) : Call<String>
+    fun validateTransaction(@Query("sessionId") sessionId: String) : Call<Map<String, String>>
 }

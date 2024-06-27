@@ -96,7 +96,7 @@ class ProductViewModel: ViewModel(){
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.productApi.updateProduct(
                     id = id,
-                    description = MultipartBody.Part.createFormData("description", description) ,
+                    description = MultipartBody.Part.createFormData("description", description),
                     price = MultipartBody.Part.createFormData("price", price.toString()),
                     picPrincipal = ConverterBitmap.convert(bitmap = pic1, fieldName = "picPrincipal"),
                     pic2 = ConverterBitmap.convert(bitmap = pic2, fieldName = "pic2"),

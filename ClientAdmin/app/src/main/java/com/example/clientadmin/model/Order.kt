@@ -50,14 +50,14 @@ class Order(
         class ProductWithVariant(
             val id: String,
             val size: Size,
-            val product: Product
+            val basicProduct: BasicProduct
         ) {
             companion object {
                 fun fromDto(productWithVariantDto: ProductWithVariantDto): ProductWithVariant {
                     return ProductWithVariant(
                         id = productWithVariantDto.id,
                         size = productWithVariantDto.size,
-                        product = Product.fromDto(productWithVariantDto.product) //todo fare il basicdto
+                        basicProduct = BasicProduct.fromDto(productWithVariantDto.product)
                     )
                 }
             }

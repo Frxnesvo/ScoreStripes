@@ -50,6 +50,10 @@ fun ClubItem(
                 .size(50.dp)
                 .clip(RoundedCornerShape(15.dp)),
             contentScale = ContentScale.FillBounds)
-        Text(text = club.name, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, letterSpacing = 5.sp))
+        Text(
+            text = club.name,
+            color = colorResource(id = R.color.black),
+            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium)
+        )
     }
 }
