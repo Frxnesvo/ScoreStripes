@@ -79,8 +79,9 @@ public class CartServiceImpl implements CartService {
     @Override
     public void deleteItemFromCart(String itemId) {
         Customer customer = (Customer) userDetailsService.getCurrentUser();
+        Cart cart= cartDao.findById(customer.getCart().getId()).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
         //cerca nel carrello un item con l'id passato`usando gli stream e se lo trova lo rimuove
-        CartItem item = customer.getCart().getCartItems().stream()
+        CartItem item = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("Item not found in cart"));
