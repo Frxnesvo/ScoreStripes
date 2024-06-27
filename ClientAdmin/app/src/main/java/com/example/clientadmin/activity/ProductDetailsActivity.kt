@@ -24,22 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientadmin.R
-import com.example.clientadmin.model.dto.ProductCreateRequestDto
-import com.example.clientadmin.model.dto.ProductUpdateRequestDto
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductState
-import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
 import com.example.clientadmin.model.enumerator.Size
 import com.example.clientadmin.viewmodels.ClubViewModel
+import com.example.clientadmin.viewmodels.ProductViewModel
 
 @Composable
 fun ProductDetails(
-    productsViewModel: ProductsViewModel,
-    productFormViewModel: ProductFormViewModel,
     clubViewModel: ClubViewModel,
     navHostController: NavHostController,
+    productViewModel: ProductViewModel,
+    productFormViewModel: ProductFormViewModel,
     id: String? = null
 ){
     val productState by productFormViewModel.productState.collectAsState()
@@ -80,16 +78,19 @@ fun ProductDetails(
 
             CustomComboBox(
                 options = clubs.map { it.name },
+                text = stringResource(id = R.string.club),
                 selectedOption = if(productState.club.isEmpty()) productState.club else clubs[0].name,
             ){ productFormViewModel.updateClub(it) }
 
             CustomComboBox(
                 options = Gender.entries,
+                text = stringResource(id = R.string.gender),
                 selectedOption = "${productState.gender}"
             ){ productFormViewModel.updateGender(Gender.valueOf(it)) }
 
             CustomComboBox(
                 options = ProductCategory.entries,
+                text = stringResource(id = R.string.category),
                 selectedOption = "${productState.productCategory}"
             ){ productFormViewModel.updateCategory(ProductCategory.valueOf(it)) }
 
@@ -151,25 +152,28 @@ fun ProductDetails(
         ) {
             if (!productState.isPicPrincipalError && !productState.isPicSecondaryError && !productState.isNameError && !productState.isBrandError && !productState.isDescriptionError && !productState.isPriceError)
                 if (id == null) {
-                    val productRequestDto = ProductCreateRequestDto(
-                        name = productState.name,
-                        club = productState.club,
-                        brand = productState.brand,
-                        gender = productState.gender,
-                        category = productState.productCategory,
-                        description =  productState.description,
-                        price = productState.price ?: 0.0,
-                        variants = productState.variants
-                    )
-                    if (productsViewModel.addProduct(productRequestDto, productState.pic1!!, productState.pic2!!))
-                        navHostController.navigate("home")
+                    if (productViewModel.addProduct(
+                            name = productState.name,
+                            description = productState.description,
+                            price = productState.price ?: 0.0,
+                            brand = productState.brand,
+                            gender = productState.gender,
+                            category = productState.productCategory,
+                            pic1 = productState.pic1!!,
+                            pic2 = productState.pic2!!,
+                            club = productState.club,
+                            variants = productState.variants
+                        )
+                    ) navHostController.navigate("products")
                 } else {
-                    val productUpdateRequestDto = ProductUpdateRequestDto(
+                    productViewModel.updateProduct(
+                        id = id,
                         description = productState.description,
                         price = productState.price ?: 0.0,
-                        variants = productState.variants,
+                        pic1 = productState.pic1!!,
+                        pic2 = productState.pic2!!,
+                        variants = productState.variants
                     )
-                    productsViewModel.updateProduct(id, productUpdateRequestDto, productState.pic1!!, productState.pic2!!)
                 }
         }
     }

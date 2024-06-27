@@ -180,6 +180,7 @@ fun BoxImage(boxTitle: String, painter: Painter, onClick: () -> Unit){
 @Composable
 fun CustomComboBox(
     options: List<Any>,
+    text: String,
     selectedOption: String,
     readOnly: Boolean = true,
     expandable: Boolean = true,
@@ -198,8 +199,8 @@ fun CustomComboBox(
         ) {
             OutlinedTextField(
                 value = selectedOption,
-                onValueChange = {
-                },
+                onValueChange = {},
+                label = { Text(text = text) },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
                 readOnly = readOnly,
                 modifier = Modifier
@@ -398,14 +399,17 @@ fun CustomDatePicker( //TODO da migliorare esteticamente
         Text(text = text)
         CustomComboBox(
             options = (1..31).toList(),
+            text = stringResource(id = R.string.day),
             selectedOption = date.dayOfMonth.toString()
         ) { onValueChange(LocalDate.of(date.year, date.month, it.toInt())) }
         CustomComboBox(
             options = (1..12).toList(),
+            text = stringResource(id = R.string.month),
             selectedOption = date.monthValue.toString()
         ) { onValueChange(LocalDate.of(date.year, it.toInt(), date.dayOfMonth)) }
         CustomComboBox(
             options = (LocalDate.now().year downTo 1900).toList(),
+            text = stringResource(id = R.string.year),
             selectedOption = date.year.toString()
         ) { onValueChange(LocalDate.of(it.toInt(), date.month, date.dayOfMonth)) }
         if(isError)

@@ -40,6 +40,7 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.R
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
+import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.ProductsViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
@@ -47,6 +48,7 @@ import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 fun Products(
     navHostController: NavHostController,
     productsViewModel: ProductsViewModel,
+    productViewModel: ProductViewModel,
     leagueViewModel: LeagueViewModel,
     clubViewModel: ClubViewModel,
     filterFormViewModel: FilterFormViewModel
@@ -143,7 +145,10 @@ fun Products(
             if (FilterType.PRODUCTS == filterType) {
                 items(products) {
                     key(it.id) {
-                        ProductItemColumn(productSummary = it) { navHostController.navigate("product/${it.id}") }
+                        ProductItemColumn(productSummary = it) {
+                            productViewModel.getProduct(it.id)
+                            navHostController.navigate("product/${it.id}")
+                        }
                     }
                 }
             } else if (FilterType.CLUBS == filterType) {

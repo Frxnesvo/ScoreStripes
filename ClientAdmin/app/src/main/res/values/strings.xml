@@ -64,4 +64,8 @@
     <string name="brand_error">Is required a length between 2 and 40</string>
     <string name="price_error">Is required a price greather than 0</string>
     <string name="description_error">Is required a length between 10 and 500</string>
+    <string name="category">CATEGORY</string>
+    <string name="day">DAY</string>
+    <string name="month">MONTH</string>
+    <string name="year">YEAR</string>
 </resources>

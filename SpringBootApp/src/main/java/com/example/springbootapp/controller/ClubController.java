@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class ClubController {
     private final ClubService clubService;
     private final ExceptionUtils exceptionUtils;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ClubDto> createClub(@Valid @ModelAttribute ClubRequestDto clubRequestDto, BindingResult bindingResult){
         if(bindingResult.hasErrors()){

@@ -1,6 +1,7 @@
 package com.example.clientadmin.viewmodels.formViewModel
 
 import android.graphics.Bitmap
+import androidx.lifecycle.ViewModel
 import com.example.clientadmin.model.Product
 import com.example.clientadmin.model.enumerator.Gender
 import com.example.clientadmin.model.enumerator.ProductCategory
@@ -37,22 +38,22 @@ data class ProductState(
     val isDescriptionError: Boolean = !Product.validateDescription(description)
 )
 
-class ProductFormViewModel(product: Product? = null) {
+class ProductFormViewModel(productState: ProductState? = null): ViewModel(){
     private val _productState = MutableStateFlow(ProductState())
     val productState: StateFlow<ProductState> = _productState.asStateFlow()
 
     init {
-        if (product != null) {
-            updateName(product.name)
-            updateClub(product.club)
-            updateGender(product.gender)
-            updateCategory(product.productCategory)
-            updateDescription(product.description)
-            updateBrand(product.brand)
-            updatePic1(product.pic1)
-            updatePic2(product.pic2)
-            updatePrice(product.price)
-            updateVariants(product.variants)
+        if (productState != null) {
+            updateName(productState.name)
+            updateDescription(productState.description)
+            updatePrice(productState.price)
+            updateBrand(productState.brand)
+            updateGender(productState.gender)
+            updateCategory(productState.productCategory)
+            updatePic1(productState.pic1)
+            updatePic2(productState.pic2)
+            updateClub(productState.club)
+            updateVariants(productState.variants)
         }
     }
 
@@ -62,7 +63,6 @@ class ProductFormViewModel(product: Product? = null) {
             isNameError = !Product.validateName(name)
         )
     }
-
     fun updateClub(club: String) {
         _productState.value = _productState.value.copy(
             club = club
@@ -114,7 +114,7 @@ class ProductFormViewModel(product: Product? = null) {
         )
     }
     fun updateVariant(size: Size, quantity: Int) {
-        val variantsUpdate = productState.value.variants.toMutableMap()
+        val variantsUpdate = _productState.value.variants.toMutableMap()
         variantsUpdate[size] = quantity
         updateVariants(variantsUpdate)
     }

@@ -91,6 +91,8 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
         order.setItems(items);
         order= orderDao.save(order);  //salvo l'ordine con gli item
+        cart.getCartItems().clear();  //elimino tutti gli item dal carrello
+        cartDao.save(cart);
         try{
             return paymentHandler.startCheckoutProcess(order);
         }

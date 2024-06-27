@@ -31,15 +31,38 @@ fun WebViewScreen(paymentUrl: String, navController: NavHostController, onFinish
                 webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                         request?.url?.let { uri ->
+                            println("URL: ${uri.host}")
                             when (uri.host) {
-                                "stripe_success" -> { navController.navigate("payment_success") }
-                                "stripe_cancel" -> { navController.navigate("payment_failure") }
-                                else -> { return false }
+                                "192.168.1.55" -> {
+                                    when (uri.path) {   //TODO: rifattorizzare i 2 case
+                                        "/stripe_success" -> {
+                                            val sessionId = uri.getQueryParameter("session_id")
+                                            if (sessionId != null) {
+                                                //TODO: validate transaction
+                                                onFinish()
+                                            }
+                                            return true
+                                        }
+                                        "/stripe_cancel" -> {
+                                            val sessionId = uri.getQueryParameter("session_id")
+                                            if (sessionId != null) {
+                                                //TODO: validate transaction
+                                                onFinish()
+                                            }
+                                            return true
+                                        }
+                                    }
+                                }
                             }
-                            onFinish()
-                            return true
+                            return super.shouldOverrideUrlLoading(view, request)
                         }
                         return super.shouldOverrideUrlLoading(view, request)
+                    }
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        println("HO CARICATO LA PAGINA")
+                    }
+                    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: android.webkit.WebResourceError?) {
+                        println("ERRORE: ${error?.description}")
                     }
                 }
                 loadUrl(paymentUrl)

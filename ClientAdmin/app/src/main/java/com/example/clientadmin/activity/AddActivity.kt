@@ -164,8 +164,8 @@ fun ClubDetails(
         ){ clubFormViewModel.updateNameClub(it) }
 
         CustomComboBox(
-            options = leagues,
-            expandable = leagues.isNotEmpty(),
+            options = leagues.map { it.name },
+            text = stringResource(id = R.string.league),
             selectedOption = if (leagues.isNotEmpty()) leagues[0].name else ""
         ) { clubFormViewModel.updateLeague(it) }
 
