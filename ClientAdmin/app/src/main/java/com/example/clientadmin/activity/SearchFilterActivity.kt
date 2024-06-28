@@ -93,14 +93,14 @@ fun SearchPanelProducts(
             ) { filterFormViewModel.updateName(it) }
 
             CustomComboBox(
-                options = leagues,
+                options = leagues + listOf(""),
                 text = stringResource(id = R.string.league),
                 selectedOption = filter.league
             ) { filterFormViewModel.updateLeague(it) }
 
             if(filterType == FilterType.PRODUCTS)
                 CustomComboBox(
-                    options = ProductCategory.entries,
+                    options = ProductCategory.entries + listOf(""),
                     text = stringResource(id = R.string.category),
                     selectedOption = filter.category
                 ) { filterFormViewModel.updateCategory(it) }

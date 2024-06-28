@@ -27,7 +27,6 @@ import androidx.navigation.NavHostController
 import com.example.clientadmin.LocalCustomerViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.model.CustomerSummary
-import com.example.clientadmin.viewmodels.CustomerViewModel
 
 @Composable
 fun CustomerProfile(
