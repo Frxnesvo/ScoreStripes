@@ -192,17 +192,14 @@ public class AuthServiceImpl implements AuthService {
             customer.setFavouriteTeam(customerRegisterDto.getFavoriteTeam());
             customer.setCart(new Cart());
             Wishlist wishlist = new Wishlist();
-            //wishlist.setOwner(customer);
             wishlist.setVisibility(WishlistVisibility.PRIVATE);
+            wishlist.setOwner(customer);
             customer.setWishlist(wishlist);
-
 
             Address address = modelMapper.map(customerRegisterDto.getAddress(), Address.class);
             address.setCustomer(customer);
             if(customer.getAddresses() == null) customer.setAddresses(new ArrayList<>());
             customer.getAddresses().add(address);
-
-
             customerDao.save(customer);
 
             return "Customer registered successfully";

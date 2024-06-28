@@ -47,22 +47,13 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public WishlistItemDto addItemToWishlist(AddToWishlistRequestDto requestDto) {
-        System.out.println("SONO NELL'ADDITEMTOWISHLIST");
         Product product= productDao.findById(requestDto.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
-        System.out.println("HO TROVATO IL PRODOTTO");
         Wishlist wishlist =((Customer) userDetailsService.getCurrentUser()).getWishlist();
-        System.out.println("HO TROVATO LA WISHLIST");
         WishlistItem wishlistItem = new WishlistItem();
-        System.out.println("HO CREATO IL WISHLISTITEM");
         wishlistItem.setDateAdded(LocalDate.now());
-        System.out.println("HO SETTATO LA DATA");
         wishlistItem.setWishlist(wishlist);
-        System.out.println("HO SETTATO LA WISHLIST");
         wishlistItem.setProduct(product);
-        System.out.println("HO SETTATO IL PRODOTTO");
-        System.out.println("STO PER FAR IL SAVE");
         wishlistItemDao.save(wishlistItem);  //Ho preferito iniettare anche il dao per il WishlistItem per evitare di fare una save di wishlist e usare il cascade poichè meno efficiente
-        System.out.println("HO FATTO IL SAVE");
         return modelMapper.map(wishlistItem, WishlistItemDto.class);
     }
 
@@ -70,12 +61,16 @@ public class WishlistServiceImpl implements WishlistService {
     public WishlistDto getMyWishlist() {
         Wishlist wishlist= wishlistDao.findById(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId()).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
         Hibernate.initialize(wishlist.getItems());
+        Hibernate.initialize(wishlist.getOwner());  //TODO: TEST
         return modelMapper.map(wishlist, WishlistDto.class);
     }
 
     @Override
     public List<WishlistDto> getPublicWishlists() {
         List<Wishlist> wishlists = wishlistDao.findAllByVisibility(WishlistVisibility.PUBLIC);
+
+        wishlists.forEach(wishlist -> Hibernate.initialize(wishlist.getOwner())); //TODO: TEST
+
         return wishlists.stream()
                 .map(wishlist -> modelMapper.map(wishlist, WishlistDto.class))
                 .toList();
@@ -84,6 +79,7 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public List<WishlistDto> getSharedWithMeWishlists() {
         List<WishlistAccess> wishlistAccesses = wishlistAccessDao.findAllByGuestId(userDetailsService.getCurrentUser().getId());
+        wishlistAccesses.forEach(wishlistAccess -> Hibernate.initialize(wishlistAccess.getWishlist().getOwner()));  //TODO: TEST
         return wishlistAccesses.stream()
                 .map(wishlistAccess -> modelMapper.map(wishlistAccess.getWishlist(), WishlistDto.class))
                 .toList();
