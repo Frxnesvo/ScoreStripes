@@ -38,7 +38,7 @@ public class SecurityConfig{
                 .requestMatchers("/api/v1/carts/**").hasRole("CUSTOMER") //per come ho strutturato gli endpoint, solo i customer possono fare operazioni sul proprio carrello.
                 .requestMatchers("/api/v1/clubs/**").permitAll()
                 .requestMatchers("/api/v1/leagues/**").permitAll()
-                .requestMatchers("/api/v1/orders/validate-transaction").authenticated()
+                .requestMatchers("/api/v1/orders/validate-transaction").authenticated() //posso togliere
                 .requestMatchers("/api/v1/products/**").permitAll()
                 .anyRequest().authenticated()
         );
