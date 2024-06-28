@@ -81,9 +81,14 @@ class CartViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitHandler.cartApi.deleteItemFromCart(itemId).awaitResponse()
-                if(response.isSuccessful)
+                if(response.isSuccessful) {
                     _cart.value.remove(itemId)
-                else println("Error deleting the cart item: ${response.message()}")
+                    ToastManager.show("Item deleted from cart")
+                }
+                else {
+                    println("Error deleting the cart item: ${response.message()}")
+                    ToastManager.show("Error deleting item from cart")
+                }
             }
             catch (e : Exception){
                 println("Exception deleting the cart item: ${e.message}")

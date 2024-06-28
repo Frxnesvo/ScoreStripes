@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -74,7 +75,7 @@ fun SharedWithPanel(
     val sheetState = rememberModalBottomSheetState()
     val context = LocalContext.current
 
-    val sharedToken = wishListViewModel.wishlistSharedToken
+    val sharedToken by wishListViewModel.wishlistSharedToken
     val wishlistAccesses = wishListViewModel.myWishlistAccesses.collectAsState()
 
     ModalBottomSheet(
@@ -104,16 +105,20 @@ fun SharedWithPanel(
         ){
             CustomButton(text = stringResource(id = R.string.share), background = R.color.secondary) {
                 wishListViewModel.createSharedToken()
-                val sendIntent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, "Here is your invite token: ${sharedToken.value}")
-                    type = "text/plain"
-                }
 
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                context.startActivity(shareIntent)
                 setBottomSheet(false)
             }
+        }
+
+        if(sharedToken != ""){
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Here is your invite token: $sharedToken")
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            context.startActivity(shareIntent)
         }
 
     }
@@ -195,16 +200,19 @@ fun SearchPanelProducts(
 
             CustomComboBox(
                 options = leagues,
+                text = stringResource(id = R.string.league),
                 selectedOption = ""
             ) { filterBuilder.setLeague(it) }
 
             CustomComboBox(
                 options = ProductCategory.entries,
+                text = stringResource(id = R.string.category),
                 selectedOption = ""
             ) { filterBuilder.setCategory(it) }
 
             CustomComboBox(
                 options = Size.entries,
+                text = stringResource(id = R.string.size),
                 selectedOption = ""
             ) { filterBuilder.setSize(it) }
 
@@ -291,22 +299,30 @@ fun AddAddress(
     val scope = rememberCoroutineScope()
 
     val addressState by addressFormViewModel.addressState.collectAsState()
+    val isError = remember { mutableStateOf(false) }
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        containerColor = colorResource(id = R.color.white),
+    ) {
         Column(
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             CustomTextField(
                 value = addressState.street,
                 isError = addressState.isStreetError,
+                errorMessage = stringResource(id = R.string.null_error),
                 text = stringResource(id = R.string.street)
             ){ addressFormViewModel.updateStreet(it) }
 
             CustomTextField(
                 value = addressState.civicNumber,
                 isError = addressState.isCivicNumberError,
+                errorMessage = stringResource(id = R.string.civic_number_error),
                 text = stringResource(id = R.string.civic_number),
                 keyboardType = KeyboardType.Number
             ){ addressFormViewModel.updateCivicNumber(it) }
@@ -314,18 +330,21 @@ fun AddAddress(
             CustomTextField(
                 value = addressState.state,
                 isError = addressState.isStateError,
+                errorMessage = stringResource(id = R.string.null_error),
                 text = stringResource(id = R.string.state)
             ){ addressFormViewModel.updateState(it) }
 
             CustomTextField(
                 value = addressState.city,
                 isError = addressState.isCityError,
+                errorMessage = stringResource(id = R.string.null_error),
                 text = stringResource(id = R.string.city),
             ){ addressFormViewModel.updateCity(it) }
 
             CustomTextField(
                 value = addressState.zipCode,
                 isError = addressState.isZipCodeError,
+                errorMessage = stringResource(id = R.string.zip_code_error),
                 text = stringResource(id = R.string.zip_code),
                 keyboardType = KeyboardType.Number
             ){ addressFormViewModel.updateZipCode(it) }
@@ -342,9 +361,14 @@ fun AddAddress(
                 Text(text = stringResource(id = R.string.default_address))
             }
 
+            isError.value = addressState.isStateError || addressState.isStreetError || addressState.isCityError || addressState.isZipCodeError || addressState.isCivicNumberError
 
 
-            CustomButton(text = stringResource(id = R.string.create), background = R.color.secondary) {
+            CustomButton(
+                enabled = !isError.value,
+                text = stringResource(id = R.string.create),
+                background = if(isError.value) R.color.black50 else R.color.secondary
+            ) {
                 if(sheetState.isVisible)
                     scope.launch {
                         customerViewModel.addAddress(
@@ -495,11 +519,13 @@ fun InsertWishlistTokenPanel(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WishlistVisibilityPanel(
-    currentVisibility: WishListVisibility,
     onDismissRequest: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    currentVisibility: WishListVisibility,
+    onValueChange: (String) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
+
 
     ModalBottomSheet(onDismissRequest = { onDismissRequest() }, sheetState = sheetState) {
         Column(
@@ -511,15 +537,18 @@ fun WishlistVisibilityPanel(
             CustomComboBox(
                 options = WishListVisibility.entries,
                 readOnly = true,
+                text = stringResource(id = R.string.visibility),
                 selectedOption = currentVisibility.name
             ) {
-                WishListVisibility.valueOf(it)
+                onValueChange(it)
             }
 
             CustomButton(
                 text = stringResource(id = R.string.change_visibility),
                 background = R.color.secondary
-            ) { onClick() }
+            ) {
+                onClick()
+            }
         }
     }
 }

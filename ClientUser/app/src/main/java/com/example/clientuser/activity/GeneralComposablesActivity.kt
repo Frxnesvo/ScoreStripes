@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -206,8 +207,9 @@ fun BoxImage(
 @Composable
 fun CustomComboBox(
     options: List<Any>,
+    text: String,
     selectedOption: String,
-    readOnly: Boolean = false,
+    readOnly: Boolean = true,
     expandable: Boolean = true,
     onValueChange: (String) -> Unit
 ) {
@@ -223,8 +225,16 @@ fun CustomComboBox(
             }
         ) {
             OutlinedTextField(
+                enabled = !readOnly,
                 value = selectedOption,
-                onValueChange = {  },
+                onValueChange = {},
+                label = {
+                    Text(
+                        text = text,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
                 readOnly = readOnly,
                 modifier = Modifier
@@ -237,7 +247,9 @@ fun CustomComboBox(
                     unfocusedTextColor = colorResource(id = R.color.black),
                     focusedBorderColor = colorResource(id = R.color.secondary),
                     unfocusedBorderColor = colorResource(id = R.color.white),
-                    errorContainerColor = colorResource(id = R.color.secondary50)
+                    focusedLabelColor = colorResource(id = R.color.secondary),
+                    unfocusedLabelColor = colorResource(id = R.color.black),
+                    cursorColor = Color.Transparent
                 )
             )
             DropdownMenu(
@@ -245,6 +257,7 @@ fun CustomComboBox(
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(200.dp)
                     .background(colorResource(id = R.color.white))
             ) {
 
@@ -260,7 +273,7 @@ fun CustomComboBox(
                     }
                 else
                     DropdownMenuItem(
-                        text = { Text(text = "No options available") },
+                        text = { Text(text = stringResource(id = R.string.list_empty)) },
                         onClick = {expanded = false}
                     )
             }
@@ -272,9 +285,11 @@ fun CustomComboBox(
 fun CustomButton(
     text: String,
     background: Int,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Button(
+        enabled = enabled,
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
@@ -302,39 +317,57 @@ fun CustomButton(
 
 @Composable
 fun ImagePicker(
-    image: Bitmap,
+    image: Bitmap?,
+    isError: Boolean = false,
+    errorMessage: String = "",
     size: Dp,
-    onLaunch: (Bitmap?) -> Unit
+    onChange: (Bitmap?) -> Unit
 ) {
     val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
-        uri?.let{
-            val image : Bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
-            onLaunch(image)
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+        it?.let { uri ->
+            onChange(BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri)))
         }
     }
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(size)
-            .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
-            .clickable { launcher.launch("image/*") }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (image != Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888))
-            Image(
-                bitmap = image.asImageBitmap(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(30.dp))
-            )
-        else
-            Icon(
-                imageVector = Icons.Outlined.AddCircle,
-                contentDescription = "addImage",
-                tint = colorResource(id = R.color.secondary)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(size)
+                .background(colorResource(id = R.color.white), RoundedCornerShape(30.dp))
+                .border(
+                    width = 1.5.dp,
+                    color = colorResource(id = if (isError) R.color.secondary else R.color.transparent),
+                    shape = RoundedCornerShape(30.dp)
+                )
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { launcher.launch("image/*") }
+        ) {
+            if (image != null)
+                Image(
+                    bitmap = image.asImageBitmap(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(30.dp))
+                )
+            else
+                Icon(
+                    imageVector = Icons.Outlined.AddCircle,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.red)
+                )
+        }
+        if(isError)
+            Text(
+                text = errorMessage,
+                color = colorResource(id = R.color.red),
+                modifier = Modifier.padding(5.dp)
             )
     }
 }
@@ -344,11 +377,11 @@ fun CustomTextField(
     value: String,
     text: String,
     isError: Boolean = false,
+    errorMessage: String = "",
     readOnly: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     lines: Int = 1,
     leadingIcon: ImageVector? = null,
-
     onValueChange: (String) -> Unit
 ){
     val colors = OutlinedTextFieldDefaults.colors(
@@ -359,34 +392,46 @@ fun CustomTextField(
         unfocusedBorderColor = colorResource(id = R.color.white),
         focusedLabelColor = colorResource(id = R.color.secondary),
         unfocusedLabelColor = colorResource(id = R.color.black),
-        errorContainerColor = colorResource(id = R.color.secondary50)
+        errorBorderColor = colorResource(id = R.color.red),
     )
 
-    OutlinedTextField(
-        readOnly = readOnly,
-        value = value,
-        isError = isError,
-        onValueChange = onValueChange,
-        label = {
+    Column {
+        OutlinedTextField(
+            enabled = !readOnly,
+            readOnly = readOnly,
+            value = value,
+            onValueChange = onValueChange,
+            label = {
+                Text(
+                    text = text,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            isError = isError,
+            leadingIcon = leadingIcon?.let { { Icon(imageVector = it, contentDescription = null) } },
+            maxLines = lines,
+            singleLine = lines <= 1,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(30.dp),
+            colors = colors,
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType)
+        )
+
+        if(isError)
             Text(
-                text = text,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
+                text = errorMessage,
+                color = colorResource(id = R.color.red),
+                modifier = Modifier.padding(5.dp)
             )
-        },
-        leadingIcon = leadingIcon?.let { { Icon(imageVector = it, contentDescription = null) } },
-        maxLines = lines,
-        singleLine = lines <= 1,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(30.dp),
-        colors = colors,
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType)
-    )
+    }
 }
 
 @Composable
-fun CustomDatePicker(
-    date: MutableState<LocalDate> = mutableStateOf(LocalDate.now()),
+fun CustomDatePicker( //TODO da migliorare esteticamente
+    date: LocalDate,
+    isError: Boolean,
+    errorMessage: String,
     text: String,
     onValueChange: (LocalDate) -> Unit
 ) {
@@ -396,19 +441,25 @@ fun CustomDatePicker(
         Text(text = text)
         CustomComboBox(
             options = (1..31).toList(),
-            readOnly = true,
-            selectedOption = "${date.value.dayOfMonth}"
-        ) { onValueChange(LocalDate.of(date.value.year, date.value.month, it.toInt())) }
+            text = stringResource(id = R.string.day),
+            selectedOption = date.dayOfMonth.toString()
+        ) { onValueChange(LocalDate.of(date.year, date.month, it.toInt())) }
         CustomComboBox(
             options = (1..12).toList(),
-            readOnly = true,
-            selectedOption = "${date.value.monthValue}"
-        ) { onValueChange(LocalDate.of(date.value.year, it.toInt(), date.value.dayOfMonth)) }
+            text = stringResource(id = R.string.month),
+            selectedOption = date.monthValue.toString()
+        ) { onValueChange(LocalDate.of(date.year, it.toInt(), date.dayOfMonth)) }
         CustomComboBox(
-            options = (LocalDate.now().year downTo 1924).toList(),
-            readOnly = true,
-            selectedOption = "${date.value.year}"
-        ) { onValueChange(LocalDate.of(it.toInt(), date.value.month, date.value.dayOfMonth)) }
+            options = (LocalDate.now().year downTo 1900).toList(),
+            text = stringResource(id = R.string.year),
+            selectedOption = date.year.toString()
+        ) { onValueChange(LocalDate.of(it.toInt(), date.month, date.dayOfMonth)) }
+        if(isError)
+            Text(
+                text = errorMessage,
+                color = colorResource(id = R.color.red),
+                modifier = Modifier.padding(5.dp)
+            )
     }
 }
 

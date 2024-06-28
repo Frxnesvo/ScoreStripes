@@ -185,7 +185,8 @@ fun NavigationScaffold(
         ) {
             Wishlist(
                 wishListViewModel = wishlistViewModel,
-                navHostController = navHostController)
+                navHostController = navHostController
+            )
         }
 
         composable(

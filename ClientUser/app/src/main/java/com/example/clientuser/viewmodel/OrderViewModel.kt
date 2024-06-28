@@ -46,7 +46,10 @@ class OrderViewModel: ViewModel() {
                 if(response.isSuccessful) response.body()?.let {
                     _validateTransactionResult.value = if(it["orderStatus"] == OrderStatus.COMPLETED.name) "payment_success" else "payment_failure"
                 }
-                else println("Error during the transaction verification: ${response.message()}")
+                else {
+                    _validateTransactionResult.value = "error"
+                    println("Error during the transaction verification: ${response.message()}")
+                }
             }
             catch (e : Exception){
                 println("Exception during the transaction verification: ${e.message}")

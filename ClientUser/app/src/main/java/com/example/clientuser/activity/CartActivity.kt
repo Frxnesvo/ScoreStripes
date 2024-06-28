@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -258,15 +259,18 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
 @Composable
 fun SwipeToDismissItem(item: CartItem, cartViewModel: CartViewModel, onRemove : () -> Unit) {
 
+    val isRemove = remember { mutableStateOf(false) }
+
     val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { state ->
-            if(state == SwipeToDismissBoxValue.EndToStart){
+        confirmValueChange = { dismissValue ->
+            if(dismissValue == SwipeToDismissBoxValue.EndToStart){
                 onRemove()
+                isRemove.value = true
                 true
-            }
-            else false
+            }else false
         }
     )
+
     SwipeToDismissBox(
         state = dismissState,
         backgroundContent = {
@@ -274,6 +278,13 @@ fun SwipeToDismissItem(item: CartItem, cartViewModel: CartViewModel, onRemove : 
                 SwipeToDismissDeleteRow()
         }
     ) {
-        ItemCart(cartItem = item, cartViewModel = cartViewModel )
+        when(dismissState.currentValue){
+            SwipeToDismissBoxValue.StartToEnd -> {}
+            SwipeToDismissBoxValue.EndToStart -> {}
+            SwipeToDismissBoxValue.Settled -> {
+                if(!isRemove.value) ItemCart(cartItem = item, cartViewModel = cartViewModel)
+            }
+        }
     }
 }
+

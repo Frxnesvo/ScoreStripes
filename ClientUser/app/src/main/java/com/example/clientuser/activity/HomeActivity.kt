@@ -38,6 +38,7 @@ fun Home(
 ){
     val customer by customerFormViewModel.customer.collectAsState()
     val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
+
     val bestSellerJersey by productViewModel.moreSoldJersey.collectAsState(initial = emptyList())
     val bestSellerShorts by productViewModel.moreSoldShorts.collectAsState(initial = emptyList())
 

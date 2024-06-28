@@ -16,7 +16,7 @@ data class CustomerState(
     val username : String = "",
     val birthdate : LocalDate = LocalDate.now(),
     val gender : Gender = Gender.entries[0],
-    val profilePic : Bitmap = Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888),
+    val profilePic : Bitmap? = null,
     val favouriteTeam : String = "",
 
     //error
@@ -30,7 +30,7 @@ class LoginFormViewModel {
     private val _customerState = MutableStateFlow(CustomerState())
     val customerState: StateFlow<CustomerState> = _customerState.asStateFlow()
 
-    fun updateProfilePic(uri: Bitmap){
+    fun updateProfilePic(uri: Bitmap?){
         _customerState.value = _customerState.value.copy(
             profilePic = uri,
             isProfilePicError = !Customer.validateProfilePic(uri)

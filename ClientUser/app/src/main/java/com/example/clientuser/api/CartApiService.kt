@@ -23,5 +23,5 @@ interface CartApiService {
     fun updateItemCartQuantity(@Path("itemId") itemId: String, updateCartItemDto: UpdateCartItemDto): Call<String>
 
     @DELETE("api/v1/carts/item/{itemId}")
-    fun deleteItemFromCart(@Path("itemId") itemId: String): Call<String>
+    fun deleteItemFromCart(@Path("itemId") itemId: String): Call<Map<String, String>>
 }

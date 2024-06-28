@@ -8,6 +8,6 @@ data class OrderItemDto (
     val id: String,
     val quantity: Int,
     val price: Double,
-    val personalization: Personalization,
+    val personalization: Personalization?,
     val product: ProductWithVariantDto
 )

@@ -61,10 +61,13 @@ fun CustomerProfile(
             ) { navHostController.popBackStack() }
         }
 
-        BoxProfilePic(
-            name = customer.username,
-            pic = customer.profilePic
-        )
+        //TODO
+        customer.profilePic?.let {
+            BoxProfilePic(
+                name = customer.username,
+                pic = it
+            )
+        }
 
         Text(
             text = customer.username,

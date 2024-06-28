@@ -76,10 +76,10 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
 
 
     //TODO controllare perchè non naviga indietro alla login una volta completata la registrazione
-    fun register(token: String, username: String, birthDate: LocalDate, gender: Gender, address: Address, favouriteTeam: String, pic: Bitmap): Boolean{
+    fun register(token: String, username: String, birthDate: LocalDate, gender: Gender, address: Address, favouriteTeam: String, pic: Bitmap){
         try{
             println("TOKEN GOOGLE register: $token")
-            var returnValue = false
+
             CoroutineScope(Dispatchers.IO).launch {
 
                 val response = RetrofitHandler.loginApi.customerRegister(
@@ -98,23 +98,15 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                     defaultAddress = address.defaultAddress.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
                 ).awaitResponse()
 
-                if(response.isSuccessful){
-                    _token.value = ""
-                    returnValue = true
-                }
-                else{
-                    println("Error customer register: ${response.message()}")
-                    returnValue = false
-                }
+                if(response.isSuccessful) _token.value = ""
+                else println("Error customer register: ${response.message()}")
                 goToLogin()
 
             }
-            return returnValue
         }catch (e: Exception){
             _addError.value = e.message ?: "Unknown error"
             goToLogin()
             _token.value = ""
-            return false
         }
     }
 

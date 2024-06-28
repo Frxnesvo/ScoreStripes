@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -31,8 +32,11 @@ class ProductViewModel: ViewModel() {
     private val _productSummaries = MutableStateFlow<List<BasicProduct>>(emptyList())
     val productSummary = _productSummaries
 
-    val moreSoldJersey = fetchMoreSoldProduct(ProductCategory.JERSEY)
-    val moreSoldShorts = fetchMoreSoldProduct(ProductCategory.SHORTS)
+    private val _moreSoldJersey = MutableStateFlow<List<Product>>(emptyList())
+    private val _moreSoldShorts = MutableStateFlow<List<Product>>(emptyList())
+
+    val moreSoldJersey = _moreSoldJersey.asStateFlow()
+    val moreSoldShorts = _moreSoldShorts.asStateFlow()
 
     private val productById = mutableStateOf(Product())
 
@@ -40,6 +44,8 @@ class ProductViewModel: ViewModel() {
 
     init {
         loadMoreProductSummaries()
+        fetchMoreSoldProduct(ProductCategory.SHORTS)
+        fetchMoreSoldProduct(ProductCategory.JERSEY)
     }
 
 
@@ -81,20 +87,25 @@ class ProductViewModel: ViewModel() {
         }
     }.flowOn(Dispatchers.IO)
 
-    private fun fetchMoreSoldProduct(category: ProductCategory): Flow<List<Product>> = flow {
+    private fun fetchMoreSoldProduct(category: ProductCategory) {
         try {
-            val response = RetrofitHandler.productApi.getMoreSoldProduct(category).awaitResponse()
-            if(response.isSuccessful){
-                response.body()?.let { products ->
-                    emit(products.map { product -> Product.fromDto(product) })
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.productApi.getMoreSoldProduct(category).awaitResponse()
+                if(response.isSuccessful){
+                    response.body()?.let {
+                        val products = it.map { product -> Product.fromDto(product) }
+                        when(category){
+                            ProductCategory.JERSEY -> _moreSoldJersey.value = products
+                            ProductCategory.SHORTS -> _moreSoldShorts.value = products
+                        }
+                    }
                 }
+                else println("Error fetching more sold ${category.name}: ${response.message()}")
             }
-            else println("Error fetching more sold ${category.name}: ${response.message()}")
-
         }catch(e: Exception){
             println("Exception fetching more sold ${category.name}: ${e.message}")
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     suspend fun getProductById(id: String): Product? {
         return try {

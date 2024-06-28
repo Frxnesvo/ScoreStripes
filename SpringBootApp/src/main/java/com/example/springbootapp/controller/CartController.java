@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RateLimited(permitsPerSecond = 10)
 @RestController
@@ -39,9 +40,9 @@ public class CartController {
     }
 
     @DeleteMapping("/item/{itemId}")
-    public ResponseEntity<String> deleteItemFromCart(@PathVariable String itemId){
+    public ResponseEntity<Map<String, String>> deleteItemFromCart(@PathVariable String itemId){
         cartService.deleteItemFromCart(itemId);
-        return ResponseEntity.ok("Item deleted");
+        return ResponseEntity.ok(Map.of("response", "Item deleted"));
     }
 
 }

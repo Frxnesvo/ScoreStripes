@@ -30,6 +30,7 @@ fun Register(
     loginViewModel: LoginViewModel,
     loginFormViewModel: LoginFormViewModel
 ) {
+
     val adminState by loginFormViewModel.adminState.collectAsState()
     val error by loginViewModel.addError
 

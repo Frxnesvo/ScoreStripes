@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.viewmodel.OrderViewModel
 import kotlinx.coroutines.launch
 
@@ -79,18 +80,17 @@ fun WebViewScreen(orderViewModel: OrderViewModel, paymentUrl: String, navControl
                 loadUrl(paymentUrl)
             }
         },
-//        update = { webView ->
-//            if (paymentUrl.isNotEmpty()) {
-//                webView.loadUrl(paymentUrl)
-//            }
-//        },
         modifier = Modifier.fillMaxSize()
     )
 
     val navigateString by orderViewModel.validateTransactionResult.collectAsState()
 
     if (navigateString != "") {
-        navController.navigate(navigateString)
+        if(navigateString != "error") navController.navigate(navigateString)
+        else {
+            navController.navigate("home")
+            ToastManager.show("error during the payment")
+        }
         onFinish()
     }
 }

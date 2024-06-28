@@ -30,7 +30,7 @@ class Order(
         val id: String,
         val quantity: Int,
         val price: Double,
-        val personalization: Personalization,
+        val personalization: Personalization?,
         val product: ProductWithVariant
     ) {
         companion object {

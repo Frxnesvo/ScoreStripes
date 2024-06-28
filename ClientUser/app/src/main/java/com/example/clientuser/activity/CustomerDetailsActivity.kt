@@ -122,6 +122,7 @@ fun Details(
 
         CustomComboBox(
             options = clubsNames,
+            text = stringResource(id = R.string.club),
             selectedOption = customer.favouriteTeam,
         ){
             customerFormViewModel.updateFavouriteTeam(it)

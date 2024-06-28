@@ -1,6 +1,7 @@
 package com.example.clientuser.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.CustomerSummary
@@ -8,7 +9,9 @@ import com.example.clientuser.model.Wishlist
 import com.example.clientuser.model.WishlistItem
 import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.dto.WishlistVisibilityDto
+import com.example.clientuser.model.enumerator.WishListVisibility
 import com.example.clientuser.utils.RetrofitHandler
+import com.example.clientuser.utils.ToastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +33,7 @@ class WishListViewModel : ViewModel() {
     val myWishList = _myWishList
 
     private val _wishlistSharedToken = mutableStateOf("")
-    val wishlistSharedToken = _wishlistSharedToken
+    val wishlistSharedToken: State<String> = _wishlistSharedToken
 
     private val _myWishlistAccesses = MutableStateFlow<List<CustomerSummary>>(emptyList())
     val myWishlistAccesses = _myWishlistAccesses
@@ -112,7 +115,10 @@ class WishListViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val response = RetrofitHandler.wishListApi.createShareToken().awaitResponse()
-                if(response.isSuccessful) response.body()?.let { _wishlistSharedToken.value = it.token }
+                if(response.isSuccessful) response.body()?.let {
+                    _wishlistSharedToken.value = it.token
+                    println("SHARED TOKEN VIEWMODEl: ${wishlistSharedToken.value}")
+                }
                 else Log.e("errore wishlist","Error during the creation of the wishlist shared token: ${response.message()}")
             }
             catch (e : Exception){
@@ -121,15 +127,26 @@ class WishListViewModel : ViewModel() {
         }
     }
 
-    fun changeWishlistVisibility(wishlistVisibilityDto: WishlistVisibilityDto) : Flow<String> = flow {
-        try{
-            val response = RetrofitHandler.wishListApi.changeWishlistVisibility(wishlistVisibilityDto).awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error during the visibility changing of the wishlist: ${response.message()}")
+    fun changeWishlistVisibility(wishlistVisibilityDto: WishlistVisibilityDto){
+        CoroutineScope(Dispatchers.IO).launch {
+            try{
+                val response = RetrofitHandler.wishListApi.changeWishlistVisibility(wishlistVisibilityDto).awaitResponse()
+                if(response.isSuccessful) response.body()?.let {
+                    ToastManager.show("wishlist visibility changed from ${_myWishList.value.visibility.name} to ${wishlistVisibilityDto.visibility.name}")
+                    _myWishList.value = _myWishList.value.copy(
+                        visibility = wishlistVisibilityDto.visibility
+                    )
+                }
+                else {
+                    println("Error during the visibility changing of the wishlist: ${response.message()}")
+                    ToastManager.show("Error during the change of the wishlist visibility")
+                }
+            }
+            catch (e : Exception){
+                println("Exception during the visibility changing of the wishlist: ${e.message}")
+            }
         }
-        catch (e : Exception){
-            println("Exception during the visibility changing of the wishlist: ${e.message}")
-        }
+
     }
 
     private fun fetchMyWishlistAccesses(){

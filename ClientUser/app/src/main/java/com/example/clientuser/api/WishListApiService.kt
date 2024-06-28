@@ -24,14 +24,14 @@ interface WishListApiService {
     @GET("/api/v1/wishlists/shared-with-me")
     fun getSharedWithMeWishlists() : Call<List<WishListDto>>
 
-    @POST("/api/v1/wishlists/add-Item")
+    @POST("/api/v1/wishlists/add-item")
     fun addItemToWishlist(@Body addToWishListItemDto: AddToWishListRequestDto) : Call<WishlistItemDto>
 
     @POST("/api/v1/wishlists/create-shareToken")
     fun createShareToken() : Call<WishlistShareTokenDto>
 
     @PATCH("/api/v1/wishlists/change-visibility")
-    fun changeWishlistVisibility(@Body wishlistVisibilityDto: WishlistVisibilityDto) : Call<String>
+    fun changeWishlistVisibility(@Body wishlistVisibilityDto: WishlistVisibilityDto) : Call<Map<String, String>>
 
     @GET("/api/v1/wishlists/my-wishlist/accesses")
     fun getMyWishlistAccesses(): Call<List<CustomerSummaryDto>>
