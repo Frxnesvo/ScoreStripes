@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RateLimited(permitsPerSecond = 10)
 @RestController
@@ -22,10 +23,10 @@ public class WishlistController {
     private final WishlistShareTokenService wishlistShareTokenService;
 
     @PatchMapping("/change-visibility")
-    public ResponseEntity<String> changeVisibility(@Valid @RequestBody WishlistVisibilityDto visibilityDto){
+    public ResponseEntity<Map<String,String>> changeVisibility(@Valid @RequestBody WishlistVisibilityDto visibilityDto){
         System.out.println(visibilityDto.getVisibility().name());
         wishlistService.changeVisibility(visibilityDto);
-        return ResponseEntity.ok("Visibility changed");
+        return ResponseEntity.ok(Map.of("message","Visibility changed"));
     }
 
     @PostMapping("/create-shareToken")

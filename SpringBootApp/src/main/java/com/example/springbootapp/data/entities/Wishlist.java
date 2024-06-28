@@ -22,8 +22,9 @@ public class Wishlist {
     @Enumerated(EnumType.STRING)
     private WishlistVisibility visibility;
 
-    //@OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY) // Mantengo la bidirezionalità al momento perchè potrebbe servire
-    //private Customer owner;
+    @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY) // Mantengo la bidirezionalità al momento perchè potrebbe servire
+    private Customer owner;
+
     @ToString.Exclude  //TODO: STO TESTANDO
     @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<WishlistItem> items;

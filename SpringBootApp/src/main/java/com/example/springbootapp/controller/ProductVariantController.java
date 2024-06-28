@@ -4,6 +4,7 @@ import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.ProductWithVariantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ public class ProductVariantController {
 
     private final ProductWithVariantService productWithVariantService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("out-of-stock")
     public ResponseEntity<Integer> countVariantsOutOfStock(){
         return ResponseEntity.ok(productWithVariantService.countVariantsOutOfStock());

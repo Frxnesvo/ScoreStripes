@@ -12,4 +12,5 @@ public class WishlistDto {
     private String id;
     private WishlistVisibility visibility;
     private List<WishlistItemDto> items;
+    private String ownerUsername;
 }

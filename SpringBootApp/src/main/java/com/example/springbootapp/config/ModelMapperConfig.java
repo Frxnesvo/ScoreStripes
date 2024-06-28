@@ -143,15 +143,6 @@ public class ModelMapperConfig {
             }
         };
 
-        // Convert Wishlist to WishlistDto
-//        PropertyMap<Wishlist, WishlistDto> wishlistMap = new PropertyMap<>() {    TODO: DOVREBBE FARLO IN AUTOMATICO
-//            @Override
-//            protected void configure(){
-//                using(wishlistItemConverter)
-//                        .map(source.getItems(), destination.getItems());
-//                //map().setOwnerUsername(source.getOwner().getUsername());
-//            }
-//        };
 
         PropertyMap<CartItem, OrderItem> cartItemMap = new PropertyMap<>() {
             @Override
