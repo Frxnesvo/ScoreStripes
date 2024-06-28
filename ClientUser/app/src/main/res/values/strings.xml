@@ -68,4 +68,17 @@
     <string name="change_visibility">CHANGE VISIBILITY</string>
     <string name="best_seller_shorts">BEST SELLER SHORTS</string>
     <string name="best_seller_jersey">BEST SELLER JERSEY</string>
+    <string name="username_error">is required an uppercase and length between 3 and 40</string>
+    <string name="pic_error">is required a pic</string>
+    <string name="day">DAY</string>
+    <string name="month">MONTH</string>
+    <string name="year">YEAR</string>
+    <string name="list_empty">nothing to show</string>
+    <string name="date_error">is required a date before today</string>
+    <string name="null_error">cannot be empty</string>
+    <string name="zip_code_error">is required five digits only</string>
+    <string name="civic_number_error">is required a number</string>
+    <string name="category">CATEGORY</string>
+    <string name="size">SIZE</string>
+    <string name="visibility">VISIBILITY</string>
 </resources>
