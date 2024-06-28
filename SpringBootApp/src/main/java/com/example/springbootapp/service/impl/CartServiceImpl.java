@@ -12,7 +12,9 @@ import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.security.CustomUserDetails;
 import com.example.springbootapp.service.interfaces.CartService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -80,13 +82,12 @@ public class CartServiceImpl implements CartService {
     public void deleteItemFromCart(String itemId) {
         Customer customer = (Customer) userDetailsService.getCurrentUser();
         Cart cart= cartDao.findById(customer.getCart().getId()).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-        //cerca nel carrello un item con l'id passato`usando gli stream e se lo trova lo rimuove
-        CartItem item = cart.getCartItems().stream()
+        List<CartItem> items = cartItemDao.findAllByCartId(cart.getId());  //Non riesco a non fare la query. cart.getCartItems() non va in nessun modo per colpa della sessione (ho provato qualsiasi cosa)
+        CartItem item = items.stream()
                 .filter(cartItem -> cartItem.getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("Item not found in cart"));
-        customer.getCart().getCartItems().remove(item);
-        cartDao.save(customer.getCart());
+        cartItemDao.delete(item);
     }
 
     @Override

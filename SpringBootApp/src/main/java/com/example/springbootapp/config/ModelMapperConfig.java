@@ -11,6 +11,8 @@ import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +72,11 @@ public class ModelMapperConfig {
                 return context.getMappingEngine().map(context.create(addr, AddressDto.class));
             }
             return null;
+        };
+
+        Converter < LocalDateTime, LocalDate > dateToLocalDate = context -> {
+            LocalDateTime date = context.getSource();
+            return date.toLocalDate();
         };
 
 
@@ -173,6 +180,14 @@ public class ModelMapperConfig {
             }
         };
 
+        PropertyMap<Order,OrderDto> orderMap = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                using(dateToLocalDate)
+                        .map(source.getDate(), destination.getDate());
+            }
+        };
+
 
 
 
@@ -187,6 +202,7 @@ public class ModelMapperConfig {
         modelMapper.addMappings(cartItemMap);
         modelMapper.addMappings(customerLoginMap);
         modelMapper.addMappings(adminLoginMap);
+        modelMapper.addMappings(orderMap);
 
         modelMapper.addConverter(productPicUrlConverter);
 
