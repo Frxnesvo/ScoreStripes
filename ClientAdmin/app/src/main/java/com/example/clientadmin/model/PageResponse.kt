@@ -1,19 +1,18 @@
 package com.example.clientadmin.model
 
-import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.model.dto.PageResponseDto
-import com.example.clientadmin.model.dto.ProductSummaryDto
 
 class Page(
-    val totalPages: Int = 0,
-    val totalElements: Long = 0,
-    val size: Int = 2,
-    val number: Int = 0,
-    val numberOfElements: Int = 0,
-    val first: Boolean = true,
-    val last: Boolean = false,
-    val empty: Boolean = false
+    val totalPages: Int,
+    val totalElements: Long,
+    val size: Int,
+    val number: Int,
+    val numberOfElements: Int,
+    val first: Boolean,
+    val last: Boolean,
+    val empty: Boolean
 ) {
+    constructor() : this(0, 0, 0, 0, 0, true, false, false)
     companion object {
         fun fromDto(pageResponseDto: PageResponseDto<Any>): Page {
             return Page(

@@ -42,7 +42,6 @@ import com.example.clientadmin.LocalLeagueViewModel
 import com.example.clientadmin.LocalProductViewModel
 import com.example.clientadmin.LocalProductsViewModel
 import com.example.clientadmin.R
-import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 
 @Composable

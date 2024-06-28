@@ -230,7 +230,12 @@ fun NavigationScaffold(
         composable(
             route = "userDetails",
         ){
-            CustomerDetails(navHostController = navHostController)
+            LocalCustomerViewModel.current.customerProfile.collectAsState().value?.let {
+                customer -> CustomerDetails(
+                    customer = customer,
+                    navHostController = navHostController
+                )
+            }
         }
 
         //ORDERS

@@ -8,7 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -17,15 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.clientadmin.LocalCustomerViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.model.dto.CustomerProfileDto
 
 
 @Composable
-fun CustomerDetails(navHostController: NavHostController){
-    val customer = LocalCustomerViewModel.current.customerProfile.collectAsState().value
-
+fun CustomerDetails(customer: CustomerProfileDto, navHostController: NavHostController){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         modifier = Modifier
@@ -34,8 +30,7 @@ fun CustomerDetails(navHostController: NavHostController){
     ){
         Back { navHostController.popBackStack() }
 
-        if (customer != null)
-            Details(customer = customer)
+        Details(customer = customer)
     }
 }
 

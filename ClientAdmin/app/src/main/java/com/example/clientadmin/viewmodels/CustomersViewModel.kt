@@ -1,10 +1,7 @@
 package com.example.clientadmin.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.example.clientadmin.model.dto.AddressDto
-import com.example.clientadmin.model.dto.CustomerProfileDto
 import com.example.clientadmin.model.CustomerSummary
-import com.example.clientadmin.model.Order
 import com.example.clientadmin.model.Page
 import com.example.clientadmin.model.dto.CustomerSummaryDto
 import com.example.clientadmin.utils.RetrofitHandler
