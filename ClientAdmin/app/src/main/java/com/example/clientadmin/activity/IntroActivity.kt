@@ -23,6 +23,7 @@ import com.example.clientadmin.R
 import com.example.clientadmin.authentication.GoogleAuth
 import com.example.clientadmin.viewmodels.LoginViewModel
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.runtime.collectAsState
 
 
 @Composable
@@ -37,8 +38,7 @@ fun IndexPage(
 
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Image(
             painter = painterResource(id = R.drawable.collection),
@@ -72,7 +72,13 @@ fun IndexPage(
                     }
                 }
 
-                if(isLoggedIn.value) navController.navigate("scaffold")
+                if(isLoggedIn.value) {
+                    loginViewModel.user.collectAsState().value?.let {
+                        val intent = Intent(context, MainActivity2::class.java)
+                        intent.putExtra("admin", it)
+                        context.startActivity(intent)
+                    }
+                }
                 else if(loginViewModel.goToRegister.value)navController.navigate("register/${loginViewModel.token.value}")
                 else println("invalid id token") //TODO
             }

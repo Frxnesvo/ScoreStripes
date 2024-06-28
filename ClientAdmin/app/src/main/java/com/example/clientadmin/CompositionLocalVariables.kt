@@ -1,6 +1,8 @@
 package com.example.clientadmin
 
 import androidx.compose.runtime.compositionLocalOf
+import androidx.navigation.NavHostController
+import com.example.clientadmin.model.Admin
 import com.example.clientadmin.viewmodels.*
 
 val LocalCustomersViewModel = compositionLocalOf<CustomersViewModel> { error("No CustomerViewModel provided") }
@@ -10,3 +12,5 @@ val LocalLeagueViewModel = compositionLocalOf<LeagueViewModel> { error("No Leagu
 val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No HomeViewModel provided") }
 val LocalCustomerViewModel = compositionLocalOf<CustomerViewModel> { error("No CustomerViewModel provided") }
 val LocalProductViewModel = compositionLocalOf<ProductViewModel> { error("No ProductViewModel provided") }
+
+val LocalNavHostLogin = compositionLocalOf<NavHostController> { error("No NavHostController provided") }
