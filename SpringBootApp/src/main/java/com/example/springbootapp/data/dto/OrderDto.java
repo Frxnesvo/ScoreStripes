@@ -5,7 +5,7 @@ import com.example.springbootapp.data.entities.Enums.OrderStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -13,7 +13,7 @@ import java.util.List;
 public class OrderDto {
     private String id;
     private Double totalPrice;
-    private LocalDate date;
+    private LocalDateTime date;
     private OrderStatus status;
     private OrderInformations resilientInfos;
     private List<OrderItemDto> items;
