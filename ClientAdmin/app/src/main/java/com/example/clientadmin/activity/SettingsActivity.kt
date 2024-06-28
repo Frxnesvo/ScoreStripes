@@ -25,11 +25,11 @@ fun Settings(admin: Admin){
     ){
         Title()
 
-        Image(
-            bitmap = admin.pic.asImageBitmap(),
-            contentDescription = null,
-            modifier = Modifier.size(150.dp).clip(shape = CircleShape)
-        )
+//        Image(
+//            bitmap = admin.pic.asImageBitmap(),
+//            contentDescription = null,
+//            modifier = Modifier.size(150.dp).clip(shape = CircleShape)
+//        )
 
         CustomTextField(
             value = admin.username,

@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,7 +57,6 @@ import com.example.clientadmin.utils.ToastManager
 import com.example.clientadmin.viewmodels.formViewModel.LeagueFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ClubFormViewModel
 import com.example.clientadmin.viewmodels.CustomerViewModel
-import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.ProductViewModel
 import com.example.clientadmin.viewmodels.formViewModel.FilterFormViewModel
 import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
@@ -63,11 +64,9 @@ import com.example.clientadmin.viewmodels.formViewModel.ProductFormViewModel
 enum class Screen{ HOME, USERS, PRODUCTS, SETTINGS }
 
 @Composable
-fun Scaffold(
-    loginViewModel: LoginViewModel,
-    navHostController: NavHostController
-) {
+fun Scaffold(admin: Admin) {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
+
     val navController = rememberNavController()
 
     Scaffold(
@@ -84,20 +83,16 @@ fun Scaffold(
                     end = 10.dp,
                 )
         ){
-            loginViewModel.user.collectAsState().value.let {
-                admin -> if (admin != null) {
-                    AuthAwareComposable(navController = navHostController) {
-                        CompositionLocalProvider(
-                            LocalCustomerViewModel provides CustomerViewModel(),
-                            LocalProductViewModel provides ProductViewModel(),
-                        ) {
-                            NavigationScaffold(
-                                navHostController = navController,
-                                selectedScreen = selectedScreen,
-                                admin = admin
-                            )
-                        }
-                    }
+            AuthAwareComposable {
+                CompositionLocalProvider(
+                    LocalCustomerViewModel provides CustomerViewModel(),
+                    LocalProductViewModel provides ProductViewModel(),
+                ) {
+                    NavigationScaffold(
+                        navHostController = navController,
+                        selectedScreen = selectedScreen,
+                        admin = admin
+                    )
                 }
             }
         }
@@ -352,16 +347,15 @@ fun NavigationScaffold(
 
 @Composable
 fun AuthAwareComposable(
-    navController: NavHostController,
     content: @Composable () -> Unit
 ){
     val logoutManager = remember { LogoutManager.instance }
+    val context = LocalContext.current
 
     LaunchedEffect(logoutManager) {
         logoutManager.logoutEvent.collect {
-            navController.navigate("index") {
-                popUpTo(navController.graph.startDestinationId) { inclusive = true }
-            }
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
         }
     }
 
