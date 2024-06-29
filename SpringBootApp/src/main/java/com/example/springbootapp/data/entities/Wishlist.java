@@ -25,11 +25,11 @@ public class Wishlist {
     @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY) // Mantengo la bidirezionalità al momento perchè potrebbe servire
     private Customer owner;
 
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ToString.Exclude
     @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<WishlistItem> items;
 
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ToString.Exclude
     @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<WishlistAccess> accesses;
 

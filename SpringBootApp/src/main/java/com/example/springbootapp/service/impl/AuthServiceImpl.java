@@ -41,7 +41,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private final ModelMapper modelMapper;    //TODO: DA VEDERE COME RIFATTORIZZARE LE 2 REGISTER
+    private final ModelMapper modelMapper;    //TODO: RIFATTORIZZARE LE 2 REGISTER
 
     @Value("${google.clientId}")
     private String googleClientId;
@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
                     response.setJwt(jwtToken);
                     return response;
                 } else if (exists) {
-                    throw new UserAlreadyExistsException("User already exists but is not an admin");  //TODO: da chiedere
+                    throw new UserAlreadyExistsException("User already exists but is not an admin");
                 } else {
                     throw new NoAccountException("No account found");
                 }
@@ -93,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
                     response.setJwt(jwtToken);
                     return response;
                 } else if (exists) {
-                    throw new UserAlreadyExistsException("User already exists but is not a customer");  //TODO: da chiedere
+                    throw new UserAlreadyExistsException("User already exists but is not a customer");
                 } else {
                     throw new NoAccountException("No account found");
                 }
@@ -172,7 +172,7 @@ public class AuthServiceImpl implements AuthService {
             Customer customer = new Customer();
             customer.setUsername(customerRegisterDto.getUsername());
             customer.setFirstName(payload.get("given_name").toString());
-            customer.setLastName(payload.get("family_name") != null ? payload.get("family_name").toString() : "");            //TODO da fixare family_name facoltativo
+            customer.setLastName(payload.get("family_name") != null ? payload.get("family_name").toString() : "");
             customer.setEmail(payload.getEmail());
             customer.setBirthDate(customerRegisterDto.getBirthDate());
             customer.setGender(customerRegisterDto.getGender());

@@ -26,7 +26,7 @@ public class SecurityConfig{
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
-    @Bean   //TODO: TUTTO DA FARE
+    @Bean   //TODO: DA FINIRE
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);   //disabilita CSRF perchè non usiamo sessioni
 
@@ -40,6 +40,7 @@ public class SecurityConfig{
                 .requestMatchers("/api/v1/leagues/**").permitAll()
                 .requestMatchers("/api/v1/orders/validate-transaction").authenticated() //posso togliere
                 .requestMatchers("/api/v1/products/**").permitAll()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                 .anyRequest().authenticated()
         );
         http.exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint));

@@ -34,7 +34,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
                 .key(key)
                 .build();
 
-        int expirationMinutes = 60;     //TODO
+        int expirationMinutes = 60;     //TODO: 60 per testing, poi mettere 3
         GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(expirationMinutes))
                 .getObjectRequest(getObjectRequest)

@@ -22,7 +22,7 @@ public class CartController {
 
     private final CartService cartService;
 
-    @PostMapping("/add-product")    //TODO: proteggere endpoint dagli admin, cambiare path in /item/add
+    @PostMapping("/add-product")    //TODO:  cambiare path in /item/add
     public ResponseEntity<CartItemDto> addProductToCart(@Valid @RequestBody AddToCartRequestDto requestDto) {
         return ResponseEntity.ok(cartService.addProductToCart(requestDto));
     }

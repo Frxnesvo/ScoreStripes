@@ -31,12 +31,12 @@ public class WishlistItem {
     private LocalDate dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ToString.Exclude
     @JoinColumn(name = "wishlist_id", nullable = false)
     private Wishlist wishlist;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ToString.Exclude
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

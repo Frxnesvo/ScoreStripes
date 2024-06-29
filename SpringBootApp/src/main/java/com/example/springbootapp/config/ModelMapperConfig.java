@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
-@RequiredArgsConstructor                          //TODO: DA RIFATTORIZZARE
+@RequiredArgsConstructor
 public class ModelMapperConfig {
 
     private final AwsS3ServiceImpl awsS3Service;
@@ -52,13 +52,6 @@ public class ModelMapperConfig {
             return stockMap;
         };
 
-        //convert personalizzato per gestire la conversione da una lista di WishlistItem a una lista di WishlistItemDto
-//        Converter<List<WishlistItem>, List<WishlistItemDto>> wishlistItemConverter = context -> { TODO: DOVREBBE FARLO IN AUTOMATICO
-//            List<WishlistItem> source = context.getSource();
-//            return source.stream()
-//                    .map(item -> modelMapper.map(item, WishlistItemDto.class))
-//                    .collect(Collectors.toList());
-//        };
 
         // Convert ProductPic to String
         Converter<ProductPic, String> productPicUrlConverter = context -> {

@@ -86,7 +86,7 @@ public class PaymentHandler {
 
 
 
-//    private SessionCreateParams.LineItem createLineItem(OrderItem item) { //TODO: IMPLEMENTAZIONE PER CARICARE I PRODOTTI ANCHE SU STRIPE. AL MOMENTO NON LO IMPLEMENTO (PRENDE TROPPO TEMPO)
+//    private SessionCreateParams.LineItem createLineItem(OrderItem item) { // IMPLEMENTAZIONE PER CARICARE I PRODOTTI ANCHE SU STRIPE. AL MOMENTO NON LO IMPLEMENTO (PRENDE TROPPO TEMPO)
 //        return SessionCreateParams.LineItem.builder()
 //                .setQuantity(item.getQuantity().longValue())
 //                .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
@@ -103,7 +103,7 @@ public class PaymentHandler {
 //                .build();
 //    }
 
-//    public String createProductInStripe(ProductDto product){  //TODO: IMPLEMENTAZIONE PER CARICARE I PRODOTTI ANCHE SU STRIPE. AL MOMENTO NON LO IMPLEMENTO (PRENDE TROPPO TEMPO)
+//    public String createProductInStripe(ProductDto product){  // IMPLEMENTAZIONE PER CARICARE I PRODOTTI ANCHE SU STRIPE. AL MOMENTO NON LO IMPLEMENTO (PRENDE TROPPO TEMPO)
 //        ProductCreateParams params = ProductCreateParams.builder()
 //                .setName(product.getName())
 //                .setDescription(product.getDescription())
@@ -115,7 +115,7 @@ public class PaymentHandler {
 //            Product stripeProduct = Product.create(params);
 //            return stripeProduct.getId();
 //        } catch (StripeException e) {
-//            throw new RuntimeException(e);  //TODO: da cambiare
+//            throw new RuntimeException(e);
 //        }
 //    }
 

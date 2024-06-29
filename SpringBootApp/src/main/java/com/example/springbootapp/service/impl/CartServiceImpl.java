@@ -33,7 +33,6 @@ public class CartServiceImpl implements CartService {
     private final ModelMapper modelMapper;
 
     //FIXME: Ho centralizzato sia la logica per aggiungere sia per aumentare la quantità di un prodotto nel carrello. Dovrei fare 2 metodi separati?
-    //TODO: L'endpoint per aggiungere un prodotto al carrello dovrebbe essere accessibile solo ai customer non agli admin.
 
     @Override
     public CartItemDto addProductToCart(AddToCartRequestDto requestDto) {

@@ -32,7 +32,7 @@ public class ClubServiceImpl implements ClubService {
         }
         Club club = new Club();
         club.setName(clubRequestDto.getName());
-        String url = awsS3Service.uploadFile(clubRequestDto.getPic(), "clubs", clubRequestDto.getName());   //FIXME: NON MI PIACE PASSARE IL FOLDER COSI'
+        String url = awsS3Service.uploadFile(clubRequestDto.getPic(), "clubs", clubRequestDto.getName());   //FIXME: NON MI PIACE PASSARE IL FOLDER COSI', METTERE COSTANTE
         club.setPicUrl(url);
         League league = leagueDao.findByName(clubRequestDto.getLeagueName());
         if(league == null){

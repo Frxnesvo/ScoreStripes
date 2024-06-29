@@ -28,6 +28,6 @@ public class ProductUpdateDto {
     @ValidImageExtension
     private MultipartFile pic2;
 
-    @Size(min=5,max=5)      //TODO: 5 sono i numeri delle possibili size che abbiamo. Non mi piace mettere un numero statico
-    private Map<com.example.springbootapp.data.entities.Enums.Size,Integer> variantStocks;  //FIXME: vedere come eliminare il prefisso
+    @Size(min=5,max=5)      //TODO: 5 sono i numeri delle possibili size che abbiamo. Non mi piace mettere un numero statico. Devo mettere delle costanti
+    private Map<com.example.springbootapp.data.entities.Enums.Size,Integer> variantStocks;  //non posso togliere il prefisso perchè size va in conflitto @Size
 }

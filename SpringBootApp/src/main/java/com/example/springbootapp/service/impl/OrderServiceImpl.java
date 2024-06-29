@@ -104,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<String, String> validateOrder (String sessionId) {        //TODO: forse voglio ritornare un dto
+    public Map<String, String> validateOrder (String sessionId) {
         try {
             if(sessionId == null) {
                 throw new RequestValidationException("SessionId is null");

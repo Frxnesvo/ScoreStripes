@@ -31,7 +31,7 @@ public class Club {
     private String picUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ToString.Exclude
     @JoinColumn(name = "league_id", nullable = false)
     private League league;
 

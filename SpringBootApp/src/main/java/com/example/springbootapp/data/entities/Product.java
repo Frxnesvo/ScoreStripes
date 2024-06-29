@@ -48,16 +48,16 @@ public class Product {
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ToString.Exclude
     private List<ProductPic> pics;
 
-    @ManyToOne(fetch = FetchType.EAGER)  // TODO: ho tolto il fetch = FetchType.LAZY, da provare
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ManyToOne(fetch = FetchType.EAGER)
+    @ToString.Exclude
     @JoinColumn(name = "club_id", nullable = false)
     private Club club;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ToString.Exclude
     private List<ProductWithVariant> variants;
 
     @Column(name = "created_date")

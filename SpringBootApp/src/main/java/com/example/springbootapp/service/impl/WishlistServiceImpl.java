@@ -103,8 +103,9 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public void deleteItemFromWishlist(String productId) {
         Customer customer = (Customer) userDetailsService.getCurrentUser();
+        Wishlist wishlist = wishlistDao.findById(customer.getWishlist().getId()).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
         //cerca nella wishlist un item che ha un prodotto con l'id passato`usando gli stream e se lo trova lo rimuove
-        WishlistItem item = customer.getWishlist().getItems().stream()
+        WishlistItem item = wishlist.getItems().stream()
                 .filter(wishlistItem -> wishlistItem.getProduct().getId().equals(productId))
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("product not found in wishlist"));

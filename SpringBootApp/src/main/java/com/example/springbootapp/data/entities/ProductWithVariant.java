@@ -34,7 +34,7 @@ public class ProductWithVariant {
     private Integer availability;
 
     @ManyToOne(fetch = FetchType.LAZY)  //devo caricare lazy perchè altrimenti dato che dal prodotto carico eager le varianti mi ritrovo in un loop
-    @ToString.Exclude  //TODO: STO TESTANDO
+    @ToString.Exclude
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

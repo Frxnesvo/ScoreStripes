@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//FIXME: Aggiungere la parte delle transazioni con id ecc
+//TODO: Aggiungere la parte delle transazioni con id transazione ecc.
 @Entity
 @Table(name = "orders")
 @Data
