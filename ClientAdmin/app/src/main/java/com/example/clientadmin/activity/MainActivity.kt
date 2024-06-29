@@ -23,6 +23,7 @@ import com.example.clientadmin.authentication.GoogleAuth
 import com.example.clientadmin.authentication.LogoutManager
 import com.example.clientadmin.authentication.UserSession
 import com.example.clientadmin.ui.theme.ClientAdminTheme
+import com.example.clientadmin.utils.RetrofitHandler
 import com.example.clientadmin.utils.TokenStoreUtils
 import com.example.clientadmin.viewmodels.LoginViewModel
 import com.example.clientadmin.viewmodels.LogoutViewModel
@@ -32,6 +33,7 @@ import com.example.clientadmin.utils.ToastManager
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val userSession = UserSession()
+        RetrofitHandler.initialize(this.applicationContext)
 
         ToastManager.initialize(this.applicationContext)
         TokenStoreUtils.initialize(this.applicationContext)

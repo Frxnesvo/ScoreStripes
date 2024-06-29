@@ -23,6 +23,7 @@ import com.example.clientuser.authentication.GoogleAuth
 import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.authentication.UserSession
 import com.example.clientuser.ui.theme.ClientUserTheme
+import com.example.clientuser.utils.RetrofitHandler
 import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.utils.TokenStoreUtils
 import com.example.clientuser.viewmodel.ClubViewModel
@@ -34,6 +35,7 @@ import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val userSession = UserSession()
+        RetrofitHandler.initialize(this.applicationContext)
         val loginViewModel = LoginViewModel(userSession)
         TokenStoreUtils.initialize(this.applicationContext)
         ToastManager.initialize(this.applicationContext)
