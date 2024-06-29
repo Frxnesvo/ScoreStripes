@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,7 +33,8 @@ public class WishlistServiceImpl implements WishlistService {
     private final WishlistAccessDao wishlistAccessDao;
     private final ModelMapper modelMapper;
 
-    @Override  //TODO: proteggere da admin
+    @Override
+    @Transactional
     public void changeVisibility(WishlistVisibilityDto visibilityDto) {
         Wishlist wishlist =((Customer) userDetailsService.getCurrentUser()).getWishlist();
         if(wishlist.getVisibility()== visibilityDto.getVisibility()){

@@ -26,7 +26,6 @@ public class WishlistController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @PatchMapping("/change-visibility")
     public ResponseEntity<Map<String,String>> changeVisibility(@Valid @RequestBody WishlistVisibilityDto visibilityDto){
-        System.out.println(visibilityDto.getVisibility().name());
         wishlistService.changeVisibility(visibilityDto);
         return ResponseEntity.ok(Map.of("message","Visibility changed"));
     }
