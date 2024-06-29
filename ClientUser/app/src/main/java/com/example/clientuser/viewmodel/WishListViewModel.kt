@@ -164,19 +164,24 @@ class WishListViewModel : ViewModel() {
         }
     }
 
-    fun deleteWishlistAccess(guestId: String): Flow<String> = flow<String> {
+    fun deleteWishlistAccess(guestId: String){
         try{
-            val response = RetrofitHandler.wishListApi.deleteWishlistAccess(guestId).awaitResponse()
-            if(response.isSuccessful) response.body()?.let { result ->
-                val guestToDelete = _myWishlistAccesses.value.find { it.id == guestId }
-                _myWishlistAccesses.value -= guestToDelete!!
-                emit(result)
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.wishListApi.deleteWishlistAccess(guestId).awaitResponse()
+                if(response.isSuccessful){
+                    val guestToDelete = _myWishlistAccesses.value.find { it.id == guestId }
+                    _myWishlistAccesses.value -= guestToDelete!!
+                    ToastManager.show("Access deleted from wishlist")
+                } else {
+                    println("Error delete wishlist access: ${response.message()}")
+                    ToastManager.show("Error delete wishlist access")
+                }
             }
         }
         catch (e : Exception){
             println("Exception delete wishlist access: ${e.message}")
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     fun deleteItem(productId: String): Flow<String> = flow {
         try{
@@ -205,16 +210,24 @@ class WishListViewModel : ViewModel() {
     fun validateShareToken(token: String) {
         try{
             CoroutineScope(Dispatchers.IO).launch {
-                val response = RetrofitHandler.wishListApi.validateShareToken(token).awaitResponse()
+                val response = RetrofitHandler.wishListApi.validateShareToken(mapOf(Pair("message", token))).awaitResponse()
                 if(response.isSuccessful){
                     response.body()?.let { wishListDto ->  
                         _sharedWithMeWishlists.value += Wishlist.fromDto(wishListDto)
+                        ToastManager.show("wishlist added")
                     }
                 }
-                else println("Error validate wishlist share token: ${response.message()}")
+                else {
+                    println("Error validate wishlist share token: ${response.message()}")
+                    ToastManager.show("Error adding wishlist")
+                }
             }
         }catch (e: Exception){
             println("Exception validate wishlist share token: ${e.message}")
         }
+    }
+
+    fun clearWishlistShareToken(){
+        _wishlistSharedToken.value = ""
     }
 }

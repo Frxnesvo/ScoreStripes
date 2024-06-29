@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,12 +47,15 @@ fun Wishlist(
     val myWishlistAccesses by wishListViewModel.myWishlistAccesses.collectAsState()
     val myWishlist by wishListViewModel.myWishList
     val myWishlistVisibility = remember { mutableStateOf(WishListVisibility.valueOf(myWishlist.visibility.name)) }
+    val wishlistShareToken by wishListViewModel.wishlistSharedToken
 
     val (isOpenTokenSheet, setTokenBottomSheet) = remember { mutableStateOf(false) }
     val (isOpenVisibilitySheet, setVisibilityBottomSheet) = remember { mutableStateOf(false) }
     val (isShareWishlistOpenSheet, setShareBottomSheet) = remember { mutableStateOf(false) }
 
-    val wishlistToAddToken = StringBuilder("")
+    val wishlistToAddToken = remember { mutableStateOf("") }
+
+    val context = LocalContext.current
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -83,6 +88,7 @@ fun Wishlist(
                 Row (
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
+
                 ) {                                   //TODO non è la cosa migliore fare row dentro row
 
                     Text(
@@ -95,6 +101,7 @@ fun Wishlist(
                         style = MaterialTheme.typography.titleMedium,
                         color = colorResource(id = R.color.secondary50),
                     )
+
 
                     if(myWishlist.visibility == WishListVisibility.SHARED){
                         if(myWishlistAccesses.isEmpty()){
@@ -112,18 +119,17 @@ fun Wishlist(
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy((-20).dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .clickable {
-                                        setShareBottomSheet(true)
-                                        setVisibilityBottomSheet(false)
-                                        setTokenBottomSheet(false)
-                                    }
                             ) {
+                                //TODO inserirne massimo 3 o 4
                                 for (people in myWishlistAccesses)
                                     BoxIcon(
                                         iconColor = colorResource(id = R.color.transparent),
                                         content = people.profilePic
-                                    ) { }
+                                    ) {
+                                        setShareBottomSheet(true)
+                                        setVisibilityBottomSheet(false)
+                                        setTokenBottomSheet(false)
+                                    }
                             }
                         }
                     }
@@ -172,13 +178,13 @@ fun Wishlist(
         InsertWishlistTokenPanel(
             onDismissRequest = { setTokenBottomSheet(false) },
             onValueChange = {
-                wishlistToAddToken.setLength(0)
-                wishlistToAddToken.append(it)
+                wishlistToAddToken.value = it
             },
+            tokenToInsert = wishlistToAddToken.value,
             onClick = {
-                wishListViewModel.validateShareToken(wishlistToAddToken.toString())
+                wishListViewModel.validateShareToken(wishlistToAddToken.value)
                 setTokenBottomSheet(false)
-                wishlistToAddToken.setLength(0)
+                wishlistToAddToken.value = ""
             }
         )
     }
@@ -188,6 +194,7 @@ fun Wishlist(
             currentVisibility = myWishlistVisibility.value,
             onDismissRequest = { setVisibilityBottomSheet(false) },
             onClick = {
+                //TODO gestire gli errori
                 if(myWishlistVisibility.value != myWishlist.visibility)
                     wishListViewModel.changeWishlistVisibility(WishlistVisibilityDto(myWishlistVisibility.value))
                 else ToastManager.show("wishlist visibility is already ${myWishlistVisibility.value}")
@@ -201,10 +208,25 @@ fun Wishlist(
 
     if(isShareWishlistOpenSheet){
         SharedWithPanel(
-            onDismissRequest = { setShareBottomSheet(false) },  //TODO logica viewn model
+            onDismissRequest = { setShareBottomSheet(false) },
             setBottomSheet = setShareBottomSheet,
-            wishListViewModel = wishListViewModel
+            wishListViewModel = wishListViewModel,
+            onClick = {
+                wishListViewModel.createSharedToken()
+                setShareBottomSheet(false)
+            }
         )
+    }
+
+    if(wishlistShareToken != ""){
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, wishlistShareToken)
+            type = "text/plain"
+            wishListViewModel.clearWishlistShareToken()
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        context.startActivity(shareIntent)
     }
 
 }

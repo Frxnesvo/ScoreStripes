@@ -37,11 +37,11 @@ interface WishListApiService {
     fun getMyWishlistAccesses(): Call<List<CustomerSummaryDto>>
 
     @DELETE("/api/v1/wishlists/my-wishlist/accesses/{GuestId}")
-    fun deleteWishlistAccess(@Path("GuestId") guestId: String): Call<String>
+    fun deleteWishlistAccess(@Path("GuestId") guestId: String): Call<Map<String, String>>
 
     @DELETE("/api/v1/wishlists/my-wishlist/item/{productId}")
     fun deleteItem(@Path("productId") productId: String): Call<String>
 
     @POST("/api/v1/wishlists/validate-shareAccess")
-    fun validateShareToken(@Body token: String) : Call<WishListDto>
+    fun validateShareToken(@Body token: Map<String, String>) : Call<WishListDto>
 }

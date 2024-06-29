@@ -35,8 +35,8 @@ public class WishlistController {
     }
 
     @PostMapping("/validate-shareAccess")
-    public ResponseEntity<WishlistDto> validateShareAccess(@RequestBody String token){  //TODO: Ha senso inglobare il token in un Dto e validarlo per evitare query?
-        return ResponseEntity.ok(wishlistShareTokenService.validateShareAccess(token));
+    public ResponseEntity<WishlistDto> validateShareAccess(@RequestBody Map<String, String> token){  //TODO: Ha senso inglobare il token in un Dto e validarlo per evitare query?
+        return ResponseEntity.ok(wishlistShareTokenService.validateShareAccess(token.get("message")));
     }
 
     @PostMapping("/add-item")
@@ -65,9 +65,9 @@ public class WishlistController {
     }
 
     @DeleteMapping("/my-wishlist/accesses/{GuestId}")
-    public ResponseEntity<String> deleteWishlistAccess(@PathVariable String GuestId) {
+    public ResponseEntity<Map<String, String>> deleteWishlistAccess(@PathVariable String GuestId) {
         wishlistService.deleteWishlistAccess(GuestId);
-        return ResponseEntity.ok("Access deleted");
+        return ResponseEntity.ok(Map.of("response", "Access deleted"));
     }
 
     @DeleteMapping("/my-wishlist/item/{productId}")

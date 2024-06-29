@@ -6,6 +6,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class CustomerSummaryDto(
     val id: String,
-    val profilePic: String,
+    val profilePicUrl: String,
     val username: String
 )

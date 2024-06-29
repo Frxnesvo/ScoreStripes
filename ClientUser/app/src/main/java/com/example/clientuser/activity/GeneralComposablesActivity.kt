@@ -37,7 +37,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -477,5 +480,38 @@ fun SwipeToDismissDeleteRow(){
             contentDescription = null,
             tint = colorResource(id = R.color.primary)
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwipeToDismissItem(content: @Composable () -> Unit, onRemove : () -> Unit) {
+
+    val isRemove = remember { mutableStateOf(false) }
+
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { dismissValue ->
+            if(dismissValue == SwipeToDismissBoxValue.EndToStart){
+                onRemove()
+                isRemove.value = true
+                true
+            }else false
+        }
+    )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        backgroundContent = {
+            if(dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart)
+                SwipeToDismissDeleteRow()
+        }
+    ) {
+        when(dismissState.currentValue){
+            SwipeToDismissBoxValue.StartToEnd -> {}
+            SwipeToDismissBoxValue.EndToStart -> {}
+            SwipeToDismissBoxValue.Settled -> {
+                if(!isRemove.value) content()
+            }
+        }
     }
 }

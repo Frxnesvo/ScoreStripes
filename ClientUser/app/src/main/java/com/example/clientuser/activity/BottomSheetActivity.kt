@@ -70,12 +70,11 @@ import kotlinx.coroutines.launch
 fun SharedWithPanel(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
-    wishListViewModel: WishListViewModel
+    wishListViewModel: WishListViewModel,
+    onClick: () -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
-    val context = LocalContext.current
 
-    val sharedToken by wishListViewModel.wishlistSharedToken
     val wishlistAccesses = wishListViewModel.myWishlistAccesses.collectAsState()
 
     ModalBottomSheet(
@@ -91,7 +90,9 @@ fun SharedWithPanel(
         ) {
             items(wishlistAccesses.value){
                 key(it) {
-                    SwipeToDismissUserRow(guest = it) {
+                    SwipeToDismissItem(
+                        content = { SharedWithUserRow(guest = it) }
+                    ) {
                         wishListViewModel.deleteWishlistAccess(it.id)
                     }
                 }
@@ -104,46 +105,10 @@ fun SharedWithPanel(
                 .padding(10.dp)
         ){
             CustomButton(text = stringResource(id = R.string.share), background = R.color.secondary) {
-                wishListViewModel.createSharedToken()
+                onClick()
 
-                setBottomSheet(false)
             }
         }
-
-        if(sharedToken != ""){
-            val sendIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "Here is your invite token: $sharedToken")
-                type = "text/plain"
-            }
-
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            context.startActivity(shareIntent)
-        }
-
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SwipeToDismissUserRow(guest: CustomerSummary, onRemove: () -> Unit){
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { state ->
-            if(state == SwipeToDismissBoxValue.EndToStart){
-                onRemove()
-                true
-            }
-            else false
-        }
-    )
-    SwipeToDismissBox(
-        state = dismissState,
-        backgroundContent = {
-            if(dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart)
-                SwipeToDismissDeleteRow()
-        }
-    ) {
-        SharedWithUserRow(guest = guest)
     }
 }
 
@@ -488,6 +453,7 @@ fun AddItemToCart(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertWishlistTokenPanel(
+    tokenToInsert: String,
     onDismissRequest: () -> Unit,
     onValueChange: (String) -> Unit,
     onClick: () -> Unit
@@ -502,7 +468,7 @@ fun InsertWishlistTokenPanel(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = "",
+                value = tokenToInsert,
                 text = stringResource(id = R.string.insert_token)
             ) {
                 onValueChange(it)

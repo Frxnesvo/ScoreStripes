@@ -122,8 +122,7 @@ fun Cart(
             items(myCart.value.values.toList()){
                 key(it.id) {
                     SwipeToDismissItem(
-                        item = it,
-                        cartViewModel = cartViewModel
+                        content = { ItemCart(cartItem = it, cartViewModel = cartViewModel) },
                     ) {
                         cartViewModel.deleteItem(itemId = it.id)
                     }
@@ -255,36 +254,5 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SwipeToDismissItem(item: CartItem, cartViewModel: CartViewModel, onRemove : () -> Unit) {
 
-    val isRemove = remember { mutableStateOf(false) }
-
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { dismissValue ->
-            if(dismissValue == SwipeToDismissBoxValue.EndToStart){
-                onRemove()
-                isRemove.value = true
-                true
-            }else false
-        }
-    )
-
-    SwipeToDismissBox(
-        state = dismissState,
-        backgroundContent = {
-            if(dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart)
-                SwipeToDismissDeleteRow()
-        }
-    ) {
-        when(dismissState.currentValue){
-            SwipeToDismissBoxValue.StartToEnd -> {}
-            SwipeToDismissBoxValue.EndToStart -> {}
-            SwipeToDismissBoxValue.Settled -> {
-                if(!isRemove.value) ItemCart(cartItem = item, cartViewModel = cartViewModel)
-            }
-        }
-    }
-}
 
