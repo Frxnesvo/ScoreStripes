@@ -1,6 +1,5 @@
 package com.example.springbootapp.data.dto;
 
-import com.example.springbootapp.data.entities.Address;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

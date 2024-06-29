@@ -1,6 +1,7 @@
 package com.example.springbootapp.data.dto;
 
 import com.example.springbootapp.data.entities.Enums.Gender;
+import com.example.springbootapp.data.entities.Enums.ProductCategory;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,4 +16,5 @@ public class BasicProductDto {
     private String picUrl;
     private String club;
     private String league;
+    private ProductCategory category;
 }
