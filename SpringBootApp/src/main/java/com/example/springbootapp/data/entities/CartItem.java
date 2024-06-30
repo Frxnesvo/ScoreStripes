@@ -59,9 +59,12 @@ public class CartItem {
     private String lastModifiedBy;
 
     public Double getPrice(){
+        Double price;
         if(personalization == null)
-            return product.getProduct().getPrice() * quantity;
-        return (product.getProduct().getPrice() + personalization.getPrice()) * quantity;
+            price= product.getProduct().getPrice() * quantity;
+        else
+            price= (product.getProduct().getPrice() + personalization.getPrice()) * quantity;
+        return Math.round(price * 100.0) / 100.0;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.example.springbootapp.security.customValidators;
 
-import com.example.springbootapp.exceptions.RequestValidationException;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;
