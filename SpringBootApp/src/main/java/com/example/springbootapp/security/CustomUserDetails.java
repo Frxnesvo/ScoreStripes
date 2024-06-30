@@ -26,7 +26,7 @@ public class CustomUserDetails implements UserDetails {
         return null;
     }
 
-    public String getID() {
+    public String getId() {
         return user.getId();
     }
 

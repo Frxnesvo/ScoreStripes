@@ -6,6 +6,7 @@ import com.google.auth.oauth2.TokenVerifier;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -91,6 +92,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoAccountException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDto onNoAccountException(WebRequest req, NoAccountException e) {
+        return createErrorRespose(req, e.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDto onAccessDeniedException(WebRequest req, AccessDeniedException e) {
         return createErrorRespose(req, e.getMessage());
     }
 
