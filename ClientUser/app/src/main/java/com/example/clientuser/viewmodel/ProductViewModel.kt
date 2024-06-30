@@ -25,8 +25,8 @@ class ProductViewModel: ViewModel() {
     private var filter: Map<String, String?> = FilterBuilder().build()
     private var page = 0
 
-    private val _products = MutableStateFlow<List<Product>>(emptyList())
-    val products = _products
+//    private val _products = MutableStateFlow<List<Product>>(emptyList())
+//    val products = _products
 
 
     private val _productSummaries = MutableStateFlow<List<BasicProduct>>(emptyList())
@@ -37,8 +37,6 @@ class ProductViewModel: ViewModel() {
 
     val moreSoldJersey = _moreSoldJersey.asStateFlow()
     val moreSoldShorts = _moreSoldShorts.asStateFlow()
-
-    private val productById = mutableStateOf(Product())
 
     private val sizePage = 2
 
@@ -57,7 +55,7 @@ class ProductViewModel: ViewModel() {
     fun setFilter(filter: Map<String, String?>) {
         this.filter = filter
         page = 0
-        _products.value = emptyList()
+        _productSummaries.value = emptyList()
         loadMoreProductSummaries()
     }
 

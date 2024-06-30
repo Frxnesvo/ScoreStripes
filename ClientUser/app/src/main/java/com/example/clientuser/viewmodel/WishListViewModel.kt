@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class WishListViewModel : ViewModel() {
     val wishlistSharedToken: State<String> = _wishlistSharedToken
 
     private val _myWishlistAccesses = MutableStateFlow<List<CustomerSummary>>(emptyList())
-    val myWishlistAccesses = _myWishlistAccesses
+    val myWishlistAccesses = _myWishlistAccesses.asStateFlow()
 
     init{
         fetchMyWishList()
@@ -131,11 +132,15 @@ class WishListViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val response = RetrofitHandler.wishListApi.changeWishlistVisibility(wishlistVisibilityDto).awaitResponse()
-                if(response.isSuccessful) response.body()?.let {
-                    ToastManager.show("wishlist visibility changed from ${_myWishList.value.visibility.name} to ${wishlistVisibilityDto.visibility.name}")
-                    _myWishList.value = _myWishList.value.copy(
-                        visibility = wishlistVisibilityDto.visibility
-                    )
+                if(response.isSuccessful) {
+                    response.body()?.let {
+                        _myWishList.value = _myWishList.value.copy(
+                            visibility = wishlistVisibilityDto.visibility
+                        )
+                        if (wishlistVisibilityDto.visibility == WishListVisibility.PRIVATE) _myWishlistAccesses.value =
+                            emptyList()
+                        ToastManager.show("wishlist visibility changed from ${_myWishList.value.visibility.name} to ${wishlistVisibilityDto.visibility.name}")
+                    }
                 }
                 else {
                     println("Error during the visibility changing of the wishlist: ${response.message()}")

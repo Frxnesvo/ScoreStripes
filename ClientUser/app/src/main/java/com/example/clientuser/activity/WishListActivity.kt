@@ -174,7 +174,6 @@ fun Wishlist(
     }
 
     if(isOpenTokenSheet){
-        //TODO gestione degli errori
         InsertWishlistTokenPanel(
             onDismissRequest = { setTokenBottomSheet(false) },
             onValueChange = {
@@ -194,7 +193,6 @@ fun Wishlist(
             currentVisibility = myWishlistVisibility.value,
             onDismissRequest = { setVisibilityBottomSheet(false) },
             onClick = {
-                //TODO gestire gli errori
                 if(myWishlistVisibility.value != myWishlist.visibility)
                     wishListViewModel.changeWishlistVisibility(WishlistVisibilityDto(myWishlistVisibility.value))
                 else ToastManager.show("wishlist visibility is already ${myWishlistVisibility.value}")

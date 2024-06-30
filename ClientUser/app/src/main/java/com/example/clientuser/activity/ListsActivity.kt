@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -110,7 +109,7 @@ fun ListDiscover(
     navHostController: NavHostController,
 ){
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val products by productViewModel.products.collectAsState()
+    val products by productViewModel.productSummary.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -137,14 +136,6 @@ fun ListDiscover(
                     ProductItem(it){ navHostController.navigate("product/${it.id}") }
                 }
             }
-        }
-
-        Button(
-            onClick = {
-                navHostController.navigate("")
-            }
-        ) {
-
         }
     }
 

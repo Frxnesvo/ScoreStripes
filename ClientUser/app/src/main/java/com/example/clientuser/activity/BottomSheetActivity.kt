@@ -177,7 +177,7 @@ fun SearchPanelProducts(
 
             CustomComboBox(
                 options = Size.entries,
-                text = stringResource(id = R.string.size),
+                text = stringResource(id = R.string.size),          //TODO inserire clubName invece che size
                 selectedOption = ""
             ) { filterBuilder.setSize(it) }
 

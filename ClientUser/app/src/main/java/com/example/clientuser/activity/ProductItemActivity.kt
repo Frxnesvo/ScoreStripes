@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,11 +28,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.clientuser.R
+import com.example.clientuser.model.BasicProduct
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.ProductDto
+import com.example.clientuser.model.enumerator.ProductCategory
 
 @Composable
-fun ProductItem(product: Product, onClick: () -> Unit) {
+fun ProductItem(product: Any, onClick: () -> Unit) {
+    val image: Bitmap
+    val category: String
+    val name: String
+
+    when(product){
+        is Product -> {
+            image = product.pic1
+            category = product.productCategory.name
+            name = product.name
+        }
+        is BasicProduct -> {
+            image = product.pic
+            category = product.category.name
+            name = product.name
+        }
+        else -> TODO()
+    }
+
     Column(
         modifier = Modifier
             .width(150.dp)
@@ -44,18 +65,20 @@ fun ProductItem(product: Product, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            bitmap = product.pic1.asImageBitmap(),
+            bitmap = image.asImageBitmap(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(120.dp)
                 .clip(RoundedCornerShape(10.dp))
         )
-        Text(text = product.club,
+        Text(
+            text = name,
             color = colorResource(id = R.color.black),
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
         )
-        Text(text = "${product.productCategory}",
+        Text(
+            text = category,
             color = colorResource(id = R.color.black50),
             style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light)
         )

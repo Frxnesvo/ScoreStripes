@@ -142,6 +142,8 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             navHostController.navigate("settings")
         }
 
+
+        //TODO rimuovere
         Button(
             onClick = { navHostController.navigate("product/2eeec6cd-d958-4eb2-8588-7305bafb12ba") }
         ) {
@@ -296,6 +298,8 @@ fun NavigationScaffold(
             )
         }
 
+
+        //TODO cambiare senza usare launched effect
         composable(
             route= "product/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })

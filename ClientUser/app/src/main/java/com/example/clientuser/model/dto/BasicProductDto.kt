@@ -1,6 +1,7 @@
 package com.example.clientuser.model.dto
 
 import com.example.clientuser.model.enumerator.Gender
+import com.example.clientuser.model.enumerator.ProductCategory
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -11,5 +12,6 @@ data class BasicProductDto(
     val brand: String,
     val gender: Gender,
     val picUrl: String,
-    val club: String
+    val club: String,
+    val category: ProductCategory
 )
