@@ -2,15 +2,17 @@ package com.example.clientuser.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.BasicProduct
-import com.example.clientuser.model.FilterBuilder
+import com.example.clientuser.model.Page
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.BasicProductDto
+import com.example.clientuser.model.dto.PageResponseDto
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -18,15 +20,8 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class ProductsViewModel: ViewModel() {
-    private var filter: Map<String, String?> = FilterBuilder().build()
-    private var page = 0
-
-//    private val _products = MutableStateFlow<List<Product>>(emptyList())
-//    val products = _products
-
-
-    private val _productSummaries = MutableStateFlow<List<BasicProduct>>(emptyList())
-    val productSummary = _productSummaries
+    private val _products = MutableStateFlow<List<BasicProduct>>(emptyList())
+    val products = _products
 
     private val _moreSoldJersey = MutableStateFlow<List<Product>>(emptyList())
     private val _moreSoldShorts = MutableStateFlow<List<Product>>(emptyList())
@@ -34,47 +29,48 @@ class ProductsViewModel: ViewModel() {
     val moreSoldJersey = _moreSoldJersey.asStateFlow()
     val moreSoldShorts = _moreSoldShorts.asStateFlow()
 
-    private val sizePage = 2
+    private val _page = MutableStateFlow(Page())
+    val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
+
+
+    private var _filters: Map<String, String> = mapOf()
 
     init {
-        loadMoreProductSummaries()
-        fetchMoreSoldProduct(ProductCategory.SHORTS)
+        loadMoreProductSummaries(_page.value.number)
         fetchMoreSoldProduct(ProductCategory.JERSEY)
+        fetchMoreSoldProduct(ProductCategory.SHORTS)
     }
-
 
     fun incrementPage() {
-        page += 1
-        loadMoreProductSummaries()
-    }
-
-    fun setFilter(filter: Map<String, String?>) {
-        this.filter = filter
-        page = 0
-        _productSummaries.value = emptyList()
-        loadMoreProductSummaries()
-    }
-
-    private fun loadMoreProductSummaries() {
-        CoroutineScope(Dispatchers.IO).launch {
-            getProductSummaries(page).collect {
-                val newSummaries = it.map {
-                        dto ->  BasicProduct.fromDto(dto)
-                }
-                _productSummaries.value += newSummaries
-            }
+        if (!_page.value.last) {
+            loadMoreProductSummaries(_page.value.number + 1)
         }
     }
 
-    private fun getProductSummaries(page: Int): Flow<List<BasicProductDto>> = flow {
+    fun setFilter(filters: Map<String, String>?) {
+        _filters = filters ?: mapOf()
+        _products.value = emptyList()
+        _page.value = Page()
+        loadMoreProductSummaries(_page.value.number)
+    }
+
+    private fun loadMoreProductSummaries(numberPage: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            getProductSummaries(numberPage).collect { products ->
+                val newProducts = products.content.map { dto ->  BasicProduct.fromDto(dto) }
+                _products.value += newProducts
+            }
+        }
+    }
+    private fun getProductSummaries(numberPage: Int): Flow<PageResponseDto<BasicProductDto>> = flow {
         try {
             val response = RetrofitHandler.productApi.getProductsSummary(
-                page,
-                sizePage,
-                filter
+                page = numberPage,
+                size = _page.value.size,
+                filters = _filters
             ).awaitResponse()
 
-            if (response.isSuccessful) response.body()?.let { emit(it.content) }
+            if (response.isSuccessful) response.body()?.let { emit(it) }
             else println("Error fetching product summaries: ${response.message()}")
         } catch (e: Exception) {
             println("Exception fetching product summaries: ${e.message}")

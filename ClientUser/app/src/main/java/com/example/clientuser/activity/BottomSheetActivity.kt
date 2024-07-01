@@ -42,21 +42,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.clientuser.R
 import com.example.clientuser.model.CustomerSummary
-import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Personalization
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToCartRequestDto
 import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.dto.AddressDto
 import com.example.clientuser.model.enumerator.ProductCategory
-import com.example.clientuser.model.enumerator.Size
 import com.example.clientuser.model.enumerator.WishListVisibility
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
-import com.example.clientuser.viewmodel.LeagueViewModel
-import com.example.clientuser.viewmodel.ProductsViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
+import com.example.clientuser.viewmodel.formviewmodel.FilterFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 import kotlinx.coroutines.launch
 
@@ -110,8 +107,7 @@ fun SharedWithPanel(
 @Composable
 fun SharedWithUserRow(guest: CustomerSummary){
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -136,64 +132,6 @@ fun SharedWithUserRow(guest: CustomerSummary){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchPanelProducts(
-    onDismissRequest: () -> Unit,
-    setBottomSheet: (Boolean) -> Unit,
-    leagueViewModel: LeagueViewModel,
-    productsViewModel: ProductsViewModel
-){
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    val filterBuilder = remember { FilterBuilder() }
-    val leagues by leagueViewModel.leaguesNames.collectAsState(initial = emptyList())
-
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
-        Column(
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            CustomTextField(
-                value = "",
-                text = stringResource(id = R.string.search_for_name),
-                leadingIcon = Icons.Outlined.Search
-            ) { filterBuilder.setName(it) }
-
-            CustomComboBox(
-                options = leagues,
-                text = stringResource(id = R.string.league),
-                selectedOption = ""
-            ) { filterBuilder.setLeague(it) }
-
-            CustomComboBox(
-                options = ProductCategory.entries,
-                text = stringResource(id = R.string.category),
-                selectedOption = ""
-            ) { filterBuilder.setCategory(it) }
-
-            CustomComboBox(
-                options = Size.entries,
-                text = stringResource(id = R.string.size),          //TODO inserire clubName invece che size
-                selectedOption = ""
-            ) { filterBuilder.setSize(it) }
-
-            CustomButton(
-                text = stringResource(id = R.string.search),
-                background = R.color.secondary
-            ){
-                if(sheetState.isVisible) {
-                    scope.launch {
-                        sheetState.hide()
-                        setBottomSheet(false)
-                        productsViewModel.setFilter(filterBuilder.build())
-                    }
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun ChooseAddress(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
@@ -207,8 +145,7 @@ fun ChooseAddress(
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
-            modifier = Modifier
-                .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
@@ -267,8 +204,7 @@ fun AddAddress(
         containerColor = colorResource(id = R.color.white),
     ) {
         Column(
-            modifier = Modifier
-                .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
@@ -531,9 +467,7 @@ fun InsertWishlistTokenPanel(
 
     ModalBottomSheet(onDismissRequest = { onDismissRequest() }, sheetState = sheetState) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
@@ -564,9 +498,7 @@ fun WishlistVisibilityPanel(
 
     ModalBottomSheet(onDismissRequest = { onDismissRequest() }, sheetState = sheetState) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomComboBox(
@@ -583,6 +515,63 @@ fun WishlistVisibilityPanel(
                 background = R.color.secondary
             ) {
                 onClick()
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchPanelProducts(
+    onDismissRequest: () -> Unit,
+    setBottomSheet: (Boolean) -> Unit,
+    leagues: List<String>,
+    filterFormViewModel: FilterFormViewModel,
+    onSearch: (Map<String, String>?) -> Unit
+){
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    val filter by filterFormViewModel.filterState.collectAsState()
+
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        containerColor = colorResource(id = R.color.white),
+    ) {
+        Column(
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            CustomTextField(
+                value = filter.name,
+                text = stringResource(id = R.string.search_for_name),
+                leadingIcon = Icons.Outlined.Search
+            ) { filterFormViewModel.updateName(it) }
+
+            CustomComboBox(
+                options = leagues + listOf(""),
+                text = stringResource(id = R.string.league),
+                selectedOption = filter.league
+            ) { filterFormViewModel.updateLeague(it) }
+
+            CustomComboBox(
+                options = ProductCategory.entries + listOf(""),
+                text = stringResource(id = R.string.category),
+                selectedOption = filter.category
+            ) { filterFormViewModel.updateCategory(it) }
+
+            CustomButton(
+                text = stringResource(id = R.string.search),
+                background = R.color.secondary
+            ){
+                if(sheetState.isVisible) {
+                    scope.launch {
+                        sheetState.hide()
+                        setBottomSheet(false)
+                        onSearch(filterFormViewModel.buildForItems())
+                    }
+                }
             }
         }
     }

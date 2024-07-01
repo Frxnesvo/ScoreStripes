@@ -99,7 +99,7 @@ fun Wishlist(
                             },
                         text = myWishlist.visibility.name,        //TODO
                         style = MaterialTheme.typography.titleMedium,
-                        color = colorResource(id = R.color.secondary50),
+                        color = colorResource(id = R.color.secondary),
                     )
 
 
@@ -247,7 +247,7 @@ fun WishListItem(wishlist: Wishlist, onClick: () -> Unit) {
             ) {
                 Text(
                     text = "${wishlist.ownerUsername} wishlist",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Text(

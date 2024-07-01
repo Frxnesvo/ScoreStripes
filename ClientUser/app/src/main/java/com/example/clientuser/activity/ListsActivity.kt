@@ -1,5 +1,7 @@
 package com.example.clientuser.activity
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -26,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
@@ -34,6 +38,7 @@ import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.ProductsViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
+import com.example.clientuser.viewmodel.formviewmodel.FilterFormViewModel
 
 @Composable
 fun WishlistProducts(
@@ -131,42 +136,72 @@ fun ListDiscover(
     productViewModel: ProductViewModel
 ){
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val products by productsViewModel.productSummary.collectAsState()
+    val products by productsViewModel.products.collectAsState()
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
+    val page by productsViewModel.page.collectAsState()
+
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(25.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentPadding = PaddingValues(25.dp)
     ) {
-        IconButtonBar(
-            imageVector = Icons.Outlined.Search,
-            navHostController = navHostController
-        ) { setBottomSheet(true) }
+        item(span = { GridItemSpan(2) }) {
+            IconButtonBar(
+                imageVector = Icons.Outlined.Search,
+                navHostController = navHostController
+            ) { setBottomSheet(true) }
+        }
 
-        Text(
-            text = name,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
+        item(span = { GridItemSpan(2) }) {
+            Text(
+                text = name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(25.dp)
-        ) {
+        if (products.isEmpty())
+            item(span = { GridItemSpan(2) }) {
+                Text(
+                    text = stringResource(id = R.string.list_empty),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        else
             items(products){
                 key(it.id) {
                     productViewModel.getProduct(it.id)
                     ProductItem(it){ navHostController.navigate("product/${it.id}") }
                 }
             }
-        }
+
+        if (page.number < page.totalPages)
+            item(span = { GridItemSpan(2) }) {
+                Text(
+                    text = stringResource(id = R.string.more),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ){ productsViewModel.incrementPage() }
+                )
+            }
     }
 
     if (isOpenSheet)
         SearchPanelProducts(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
-            leagueViewModel = leagueViewModel,
-            productsViewModel = productsViewModel
+            leagues = leagueViewModel.leagues.collectAsState(initial = emptyList()).value.map { it.name },
+            filterFormViewModel = FilterFormViewModel(),
+            onSearch = { productsViewModel.setFilter(it) }
         )
 }
