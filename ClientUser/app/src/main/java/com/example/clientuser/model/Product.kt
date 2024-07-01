@@ -21,7 +21,7 @@ class Product (
     val variants: Map<Size, Int> = emptyMap()
 ){
     companion object{
-        fun fromDto(productDto: ProductDto): Product {
+        suspend fun fromDto(productDto: ProductDto): Product {
             return Product(
                 id = productDto.id,
                 name = productDto.name,
