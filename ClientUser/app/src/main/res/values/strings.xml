@@ -82,4 +82,5 @@
     <string name="size">SIZE</string>
     <string name="visibility">VISIBILITY</string>
     <string name="delete">DELETE</string>
+    <string name="logout">LOGOUT</string>
 </resources>

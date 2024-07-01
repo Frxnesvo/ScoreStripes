@@ -253,7 +253,7 @@ fun CustomComboBox(
 }
 
 @Composable
-fun CustomButton(text: String, background: Int, onClick: () -> Unit) {
+fun CustomButton(textColor: Color = colorResource(id = R.color.white), text: String, background: Int, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = Modifier

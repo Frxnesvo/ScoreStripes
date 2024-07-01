@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -29,10 +30,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.model.Wishlist
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun WishlistProducts(
@@ -68,7 +71,10 @@ fun WishlistProducts(
         ) {
             items(items.items){
                 key(it.product.id) {
-                    ProductItem(it.product){ navHostController.navigate("product/${it.product.id}") }
+                    ProductItem(it.product){
+                        if(LogoutManager.instance.isLoggedIn.value)         //TODO snackbar per il logout
+                            navHostController.navigate("product/${it.product.id}")
+                    }
                 }
             }
         }

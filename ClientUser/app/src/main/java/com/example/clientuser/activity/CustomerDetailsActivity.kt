@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
@@ -99,7 +100,7 @@ fun Details(
             value = customer.username,
             isError = customer.isUsernameError,
             text = stringResource(id = R.string.username),
-            //TODO readOnly = true
+            readOnly = true
         ){}
 
         CustomTextField(
@@ -139,6 +140,14 @@ fun Details(
             text = stringResource(id = R.string.birth_date),
             readOnly = true
         ){}
+
+        CustomButton(
+            textColor = colorResource(id = R.color.secondary50),
+            text = stringResource(id = R.string.logout),
+            background = R.color.black50
+        ) {
+            LogoutManager.instance.logout()
+        }
     }
 }
 
