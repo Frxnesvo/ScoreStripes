@@ -14,13 +14,13 @@ class ProductSummary(
     val variants: Map<Size, Int>
 ) {
     companion object{
-        fun fromDto(productSummaryDto: ProductSummaryDto): ProductSummary{
+        suspend fun fromDto(productSummaryDto: ProductSummaryDto): ProductSummary{
             return ProductSummary(
                 id = productSummaryDto.id,
                 name = productSummaryDto.name,
                 club = productSummaryDto.clubName,
                 league = productSummaryDto.leagueName,
-                pic = S3ImageDownloader.getImageForBucket(productSummaryDto.picUrl),
+                pic = S3ImageDownloader.getImageFromBucket(productSummaryDto.picUrl),
                 variants = productSummaryDto.variantStock
             )
         }

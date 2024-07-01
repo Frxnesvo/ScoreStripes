@@ -36,7 +36,7 @@ class Admin(
                 email = adminDto.email,
                 birthDate = adminDto.birthDate,
                 gender = adminDto.gender,
-                //pic = S3ImageDownloader.getImageForBucket(adminDto.profilePicUrl)
+                //pic = S3ImageDownloader.getImageFromBucket(adminDto.profilePicUrl)
             )
         }
     }

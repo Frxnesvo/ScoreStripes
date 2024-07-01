@@ -93,7 +93,6 @@ fun SharedWithPanel(
                     }
                 }
             }
-
         }
 
         Box(
@@ -412,8 +411,6 @@ fun RemoveAddress(
                 )
                 Text(text = stringResource(id = R.string.default_address))
             }
-
-
 
             CustomButton(
                 text = stringResource(id = R.string.delete),

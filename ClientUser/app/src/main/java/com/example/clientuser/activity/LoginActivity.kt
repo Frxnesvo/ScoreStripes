@@ -51,7 +51,6 @@ fun Login(
         val clubs = clubViewModel.clubNames.collectAsState(initial = emptyList())
         val addressState by addressFormViewModel.addressState.collectAsState()
         val registered by loginViewModel.goToRegister
-        val isError = remember { mutableStateOf(false) }
 
         BoxIcon(
             iconColor = colorResource(id = R.color.secondary),
@@ -161,15 +160,14 @@ fun Login(
                 addressFormViewModel.updateCivicNumber(it)
             }
 
-            //TODO non va isError, bisogna farla con remember?
-            isError.value = customerState.isBirthdateError || customerState.isUsernameError || customerState.isEmailError || customerState.isProfilePicError
+            val isError  = customerState.isBirthdateError || customerState.isUsernameError || customerState.isProfilePicError
                     || addressState.isStateError || addressState.isCityError || addressState.isStreetError || addressState.isZipCodeError
                     || addressState.isCivicNumberError
 
             CustomButton(
-                enabled = !isError.value,
+                enabled = !isError,
                 text = stringResource(id = R.string.sign_up),
-                background = if (isError.value) R.color.black50 else R.color.secondary,
+                background = if (isError) R.color.black50 else R.color.secondary,
             ) {
 
                 //TODO controllare perchè non naviga alla login quando è true

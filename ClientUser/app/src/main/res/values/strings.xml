@@ -81,4 +81,5 @@
     <string name="category">CATEGORY</string>
     <string name="size">SIZE</string>
     <string name="visibility">VISIBILITY</string>
+    <string name="delete">DELETE</string>
 </resources>

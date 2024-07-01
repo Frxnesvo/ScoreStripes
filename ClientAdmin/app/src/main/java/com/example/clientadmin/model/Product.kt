@@ -37,7 +37,7 @@ class Product (
             return pic != null
         }
 
-        fun fromDto(productDto: ProductDto): Product{
+        suspend fun fromDto(productDto: ProductDto): Product{
             val principal: String
             val secondary: String
             if(productDto.pics[0].principal){
@@ -56,8 +56,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.category,
-                pic1 = S3ImageDownloader.getImageForBucket(principal),
-                pic2 = S3ImageDownloader.getImageForBucket(secondary),
+                pic1 = S3ImageDownloader.getImageFromBucket(principal),
+                pic2 = S3ImageDownloader.getImageFromBucket(secondary),
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

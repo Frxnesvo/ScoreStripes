@@ -30,7 +30,7 @@ class Customer(
 
 
     companion object {
-        fun fromDto(customerDto: AuthResponseDto): Customer {
+        suspend fun fromDto(customerDto: AuthResponseDto): Customer {
             return Customer(
                 id = customerDto.id,
                 username = customerDto.username,
@@ -48,7 +48,7 @@ class Customer(
 
         //TODO matchare i controlli di validazione con quelli del backend
         fun validateProfilePic(pic: Bitmap?): Boolean {
-            return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            return pic != null
         }
 
         fun validateUsername(username: String): Boolean {

@@ -26,10 +26,10 @@ class Club(
         fun validateImage(image: Bitmap?): Boolean{
             return image != null
         }
-        fun fromDto(clubDto: ClubDto): Club{
+        suspend fun fromDto(clubDto: ClubDto): Club{
             return Club(
                 name = clubDto.name,
-                pic = S3ImageDownloader.getImageForBucket(clubDto.picUrl),
+                pic = S3ImageDownloader.getImageFromBucket(clubDto.picUrl),
                 league = "clubDto.league" //todo non mi viene mandata anche la lega
             )
         }
