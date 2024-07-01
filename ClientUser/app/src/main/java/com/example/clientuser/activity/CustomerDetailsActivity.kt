@@ -96,6 +96,19 @@ fun Details(
             )
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            ImagePicker(
+                image = customer.profilePic,
+                size = 100.dp
+            ) {
+                customerFormViewModel.updateProfilePic(it)
+            }
+        }
+
         CustomTextField(
             value = customer.username,
             isError = customer.isUsernameError,

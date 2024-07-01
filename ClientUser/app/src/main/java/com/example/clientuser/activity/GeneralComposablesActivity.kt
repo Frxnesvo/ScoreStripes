@@ -171,6 +171,25 @@ fun BoxIcon(
 }
 
 @Composable
+fun GoToLoginSnackBar(navController: NavHostController){
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show the snackbar when needed
+    LaunchedEffect(Unit) {
+        val result = snackbarHostState.showSnackbar(
+            message = "Feature restricted, please log in to access it.",
+            actionLabel = "Login"
+        )
+        if (result == SnackbarResult.ActionPerformed) {
+            //TODO avviare l'activity del login
+            navController.navigate("home")
+        }
+    }
+
+    SnackbarHost(hostState = snackbarHostState)
+}
+
+@Composable
 fun BoxImage(
     height: Dp = 150.dp,
     boxTitle: String,
