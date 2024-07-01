@@ -66,7 +66,7 @@ fun Details(customer: CustomerProfileDto){
         ){}
 
         CustomTextField(
-            value = customer.favoriteClub,
+            value = customer.favouriteTeam,
             text = stringResource(id = R.string.favorite_club),
             readOnly = true
         ){}

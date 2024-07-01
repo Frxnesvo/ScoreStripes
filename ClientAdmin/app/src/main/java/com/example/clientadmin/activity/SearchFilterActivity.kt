@@ -35,16 +35,23 @@ fun SearchByNameSheet(
     val scope = rememberCoroutineScope()
     val filter by filterFormViewModel.filterState.collectAsState()
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        containerColor = colorResource(id = R.color.white),
+    ) {
         Column(
             modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CustomTextField(
-                value = filter.name,
+                value =  if(filterType == FilterType.CUSTOMERS) filter.username else filter.name,
                 text = stringResource(id = if(filterType == FilterType.CUSTOMERS) R.string.search_for_username else R.string.search_for_name),
                 leadingIcon = Icons.Outlined.Search
-            ) { filterFormViewModel.updateName(it) }
+            ) {
+                if(filterType == FilterType.CUSTOMERS) filterFormViewModel.updateUsername(it)
+                else filterFormViewModel.updateName(it)
+            }
 
             CustomButton(
                 text = stringResource(id = R.string.search),
@@ -54,7 +61,10 @@ fun SearchByNameSheet(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        onSearch(filterFormViewModel.build())
+                        onSearch(
+                            if(filterType == FilterType.CUSTOMERS) filterFormViewModel.buildForCustomers()
+                            else filterFormViewModel.buildForItems()
+                        )
                     }
                 }
             }
@@ -88,7 +98,7 @@ fun SearchPanelProducts(
         ) {
             CustomTextField(
                 value = filter.name,
-                text = stringResource(id = R.string.search_for_username),
+                text = stringResource(id = R.string.search_for_name),
                 leadingIcon = Icons.Outlined.Search
             ) { filterFormViewModel.updateName(it) }
 
@@ -113,7 +123,7 @@ fun SearchPanelProducts(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        onSearch(filterFormViewModel.build())
+                        onSearch(filterFormViewModel.buildForItems())
                     }
                 }
             }
