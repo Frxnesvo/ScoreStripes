@@ -81,7 +81,7 @@ fun IndexPage(
 
                 TextButton(
                     onClick = {
-                        navController.navigate("scaffold")  //todo aggiungere il customer della login come parametro
+                        navController.navigate("scaffold")
                     }
                 ) {
                     Text(

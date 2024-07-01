@@ -18,7 +18,7 @@ class Order(
     val items: List<OrderItem>
 ) {
     companion object {
-        fun fromDto(orderDto: OrderDto): Order {
+        suspend fun fromDto(orderDto: OrderDto): Order {
             return Order(
                 id = orderDto.id,
                 totalPrice = orderDto.totalPrice,
@@ -37,7 +37,7 @@ class Order(
         val product: ProductWithVariant
     ) {
         companion object {
-            fun fromDto(orderItemDto: OrderItemDto): OrderItem {
+            suspend fun fromDto(orderItemDto: OrderItemDto): OrderItem {
                 return OrderItem(
                     id = orderItemDto.id,
                     quantity = orderItemDto.quantity,
@@ -53,7 +53,7 @@ class Order(
             val basicProduct: BasicProduct
         ) {
             companion object {
-                fun fromDto(productWithVariantDto: ProductWithVariantDto): ProductWithVariant {
+                suspend fun fromDto(productWithVariantDto: ProductWithVariantDto): ProductWithVariant {
                     return ProductWithVariant(
                         id = productWithVariantDto.id,
                         size = productWithVariantDto.size,

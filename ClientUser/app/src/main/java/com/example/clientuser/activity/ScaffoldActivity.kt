@@ -16,7 +16,6 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -24,8 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -39,8 +36,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
+import com.example.clientuser.model.Customer
 import com.example.clientuser.model.FilterBuilder
-import com.example.clientuser.model.Product
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
@@ -48,10 +45,10 @@ import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.ProductsViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
-import kotlinx.coroutines.launch
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
@@ -78,15 +75,16 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
         ) {
             AuthAwareComposable(navController = navHostController) {
                 NavigationScaffold(
-                    customerFormViewModel = CustomerFormViewModel(customer.value!!),
-                    customerViewModel = CustomerViewModel(customer.value!!.id),
+                    customerFormViewModel = CustomerFormViewModel(if(customer.value != null) customer.value!! else Customer()),
+                    customerViewModel = CustomerViewModel(if(customer.value != null) customer.value!!.id else ""),
                     clubViewModel = ClubViewModel(),
                     leagueViewModel = LeagueViewModel(),
-                    productViewModel = ProductViewModel(),
+                    productsViewModel = ProductsViewModel(),
                     orderViewModel = OrderViewModel(),
                     wishlistViewModel = WishListViewModel(),
                     cartViewModel = CartViewModel(),
-                    navHostController = navController
+                    navHostController = navController,
+                    productViewModel = ProductViewModel()
                 )
             }
         }
@@ -141,14 +139,6 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             selectedScreen.value = Screen.SETTINGS
             navHostController.navigate("settings")
         }
-
-
-        //TODO rimuovere
-        Button(
-            onClick = { navHostController.navigate("product/2eeec6cd-d958-4eb2-8588-7305bafb12ba") }
-        ) {
-
-        }
     }
 }
 
@@ -158,11 +148,12 @@ fun NavigationScaffold(
     customerViewModel: CustomerViewModel,
     leagueViewModel: LeagueViewModel,
     clubViewModel: ClubViewModel,
-    productViewModel: ProductViewModel,
+    productsViewModel: ProductsViewModel,
     orderViewModel: OrderViewModel,
     wishlistViewModel: WishListViewModel,
     cartViewModel: CartViewModel,
     customerFormViewModel: CustomerFormViewModel,
+    productViewModel: ProductViewModel,
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -176,8 +167,9 @@ fun NavigationScaffold(
             Home(
                 customerFormViewModel = customerFormViewModel,
                 leagueViewModel = leagueViewModel,
-                productViewModel = productViewModel,
-                navHostController = navHostController
+                productsViewModel = productsViewModel,
+                navHostController = navHostController,
+                productViewModel = productViewModel
             )
         }
 
@@ -207,7 +199,8 @@ fun NavigationScaffold(
             WishlistProducts(
                 name = stringResource(id = R.string.my_wishlist),
                 items = myList,
-                navHostController = navHostController
+                navHostController = navHostController,
+                productViewModel = productViewModel
             )
         }
 
@@ -221,7 +214,8 @@ fun NavigationScaffold(
                 WishlistProducts(
                     name = wishlist?.ownerUsername ?: "",
                     items = wishlist!!, //wishlist?.items ?: emptyList(), TODO
-                    navHostController = navHostController
+                    navHostController = navHostController,
+                    productViewModel = productViewModel
                 )
             }
         }
@@ -236,7 +230,8 @@ fun NavigationScaffold(
                 WishlistProducts(
                     name = wishlist?.ownerUsername ?: "", //faccio così per gli aggiornamenti in tempo reale, ma non è il massimo
                     items = wishlist!!, //TODO come sopra?
-                    navHostController = navHostController
+                    navHostController = navHostController,
+                    productViewModel = productViewModel
                 )
             }
         }
@@ -274,7 +269,8 @@ fun NavigationScaffold(
         ) {
             Orders(
                 customerViewModel = customerViewModel,
-                navHostController = navHostController
+                navHostController = navHostController,
+                productViewModel = productViewModel
             )
         }
         composable(
@@ -292,9 +288,10 @@ fun NavigationScaffold(
         ) {
             ListDiscover(
                 name = stringResource(id = R.string.discover),
-                productViewModel = productViewModel,
+                productsViewModel = productsViewModel,
                 leagueViewModel = leagueViewModel,
-                navHostController = navHostController
+                navHostController = navHostController,
+                productViewModel = productViewModel
             )
         }
 
@@ -305,32 +302,14 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ){ it ->
             it.arguments?.getString("id")?.let { id ->
-                val coroutineScope = rememberCoroutineScope()
-                var product by remember { mutableStateOf<Product?>(null) }
-                var isLoading by remember { mutableStateOf(true) }
-
-
-                LaunchedEffect(key1 = id) {
-                    coroutineScope.launch {
-                        product = productViewModel.getProductById(id)
-                        isLoading = false
-                    }
-                }
-
-
-                if (isLoading) {
-                    Text("Loading...")      //TODO
-                } else {
-                    product?.let { prod ->
-                        ProductDetails(
-                            product = prod,
-                            wishListViewModel = wishlistViewModel,
-                            navHostController = navHostController,
-                            productFormViewModel = ProductFormViewModel(),
-                            cartViewModel = cartViewModel
-                        )
-                    } ?: Text("Product not found")
-                }
+                ProductDetails(
+                    productId = id,
+                    wishListViewModel = wishlistViewModel,
+                    navHostController = navHostController,
+                    productFormViewModel = ProductFormViewModel(),
+                    cartViewModel = cartViewModel,
+                    productViewModel = productViewModel
+                )
             }
         }
 
@@ -341,12 +320,13 @@ fun NavigationScaffold(
         ) {
             it.arguments?.getString("name")?.let {
                 club ->
-                productViewModel.setFilter(FilterBuilder().setClub(club).build())
+                productsViewModel.setFilter(FilterBuilder().setClub(club).build())
                 ListDiscover(
                     name = club,
-                    productViewModel = productViewModel,
+                    productsViewModel = productsViewModel,
                     leagueViewModel = leagueViewModel,
-                    navHostController = navHostController
+                    navHostController = navHostController,
+                    productViewModel = productViewModel
                 )
             }
         }
@@ -357,12 +337,13 @@ fun NavigationScaffold(
         ) {
             it.arguments?.getString("name")?.let {
                 league ->
-                productViewModel.setFilter(FilterBuilder().setLeague(league).build())
+                productsViewModel.setFilter(FilterBuilder().setLeague(league).build())
                 ListDiscover(
                     name = league,
-                    productViewModel = productViewModel,
+                    productsViewModel = productsViewModel,
                     leagueViewModel = leagueViewModel,
-                    navHostController = navHostController
+                    navHostController = navHostController,
+                    productViewModel = productViewModel
                 )
             }
         }

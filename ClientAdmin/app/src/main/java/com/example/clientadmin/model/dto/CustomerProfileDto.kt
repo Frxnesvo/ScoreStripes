@@ -12,5 +12,5 @@ data class CustomerProfileDto (
     val lastName: String,
     val birthDate: String,
     val gender: Gender,
-    val favoriteClub: String,
+    val favouriteTeam: String,
 )

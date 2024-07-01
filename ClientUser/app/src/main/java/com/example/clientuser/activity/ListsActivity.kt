@@ -3,6 +3,7 @@ package com.example.clientuser.activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -31,23 +32,32 @@ import com.example.clientuser.R
 import com.example.clientuser.model.Wishlist
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.ProductsViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 
 @Composable
 fun WishlistProducts(
     name: String,
     items: Wishlist,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    productViewModel: ProductViewModel
 ){
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(25.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BoxIcon(
-            iconColor = colorResource(id = R.color.secondary),
-            content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
-        ) { navHostController.popBackStack() }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            BoxIcon(
+                iconColor = colorResource(id = R.color.secondary),
+                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
+            ) { navHostController.popBackStack() }
+        }
+
 
         Text(
             text = name,
@@ -60,7 +70,10 @@ fun WishlistProducts(
         ) {
             items(items.items){
                 key(it.product.id) {
-                    ProductItem(it.product){ navHostController.navigate("product/${it.product.id}") }
+                    ProductItem(it.product){
+                        productViewModel.getProduct(it.product.id)
+                        navHostController.navigate("product/${it.product.id}")
+                    }
                 }
             }
         }
@@ -76,13 +89,21 @@ fun WishlistDiscover(
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(25.dp)
+        verticalArrangement = Arrangement.spacedBy(25.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            BoxIcon(
-                iconColor = colorResource(id = R.color.secondary),
-                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
-            ) { navHostController.popBackStack() }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                BoxIcon(
+                    iconColor = colorResource(id = R.color.secondary),
+                    content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
+                ) { navHostController.popBackStack() }
+            }
+
         }
 
         item {
@@ -104,12 +125,13 @@ fun WishlistDiscover(
 @Composable
 fun ListDiscover(
     name: String,
-    productViewModel: ProductViewModel,
+    productsViewModel: ProductsViewModel,
     leagueViewModel: LeagueViewModel,
     navHostController: NavHostController,
+    productViewModel: ProductViewModel
 ){
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val products by productViewModel.productSummary.collectAsState()
+    val products by productsViewModel.productSummary.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -133,6 +155,7 @@ fun ListDiscover(
         ) {
             items(products){
                 key(it.id) {
+                    productViewModel.getProduct(it.id)
                     ProductItem(it){ navHostController.navigate("product/${it.id}") }
                 }
             }
@@ -144,6 +167,6 @@ fun ListDiscover(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
             leagueViewModel = leagueViewModel,
-            productViewModel = productViewModel
+            productsViewModel = productsViewModel
         )
 }

@@ -15,7 +15,7 @@ class CustomerSummary(
             return CustomerSummary(
                 id = customerSummaryDto.id,
                 username = customerSummaryDto.username,
-                profilePic = S3ImageDownloader.getImageForBucket(customerSummaryDto.profilePicUrl)
+                profilePic = S3ImageDownloader.getImageFromBucket(customerSummaryDto.profilePicUrl)
             )
         }
     }

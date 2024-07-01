@@ -9,28 +9,19 @@ import java.time.LocalDate
 
 class Customer(
     val id: String = "",
-    val username: String,
-    val firstName: String,
-    val lastName: String,
-    val email: String,
-    val birthDate: LocalDate,
-    val gender: Gender,
-    val pic: Bitmap,
-    val favoriteTeam: String,
-    val addresses: List<Address>
+    val username: String = "",
+    val firstName: String = "",
+    val lastName: String = "",
+    val email: String = "",
+    val birthDate: LocalDate = LocalDate.now(),
+    val gender: Gender = Gender.MALE,
+    val pic: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+    val favoriteTeam: String = "",
+    val addresses: List<Address> = emptyList()
 ) {
-    init {
-        require(validateProfilePic(pic)) { "Invalid profile picture" }
-        require(validateUsername(username)) { "Invalid username: must be between 3 and 20 characters" }
-        //require(validateFirstName(firstName)) { "Invalid first name: must be between 3 and 20 characters" }
-        //require(validateLastName(lastName)) { "Invalid last name: must be between 3 and 20 characters" }
-        require(validateEmail(email)) { "Invalid email format" }
-        require(validateBirthdate(birthDate)) { "Invalid birthdate: must be before the current date" }
-    }
-
 
     companion object {
-        fun fromDto(customerDto: AuthResponseDto): Customer {
+        suspend fun fromDto(customerDto: AuthResponseDto): Customer {
             return Customer(
                 id = customerDto.id,
                 username = customerDto.username,
@@ -41,14 +32,14 @@ class Customer(
                 gender = customerDto.gender,
                 favoriteTeam = customerDto.favouriteTeam,
                 addresses = listOf(customerDto.address),
-                pic = S3ImageDownloader.getImageForBucket(customerDto.profilePicUrl)
+                pic = S3ImageDownloader.getImageFromBucket(customerDto.profilePicUrl)
             )
         }
 
 
         //TODO matchare i controlli di validazione con quelli del backend
         fun validateProfilePic(pic: Bitmap?): Boolean {
-            return pic != Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            return pic != null
         }
 
         fun validateUsername(username: String): Boolean {

@@ -11,9 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.clientadmin.R
+import com.example.clientadmin.authentication.LogoutManager
 import com.example.clientadmin.model.Admin
 
 @Composable
@@ -66,5 +68,13 @@ fun Settings(admin: Admin){
             text = stringResource(id = R.string.gender),
             readOnly = true
         ) { }
+
+        CustomButton(
+            textColor = colorResource(id = R.color.secondary50),
+            text = stringResource(id = R.string.logout),
+            background = R.color.black50
+        ) {
+            LogoutManager.instance.logout()
+        }
     }
 }

@@ -27,6 +27,7 @@ import com.example.clientuser.model.League
 import com.example.clientuser.model.Product
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.ProductsViewModel
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 
 @Composable
@@ -34,13 +35,14 @@ fun Home(
     customerFormViewModel: CustomerFormViewModel,
     leagueViewModel: LeagueViewModel,
     navHostController: NavHostController,
+    productsViewModel: ProductsViewModel,
     productViewModel: ProductViewModel
 ){
     val customer by customerFormViewModel.customer.collectAsState()
     val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
 
-    val bestSellerJersey by productViewModel.moreSoldJersey.collectAsState(initial = emptyList())
-    val bestSellerShorts by productViewModel.moreSoldShorts.collectAsState(initial = emptyList())
+    val bestSellerJersey by productsViewModel.moreSoldJersey.collectAsState(initial = emptyList())
+    val bestSellerShorts by productsViewModel.moreSoldShorts.collectAsState(initial = emptyList())
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -77,19 +79,22 @@ fun Home(
         Section(
             name = stringResource(id = R.string.best_seller_jersey),
             items = bestSellerJersey,
-            navHostController = navHostController
+            navHostController = navHostController,
+            productViewModel = productViewModel
         )
 
         Section(
             name = stringResource(id = R.string.best_seller_shorts),
             items = bestSellerShorts,
-            navHostController = navHostController
+            navHostController = navHostController,
+            productViewModel = productViewModel
         )
 
         Section(
             name = stringResource(id = R.string.buy_by_league),
             items = leagues.value,
-            navHostController = navHostController
+            navHostController = navHostController,
+            productViewModel = productViewModel
         )
     }
 }
@@ -98,7 +103,8 @@ fun Home(
 fun Section(
     name: String,
     items: List<Any>,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    productViewModel: ProductViewModel
 ){
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -124,6 +130,7 @@ fun Section(
                 items(items){
                     when (it) {
                         is Product -> key(it.id) {
+                            productViewModel.getProduct(it.id)
                             ProductItem(it){ navHostController.navigate("product/${it.id}") }
                         }
                         is League -> key(it.id) {

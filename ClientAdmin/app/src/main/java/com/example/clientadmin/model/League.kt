@@ -25,10 +25,10 @@ class League(
         fun validateImage(image: Bitmap?): Boolean{
             return image != null
         }
-        fun fromDto(leagueDto: LeagueDto): League{
+        suspend fun fromDto(leagueDto: LeagueDto): League{
             return League(
                 name = leagueDto.name,
-                pic = S3ImageDownloader.getImageForBucket(leagueDto.picUrl)
+                pic = S3ImageDownloader.getImageFromBucket(leagueDto.picUrl)
             )
         }
         fun fromQueryString(queryString: String): League {

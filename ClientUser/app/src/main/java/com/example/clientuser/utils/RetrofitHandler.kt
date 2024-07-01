@@ -7,6 +7,7 @@ import com.example.clientuser.api.CartApiService
 import com.example.clientuser.api.ClubApiService
 import com.example.clientuser.api.LeagueApiService
 import com.example.clientuser.api.LoginApiService
+import com.example.clientuser.api.LogoutApiService
 import com.example.clientuser.api.OrderApiService
 import com.example.clientuser.api.ProductApiService
 import com.example.clientuser.api.WishListApiService
@@ -36,7 +37,7 @@ object RetrofitHandler {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl("https://192.168.1.55:8443") // Assicurati di usare HTTPS e il corretto indirizzo IP e porta
+            .baseUrl("https://192.168.1.9:8443") // Assicurati di usare HTTPS e il corretto indirizzo IP e porta
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
@@ -51,6 +52,7 @@ object RetrofitHandler {
     lateinit var orderApi: OrderApiService
     lateinit var productApi: ProductApiService
     lateinit var wishListApi: WishListApiService
+    lateinit var logoutApi: LogoutApiService
 
     // Funzione per inizializzare RetrofitHandler
     fun initialize(context: Context) {
@@ -63,6 +65,7 @@ object RetrofitHandler {
         orderApi = retrofit.create(OrderApiService::class.java)
         productApi = retrofit.create(ProductApiService::class.java)
         wishListApi = retrofit.create(WishListApiService::class.java)
+        logoutApi = retrofit.create(LogoutApiService::class.java)
     }
 
     // Funzione per ottenere un client OkHttp con il certificato custom

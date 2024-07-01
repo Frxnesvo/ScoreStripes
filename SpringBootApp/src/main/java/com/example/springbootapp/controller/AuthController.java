@@ -61,15 +61,9 @@ import java.util.Map;
         }
 
         @PostMapping("/logout")
-        public ResponseEntity<String> logout(HttpServletRequest request) {
-            return ResponseEntity.ok(authService.logout(jwtHandler.getJwtFromRequest(request)));
+        public ResponseEntity<Map<String, String>> logout(HttpServletRequest request) {
+            return ResponseEntity.ok(Map.of("response", authService.logout(jwtHandler.getJwtFromRequest(request))));
         }
-
-
-
-
-
-
 }
 
 

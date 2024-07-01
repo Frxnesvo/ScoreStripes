@@ -25,7 +25,7 @@ class BasicProduct(
                 description = basicProductDto.description,
                 brand = basicProductDto.brand,
                 gender = basicProductDto.gender,
-                pic = S3ImageDownloader.getImageForBucket(basicProductDto.picUrl),
+                pic = S3ImageDownloader.getImageFromBucket(basicProductDto.picUrl),
                 club = basicProductDto.club,
                 category = basicProductDto.category
             )

@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 data class UserSession(
     val isLoggedIn: MutableState<Boolean> = mutableStateOf(false),
-    val user: MutableStateFlow<Customer?> = MutableStateFlow<Customer?>(null)
+    val user: MutableStateFlow<Customer?> = MutableStateFlow(null)
 )

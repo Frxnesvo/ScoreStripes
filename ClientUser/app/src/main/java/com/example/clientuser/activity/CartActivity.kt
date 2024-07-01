@@ -16,22 +16,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxDefaults
-import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -65,25 +58,8 @@ fun Cart(
     val showWebView = remember { mutableStateOf(false) }
     val webViewLink by orderViewModel.createdOrderWebViewLink
 
-
-
     val myCart = cartViewModel.cart.collectAsState()
 
-    println("CART: ${myCart.value}")
-
-//    if (showWebView.value) {
-//        orderViewModel
-//            .createCartOrder(OrderInfoDto(selectedAddress.value))
-//            .collectAsState(initial = mapOf()).value["url"]?.let {
-//            url ->
-//                //TODO svuotare il cart
-//                //cartViewModel.clearCart()
-//
-//                WebViewScreen(url, navHostController) {
-//                    showWebView.value = false//messo qui genera order all'infinito
-//                }
-//
-//        }
     if(showWebView.value && webViewLink.isNotEmpty()){
         WebViewScreen(
             orderViewModel = orderViewModel,
@@ -109,15 +85,17 @@ fun Cart(
                 )
             }
 
-            item {
-                CustomButton(
-                    text = stringResource(id = R.string.go_to_payment),
-                    background = R.color.secondary
-                ) {
-                    if(myCart.value.isEmpty()) ToastManager.show("cart is empty")
-                    else setBottomSheet(true)
+            if(myCart.value.isNotEmpty()){
+                item {
+                    CustomButton(
+                        text = stringResource(id = R.string.go_to_payment),
+                        background = R.color.secondary
+                    ) {
+                        setBottomSheet(true)
+                    }
                 }
             }
+
 
             items(myCart.value.values.toList()){
                 key(it.id) {
@@ -148,6 +126,7 @@ fun Cart(
 
 @Composable
 fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
+    val item = remember { mutableStateOf(cartItem) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -156,7 +135,7 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
             .padding(10.dp)
     ) {
         Image(
-            bitmap = cartItem.productWithVariant.product.pic.asImageBitmap(),
+            bitmap = item.value.productWithVariant.product.pic.asImageBitmap(),
             contentDescription = null,
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(100.dp)
@@ -170,18 +149,18 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                 verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
             ) {
                 Text(
-                    text = cartItem.productWithVariant.product.club,
+                    text = item.value.productWithVariant.product.club,
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = cartItem.productWithVariant.product.name,
+                    text = item.value.productWithVariant.product.name,
                     color = colorResource(id = R.color.black50),
                     style = MaterialTheme.typography.labelSmall
                 )
                 BoxIcon(
                     iconColor = colorResource(id = R.color.secondary),
                     size = 30.dp,
-                    content = cartItem.productWithVariant.size.name
+                    content = item.value.productWithVariant.size.name
                 ) {}
             }
             Column(
@@ -189,7 +168,7 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "${cartItem.price}€",
+                    text = "${item.value.price}€",
                     style = MaterialTheme.typography.labelMedium
                 )
                 Row(
@@ -207,12 +186,15 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                                 RoundedCornerShape(30.dp)
                             )
                             .clickable {
-                                cartViewModel.updateItemCartQuantity(
-                                    itemId = cartItem.id,
-                                    updateCartItemDto = UpdateCartItemDto(
-                                        quantity = cartItem.quantity - 1
+                                if (item.value.quantity > 1) {
+                                    cartViewModel.updateItemCartQuantity(
+                                        itemId = item.value.id,
+                                        updateCartItemDto = UpdateCartItemDto(
+                                            quantity = item.value.quantity - 1
+                                        )
                                     )
-                                )
+                                    item.value = item.value.copy(quantity = item.value.quantity - 1)
+                                } else ToastManager.show("Quantity cannot be 0")
                             }
                             .size(20.dp),
                     ){
@@ -229,7 +211,7 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
 
 
                     Text(
-                        text = "${cartItem.quantity}",
+                        text = "${item.value.quantity}",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.width(15.dp)
@@ -239,12 +221,16 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                         contentDescription = null,
                         tint = colorResource(id = R.color.secondary),
                         modifier = Modifier.clickable {
-                            cartViewModel.updateItemCartQuantity(
-                                itemId = cartItem.id,
-                                updateCartItemDto = UpdateCartItemDto(
-                                    quantity = cartItem.quantity + 1
-                                ),
-                            )
+                            if(item.value.quantity < 99) {
+                                cartViewModel.updateItemCartQuantity(
+                                    itemId = item.value.id,
+                                    updateCartItemDto = UpdateCartItemDto(
+                                        quantity = item.value.quantity + 1
+                                    ),
+                                )
+                                item.value = item.value.copy(quantity = item.value.quantity + 1)
+                            }
+                            else ToastManager.show("Quantity cannot be exceed 99")
                         }
                     )
                 }

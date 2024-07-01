@@ -7,12 +7,14 @@ import com.example.clientuser.model.Order
 import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.dto.AddressDto
 import com.example.clientuser.utils.RetrofitHandler
+import com.example.clientuser.utils.ToastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
@@ -56,11 +58,23 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
                 addressCreateRequestDto.state,
                 addressCreateRequestDto.defaultAddress
             )
+
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.customerApi.addAddress(addressCreateRequestDto).awaitResponse()
                 if(response.isSuccessful)
-                    response.body()?.let { _addresses.value += it }
-                else println("Error adding address ${response.message()}")
+                    response.body()?.let { addressDto ->
+                        if(addressDto.defaultAddress)
+                            _addresses.value = _addresses.value.map { address ->
+                                if(address.defaultAddress) address.copy(defaultAddress = false)
+                                else address
+                            }
+                        _addresses.value += addressDto
+                        ToastManager.show("Address created")
+                    }
+                else {
+                    println("Error adding address ${response.message()}")
+                    ToastManager.show("Error adding address")
+                }
             }
         } catch (e: Exception) {
             println("Exception adding address: ${e.message}")

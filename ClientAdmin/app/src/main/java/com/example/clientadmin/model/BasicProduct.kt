@@ -16,14 +16,14 @@ class BasicProduct(
     val league: String
 ) {
     companion object {
-        fun fromDto(basicProductDto: BasicProductDto): BasicProduct {
+        suspend fun fromDto(basicProductDto: BasicProductDto): BasicProduct {
             return BasicProduct(
                 id = basicProductDto.id,
                 name = basicProductDto.name,
                 description = basicProductDto.description,
                 brand = basicProductDto.brand,
                 gender = basicProductDto.gender,
-                pic = S3ImageDownloader.getImageForBucket(basicProductDto.picUrl),
+                pic = S3ImageDownloader.getImageFromBucket(basicProductDto.picUrl),
                 club = basicProductDto.club,
                 league = basicProductDto.league
             )

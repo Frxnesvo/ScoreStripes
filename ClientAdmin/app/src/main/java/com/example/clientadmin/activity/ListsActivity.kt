@@ -38,13 +38,13 @@ fun List(isAddresses: Boolean, navHostController: NavHostController){
 
         item {
             Text(
-                text = when (items.first()) {
-                    is Order -> stringResource(id = R.string.list_orders)
-                    is AddressDto -> stringResource(id = R.string.list_addresses)
-                    else -> { "" }
+                text = when (isAddresses) {
+                    true -> stringResource(id = R.string.list_addresses)
+                    false -> stringResource(id = R.string.list_orders)
                 },
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth(),
             )
         }
 

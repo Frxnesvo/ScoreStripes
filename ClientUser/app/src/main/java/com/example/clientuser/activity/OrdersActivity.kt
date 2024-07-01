@@ -24,9 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.viewmodel.CustomerViewModel
+import com.example.clientuser.viewmodel.ProductViewModel
 
 @Composable
-fun Orders(customerViewModel: CustomerViewModel, navHostController: NavHostController){
+fun Orders(
+    customerViewModel: CustomerViewModel,
+    navHostController: NavHostController,
+    productViewModel: ProductViewModel
+){
     val orders by customerViewModel.getCustomerOrders().collectAsState(initial = emptyList())
 
     LazyColumn(
@@ -70,7 +75,7 @@ fun Orders(customerViewModel: CustomerViewModel, navHostController: NavHostContr
             items(orders) {
                 order ->
                 key(order.id) {
-                    OrderItem(order = order, navHostController = navHostController)
+                    OrderItem(order = order, navHostController = navHostController, productViewModel = productViewModel)
                 }
             }
     }
