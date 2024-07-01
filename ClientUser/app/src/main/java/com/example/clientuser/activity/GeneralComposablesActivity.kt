@@ -287,6 +287,7 @@ fun CustomComboBox(
 @Composable
 fun CustomButton(
     text: String,
+    textColor: Color = Color.White,
     background: Int,
     enabled: Boolean = true,
     onClick: () -> Unit
@@ -312,7 +313,8 @@ fun CustomButton(
             style = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                letterSpacing = 5.sp
+                letterSpacing = 5.sp,
+                color = textColor               //TODO vedere se va bene
             )
         )
     }

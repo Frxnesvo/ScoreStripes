@@ -12,6 +12,7 @@ import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.model.enumerator.Gender
 import com.example.clientuser.utils.ConverterBitmap
 import com.example.clientuser.utils.RetrofitHandler
+import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.utils.TokenStoreUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +58,7 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                         withContext(Dispatchers.Main) {
                             TokenStoreUtils.storeToken(customerDto.jwt)
                         }
+                        ToastManager.show("Login successful")
                     }
                 }
                 else{
@@ -98,7 +100,10 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                     defaultAddress = address.defaultAddress.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
                 ).awaitResponse()
 
-                if(response.isSuccessful) _token.value = ""
+                if(response.isSuccessful) {
+                    _token.value = ""
+                    ToastManager.show("Register successful")
+                }
                 else println("Error customer register: ${response.message()}")
                 goToLogin()
 

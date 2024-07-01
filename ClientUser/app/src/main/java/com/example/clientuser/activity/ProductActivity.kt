@@ -33,6 +33,7 @@ import com.example.clientuser.R
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.enumerator.Size
+import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
@@ -152,7 +153,7 @@ fun ProductDetails(
             )
 
             Text(
-                text = "${product.price}",
+                text = "${product.price}€",
                 style = textStyle,
                 color = colorResource(id = R.color.secondary)
             )
@@ -174,6 +175,7 @@ fun ProductDetails(
                         productFormViewModel.updateProductSize(size)
                         setBottomSheet(true)
                     }
+                    else ToastManager.show("product out of stocks for this size")
                 }
             }
         }

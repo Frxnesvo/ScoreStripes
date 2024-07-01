@@ -1,5 +1,8 @@
 package com.example.clientadmin.model.embdeddables
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class OrderInformations (
     val street: String,
     val city: String,

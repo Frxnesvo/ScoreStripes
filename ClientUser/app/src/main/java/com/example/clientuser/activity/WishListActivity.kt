@@ -139,7 +139,7 @@ fun Wishlist(
 
         if(myWishlist.items.isNotEmpty()) {
             item {
-                WishListItem(myWishlist) { navHostController.navigate("sharedWishlistProducts/${myWishlist.id}") }
+                WishListItem(myWishlist) { navHostController.navigate("myWishlist") }
             }
         }
 
@@ -233,6 +233,7 @@ fun Wishlist(
 fun WishListItem(wishlist: Wishlist, onClick: () -> Unit) {
     Column(
         modifier = Modifier
+            .clickable { onClick() }
             .background(colorResource(id = R.color.white), RoundedCornerShape(size = 30.dp))
             .padding(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -245,7 +246,7 @@ fun WishListItem(wishlist: Wishlist, onClick: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 Text(
-                    text = wishlist.ownerUsername,
+                    text = "${wishlist.ownerUsername} wishlist",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -260,8 +261,7 @@ fun WishListItem(wishlist: Wishlist, onClick: () -> Unit) {
 
         Row(
             modifier = Modifier
-                .padding(10.dp)
-                .clickable { onClick() },
+                .padding(10.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             ProductItem(product = wishlist.items[0].product) { }

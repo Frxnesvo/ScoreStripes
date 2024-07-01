@@ -3,6 +3,7 @@ package com.example.clientuser.activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -44,10 +45,17 @@ fun WishlistProducts(
         verticalArrangement = Arrangement.spacedBy(25.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BoxIcon(
-            iconColor = colorResource(id = R.color.secondary),
-            content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
-        ) { navHostController.popBackStack() }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            BoxIcon(
+                iconColor = colorResource(id = R.color.secondary),
+                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
+            ) { navHostController.popBackStack() }
+        }
+
 
         Text(
             text = name,
@@ -76,13 +84,21 @@ fun WishlistDiscover(
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(25.dp)
+        verticalArrangement = Arrangement.spacedBy(25.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            BoxIcon(
-                iconColor = colorResource(id = R.color.secondary),
-                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
-            ) { navHostController.popBackStack() }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                BoxIcon(
+                    iconColor = colorResource(id = R.color.secondary),
+                    content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
+                ) { navHostController.popBackStack() }
+            }
+
         }
 
         item {

@@ -1,6 +1,5 @@
 package com.example.clientuser.activity
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,11 +22,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -52,6 +47,7 @@ import com.example.clientuser.model.Personalization
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToCartRequestDto
 import com.example.clientuser.model.dto.AddressCreateRequestDto
+import com.example.clientuser.model.dto.AddressDto
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.Size
 import com.example.clientuser.model.enumerator.WishListVisibility
@@ -349,6 +345,82 @@ fun AddAddress(
                         sheetState.hide()
                         setBottomSheet(false)
                     }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RemoveAddress(
+    onDismissRequest: () -> Unit,
+    address: AddressDto,
+    onClick: () -> Unit
+){
+    val sheetState = rememberModalBottomSheetState()
+
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        containerColor = colorResource(id = R.color.white),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            CustomTextField(
+                value = address.street,
+                readOnly = true,
+                text = stringResource(id = R.string.street)
+            ){}
+
+            CustomTextField(
+                value = address.civicNumber,
+                readOnly = true,
+                text = stringResource(id = R.string.civic_number),
+            ){}
+
+            CustomTextField(
+                value = address.state,
+                readOnly = true,
+                text = stringResource(id = R.string.state)
+            ){}
+
+            CustomTextField(
+                value = address.city,
+                readOnly = true,
+                text = stringResource(id = R.string.city),
+            ){}
+
+            CustomTextField(
+                value = address.zipCode,
+                readOnly = true,
+                text = stringResource(id = R.string.zip_code),
+            ){}
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = address.defaultAddress,
+                    enabled = false,
+                    onCheckedChange = {}
+                )
+                Text(text = stringResource(id = R.string.default_address))
+            }
+
+
+
+            CustomButton(
+                text = stringResource(id = R.string.delete),
+                textColor = colorResource(id = R.color.secondary50),
+                background = R.color.black50
+            ) {
+                onClick()
             }
         }
     }

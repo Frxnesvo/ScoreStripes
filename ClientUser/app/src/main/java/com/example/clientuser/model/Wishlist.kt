@@ -14,7 +14,8 @@ data class Wishlist(
             return Wishlist(
                 id = wishlistDto.id,
                 items = wishlistDto.items.map { WishlistItem.fromDto(it) },
-                visibility = wishlistDto.visibility
+                visibility = wishlistDto.visibility,
+                ownerUsername = wishlistDto.ownerUsername
             )
         }
     }

@@ -32,9 +32,10 @@ fun Addresses(
     navHostController: NavHostController
 ){
     val (isOpenSheetAdd, setBottomSheetAdd) = remember { mutableStateOf(false) }
+    val (isOpenSheetRemove, setBottomSheetRemove) = remember { mutableStateOf(false)}
 
     val addresses by customerViewModel.addresses.collectAsState()
-    var addressToUpdate: AddressDto? by remember { mutableStateOf(null) }
+    var addressToShow: AddressDto? by remember { mutableStateOf(null) }
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -46,8 +47,9 @@ fun Addresses(
                 imageVector = Icons.Outlined.Add,
                 navHostController = navHostController
             ) {
-                addressToUpdate = null
+                addressToShow = null
                 setBottomSheetAdd(true)
+                setBottomSheetRemove(false)
             }
         }
 
@@ -71,8 +73,9 @@ fun Addresses(
                 address ->
                 key(address.id) {
                     AddressItem(addressDto = address){
-                        addressToUpdate = address
-                        setBottomSheetAdd(true)
+                        addressToShow = address
+                        setBottomSheetAdd(false)
+                        setBottomSheetRemove(true)
                     }
                 }
             }
@@ -82,7 +85,16 @@ fun Addresses(
         AddAddress(
             onDismissRequest = { setBottomSheetAdd(false) },
             setBottomSheet = setBottomSheetAdd,
-            addressFormViewModel = AddressFormViewModel(addressToUpdate),
+            addressFormViewModel = AddressFormViewModel(addressToShow),
             customerViewModel = customerViewModel
         )
+
+    if(isOpenSheetRemove)
+        RemoveAddress(
+            onDismissRequest = { setBottomSheetRemove(false) },
+            address = addressToShow!!
+        ) {
+            setBottomSheetRemove(false)
+            //TODO address.viewModel.remove
+        }
 }
