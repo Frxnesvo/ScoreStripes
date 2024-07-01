@@ -68,4 +68,5 @@
     <string name="day">DAY</string>
     <string name="month">MONTH</string>
     <string name="year">YEAR</string>
+    <string name="logout">LOGOUT</string>
 </resources>

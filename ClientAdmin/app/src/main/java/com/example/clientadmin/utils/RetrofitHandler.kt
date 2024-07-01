@@ -6,7 +6,7 @@ import com.example.clientadmin.api.ClubApiService
 import com.example.clientadmin.api.CustomerApiService
 import com.example.clientadmin.api.LeagueApiService
 import com.example.clientadmin.api.LoginApiService
-import com.example.clientadmin.api.LogoutApi
+import com.example.clientadmin.api.LogoutApiService
 import com.example.clientadmin.api.OrdersApiService
 import com.example.clientadmin.api.ProductApiService
 import com.example.clientadmin.api.ProductVariantApiService
@@ -53,7 +53,7 @@ object RetrofitHandler {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl("https://192.168.1.55:8443") // Ensure you're using HTTPS
+            .baseUrl("https://192.168.1.9:8443") // Ensure you're using HTTPS
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
@@ -66,7 +66,7 @@ object RetrofitHandler {
     lateinit var ordersApi: OrdersApiService
     lateinit var productVariantApi: ProductVariantApiService
     lateinit var loginApi: LoginApiService
-    lateinit var logoutApi: LogoutApi
+    lateinit var logoutApi: LogoutApiService
 
     fun initialize(context: Context) {
         val retrofit = createRetrofit(context)
@@ -77,7 +77,7 @@ object RetrofitHandler {
         ordersApi = retrofit.create(OrdersApiService::class.java)
         productVariantApi = retrofit.create(ProductVariantApiService::class.java)
         loginApi = retrofit.create(LoginApiService::class.java)
-        logoutApi = retrofit.create(LogoutApi::class.java)
+        logoutApi = retrofit.create(LogoutApiService::class.java)
     }
 
 

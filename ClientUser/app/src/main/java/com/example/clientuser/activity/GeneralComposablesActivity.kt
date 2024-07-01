@@ -37,11 +37,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -167,6 +171,25 @@ fun BoxIcon(
 }
 
 @Composable
+fun GoToLoginSnackBar(navController: NavHostController){
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show the snackbar when needed
+    LaunchedEffect(Unit) {
+        val result = snackbarHostState.showSnackbar(
+            message = "Feature restricted, please log in to access it.",
+            actionLabel = "Login"
+        )
+        if (result == SnackbarResult.ActionPerformed) {
+            //TODO avviare l'activity del login
+            navController.navigate("home")
+        }
+    }
+
+    SnackbarHost(hostState = snackbarHostState)
+}
+
+@Composable
 fun BoxImage(
     height: Dp = 150.dp,
     boxTitle: String,
@@ -287,7 +310,7 @@ fun CustomComboBox(
 @Composable
 fun CustomButton(
     text: String,
-    textColor: Color = Color.White,
+    textColor: Color = colorResource(id = R.color.white),
     background: Int,
     enabled: Boolean = true,
     onClick: () -> Unit

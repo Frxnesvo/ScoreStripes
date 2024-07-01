@@ -39,6 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
+import com.example.clientuser.model.Customer
 import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.model.Product
 import com.example.clientuser.viewmodel.CustomerViewModel
@@ -78,8 +79,8 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
         ) {
             AuthAwareComposable(navController = navHostController) {
                 NavigationScaffold(
-                    customerFormViewModel = CustomerFormViewModel(customer.value!!),
-                    customerViewModel = CustomerViewModel(customer.value!!.id),
+                    customerFormViewModel = CustomerFormViewModel(if(customer.value != null) customer.value!! else Customer()),
+                    customerViewModel = CustomerViewModel(if(customer.value != null) customer.value!!.id else ""),
                     clubViewModel = ClubViewModel(),
                     leagueViewModel = LeagueViewModel(),
                     productViewModel = ProductViewModel(),
