@@ -12,7 +12,7 @@ import okhttp3.Request
 import java.io.IOException
 
 object S3ImageDownloader {
-    suspend fun getImageForBucket(presignedUrl: String): Bitmap{
+    suspend fun getImageFromBucket(presignedUrl: String): Bitmap{
         var bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         val job = CoroutineScope(Dispatchers.IO).launch {
             download(presignedUrl).collect { downloadedBitmap ->

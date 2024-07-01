@@ -58,21 +58,21 @@ class CartViewModel : ViewModel() {
     }
 
     fun updateItemCartQuantity(updateCartItemDto: UpdateCartItemDto, itemId: String){
-        if(updateCartItemDto.quantity in 1..99) {
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val response =
-                        RetrofitHandler.cartApi.updateItemCartQuantity(itemId, updateCartItemDto)
-                            .awaitResponse()
-                    if (response.isSuccessful)
-                        _cart.value[itemId] = _cart.value[itemId]!!.copy(
-                            quantity = updateCartItemDto.quantity
-                        )
-                    else println("Error updating cart item quantity: ${response.message()}")
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response =
+                    RetrofitHandler.cartApi.updateItemCartQuantity(itemId, updateCartItemDto)
+                        .awaitResponse()
+                if (response.isSuccessful) {
+                    _cart.value[itemId] = _cart.value[itemId]!!.copy(
+                        quantity = updateCartItemDto.quantity
+                    )
+                    ToastManager.show("Item quantity updated")
                 }
-                catch (e : Exception){
-                    println("Exception updating cart item quantity: ${e.message}")
-                }
+                else println("Error updating cart item quantity: ${response.message()}")
+            }
+            catch (e : Exception){
+                println("Exception updating cart item quantity: ${e.message}")
             }
         }
     }

@@ -15,7 +15,7 @@ class League(
             return League(
                 id = leagueDto.id,
                 name = leagueDto.name,
-                image = S3ImageDownloader.getImageForBucket(leagueDto.picUrl)
+                image = S3ImageDownloader.getImageFromBucket(leagueDto.picUrl)
             )
         }
     }

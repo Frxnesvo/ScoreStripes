@@ -41,7 +41,7 @@ class Customer(
                 gender = customerDto.gender,
                 favoriteTeam = customerDto.favouriteTeam,
                 addresses = listOf(customerDto.address),
-                pic = S3ImageDownloader.getImageForBucket(customerDto.profilePicUrl)
+                pic = S3ImageDownloader.getImageFromBucket(customerDto.profilePicUrl)
             )
         }
 
