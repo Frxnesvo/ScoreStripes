@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(consumes = {"multipart/form-data"})                                  //TODO: controllare se posso togliere il throws
+    @PostMapping(consumes = {"multipart/form-data"})                                  //TODO: controllare se posso togliere il throws, dava errore prima
     public ResponseEntity<ProductDto> createProduct(@Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         if (bindingResult.hasErrors()) {
             throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
@@ -60,7 +60,7 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping(value = "/{id}", consumes = {"multipart/form-data"})       //TODO: controllare se posso togliere il throws
+    @PatchMapping(value = "/{id}", consumes = {"multipart/form-data"})       //TODO: controllare se posso togliere il throws, dava errore prima
     public ResponseEntity<ProductDto> updateProduct(@PathVariable String id, @Valid @ModelAttribute ProductUpdateDto productUpdateDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         if (bindingResult.hasErrors()) {
             throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
@@ -70,6 +70,7 @@ public class ProductController {
 
     @GetMapping("/more-sold")
     public ResponseEntity<List<ProductDto>> getMoreSoldProducts(@RequestParam() ProductCategory category){
+        System.out.println("category: " + category);
         return ResponseEntity.ok(productService.getMoreSoldProducts(category));
     }
 

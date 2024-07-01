@@ -1,11 +1,8 @@
 package com.example.springbootapp.data.specification;
 
+import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Enums.OrderStatus;
 import com.example.springbootapp.data.entities.Enums.ProductCategory;
-import com.example.springbootapp.data.entities.Order;
-import com.example.springbootapp.data.entities.OrderItem;
-import com.example.springbootapp.data.entities.Product;
-import com.example.springbootapp.data.entities.ProductWithVariant;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -44,14 +41,16 @@ public class ProductSpecification {
         };
     }
 
-    public static Specification<Product> withFilters(String name, String league, String category, String clubName) {
+    public static Specification<Product> withFilters(String name, String leagueName, String category, String clubName) {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (name != null && !name.isEmpty()) {
                 predicates.add(builder.like(builder.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
             }
-            if (league != null && !league.isEmpty()) {
-                predicates.add(builder.equal(root.get("league"), league));
+            if (leagueName != null && !leagueName.isEmpty()) {
+                Join<Product, Club> clubJoin = root.join("club");
+                Join<Club, League> leagueJoin = clubJoin.join("league");
+                predicates.add(builder.equal(leagueJoin.get("name"), leagueName));
             }
             if (category != null && !category.isEmpty()) {
                 predicates.add(builder.equal(root.get("category"), category));
