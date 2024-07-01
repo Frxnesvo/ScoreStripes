@@ -62,6 +62,7 @@ public class ProductServiceImpl implements ProductService {
         String category = filters.get("category");
         String club = filters.get("club");
         String league = filters.get("league");
+        System.out.println("name: " + name + " category: " + category + " club: " + club + " league: " + league);
         Specification<Product> spec = ProductSpecification.withFilters(name, league, category, club);
         return productDao.findAll(spec,pageable)
                 .map(product -> modelMapper.map(product, BasicProductDto.class));
@@ -152,6 +153,7 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(0,5);
         Page<Product> page= productDao.findAll(spec, pageable);
         List<Product> result = page.getContent();
+        result.forEach(product -> System.out.println(product.getName()));
         return result.stream()
                 .map(product -> modelMapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());
