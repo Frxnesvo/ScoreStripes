@@ -139,7 +139,7 @@ fun Stat(text: String, value: Long, onClick: () -> Unit){
         )
         Text(
             text = "$value",
-            color = Color.Red,
+            color = colorResource(id = R.color.secondary),
             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
         )
     }

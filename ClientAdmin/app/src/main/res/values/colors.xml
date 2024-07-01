@@ -2,8 +2,8 @@
 <resources>
     <color name="primary">#FFF8F8F8</color>
     <color name="primary50">#80F8F8F8</color>
-    <color name="secondary">#FFE31515</color>
-    <color name="secondary50">#80E31515</color>
+    <color name="secondary">#FF020F88</color>
+    <color name="secondary50">#80020F88</color>
     <color name="black">#FF000000</color>
     <color name="black50">#80000000</color>
     <color name="white">#FFFFFFFF</color>

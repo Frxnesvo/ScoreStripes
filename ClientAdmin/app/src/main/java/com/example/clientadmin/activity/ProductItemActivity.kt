@@ -155,7 +155,7 @@ fun ColumnAvailability(size: Size, availability: Int? = 0){
         ) {
             Text(
                 text = "$availability",
-                color = Color.Red,
+                color = colorResource(id = R.color.secondary),
                 style = style
             )
         }
