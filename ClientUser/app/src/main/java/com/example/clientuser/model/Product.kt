@@ -30,8 +30,8 @@ class Product (
                 brand = productDto.brand,
                 gender = productDto.gender,
                 productCategory = productDto.category,
-                pic1 = S3ImageDownloader.getImageForBucket(productDto.pics[0].picUrl),
-                pic2 = S3ImageDownloader.getImageForBucket(productDto.pics[1].picUrl),
+                pic1 = S3ImageDownloader.getImageFromBucket(productDto.pics[0].picUrl),
+                pic2 = S3ImageDownloader.getImageFromBucket(productDto.pics[1].picUrl),
                 club = productDto.clubName,
                 variants = productDto.variants.associate { it.size to it.availability }
             )

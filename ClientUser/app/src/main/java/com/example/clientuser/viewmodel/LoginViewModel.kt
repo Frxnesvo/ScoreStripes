@@ -47,7 +47,6 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.login(mapOf(Pair("idToken", idToken))).awaitResponse()
                 if(response.isSuccessful){
-                    //TODO salvare il token
                     //TODO verificare che l'utente loggato sia un admin
 
                     response.body()?.let { customerDto ->

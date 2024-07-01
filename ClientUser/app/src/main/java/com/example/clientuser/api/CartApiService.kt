@@ -20,7 +20,7 @@ interface CartApiService {
     fun getMyCart(): Call<List<CartItemDto>>
 
     @PATCH("api/v1/carts/item/{itemId}")
-    fun updateItemCartQuantity(@Path("itemId") itemId: String, updateCartItemDto: UpdateCartItemDto): Call<String>
+    fun updateItemCartQuantity(@Path("itemId") itemId: String, @Body updateCartItemDto: UpdateCartItemDto): Call<Map<String, String>>
 
     @DELETE("api/v1/carts/item/{itemId}")
     fun deleteItemFromCart(@Path("itemId") itemId: String): Call<Map<String, String>>

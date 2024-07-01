@@ -20,7 +20,7 @@ class ProductSummary(
             return ProductSummary(
                 id = productSummaryDto.id,
                 name = productSummaryDto.name,
-                picUrl = S3ImageDownloader.getImageForBucket(productSummaryDto.picUrl),
+                picUrl = S3ImageDownloader.getImageFromBucket(productSummaryDto.picUrl),
 
                 //TODO si posso rimuovere i campi qui sotto?
                 clubName = productSummaryDto.clubName,

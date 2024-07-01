@@ -34,9 +34,9 @@ public class CartController {
 
 
     @PatchMapping("/item/{itemId}")
-    public ResponseEntity<String> updateItemQuantity(@PathVariable String itemId, @Valid @RequestBody CartItemUpdateDto updateDto){
+    public ResponseEntity<Map<String, String>> updateItemQuantity(@PathVariable String itemId, @Valid @RequestBody CartItemUpdateDto updateDto){
         cartService.updateItemQuantity(itemId, updateDto);
-        return ResponseEntity.ok("Item quantity updated");
+        return ResponseEntity.ok(Map.of("response", "Item quantity updated"));
     }
 
     @DeleteMapping("/item/{itemId}")

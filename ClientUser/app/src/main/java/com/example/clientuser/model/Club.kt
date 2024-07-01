@@ -14,7 +14,7 @@ class Club(
             return Club(
                 id = clubDto.id,
                 name = clubDto.name,
-                image = S3ImageDownloader.getImageForBucket(clubDto.picUrl)
+                image = S3ImageDownloader.getImageFromBucket(clubDto.picUrl)
             )
         }
     }
