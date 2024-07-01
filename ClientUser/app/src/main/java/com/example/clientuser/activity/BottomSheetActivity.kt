@@ -54,7 +54,7 @@ import com.example.clientuser.model.enumerator.WishListVisibility
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.LeagueViewModel
-import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.ProductsViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
@@ -140,7 +140,7 @@ fun SearchPanelProducts(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
     leagueViewModel: LeagueViewModel,
-    productViewModel: ProductViewModel
+    productsViewModel: ProductsViewModel
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -184,7 +184,7 @@ fun SearchPanelProducts(
                     scope.launch {
                         sheetState.hide()
                         setBottomSheet(false)
-                        productViewModel.setFilter(filterBuilder.build())
+                        productsViewModel.setFilter(filterBuilder.build())
                     }
                 }
             }

@@ -30,10 +30,15 @@ import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.Order
 import com.example.clientuser.model.enumerator.OrderStatus
+import com.example.clientuser.viewmodel.ProductViewModel
 
 
 @Composable
-fun OrderItem(order: Order, navHostController: NavHostController) {
+fun OrderItem(
+    order: Order,
+    navHostController: NavHostController,
+    productViewModel: ProductViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -93,12 +98,20 @@ fun OrderItem(order: Order, navHostController: NavHostController) {
             Text(text = "${order.date}", color = colorResource(id = R.color.black), style = style12)
         }
 
-        ProductOrdersList(orderItems = order.items, navHostController = navHostController)
+        ProductOrdersList(
+            orderItems = order.items,
+            navHostController = navHostController,
+            productViewModel = productViewModel
+        )
     }
 }
 
 @Composable
-fun ProductOrdersList(orderItems: List<Order.OrderItem>, navHostController: NavHostController){
+fun ProductOrdersList(
+    orderItems: List<Order.OrderItem>,
+    navHostController: NavHostController,
+    productViewModel: ProductViewModel
+){
     LazyRow(
         state = rememberLazyListState(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
@@ -107,6 +120,7 @@ fun ProductOrdersList(orderItems: List<Order.OrderItem>, navHostController: NavH
             orderItem ->
             key(orderItem.id) {
                 ProductOrderItem(orderItem = orderItem){
+                    productViewModel.getProduct(orderItem.product.product.id)
                     navHostController.navigate("product/${orderItem.product.product.id}")
                 }
             }

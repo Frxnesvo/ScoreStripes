@@ -85,15 +85,17 @@ fun Cart(
                 )
             }
 
-            item {
-                CustomButton(
-                    text = stringResource(id = R.string.go_to_payment),
-                    background = R.color.secondary
-                ) {
-                    if(myCart.value.isEmpty()) ToastManager.show("cart is empty")
-                    else setBottomSheet(true)
+            if(myCart.value.isNotEmpty()){
+                item {
+                    CustomButton(
+                        text = stringResource(id = R.string.go_to_payment),
+                        background = R.color.secondary
+                    ) {
+                        setBottomSheet(true)
+                    }
                 }
             }
+
 
             items(myCart.value.values.toList()){
                 key(it.id) {

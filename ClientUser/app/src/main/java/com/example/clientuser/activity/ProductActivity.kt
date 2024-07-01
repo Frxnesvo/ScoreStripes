@@ -35,6 +35,7 @@ import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.enumerator.Size
 import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.viewmodel.CartViewModel
+import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 import com.google.accompanist.pager.HorizontalPager
@@ -86,16 +87,18 @@ fun Carousel(product: Product){
 
 @Composable
 fun ProductDetails(
-    product: Product,
+    productId: String,
     wishListViewModel: WishListViewModel,
     navHostController: NavHostController,
     productFormViewModel: ProductFormViewModel,
-    cartViewModel: CartViewModel
+    cartViewModel: CartViewModel,
+    productViewModel: ProductViewModel
 ){
     //TODO serve il view model e capire come gestire il like
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val wishlist = wishListViewModel.myWishList
-    val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == product.id}) }
+    val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
+    val product = productViewModel.product.value
 
 
     //todo Icona wishlist, va la recomposition, ma non cambia l'icona
@@ -138,7 +141,7 @@ fun ProductDetails(
             )
         }
 
-        //Carousel(product = product) TODO da sistemare, scorre le immagini in automatico
+        Carousel(product = product)
 
         Row {
             val textStyle = TextStyle(

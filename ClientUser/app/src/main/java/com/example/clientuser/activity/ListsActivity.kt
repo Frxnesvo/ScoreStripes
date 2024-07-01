@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -30,18 +29,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.model.Wishlist
 import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
+import com.example.clientuser.viewmodel.ProductsViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun WishlistProducts(
     name: String,
     items: Wishlist,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    productViewModel: ProductViewModel
 ){
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -72,8 +71,8 @@ fun WishlistProducts(
             items(items.items){
                 key(it.product.id) {
                     ProductItem(it.product){
-                        if(LogoutManager.instance.isLoggedIn.value)         //TODO snackbar per il logout
-                            navHostController.navigate("product/${it.product.id}")
+                        productViewModel.getProduct(it.product.id)
+                        navHostController.navigate("product/${it.product.id}")
                     }
                 }
             }
@@ -126,12 +125,13 @@ fun WishlistDiscover(
 @Composable
 fun ListDiscover(
     name: String,
-    productViewModel: ProductViewModel,
+    productsViewModel: ProductsViewModel,
     leagueViewModel: LeagueViewModel,
     navHostController: NavHostController,
+    productViewModel: ProductViewModel
 ){
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val products by productViewModel.productSummary.collectAsState()
+    val products by productsViewModel.productSummary.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -155,6 +155,7 @@ fun ListDiscover(
         ) {
             items(products){
                 key(it.id) {
+                    productViewModel.getProduct(it.id)
                     ProductItem(it){ navHostController.navigate("product/${it.id}") }
                 }
             }
@@ -166,6 +167,6 @@ fun ListDiscover(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
             leagueViewModel = leagueViewModel,
-            productViewModel = productViewModel
+            productsViewModel = productsViewModel
         )
 }
