@@ -1,10 +1,12 @@
 package com.example.clientuser.viewmodel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.Address
 import com.example.clientuser.model.Order
 import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.dto.AddressDto
+import com.example.clientuser.utils.ConverterBitmap
 import com.example.clientuser.utils.RetrofitHandler
 import com.example.clientuser.utils.ToastManager
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +17,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.awaitResponse
 
 class CustomerViewModel(private val customerId: String): ViewModel() {
@@ -101,5 +105,22 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
         }
     }
 
-    //TODO updateCustomer()
+    fun updateCustomer(pic: Bitmap?, favoriteTeam: String?){
+        try{
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.customerApi.updateCustomer(
+                    profilePic = if(pic != null) ConverterBitmap.convert(pic, "profilePic") else null,
+                    favoriteTeam = favoriteTeam?.toRequestBody("text/plain".toMediaTypeOrNull()),
+                ).awaitResponse()
+
+                if(response.isSuccessful) ToastManager.show("Update successful")
+                else {
+                    println("Error updating customer")
+                    ToastManager.show("Error updating customer")
+                }
+            }
+        }catch (e: Exception){
+            println("Exception updating customer")
+        }
+    }
 }

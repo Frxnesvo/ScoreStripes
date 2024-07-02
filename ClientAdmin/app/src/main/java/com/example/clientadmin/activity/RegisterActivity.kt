@@ -33,6 +33,7 @@ fun Register(
 
     val adminState by loginFormViewModel.adminState.collectAsState()
     val error by loginViewModel.addError
+    val registered by loginViewModel.goToRegister
 
     Column(
         modifier = Modifier
@@ -98,21 +99,20 @@ fun Register(
                 background = if (adminState.isUsernameError || adminState.isBirthdateError || adminState.isProfilePicError) R.color.black50 else R.color.secondary
             ) {
                 if (!adminState.isUsernameError && !adminState.isBirthdateError && !adminState.isProfilePicError)
-                    if (
-                        loginViewModel.register(
-                            token = token,
-                            adminCreateRequestDto = AdminCreateRequestDto(
-                                idToken = token,
-                                username = adminState.username,
-                                birthDate = adminState.birthdate,
-                                gender = adminState.gender,
-                            ),
-                            pic = adminState.profilePic!!
-                        )
-                    ){
-                        navController.navigate("index")
-                    }
+
+                    loginViewModel.register(
+                        token = token,
+                        adminCreateRequestDto = AdminCreateRequestDto(
+                            idToken = token,
+                            username = adminState.username,
+                            birthDate = adminState.birthdate,
+                            gender = adminState.gender,
+                        ),
+                        pic = adminState.profilePic!!
+                    )
             }
         }
+
+        if(!registered) navController.navigate("index")
     }
 }
