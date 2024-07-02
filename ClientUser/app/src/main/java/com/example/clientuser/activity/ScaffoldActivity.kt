@@ -1,6 +1,5 @@
 package com.example.clientuser.activity
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,7 +35,6 @@ import androidx.navigation.navArgument
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.model.Customer
-import com.example.clientuser.model.FilterBuilder
 import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
@@ -59,7 +56,7 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
     val customer = loginViewModel.user.collectAsState()
 
     Scaffold(
-        bottomBar = { BottomBar(navController, selectedScreen) }
+        bottomBar = { BottomBar(navController, selectedScreen, customer.value) }
     ) {
         Box(
             modifier = Modifier
@@ -92,7 +89,7 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
 }
 
 @Composable
-fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState<Screen>) {
+fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState<Screen>, customer: Customer?) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -105,6 +102,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             )
     ) {
         BoxIcon(
+            size = 40.dp,
             background = colorResource(id = if (Screen.HOME == selectedScreen.value) R.color.secondary else R.color.transparent),
             iconColor = colorResource(id = if (Screen.HOME == selectedScreen.value) R.color.white else R.color.black50),
             content = "SS"
@@ -114,6 +112,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
         }
 
         BoxIcon(
+            size = 40.dp,
             background = colorResource(id = if (Screen.WISHLIST == selectedScreen.value) R.color.secondary else R.color.transparent),
             iconColor = colorResource(id = if (Screen.WISHLIST == selectedScreen.value) R.color.white else R.color.black50),
             content = Icons.Outlined.FavoriteBorder
@@ -123,6 +122,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
         }
 
         BoxIcon(
+            size = 40.dp,
             background = colorResource(id = if (Screen.CART == selectedScreen.value) R.color.secondary else R.color.transparent),
             iconColor = colorResource(id = if (Screen.CART == selectedScreen.value) R.color.white else R.color.black50),
             content = Icons.Outlined.ShoppingCart
@@ -132,9 +132,10 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
         }
 
         BoxIcon(
+            size = 40.dp,
             background = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.secondary else R.color.transparent),
             iconColor = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.white else R.color.black50),
-            content = if(true) Icons.Outlined.Person else Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) //todo verificare se si è loggati
+            content = customer?.pic ?: Icons.Outlined.Person
         ) {
             selectedScreen.value = Screen.SETTINGS
             navHostController.navigate("settings")
@@ -320,7 +321,7 @@ fun NavigationScaffold(
         ) {
             it.arguments?.getString("name")?.let {
                 club ->
-                productsViewModel.setFilter(FilterBuilder().setClub(club).build())
+                productsViewModel.setFilter(mapOf("club" to club))
                 ListDiscover(
                     name = club,
                     productsViewModel = productsViewModel,
@@ -337,7 +338,7 @@ fun NavigationScaffold(
         ) {
             it.arguments?.getString("name")?.let {
                 league ->
-                productsViewModel.setFilter(FilterBuilder().setLeague(league).build())
+                productsViewModel.setFilter(mapOf("league" to league))
                 ListDiscover(
                     name = league,
                     productsViewModel = productsViewModel,

@@ -1,6 +1,5 @@
 package com.example.clientuser.activity
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,7 +48,7 @@ fun UserDetails(
         ) { navHostController.popBackStack() }
 
         Text(
-            text = stringResource(id = R.string.addresses),
+            text = stringResource(id = R.string.details),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -77,25 +76,6 @@ fun Details(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.fillMaxWidth()
     ){
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(id = R.string.details),
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = stringResource(id = if(!isEditable.value) R.string.edit else R.string.update),
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorResource(id = R.color.secondary),
-                modifier = Modifier.clickable {
-                    if(isEditable.value) onClick()
-                    isEditable.value = !isEditable.value
-                }
-            )
-        }
-
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -155,7 +135,15 @@ fun Details(
         ){}
 
         CustomButton(
-            textColor = colorResource(id = R.color.secondary50),
+            textColor = colorResource(id = R.color.white),
+            text = stringResource(id = R.string.update),
+            background = R.color.secondary
+        ) {
+            LogoutManager.instance.logout()
+        }
+
+        CustomButton(
+            textColor = colorResource(id = R.color.red),
             text = stringResource(id = R.string.logout),
             background = R.color.black50
         ) {

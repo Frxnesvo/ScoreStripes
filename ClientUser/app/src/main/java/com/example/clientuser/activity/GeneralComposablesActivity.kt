@@ -34,7 +34,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SnackbarHost
@@ -46,7 +45,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,24 +73,27 @@ import java.time.LocalDate
 
 
 @Composable
-fun Title(colorText: Color = colorResource(id = R.color.black)){
-    Row (
+fun Title(colorStripes: Color = colorResource(id = R.color.black)){
+    val style = TextStyle(fontSize = 24.sp, letterSpacing = 5.sp)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
-    ){
+        horizontalArrangement = Arrangement.Center
+    ) {
         Text(
             text = stringResource(id = R.string.score),
-            style = MaterialTheme.typography.titleLarge,
             color = colorResource(id = R.color.secondary),
-            fontWeight = FontWeight.SemiBold
-
+            fontWeight = FontWeight.SemiBold,
+            style = style
         )
         Text(
             text = stringResource(id = R.string.stripes),
-            style = MaterialTheme.typography.titleLarge,
-            color = colorText,
-            fontWeight = FontWeight.Normal
+            color = colorStripes,
+            fontWeight = FontWeight.Light,
+            style = style
         )
     }
 }
@@ -128,7 +129,7 @@ fun IconButtonBar(
 @Composable
 fun BoxIcon(
     background: Color = colorResource(id = R.color.white),
-    size: Dp = 40.dp,
+    size: Dp = 30.dp,
     iconColor : Color,
     content: Any,
     onclick: () -> Unit)
@@ -151,8 +152,9 @@ fun BoxIcon(
             is String -> {
                 Text(
                     text = content,
-                    color = iconColor,
-                    style = MaterialTheme.typography.titleMedium
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = iconColor
                 )
             }
             is Bitmap -> {

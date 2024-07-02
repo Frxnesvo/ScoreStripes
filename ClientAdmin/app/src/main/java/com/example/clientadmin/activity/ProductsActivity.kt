@@ -166,20 +166,20 @@ fun Products(
                 }
             }
 
+            if (FilterType.PRODUCTS == filterType && page.number < page.totalPages)
             item {
-                if (FilterType.PRODUCTS == filterType && page.number < page.totalPages)
-                    Text(
-                        text = stringResource(id = R.string.more),
-                        color = colorResource(id = R.color.black50),
-                        style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ){productsViewModel.incrementPage() }
-                    )
+                Text(
+                    text = stringResource(id = R.string.more),
+                    color = colorResource(id = R.color.black50),
+                    style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ){productsViewModel.incrementPage() }
+                )
             }
         }
     }

@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -98,7 +99,7 @@ fun ProductDetails(
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val wishlist = wishListViewModel.myWishList
     val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
-    val product = productViewModel.product.value
+    val product = productViewModel.product.collectAsState().value
 
 
     //todo Icona wishlist, va la recomposition, ma non cambia l'icona

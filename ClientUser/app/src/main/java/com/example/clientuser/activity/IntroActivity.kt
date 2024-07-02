@@ -56,7 +56,7 @@ fun IndexPage(
                 .padding(vertical = 50.dp, horizontal = 10.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Title(colorText = colorResource(id = R.color.white))
+            Title(colorStripes = colorResource(id = R.color.white))
 
             Column(
                 modifier = Modifier.fillMaxWidth(),

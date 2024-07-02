@@ -19,8 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.model.League
@@ -46,7 +48,6 @@ fun Home(
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
-        horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
@@ -59,19 +60,18 @@ fun Home(
         ){
             Text(
                 text = stringResource(id = R.string.greetings),
-                style = MaterialTheme.typography.titleMedium,
+                style = TextStyle(fontSize = 20.sp, color = colorResource(id = R.color.black)),
                 fontWeight = FontWeight.Normal
             )
             Text(
                 text = customer.username,
-                color = colorResource(id = R.color.secondary),
-                style = MaterialTheme.typography.titleMedium,
+                style = TextStyle(fontSize = 20.sp, color = colorResource(id = R.color.secondary)),
                 fontWeight = FontWeight.Bold
             )
         }
 
         BoxImage(
-            height = 300.dp,
+            height = 250.dp,
             boxTitle = stringResource(id = R.string.discover),
             painter = painterResource(id = R.drawable.home)
         ) { navHostController.navigate("list") }
