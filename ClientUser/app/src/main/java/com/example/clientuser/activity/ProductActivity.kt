@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.enumerator.Size
@@ -101,6 +102,28 @@ fun ProductDetails(
     val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
     val product = productViewModel.product.collectAsState()
 
+    val showSnackBar = remember { mutableStateOf(false) }
+
+    var favouriteBackground = colorResource(id = R.color.primary)
+    var favouriteIconColor = colorResource(id = R.color.secondary)
+    var onFavouriteClick = {
+        if(LogoutManager.instance.isLoggedIn.value) {
+            wishListViewModel.deleteItem(product.value!!.id)
+            inWishlist.value = false
+        }else showSnackBar.value = true
+    }
+
+    if(!inWishlist.value){
+        favouriteBackground = colorResource(id = R.color.secondary)
+        favouriteIconColor = colorResource(id = R.color.primary)
+        onFavouriteClick = {
+            if(LogoutManager.instance.isLoggedIn.value) {
+                wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.value!!.id))
+                inWishlist.value = true
+            }else showSnackBar.value = true
+        }
+    }
+
     //TODO capire perchè all'inizio inWishlist è sempre true e non cambia il colore dell'icona
 
     if(product.value != null){
@@ -112,30 +135,13 @@ fun ProductDetails(
             verticalArrangement = Arrangement.spacedBy(25.dp)
         ) {
 
-            if(inWishlist.value){
-                 IconButtonBar(
-                    imageVector = Icons.Filled.Favorite,
-                    navHostController = navHostController
-                ) {
-                    wishListViewModel.deleteItem(product.value!!.id)
-                    inWishlist.value = false
-                }
-            }
-            else {
-                IconButtonBar(
-                    background = colorResource(id = R.color.primary),
-                    iconColor = colorResource(id = R.color.secondary),
-                    imageVector = Icons.Filled.Favorite,
-                    navHostController = navHostController
-                ) {
-                    wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.value!!.id))
-                    inWishlist.value = true
-                }
-            }
-
-
-
-
+            //TODO vedere perchè non cambia le icone
+            IconButtonBar(
+                background = favouriteBackground,
+                iconColor = favouriteIconColor,
+                imageVector = Icons.Filled.Favorite,
+                navHostController = navHostController
+            ){ onFavouriteClick() }
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -184,11 +190,13 @@ fun ProductDetails(
                         iconColor = colorResource(id = if (product.value!!.variants[size]!! > 0) R.color.secondary else R.color.black50),
                         content = size.name
                     ) {
-                        if (product.value!!.variants[size]!! > 0) {
-                            productFormViewModel.updateProductSize(size)
-                            setBottomSheet(true)
+                        if(LogoutManager.instance.isLoggedIn.value) {
+                            if (product.value!!.variants[size]!! > 0) {
+                                productFormViewModel.updateProductSize(size)
+                                setBottomSheet(true)
+                            } else ToastManager.show("product out of stocks for this size")
                         }
-                        else ToastManager.show("product out of stocks for this size")
+                        else showSnackBar.value = true
                     }
                 }
             }
@@ -231,6 +239,7 @@ fun ProductDetails(
             )
     }
 
+    if(showSnackBar.value) GoToLoginSnackBar(navController = navHostController) { showSnackBar.value = false }
     //todo Icona wishlist, va la recomposition, ma non cambia l'icona
 
 

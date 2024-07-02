@@ -152,7 +152,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
     }
     
     if(showSnackBar.value){
-        GoToLoginSnackBar(navController = navHostController)
+        GoToLoginSnackBar(navController = navHostController, onDismiss = {showSnackBar.value = false})
     }
 }
 
