@@ -78,7 +78,7 @@ public class CustomerController {
     }
 
     @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
-    @PatchMapping("/{id}")
+    @PatchMapping(path="/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<Map<String,String>> updateCustomer(@PathVariable String id, @Valid @ModelAttribute CustomerUpdateDto customerUpdateDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
