@@ -99,125 +99,139 @@ fun ProductDetails(
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val wishlist = wishListViewModel.myWishList
     val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
-    val product = productViewModel.product.collectAsState().value
+    val product = productViewModel.product.collectAsState()
 
+    //TODO capire perchè all'inizio inWishlist è sempre true e non cambia il colore dell'icona
 
-    //todo Icona wishlist, va la recomposition, ma non cambia l'icona
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(25.dp)
-    ) {
-        IconButtonBar(
-            imageVector = Icons.Filled.Favorite,
-            navHostController = navHostController
+    if(product.value != null){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(25.dp)
         ) {
 
             if(inWishlist.value){
-                wishListViewModel.deleteItem(product.id)
-                inWishlist.value = false
-            }
-            else {
-                wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.id))
-                inWishlist.value = true
-            }
-        }
-
-
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            Text(
-                text = product.club,
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(
-                text = product.name,
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
-
-        Carousel(product = product)
-
-        Row {
-            val textStyle = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 1.sp
-            )
-
-            Text(
-                text = "PREZZO: ",
-                style = textStyle
-            )
-
-            Text(
-                text = "${product.price}€",
-                style = textStyle,
-                color = colorResource(id = R.color.secondary)
-            )
-        }
-
-
-        Row (
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-
-            for (size in Size.entries){
-                BoxIcon(
-                    iconColor = colorResource(id = if (product.variants[size]!! > 0) R.color.secondary else R.color.black50),
-                    content = size.name
+                 IconButtonBar(
+                    imageVector = Icons.Filled.Favorite,
+                    navHostController = navHostController
                 ) {
-                    if (product.variants[size]!! > 0) {
-                        productFormViewModel.updateProductSize(size)
-                        setBottomSheet(true)
-                    }
-                    else ToastManager.show("product out of stocks for this size")
+                    wishListViewModel.deleteItem(product.value!!.id)
+                    inWishlist.value = false
                 }
             }
+            else {
+                IconButtonBar(
+                    background = colorResource(id = R.color.primary),
+                    iconColor = colorResource(id = R.color.secondary),
+                    imageVector = Icons.Filled.Favorite,
+                    navHostController = navHostController
+                ) {
+                    wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.value!!.id))
+                    inWishlist.value = true
+                }
+            }
+
+
+
+
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Text(
+                    text = product.value!!.club,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = product.value!!.name,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+
+            Carousel(product = product.value!!)
+
+            Row {
+                val textStyle = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 1.sp
+                )
+
+                Text(
+                    text = "PREZZO: ",
+                    style = textStyle
+                )
+
+                Text(
+                    text = "${product.value!!.price}€",
+                    style = textStyle,
+                    color = colorResource(id = R.color.secondary)
+                )
+            }
+
+
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+
+                for (size in Size.entries){
+                    BoxIcon(
+                        iconColor = colorResource(id = if (product.value!!.variants[size]!! > 0) R.color.secondary else R.color.black50),
+                        content = size.name
+                    ) {
+                        if (product.value!!.variants[size]!! > 0) {
+                            productFormViewModel.updateProductSize(size)
+                            setBottomSheet(true)
+                        }
+                        else ToastManager.show("product out of stocks for this size")
+                    }
+                }
+            }
+
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = product.value!!.description,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Text(
+                    text = product.value!!.brand,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Text(
+                    text = "${product.value!!.gender}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Text(
+                    text = "${product.value!!.productCategory}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
         }
 
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            Text(
-                text = product.description,
-                style = MaterialTheme.typography.bodyMedium
+        if (isOpenSheet)
+            AddItemToCart(
+                onDismissRequest = { setBottomSheet(false) },
+                setBottomSheet = setBottomSheet,
+                product = product.value!!,
+                cartViewModel = cartViewModel,
+                productFormViewModel = productFormViewModel
             )
-
-            Text(
-                text = product.brand,
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Text(
-                text = "${product.gender}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Text(
-                text = "${product.productCategory}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-
     }
 
-    if (isOpenSheet)
-        AddItemToCart(
-            onDismissRequest = { setBottomSheet(false) },
-            setBottomSheet = setBottomSheet,
-            product = product,
-            cartViewModel = cartViewModel,
-            productFormViewModel = productFormViewModel
-        )
+    //todo Icona wishlist, va la recomposition, ma non cambia l'icona
+
+
 }

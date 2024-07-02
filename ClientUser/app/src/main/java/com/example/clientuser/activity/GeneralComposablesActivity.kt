@@ -100,6 +100,8 @@ fun Title(colorStripes: Color = colorResource(id = R.color.black)){
 
 @Composable
 fun IconButtonBar(
+    iconColor:  Color = colorResource(id = R.color.white),
+    background: Color = colorResource(id = R.color.secondary),
     imageVector: ImageVector?,
     navHostController: NavHostController,
     onClick: () -> Unit
