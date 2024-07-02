@@ -44,7 +44,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import com.example.clientuser.LocalProductViewModel
 import com.example.clientuser.LocalWishListViewModel
@@ -116,7 +115,7 @@ fun ProductDetails(
 
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val wishlist = wishListViewModel.myWishList
-    val product by productViewModel.product.collectAsState()
+    val product: Product = productViewModel.product.collectAsState().value ?: Product()
     
     val showSnackBar = remember { mutableStateOf(false) }
 
@@ -241,10 +240,7 @@ fun ProductDetails(
             product = product,
             productFormViewModel = productFormViewModel
         )
-    }
 
-    if(showSnackBar.value) GoToLoginSnackBar(navController = navHostController) { showSnackBar.value = false }
-    //todo Icona wishlist, va la recomposition, ma non cambia l'icona
-
-
+    if(showSnackBar.value)
+        GoToLoginSnackBar { showSnackBar.value = false }
 }

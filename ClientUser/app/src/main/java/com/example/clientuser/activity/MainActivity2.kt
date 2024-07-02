@@ -32,6 +32,10 @@ class MainActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val customer = Customer.fromSerializable(
+            intent.getSerializableExtra("customer") as CustomerSerializable?
+        )
+
         setContent {
             ClientUserTheme {
                 Surface(
@@ -45,9 +49,7 @@ class MainActivity2 : AppCompatActivity() {
                         LocalProductsViewModel provides ProductsViewModel(),
                         LocalWishListViewModel provides WishListViewModel(),
                         LocalCartViewModel provides CartViewModel(),
-                        LocalCustomer provides Customer.fromSerializable(
-                            intent.getSerializableExtra("customer") as CustomerSerializable
-                        )
+                        LocalCustomer provides customer
                     ) {
                         LocalCustomer.current?.let {
                             CompositionLocalProvider(

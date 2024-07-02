@@ -30,10 +30,12 @@ import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 fun Addresses(
     navHostController: NavHostController
 ){
+    val customerViewModel = LocalCustomerViewModel.current
+
     val (isOpenSheetAdd, setBottomSheetAdd) = remember { mutableStateOf(false) }
     val (isOpenSheetRemove, setBottomSheetRemove) = remember { mutableStateOf(false)}
 
-    val addresses by LocalCustomerViewModel.current.addresses.collectAsState()
+    val addresses by customerViewModel.addresses.collectAsState()
     var addressToShow: AddressDto? by remember { mutableStateOf(null) }
 
     LazyColumn(
