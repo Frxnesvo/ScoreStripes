@@ -25,7 +25,7 @@ public class CustomerRegisterDto {
     @Past
     private LocalDate birthDate;
 
-    @ValidImageExtension
+    @ValidImageExtension            //custom validator
     private MultipartFile profilePic;
 
     @NotNull
@@ -33,7 +33,7 @@ public class CustomerRegisterDto {
 
     @NotNull
     @Size(min = 3, max = 40)
-    @ValidClubName               //custom validator
+    @ValidClubName                  //custom validator
     private String favoriteTeam;
 
     @NotNull

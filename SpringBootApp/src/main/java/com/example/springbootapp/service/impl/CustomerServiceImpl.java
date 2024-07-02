@@ -3,8 +3,10 @@ package com.example.springbootapp.service.impl;
 import com.example.springbootapp.data.dto.CustomerProfileDto;
 import com.example.springbootapp.data.dto.CustomerSummaryDto;
 import com.example.springbootapp.data.dao.CustomerDao;
+import com.example.springbootapp.data.dto.CustomerUpdateDto;
 import com.example.springbootapp.data.entities.Customer;
 import com.example.springbootapp.data.specification.CustomerSpecification;
+import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.CustomerService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final ModelMapper modelMapper;
     private final CustomerDao customerDao;
+    private final AwsS3Service awsS3Service;
+
 
     @Override
     public Page<CustomerSummaryDto> getCustomersSummary(String username, Pageable pageable) {
@@ -45,5 +49,17 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Long countNewAccounts() {
         return customerDao.countAllByCreatedDateAfter(LocalDateTime.now().minusDays(1));
+    }
+
+    @Override
+    public void updateCustomer(String id, CustomerUpdateDto customerUpdateDto) {
+        Customer customer = customerDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        if(customerUpdateDto.getFavoriteTeam() != null)
+            customer.setFavouriteTeam(customerUpdateDto.getFavoriteTeam());
+        if(customerUpdateDto.getProfilePic() != null){
+            String profilePicUrl = awsS3Service.uploadFile(customerUpdateDto.getProfilePic(),"users", customer.getUsername());
+            customer.setProfilePicUrl(profilePicUrl);
+        }
+        customerDao.save(customer);
     }
 }
