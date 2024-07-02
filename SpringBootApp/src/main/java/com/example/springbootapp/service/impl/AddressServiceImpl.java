@@ -51,7 +51,7 @@ public class AddressServiceImpl implements AddressService {
     public void deleteAddress(String id) {
         Address address = addressDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Address not found"));
         if(address.getDefaultAddress()){
-            throw new RuntimeException("Cannot delete default address"); //TODO: DA CAMBIARE IN CUSTOM EXCEPTION
+            throw new UnsupportedOperationException("Cannot delete default address"); //TODO: DA CAMBIARE IN CUSTOM EXCEPTION
         }
         if(userDetailsService.getCurrentUser().getRole().equals(Role.ADMIN)){
             addressDao.deleteById(id);

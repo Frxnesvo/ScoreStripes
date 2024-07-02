@@ -2,6 +2,7 @@ package com.example.springbootapp.service.impl;
 
 import com.example.springbootapp.exceptions.S3PutObjectException;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
+import com.example.springbootapp.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
-    private final String bucketName="scorestripespics";
+    private final String bucketName= Constants.S3_BUCKET_NAME;
 
     public String generatePresignedUrl(String url){  //Mi garantisce sicurezza e privacy per non mandare direttamente l'url dell'immagine al client
         String[] urlParts = url.replace("https://", "").split("/", 2);
@@ -34,7 +35,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
                 .key(key)
                 .build();
 
-        int expirationMinutes = 60;     //TODO: 60 per testing, poi mettere 3
+        int expirationMinutes = Constants.PRESIGNED_URL_EXPIRATION_MINUTES;
         GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(expirationMinutes))
                 .getObjectRequest(getObjectRequest)
