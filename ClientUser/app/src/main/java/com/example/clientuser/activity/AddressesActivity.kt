@@ -95,6 +95,6 @@ fun Addresses(
             address = addressToShow!!
         ) {
             setBottomSheetRemove(false)
-            //TODO address.viewModel.remove
+            customerViewModel.deleteAddress(addressToShow!!)
         }
 }

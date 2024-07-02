@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RateLimited(permitsPerSecond = 10)
 @RestController
@@ -67,8 +68,8 @@ public class CustomerController {
     }
 
     @DeleteMapping("/address/{id}")
-    public ResponseEntity<String> deleteAddress(@PathVariable String id) {
+    public ResponseEntity<Map<String, String>> deleteAddress(@PathVariable String id) {
         addressService.deleteAddress(id);
-        return ResponseEntity.ok("Address deleted");
+        return ResponseEntity.ok(Map.of("response", "Address deleted"));
     }
 }

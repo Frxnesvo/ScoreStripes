@@ -90,6 +90,8 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
 
 @Composable
 fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState<Screen>, customer: Customer?) {
+    val showSnackBar = remember { mutableStateOf(false) }
+
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -117,8 +119,10 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             iconColor = colorResource(id = if (Screen.WISHLIST == selectedScreen.value) R.color.white else R.color.black50),
             content = Icons.Outlined.FavoriteBorder
         ) {
-            selectedScreen.value = Screen.WISHLIST
-            navHostController.navigate("wishlist")
+            if(LogoutManager.instance.isLoggedIn.value) {
+                selectedScreen.value = Screen.WISHLIST
+                navHostController.navigate("wishlist")
+            }else showSnackBar.value = true
         }
 
         BoxIcon(
@@ -127,8 +131,11 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             iconColor = colorResource(id = if (Screen.CART == selectedScreen.value) R.color.white else R.color.black50),
             content = Icons.Outlined.ShoppingCart
         ) {
-            selectedScreen.value = Screen.CART
-            navHostController.navigate("cart")
+            if(LogoutManager.instance.isLoggedIn.value){
+                selectedScreen.value = Screen.CART
+                navHostController.navigate("cart")
+            } else showSnackBar.value = true
+
         }
 
         BoxIcon(
@@ -137,9 +144,15 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             iconColor = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.white else R.color.black50),
             content = customer?.pic ?: Icons.Outlined.Person
         ) {
-            selectedScreen.value = Screen.SETTINGS
-            navHostController.navigate("settings")
+            if(LogoutManager.instance.isLoggedIn.value){
+                selectedScreen.value = Screen.SETTINGS
+                navHostController.navigate("settings")
+            } else showSnackBar.value = true
         }
+    }
+    
+    if(showSnackBar.value){
+        GoToLoginSnackBar(navController = navHostController)
     }
 }
 

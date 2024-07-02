@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class ProductViewModel: ViewModel(){
-    private val _product = MutableStateFlow(Product())
+    private val _product = MutableStateFlow<Product?>(null)
     val product = _product.asStateFlow()
 
     fun getProduct(id: String) {

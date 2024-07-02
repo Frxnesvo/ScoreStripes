@@ -80,8 +80,8 @@ public class WishlistController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @DeleteMapping("/my-wishlist/item/{productId}")
-    public ResponseEntity<String> deleteItemFromWishlist(@PathVariable String productId){
+    public ResponseEntity<Map<String,String>> deleteItemFromWishlist(@PathVariable String productId){
         wishlistService.deleteItemFromWishlist(productId);
-        return ResponseEntity.ok("Item deleted");
+        return ResponseEntity.ok(Map.of("response", "Item deleted"));
     }
 }

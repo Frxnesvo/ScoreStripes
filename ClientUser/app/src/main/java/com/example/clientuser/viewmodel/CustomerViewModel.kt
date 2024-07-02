@@ -1,6 +1,5 @@
 package com.example.clientuser.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.Address
 import com.example.clientuser.model.Order
@@ -12,15 +11,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class CustomerViewModel(private val customerId: String): ViewModel() {
     private val _addresses = MutableStateFlow<List<AddressDto>>(emptyList())
-    val addresses = _addresses
+    val addresses = _addresses.asStateFlow()
 
     init{
         fetchAllAddress()
@@ -30,7 +29,7 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
         try{
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.customerApi.getAllAddress(customerId).awaitResponse()
-                if(response.isSuccessful) response.body()?.let { addresses.value += it }
+                if(response.isSuccessful) response.body()?.let { _addresses.value += it }
                 else println("Error fetching customer addresses ${response.message()}")
             }
         } catch (e : Exception){
@@ -81,15 +80,24 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
         }
     }
 
-    fun setDefaultAddress(addressId: String){
-        try {
-            CoroutineScope(Dispatchers.IO).launch {
-                val response = RetrofitHandler.customerApi.setDefaultAddress(addressId).awaitResponse()
-                if(response.isSuccessful) fetchAllAddress()
-                else println("Error setting default address ${response.message()}")
+    fun deleteAddress(address: AddressDto){
+        if(address.defaultAddress) ToastManager.show("Cannot delete a default address")
+        else {
+            try {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val response = RetrofitHandler.customerApi.deleteAddress(address.id).awaitResponse()
+                    if(response.isSuccessful){
+                        val addressToDelete = _addresses.value.find { it.id == address.id }!!
+                        _addresses.value -= addressToDelete
+                        ToastManager.show("Address deleted")
+                    }else {
+                        println("Error deleting the address: ${response.message()}")
+                        ToastManager.show("Error deleting the address")
+                    }
+                }
+            }catch (e: Exception){
+                println("Exception deleting the address: ${e.message}")
             }
-        } catch (e: Exception) {
-            println("Exception setting default address: ${e.message}")
         }
     }
 
