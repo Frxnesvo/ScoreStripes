@@ -6,10 +6,12 @@ import com.example.springbootapp.data.dao.AddressDao;
 import com.example.springbootapp.data.dto.AddressRequestDto;
 import com.example.springbootapp.data.entities.Address;
 import com.example.springbootapp.data.entities.Customer;
-import com.example.springbootapp.data.entities.User;
+import com.example.springbootapp.data.entities.Enums.Role;
 import com.example.springbootapp.service.interfaces.AddressService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,5 +45,22 @@ public class AddressServiceImpl implements AddressService {
         Address address = modelMapper.map(addressRequestDto, Address.class);  //DI SOLITO NON USO IL MAPPER DA DTO A ENTITY MA IN QUESTO SONO PRATICAMENTE IDENTICI
         address.setCustomer(loggedCustomer);
         return modelMapper.map(addressDao.save(address), AddressDto.class);
+    }
+
+    @Override
+    public void deleteAddress(String id) {
+        Address address = addressDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Address not found"));
+        if(address.getDefaultAddress()){
+            throw new RuntimeException("Cannot delete default address"); //TODO: DA CAMBIARE IN CUSTOM EXCEPTION
+        }
+        if(userDetailsService.getCurrentUser().getRole().equals(Role.ADMIN)){
+            addressDao.deleteById(id);
+            return;
+        }
+        Customer loggedCustomer =(Customer) userDetailsService.getCurrentUser();
+        if(!address.getCustomer().getId().equals(loggedCustomer.getId())){
+            throw new AccessDeniedException("Access denied");
+        }
+        addressDao.deleteById(id);
     }
 }

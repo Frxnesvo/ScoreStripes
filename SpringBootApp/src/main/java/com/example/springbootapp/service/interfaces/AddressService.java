@@ -8,4 +8,6 @@ import java.util.List;
 public interface AddressService {
     List<AddressDto> getAddressesByCustomerId(String customerId);
     AddressDto addAddress(AddressRequestDto addressRequestDto);
+
+    void deleteAddress(String id);
 }

@@ -65,4 +65,10 @@ public class CustomerController {
     public ResponseEntity<AddressDto> addAddress(@Valid @RequestBody AddressRequestDto addressRequestDto) {
         return ResponseEntity.ok(addressService.addAddress(addressRequestDto));
     }
+
+    @DeleteMapping("/address/{id}")
+    public ResponseEntity<String> deleteAddress(@PathVariable String id) {
+        addressService.deleteAddress(id);
+        return ResponseEntity.ok("Address deleted");
+    }
 }
