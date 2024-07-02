@@ -112,6 +112,5 @@ public class WishlistServiceImpl implements WishlistService {
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("product not found in wishlist"));
         wishlistItemDao.delete(item);
-        wishlistDao.save(customer.getWishlist());
     }
 }
