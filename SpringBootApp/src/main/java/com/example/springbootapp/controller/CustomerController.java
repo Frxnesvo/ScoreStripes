@@ -86,4 +86,14 @@ public class CustomerController {
         customerService.updateCustomer(id, customerUpdateDto);
         return ResponseEntity.ok(Map.of("response", "Customer updated"));
     }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PatchMapping(path="/update-customer", consumes = {"multipart/form-data"})  //Endpoint uguale a quello sopra ma senza passare l'id (richiesta del front-end), quello sopra lo lascio uguale perchè è utlizzabile anche da admin e più modulare
+    public ResponseEntity<Map<String,String>> updateCustomer2(@Valid @ModelAttribute CustomerUpdateDto customerUpdateDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new RequestValidationException(exceptionUtils.createErrorMessage(bindingResult));
+        }
+        customerService.updateCustomer2(customerUpdateDto);
+        return ResponseEntity.ok(Map.of("response", "Customer updated"));
+    }
 }

@@ -16,4 +16,6 @@ public interface CustomerService {
     Long countNewAccounts();
 
     void updateCustomer(String id, CustomerUpdateDto customerUpdateDto);
+
+    void updateCustomer2(CustomerUpdateDto customerUpdateDto);
 }

@@ -26,6 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final ModelMapper modelMapper;
     private final CustomerDao customerDao;
     private final AwsS3Service awsS3Service;
+    private final UserDetailsServiceImpl userDetailsService;
 
 
     @Override
@@ -54,6 +55,18 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void updateCustomer(String id, CustomerUpdateDto customerUpdateDto) {
         Customer customer = customerDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        if(customerUpdateDto.getFavoriteTeam() != null)
+            customer.setFavouriteTeam(customerUpdateDto.getFavoriteTeam());
+        if(customerUpdateDto.getProfilePic() != null){
+            String profilePicUrl = awsS3Service.uploadFile(customerUpdateDto.getProfilePic(),"users", customer.getUsername());
+            customer.setProfilePicUrl(profilePicUrl);
+        }
+        customerDao.save(customer);
+    }
+
+    @Override
+    public void updateCustomer2(CustomerUpdateDto customerUpdateDto) {
+        Customer customer = (Customer) userDetailsService.getCurrentUser();
         if(customerUpdateDto.getFavoriteTeam() != null)
             customer.setFavouriteTeam(customerUpdateDto.getFavoriteTeam());
         if(customerUpdateDto.getProfilePic() != null){
