@@ -8,13 +8,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.example.clientuser.BuildConfig
 
 class GoogleAuth{
     companion object {
 
-        private val WEB_SERVER_CLIENT_ID = "774497332630-engaqhas88dv6rpmrpjfnad09i6jloef.apps.googleusercontent.com" //TODO non va messo qui
+        private const val WEB_SERVER_CLIENT_ID = BuildConfig.WEB_SERVER_CLIENT_ID
 
         fun getClient(context: Context): GoogleSignInClient{
+            println("IL CLIENT ID E' $WEB_SERVER_CLIENT_ID")
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(WEB_SERVER_CLIENT_ID)
                 .requestEmail()

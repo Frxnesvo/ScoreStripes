@@ -1,6 +1,7 @@
 package com.example.springbootapp.handler;
 
 import com.example.springbootapp.data.entities.User;
+import com.example.springbootapp.utils.Constants;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -25,7 +26,7 @@ public class JwtHandler {
     @Value("${jwt.secret}")
     private String secret;
 
-    private final Long expirationTime = (long) (1000 * 60 * 60 * 24); // 24 hours
+    private final Long expirationTime = Constants.ACCESS_TOKEN_EXPIRATION_MILLISECONDS;
 
 
     public String generateJwtToken(User user) {

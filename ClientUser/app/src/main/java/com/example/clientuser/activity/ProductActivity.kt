@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.enumerator.Size
@@ -43,6 +44,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.clip
 import com.example.clientuser.LocalProductViewModel
 import com.example.clientuser.LocalWishListViewModel
 
@@ -67,7 +70,8 @@ fun Carousel(product: Product){
         ) {
             Image(
                 modifier = Modifier
-                    .size(120.dp),
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(10.dp)),
                 bitmap = image.asImageBitmap(),
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth
@@ -112,7 +116,9 @@ fun ProductDetails(
 
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val wishlist = wishListViewModel.myWishList
-    val product = productViewModel.product.collectAsState().value
+    val product by productViewModel.product.collectAsState()
+    
+    val showSnackBar = remember { mutableStateOf(false) }
 
     val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
 
@@ -129,14 +135,16 @@ fun ProductDetails(
         ) {
             println(inWishlist.value)
             if(inWishlist.value){
-                wishListViewModel.deleteItem(product.id)
-                println("delete item from wishlist")
-                inWishlist.value = false
+                    wishListViewModel.deleteItem(product.id)
+                    println("delete item from wishlist")
+                    inWishlist.value = false
             }
             else {
-                wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.id))
-                println("added item to wishlist")
-                inWishlist.value = true
+                if(LogoutManager.instance.isLoggedIn.value) {
+                    wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.id))
+                    println("added item to wishlist")
+                    inWishlist.value = true
+                } else showSnackBar.value = true
             }
         }
 
@@ -233,4 +241,10 @@ fun ProductDetails(
             product = product,
             productFormViewModel = productFormViewModel
         )
+    }
+
+    if(showSnackBar.value) GoToLoginSnackBar(navController = navHostController) { showSnackBar.value = false }
+    //todo Icona wishlist, va la recomposition, ma non cambia l'icona
+
+
 }

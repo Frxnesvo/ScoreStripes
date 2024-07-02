@@ -109,7 +109,6 @@ fun Login(
             }
 
 
-            //TODO gestire i vari
             CustomTextField(
                 value = addressState.state,
                 isError = addressState.isStateError,
@@ -166,7 +165,6 @@ fun Login(
                 background = if (isError) R.color.black50 else R.color.secondary,
             ) {
 
-                //TODO controllare perchè non naviga alla login quando è true
                 val club = if(customerState.favouriteTeam != "") customerState.favouriteTeam else clubs.value[0]
                 loginViewModel.register(
                     token = token,
@@ -187,8 +185,6 @@ fun Login(
             }
         }
 
-        if (!registered){
-            navController.navigate("index")
-        }
+        if (!registered) navController.navigate("index")
     }
 }

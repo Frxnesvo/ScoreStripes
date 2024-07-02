@@ -105,8 +105,13 @@ class WishListViewModel : ViewModel() {
                         items = newItems
                     )
 
+                    ToastManager.show("Product added to wishlist")
+
                 }
-                else println("Error during the add of a product to the wishlists: ${response.message()}")
+                else {
+                    println("Error during the add of a product to the wishlists: ${response.message()}")
+                    ToastManager.show("Error adding product to wishlist")
+                }
             }
             catch (e : Exception){
                 println("Error during the add of a product to the wishlists: ${e.message}")
@@ -190,11 +195,11 @@ class WishListViewModel : ViewModel() {
         }
     }
 
-    fun deleteItem(productId: String) {
+    fun deleteItem(productId: String){
         try{
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.wishListApi.deleteItem(productId).awaitResponse()
-                if (response.isSuccessful) response.body()?.let {
+                if(response.isSuccessful) response.body()?.let { result ->
                     val itemToDelete = _myWishList.value.items.find { it.product.id == productId }!!
 
                     val newItems = _myWishList.value.items - itemToDelete
@@ -205,10 +210,18 @@ class WishListViewModel : ViewModel() {
                         visibility = _myWishList.value.visibility,
                         items = newItems
                     )
-                } else println("Error delete wishlist item: ${response.message()}")
+                    ToastManager.show("Product removed from wishlist")
+                }
+                else {
+                    println("Error delete wishlist item: ${response.message()}")
+                    ToastManager.show("Error removing product from wishlist")
+                }
             }
+
         }
-        catch (e : Exception){ println("Exception delete wishlist item: ${e.message}") }
+        catch (e : Exception){
+            println("Exception delete wishlist item: ${e.message}")
+        }
     }
 
     fun validateShareToken(token: String) {

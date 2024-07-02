@@ -32,7 +32,7 @@ public class Address {
     @Column(name = "default_address")
     private Boolean defaultAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY)  //lazy perchè tanto non avrò bisogno del customer mai
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 

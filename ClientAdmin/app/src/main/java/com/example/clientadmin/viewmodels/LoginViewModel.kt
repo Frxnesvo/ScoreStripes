@@ -83,9 +83,8 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
 
 
     //TODO controllare perchè non naviga indietro alla login una volta completata la registrazione
-    fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap): Boolean{
+    fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap){
         try {
-            var returnValue = false
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.adminRegister(
                     MultipartBody.Part.createFormData("idToken", token),
@@ -99,21 +98,15 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                     _token.value = ""
                     val responseMap = response.body()
                     println("Response server: ${responseMap?.get("message")}")
-                    returnValue = true
                 }
-                else {
-                    println("Error registering admin: ${response.message()}")
-                    returnValue = false
-                }
+                else println("Error registering admin: ${response.message()}")
                 goToLogin()
             }
-            return returnValue
         }
         catch (e: IllegalArgumentException) {
             _addError.value = e.message ?: "Unknown error"
             goToLogin()
             _token.value = ""
-            return false
         }
     }
 }
