@@ -14,24 +14,21 @@ import com.example.clientuser.utils.RetrofitHandler
 import com.example.clientuser.utils.ToastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class WishListViewModel : ViewModel() {
     //TODO va bene o devo usare MutableStateFlow?
-    private val _sharedWithMeWishlists = mutableStateOf<List<Wishlist>>(emptyList())
-    val sharedWithMeWishlists = _sharedWithMeWishlists
+    private val _sharedWithMeWishlists = MutableStateFlow<List<Wishlist>>(emptyList())
+    val sharedWithMeWishlists = _sharedWithMeWishlists.asStateFlow()
 
-    private val _publicWishLists = fetchPublicWishlist()
-    val publicWishLists = _publicWishLists
+    private val _publicWishLists = MutableStateFlow<List<Wishlist>>(emptyList())
+    val publicWishLists = _publicWishLists.asStateFlow()
 
-    private val _myWishList = mutableStateOf(Wishlist())
-    val myWishList = _myWishList
+    private val _myWishList = MutableStateFlow(Wishlist())
+    val myWishList = _myWishList.asStateFlow()
 
     private val _wishlistSharedToken = mutableStateOf("")
     val wishlistSharedToken: State<String> = _wishlistSharedToken
@@ -43,6 +40,7 @@ class WishListViewModel : ViewModel() {
         fetchMyWishList()
         fetchMyWishlistAccesses()
         fetchSharedWithMeWishlists()
+        fetchPublicWishlist()
     }
 
     private fun fetchMyWishList() {
@@ -78,16 +76,20 @@ class WishListViewModel : ViewModel() {
     }
 
     //TODO fare la paginazione
-    private fun fetchPublicWishlist() : Flow<List<Wishlist>> = flow {
+    private fun fetchPublicWishlist() {
         try{
-            val response = RetrofitHandler.wishListApi.getPublicWishlists().awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it.map { Wishlist.fromDto(it) }) }
-            else println("Error during the get of the public wishlists: ${response.message()}")
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.wishListApi.getPublicWishlists().awaitResponse()
+                if(response.isSuccessful) response.body()?.let { result ->
+                    _publicWishLists.value = result.map { Wishlist.fromDto(it) }
+                }
+                else println("Error during the get of the public wishlists: ${response.message()}")
+            }
         }
         catch (e : Exception){
             println("Exception during the get of the public wishlists: ${e.message}")
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     fun addItemToWishlist(addToWishListRequestDto: AddToWishListRequestDto){
         CoroutineScope(Dispatchers.IO).launch {
@@ -188,29 +190,26 @@ class WishListViewModel : ViewModel() {
         }
     }
 
-    fun deleteItem(productId: String): Flow<String> = flow {
+    fun deleteItem(productId: String) {
         try{
-            val response = RetrofitHandler.wishListApi.deleteItem(productId).awaitResponse()
-            if(response.isSuccessful) response.body()?.let { result ->
-                val itemToDelete = _myWishList.value.items.find { it.product.id == productId }!!
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.wishListApi.deleteItem(productId).awaitResponse()
+                if (response.isSuccessful) response.body()?.let {
+                    val itemToDelete = _myWishList.value.items.find { it.product.id == productId }!!
 
-                val newItems = _myWishList.value.items - itemToDelete
+                    val newItems = _myWishList.value.items - itemToDelete
 
-                _myWishList.value = Wishlist(
-                    id = _myWishList.value.id,
-                    ownerUsername = _myWishList.value.ownerUsername,
-                    visibility = _myWishList.value.visibility,
-                    items = newItems
-                )
-
-                emit(result)
+                    _myWishList.value = Wishlist(
+                        id = _myWishList.value.id,
+                        ownerUsername = _myWishList.value.ownerUsername,
+                        visibility = _myWishList.value.visibility,
+                        items = newItems
+                    )
+                } else println("Error delete wishlist item: ${response.message()}")
             }
-            else println("Error delete wishlist item: ${response.message()}")
         }
-        catch (e : Exception){
-            println("Exception delete wishlist item: ${e.message}")
-        }
-    }.flowOn(Dispatchers.IO)
+        catch (e : Exception){ println("Exception delete wishlist item: ${e.message}") }
+    }
 
     fun validateShareToken(token: String) {
         try{

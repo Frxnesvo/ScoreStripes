@@ -12,5 +12,3 @@ val LocalLeagueViewModel = compositionLocalOf<LeagueViewModel> { error("No Leagu
 val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No HomeViewModel provided") }
 val LocalCustomerViewModel = compositionLocalOf<CustomerViewModel> { error("No CustomerViewModel provided") }
 val LocalProductViewModel = compositionLocalOf<ProductViewModel> { error("No ProductViewModel provided") }
-
-val LocalNavHostLogin = compositionLocalOf<NavHostController> { error("No NavHostController provided") }

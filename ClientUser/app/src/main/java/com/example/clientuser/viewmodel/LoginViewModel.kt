@@ -1,6 +1,5 @@
 package com.example.clientuser.viewmodel
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -26,10 +25,6 @@ import java.time.LocalDate
 
 
 class LoginViewModel(userSession: UserSession): ViewModel() {
-
-    private val _addError = mutableStateOf("")
-    val addError = _addError                            //TODO da usare e controllare gli errori nella register
-
     private val _goToRegister = mutableStateOf(false)
     val goToRegister: State<Boolean> = _goToRegister
 
@@ -42,7 +37,7 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
     private val _token = mutableStateOf("")
     val token = _token
 
-    fun login(idToken: String, context: Context){
+    fun login(idToken: String){
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.login(mapOf(Pair("idToken", idToken))).awaitResponse()
@@ -108,7 +103,6 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
 
             }
         }catch (e: Exception){
-            _addError.value = e.message ?: "Unknown error"
             goToLogin()
             _token.value = ""
         }

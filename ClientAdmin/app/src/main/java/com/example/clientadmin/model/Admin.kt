@@ -3,7 +3,6 @@ package com.example.clientadmin.model
 import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.AuthResponseDto
 import com.example.clientadmin.model.enumerator.Gender
-import com.example.clientadmin.utils.S3ImageDownloader
 import java.io.Serializable
 import java.time.LocalDate
 

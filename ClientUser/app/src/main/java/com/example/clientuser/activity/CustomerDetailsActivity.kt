@@ -14,27 +14,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalClubViewModel
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
-import com.example.clientuser.viewmodel.ClubViewModel
-import com.example.clientuser.viewmodel.CustomerViewModel
+import com.example.clientuser.model.Customer
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 
 
 @Composable
-fun UserDetails(
+fun CustomerDetails(
+    customer: Customer,
     navHostController: NavHostController,
-    clubViewModel: ClubViewModel,
-    customerFormViewModel: CustomerFormViewModel,
-    customerViewModel: CustomerViewModel
 ){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -49,28 +45,19 @@ fun UserDetails(
 
         Text(
             text = stringResource(id = R.string.details),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
 
-        Details(
-            customerFormViewModel = customerFormViewModel,
-            clubViewModel = clubViewModel
-        ){
-            TODO("fare customerViewModel.updateCustomer()")
-        }
+        Details(customerFormViewModel = CustomerFormViewModel(customer))
     }
 }
 
 @Composable
 fun Details(
-    clubViewModel: ClubViewModel,
-    customerFormViewModel: CustomerFormViewModel,
-    onClick: () -> Unit
+    customerFormViewModel: CustomerFormViewModel
 ){
     val customer by customerFormViewModel.customer.collectAsState()
-    val clubsNames by clubViewModel.clubNames.collectAsState(initial = emptyList())
-    val isEditable = remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -115,7 +102,7 @@ fun Details(
         ){}
 
         CustomComboBox(
-            options = clubsNames,
+            options = LocalClubViewModel.current.clubNames.collectAsState(initial = emptyList()).value,
             text = stringResource(id = R.string.club),
             selectedOption = customer.favouriteTeam,
         ){
@@ -139,7 +126,7 @@ fun Details(
             text = stringResource(id = R.string.update),
             background = R.color.secondary
         ) {
-            LogoutManager.instance.logout()
+            //TODO update customer
         }
 
         CustomButton(

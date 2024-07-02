@@ -31,21 +31,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalWishListViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.Wishlist
 import com.example.clientuser.model.dto.WishlistVisibilityDto
 import com.example.clientuser.model.enumerator.WishListVisibility
 import com.example.clientuser.utils.ToastManager
-import com.example.clientuser.viewmodel.WishListViewModel
 
 @Composable
 fun Wishlist(
-    navHostController: NavHostController,
-    wishListViewModel: WishListViewModel
+    navHostController: NavHostController
 ){
+    val wishListViewModel = LocalWishListViewModel.current
+
     val sharedLists = wishListViewModel.sharedWithMeWishlists
     val myWishlistAccesses by wishListViewModel.myWishlistAccesses.collectAsState()
-    val myWishlist by wishListViewModel.myWishList
+    val myWishlist by wishListViewModel.myWishList.collectAsState()
     val myWishlistVisibility = remember { mutableStateOf(WishListVisibility.valueOf(myWishlist.visibility.name)) }
     val wishlistShareToken by wishListViewModel.wishlistSharedToken
 

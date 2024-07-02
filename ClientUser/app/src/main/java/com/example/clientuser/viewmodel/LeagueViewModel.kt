@@ -3,42 +3,31 @@ package com.example.clientuser.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.League
 import com.example.clientuser.utils.RetrofitHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class LeagueViewModel : ViewModel() {
-    private val _leagues = getAllLeagues()
+    private val _leagues = MutableStateFlow<List<League>>(emptyList())
     val leagues = _leagues
 
-    private val _leaguesNames = fetchLeaguesNames()
-    val leaguesNames = _leaguesNames
+    init { fetchLeagues() }
 
-    private fun getAllLeagues() : Flow<List<League>> = flow {
+    private fun fetchLeagues(){
         try{
-            val response = RetrofitHandler.leagueApi.getLeagues().awaitResponse()
-            if(response.isSuccessful) response.body()?.let {
-                val newList = it.map { League.fromDto(it) }
-                emit(newList)
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.leagueApi.getLeagues().awaitResponse()
+                if(response.isSuccessful) response.body()?.let {
+                    _leagues.value = it.map { league -> League.fromDto(league) }
+                }
+                else println("Error during the get of leagues: ${response.message()}")
             }
-            else println("Error getting leagues: ${response.message()}")
-        }
-        catch (e : Exception){
-            println("Exception getting league: ${e.message}")
-        }
-    }.flowOn(Dispatchers.IO)
-
-    private fun fetchLeaguesNames() : Flow<List<String>> = flow {
-        try{
-            val response = RetrofitHandler.leagueApi.getLeaguesNames().awaitResponse()
-            if(response.isSuccessful) response.body()?.let { emit(it) }
-            else println("Error during the get of league names: ${response.message()}")
         }
         catch (e : Exception){
             println("Exception during the get of league names: ${e.message}")
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
 }

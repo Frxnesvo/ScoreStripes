@@ -1,15 +1,18 @@
 package com.example.clientuser.activity
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -35,21 +38,20 @@ import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.enumerator.Size
 import com.example.clientuser.utils.ToastManager
-import com.example.clientuser.viewmodel.CartViewModel
-import com.example.clientuser.viewmodel.ProductViewModel
-import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import com.example.clientuser.LocalProductViewModel
+import com.example.clientuser.LocalWishListViewModel
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Carousel(product: Product){
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = { 2 })
 
     HorizontalPager(
-        count = 2,
         state = pagerState
     ) { page ->
         val image = when(page){
@@ -61,9 +63,8 @@ fun Carousel(product: Product){
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-
             Image(
                 modifier = Modifier
                     .size(120.dp),
@@ -71,38 +72,49 @@ fun Carousel(product: Product){
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth
             )
-
-            Spacer(modifier = Modifier.height(10.dp) )
-
-            HorizontalPagerIndicator(
-                pagerState = pagerState,
-                activeColor = colorResource(id = R.color.secondary),
-                inactiveColor = colorResource(id = R.color.secondary20),
-                spacing = 8.dp,
-                modifier = Modifier
-                    .padding(16.dp)
-            )
+            PageIndicator(page)
         }
+    }
+}
+
+@Composable
+fun PageIndicator(page: Int){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally),
+    ){
+        Box(
+            modifier = Modifier
+                .width(if (page == 0) 20.dp else 10.dp)
+                .height(10.dp)
+                .background(colorResource(id = if (page == 0) R.color.secondary else R.color.secondary20), RoundedCornerShape(5.dp))
+
+        )
+        Box(
+            modifier = Modifier
+                .width(if (page == 1) 20.dp else 10.dp)
+                .height(10.dp)
+                .background(colorResource(id = if (page == 1) R.color.secondary else R.color.secondary20), RoundedCornerShape(5.dp))
+        )
     }
 }
 
 @Composable
 fun ProductDetails(
     productId: String,
-    wishListViewModel: WishListViewModel,
     navHostController: NavHostController,
-    productFormViewModel: ProductFormViewModel,
-    cartViewModel: CartViewModel,
-    productViewModel: ProductViewModel
+    productFormViewModel: ProductFormViewModel
 ){
-    //TODO serve il view model e capire come gestire il like
+    val productViewModel = LocalProductViewModel.current
+    val wishListViewModel = LocalWishListViewModel.current
+
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val wishlist = wishListViewModel.myWishList
-    val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
     val product = productViewModel.product.collectAsState().value
 
-
-    //todo Icona wishlist, va la recomposition, ma non cambia l'icona
+    val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
 
     Column(
         modifier = Modifier
@@ -112,21 +124,21 @@ fun ProductDetails(
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         IconButtonBar(
-            imageVector = Icons.Filled.Favorite,
+            imageVector = if (inWishlist.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
             navHostController = navHostController
         ) {
-
+            println(inWishlist.value)
             if(inWishlist.value){
                 wishListViewModel.deleteItem(product.id)
+                println("delete item from wishlist")
                 inWishlist.value = false
             }
             else {
                 wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.id))
+                println("added item to wishlist")
                 inWishlist.value = true
             }
         }
-
-
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -134,11 +146,12 @@ fun ProductDetails(
         ) {
             Text(
                 text = product.club,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleMedium
             )
             Text(
                 text = product.name,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
             )
         }
 
@@ -165,17 +178,18 @@ fun ProductDetails(
 
 
         Row (
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
 
             for (size in Size.entries){
+                val greaterThanZero = (product.variants[size] ?: 0) > 0
                 BoxIcon(
-                    iconColor = colorResource(id = if (product.variants[size]!! > 0) R.color.secondary else R.color.black50),
+                    background = colorResource(id = if (greaterThanZero) R.color.secondary else R.color.black50),
+                    iconColor = colorResource(id = R.color.white),
                     content = size.name
                 ) {
-                    if (product.variants[size]!! > 0) {
+                    if (greaterThanZero) {
                         productFormViewModel.updateProductSize(size)
                         setBottomSheet(true)
                     }
@@ -191,22 +205,22 @@ fun ProductDetails(
         ) {
             Text(
                 text = product.description,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
                 text = product.brand,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
                 text = "${product.gender}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
                 text = "${product.productCategory}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyLarge
             )
         }
 
@@ -217,7 +231,6 @@ fun ProductDetails(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
             product = product,
-            cartViewModel = cartViewModel,
             productFormViewModel = productFormViewModel
         )
 }

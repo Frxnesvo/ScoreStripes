@@ -2,16 +2,19 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-      <SelectionState runConfigName="ClientUser.app">
+      <SelectionState runConfigName="ClientUser.app.androidTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="ClientUser.app.unitTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="ClientAdmin.app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ClientAdmin.app.unitTest">
+      <SelectionState runConfigName="ClientUser.app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ClientAdmin.app.androidTest">
+      <SelectionState runConfigName="ClientUser.app.main">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

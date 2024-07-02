@@ -19,9 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalLoginViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.Address
-import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.formviewmodel.LoginFormViewModel
 import com.example.clientuser.model.enumerator.Gender
 import com.example.clientuser.viewmodel.ClubViewModel
@@ -31,9 +31,7 @@ import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 fun Login(
     token: String,
     navController : NavHostController,
-    loginViewModel: LoginViewModel,
     loginFormViewModel: LoginFormViewModel,
-    clubViewModel: ClubViewModel,
     addressFormViewModel: AddressFormViewModel
 ) {
     Column(
@@ -43,9 +41,12 @@ fun Login(
             .padding(10.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        val loginViewModel = LocalLoginViewModel.current
+        val clubs = ClubViewModel().clubNames.collectAsState(initial = emptyList())
+
         val customerState by loginFormViewModel.customerState.collectAsState()
-        val clubs = clubViewModel.clubNames.collectAsState(initial = emptyList())
         val addressState by addressFormViewModel.addressState.collectAsState()
+
         val registered by loginViewModel.goToRegister
 
         BoxIcon(
@@ -63,7 +64,6 @@ fun Login(
         ) {
             Title()
 
-            //TODO image picker e combo box non si vedono bene
             ImagePicker(
                 image = customerState.profilePic,
                 isError = customerState.isProfilePicError,

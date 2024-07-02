@@ -146,14 +146,27 @@ fun BoxIcon(
                 Icon(
                     imageVector = content,
                     contentDescription = null,
-                    tint = iconColor
+                    tint = iconColor,
+                    modifier = Modifier.size(when(size){
+                        30.dp -> 20.dp
+                        40.dp -> 30.dp
+                        else -> 10.dp
+                    })
                 )
             }
             is String -> {
                 Text(
                     text = content,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontWeight = when(size){
+                        30.dp -> FontWeight.Normal
+                        40.dp -> FontWeight.Bold
+                        else -> FontWeight.Light
+                    },
+                    fontSize = when(size){
+                        30.dp -> 16.sp
+                        40.dp -> 20.sp
+                        else -> 12.sp
+                    },
                     color = iconColor
                 )
             }
@@ -163,7 +176,7 @@ fun BoxIcon(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(size)
                         .clip(CircleShape)
                         .border(2.dp, iconColor, CircleShape)
                 )
@@ -253,7 +266,8 @@ fun CustomComboBox(
             }
         ) {
             OutlinedTextField(
-                enabled = !readOnly,
+                enabled = expandable,
+                readOnly = readOnly,
                 value = selectedOption,
                 onValueChange = {},
                 label = {
@@ -264,21 +278,21 @@ fun CustomComboBox(
                     )
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
-                readOnly = readOnly,
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth(),
                 shape = RoundedCornerShape(30.dp),
                 textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = colorResource(id = R.color.white),
-                    unfocusedTextColor = colorResource(id = R.color.black),
+                    focusedTextColor = colorResource(id = R.color.black),
+                    unfocusedTextColor = colorResource(id = R.color.black50),
                     focusedBorderColor = colorResource(id = R.color.secondary),
-                    unfocusedBorderColor = colorResource(id = R.color.white),
+                    unfocusedBorderColor = colorResource(id = R.color.black50),
                     focusedLabelColor = colorResource(id = R.color.secondary),
                     unfocusedLabelColor = colorResource(id = R.color.black),
                     cursorColor = Color.Transparent
-                )
+                ),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
             )
             DropdownMenu(
                 expanded = expanded,
@@ -288,7 +302,6 @@ fun CustomComboBox(
                     .height(200.dp)
                     .background(colorResource(id = R.color.white))
             ) {
-
                 if (options.isNotEmpty())
                     options.forEach { option ->
                         DropdownMenuItem(
@@ -419,7 +432,7 @@ fun CustomTextField(
         focusedTextColor = colorResource(id = R.color.black),
         unfocusedTextColor = colorResource(id = R.color.black50),
         focusedBorderColor = colorResource(id = R.color.secondary),
-        unfocusedBorderColor = colorResource(id = R.color.white),
+        unfocusedBorderColor = colorResource(id = R.color.black50),
         focusedLabelColor = colorResource(id = R.color.secondary),
         unfocusedLabelColor = colorResource(id = R.color.black),
         errorBorderColor = colorResource(id = R.color.red),
