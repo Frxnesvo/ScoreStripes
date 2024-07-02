@@ -1,15 +1,18 @@
 package com.example.clientuser.activity
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -36,21 +39,21 @@ import com.example.clientuser.model.Product
 import com.example.clientuser.model.dto.AddToWishListRequestDto
 import com.example.clientuser.model.enumerator.Size
 import com.example.clientuser.utils.ToastManager
-import com.example.clientuser.viewmodel.CartViewModel
-import com.example.clientuser.viewmodel.ProductViewModel
-import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.ui.draw.clip
+import com.example.clientuser.LocalProductViewModel
+import com.example.clientuser.LocalWishListViewModel
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Carousel(product: Product){
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = { 2 })
 
     HorizontalPager(
-        count = 2,
         state = pagerState
     ) { page ->
         val image = when(page){
@@ -62,185 +65,182 @@ fun Carousel(product: Product){
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-
             Image(
                 modifier = Modifier
-                    .size(120.dp),
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(10.dp)),
                 bitmap = image.asImageBitmap(),
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth
             )
-
-            Spacer(modifier = Modifier.height(10.dp) )
-
-            HorizontalPagerIndicator(
-                pagerState = pagerState,
-                activeColor = colorResource(id = R.color.secondary),
-                inactiveColor = colorResource(id = R.color.secondary20),
-                spacing = 8.dp,
-                modifier = Modifier
-                    .padding(16.dp)
-            )
+            PageIndicator(page)
         }
+    }
+}
+
+@Composable
+fun PageIndicator(page: Int){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally),
+    ){
+        Box(
+            modifier = Modifier
+                .width(if (page == 0) 20.dp else 10.dp)
+                .height(10.dp)
+                .background(colorResource(id = if (page == 0) R.color.secondary else R.color.secondary20), RoundedCornerShape(5.dp))
+
+        )
+        Box(
+            modifier = Modifier
+                .width(if (page == 1) 20.dp else 10.dp)
+                .height(10.dp)
+                .background(colorResource(id = if (page == 1) R.color.secondary else R.color.secondary20), RoundedCornerShape(5.dp))
+        )
     }
 }
 
 @Composable
 fun ProductDetails(
     productId: String,
-    wishListViewModel: WishListViewModel,
     navHostController: NavHostController,
-    productFormViewModel: ProductFormViewModel,
-    cartViewModel: CartViewModel,
-    productViewModel: ProductViewModel
+    productFormViewModel: ProductFormViewModel
 ){
-    //TODO serve il view model e capire come gestire il like
+    val productViewModel = LocalProductViewModel.current
+    val wishListViewModel = LocalWishListViewModel.current
+
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val wishlist = wishListViewModel.myWishList
-    val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
-    val product = productViewModel.product.collectAsState()
-
+    val product: Product = productViewModel.product.collectAsState().value ?: Product()
+    
     val showSnackBar = remember { mutableStateOf(false) }
 
-    var favouriteBackground = colorResource(id = R.color.primary)
-    var favouriteIconColor = colorResource(id = R.color.secondary)
-    var onFavouriteClick = {
-        if(LogoutManager.instance.isLoggedIn.value) {
-            wishListViewModel.deleteItem(product.value!!.id)
-            inWishlist.value = false
-        }else showSnackBar.value = true
-    }
+    val inWishlist = remember { mutableStateOf(wishlist.value.items.any { it.product.id == productId}) }
 
-    if(!inWishlist.value){
-        favouriteBackground = colorResource(id = R.color.secondary)
-        favouriteIconColor = colorResource(id = R.color.primary)
-        onFavouriteClick = {
-            if(LogoutManager.instance.isLoggedIn.value) {
-                wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.value!!.id))
-                inWishlist.value = true
-            }else showSnackBar.value = true
-        }
-    }
-
-    //TODO capire perchè all'inizio inWishlist è sempre true e non cambia il colore dell'icona
-
-    if(product.value != null){
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(25.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(25.dp)
+    ) {
+        IconButtonBar(
+            imageVector = if (inWishlist.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+            navHostController = navHostController
         ) {
-
-            //TODO vedere perchè non cambia le icone
-            IconButtonBar(
-                background = favouriteBackground,
-                iconColor = favouriteIconColor,
-                imageVector = Icons.Filled.Favorite,
-                navHostController = navHostController
-            ){ onFavouriteClick() }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-                Text(
-                    text = product.value!!.club,
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(
-                    text = product.value!!.name,
-                    style = MaterialTheme.typography.titleLarge
-                )
+            println(inWishlist.value)
+            if(inWishlist.value){
+                    wishListViewModel.deleteItem(product.id)
+                    println("delete item from wishlist")
+                    inWishlist.value = false
             }
-
-            Carousel(product = product.value!!)
-
-            Row {
-                val textStyle = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 1.sp
-                )
-
-                Text(
-                    text = "PREZZO: ",
-                    style = textStyle
-                )
-
-                Text(
-                    text = "${product.value!!.price}€",
-                    style = textStyle,
-                    color = colorResource(id = R.color.secondary)
-                )
+            else {
+                if(LogoutManager.instance.isLoggedIn.value) {
+                    wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.id))
+                    println("added item to wishlist")
+                    inWishlist.value = true
+                } else showSnackBar.value = true
             }
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Text(
+                text = product.club,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = product.name,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Carousel(product = product)
+
+        Row {
+            val textStyle = TextStyle(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.sp
+            )
+
+            Text(
+                text = "PREZZO: ",
+                style = textStyle
+            )
+
+            Text(
+                text = "${product.price}€",
+                style = textStyle,
+                color = colorResource(id = R.color.secondary)
+            )
+        }
 
 
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
 
-                for (size in Size.entries){
-                    BoxIcon(
-                        iconColor = colorResource(id = if (product.value!!.variants[size]!! > 0) R.color.secondary else R.color.black50),
-                        content = size.name
-                    ) {
-                        if(LogoutManager.instance.isLoggedIn.value) {
-                            if (product.value!!.variants[size]!! > 0) {
-                                productFormViewModel.updateProductSize(size)
-                                setBottomSheet(true)
-                            } else ToastManager.show("product out of stocks for this size")
-                        }
-                        else showSnackBar.value = true
+            for (size in Size.entries){
+                val greaterThanZero = (product.variants[size] ?: 0) > 0
+                BoxIcon(
+                    background = colorResource(id = if (greaterThanZero) R.color.secondary else R.color.black50),
+                    iconColor = colorResource(id = R.color.white),
+                    content = size.name
+                ) {
+                    if (greaterThanZero) {
+                        productFormViewModel.updateProductSize(size)
+                        setBottomSheet(true)
                     }
+                    else ToastManager.show("product out of stocks for this size")
                 }
             }
-
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                Text(
-                    text = product.value!!.description,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Text(
-                    text = product.value!!.brand,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Text(
-                    text = "${product.value!!.gender}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Text(
-                    text = "${product.value!!.productCategory}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
         }
 
-        if (isOpenSheet)
-            AddItemToCart(
-                onDismissRequest = { setBottomSheet(false) },
-                setBottomSheet = setBottomSheet,
-                product = product.value!!,
-                cartViewModel = cartViewModel,
-                productFormViewModel = productFormViewModel
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Text(
+                text = product.description,
+                style = MaterialTheme.typography.bodyLarge
             )
+
+            Text(
+                text = product.brand,
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Text(
+                text = "${product.gender}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Text(
+                text = "${product.productCategory}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
     }
 
-    if(showSnackBar.value) GoToLoginSnackBar(navController = navHostController) { showSnackBar.value = false }
-    //todo Icona wishlist, va la recomposition, ma non cambia l'icona
+    if (isOpenSheet)
+        AddItemToCart(
+            onDismissRequest = { setBottomSheet(false) },
+            setBottomSheet = setBottomSheet,
+            product = product,
+            productFormViewModel = productFormViewModel
+        )
 
-
+    if(showSnackBar.value)
+        GoToLoginSnackBar { showSnackBar.value = false }
 }

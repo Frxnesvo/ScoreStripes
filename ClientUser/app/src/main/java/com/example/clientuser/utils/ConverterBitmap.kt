@@ -2,7 +2,6 @@ package com.example.clientuser.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Base64
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -18,15 +17,13 @@ object ConverterBitmap {
         return MultipartBody.Part.createFormData(fieldName, "$fieldName.jpeg", requestBody)
     }
 
-    fun bitmapToBase64(bitmap: Bitmap): String {
-        val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
-        val byteArray = bos.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+    fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
     }
 
-    fun base64ToBitmap(base64Str: String): Bitmap {
-        val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+    fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 }

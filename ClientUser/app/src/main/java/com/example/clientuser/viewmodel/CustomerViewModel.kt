@@ -1,28 +1,33 @@
 package com.example.clientuser.viewmodel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.model.Address
 import com.example.clientuser.model.Order
 import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.dto.AddressDto
+import com.example.clientuser.utils.ConverterBitmap
 import com.example.clientuser.utils.RetrofitHandler
 import com.example.clientuser.utils.ToastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.awaitResponse
 
 class CustomerViewModel(private val customerId: String): ViewModel() {
     private val _addresses = MutableStateFlow<List<AddressDto>>(emptyList())
     val addresses = _addresses.asStateFlow()
 
+    private val _orders = MutableStateFlow<List<Order>>(emptyList())
+    val orders = _orders.asStateFlow()
+
     init{
         fetchAllAddress()
+        fetchAllOrders()
     }
 
     private fun fetchAllAddress(){
@@ -37,15 +42,19 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
         }
     }
 
-    fun getCustomerOrders(): Flow<List<Order>> = flow {
+    private fun fetchAllOrders() {
         try {
-            val response = RetrofitHandler.customerApi.getAllOrders(customerId).awaitResponse()
-            if (response.isSuccessful) response.body()?.let { orders -> emit(orders.map{ Order.fromDto(it) }) }
-            else println("Error fetching customer orders: ${response.message()}")
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.customerApi.getAllOrders(customerId).awaitResponse()
+                if (response.isSuccessful) response.body()?.let {
+                    _orders.value += it.map { order -> Order.fromDto(order) }
+                }
+                else println("Error fetching customer orders: ${response.message()}")
+            }
         } catch (e: Exception) {
             println("Exception fetching customer orders: ${e.message}")
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     fun addAddress(addressCreateRequestDto: AddressCreateRequestDto){
         try {
@@ -57,7 +66,6 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
                 addressCreateRequestDto.state,
                 addressCreateRequestDto.defaultAddress
             )
-
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.customerApi.addAddress(addressCreateRequestDto).awaitResponse()
                 if(response.isSuccessful)
@@ -68,7 +76,7 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
                                 else address
                             }
                         _addresses.value += addressDto
-                        ToastManager.show("Address created")
+                        ToastManager.show("Address added successfully")
                     }
                 else {
                     println("Error adding address ${response.message()}")
@@ -101,5 +109,22 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
         }
     }
 
-    //TODO updateCustomer()
+    fun updateCustomer(pic: Bitmap?, favoriteTeam: String?){
+        try{
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = RetrofitHandler.customerApi.updateCustomer(
+                    profilePic = if(pic != null) ConverterBitmap.convert(pic, "profilePic") else null,
+                    favoriteTeam = favoriteTeam?.toRequestBody("text/plain".toMediaTypeOrNull()),
+                ).awaitResponse()
+
+                if(response.isSuccessful) ToastManager.show("Update successful")
+                else {
+                    println("Error updating customer")
+                    ToastManager.show("Error updating customer")
+                }
+            }
+        }catch (e: Exception){
+            println("Exception updating customer")
+        }
+    }
 }

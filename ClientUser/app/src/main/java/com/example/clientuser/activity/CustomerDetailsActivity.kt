@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,19 +23,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalClubViewModel
+import com.example.clientuser.LocalCustomerViewModel
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
-import com.example.clientuser.viewmodel.ClubViewModel
-import com.example.clientuser.viewmodel.CustomerViewModel
+import com.example.clientuser.model.Customer
+import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 
 
 @Composable
-fun UserDetails(
+fun CustomerDetails(
+    customer: Customer,
     navHostController: NavHostController,
-    clubViewModel: ClubViewModel,
-    customerFormViewModel: CustomerFormViewModel,
-    customerViewModel: CustomerViewModel
 ){
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -49,28 +50,23 @@ fun UserDetails(
 
         Text(
             text = stringResource(id = R.string.details),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
 
-        Details(
-            customerFormViewModel = customerFormViewModel,
-            clubViewModel = clubViewModel
-        ){
-            TODO("fare customerViewModel.updateCustomer()")
-        }
+        Details(customerFormViewModel = CustomerFormViewModel(customer))
     }
 }
 
 @Composable
 fun Details(
-    clubViewModel: ClubViewModel,
-    customerFormViewModel: CustomerFormViewModel,
-    onClick: () -> Unit
+    customerFormViewModel: CustomerFormViewModel
 ){
+    val customerViewModel = LocalCustomerViewModel.current
     val customer by customerFormViewModel.customer.collectAsState()
-    val clubsNames by clubViewModel.clubNames.collectAsState(initial = emptyList())
-    val isEditable = remember { mutableStateOf(false) }
+
+    val updateFavoriteTeam = remember { mutableStateOf(customer.favouriteTeam) }
+    val updatePic = remember { mutableStateOf(customer.profilePic) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -82,10 +78,10 @@ fun Details(
             horizontalArrangement = Arrangement.Center
         ) {
             ImagePicker(
-                image = customer.profilePic,
+                image = updatePic.value,
                 size = 100.dp
             ) {
-                customerFormViewModel.updateProfilePic(it)
+                updatePic.value = it
             }
         }
 
@@ -115,11 +111,11 @@ fun Details(
         ){}
 
         CustomComboBox(
-            options = clubsNames,
+            options = LocalClubViewModel.current.clubNames.collectAsState(initial = emptyList()).value,
             text = stringResource(id = R.string.club),
-            selectedOption = customer.favouriteTeam,
+            selectedOption = updateFavoriteTeam.value,
         ){
-            customerFormViewModel.updateFavouriteTeam(it)
+            updateFavoriteTeam.value = it
         }
 
         CustomTextField(
@@ -139,7 +135,25 @@ fun Details(
             text = stringResource(id = R.string.update),
             background = R.color.secondary
         ) {
-            LogoutManager.instance.logout()
+            var favouriteTeam: String? = null
+            var pic: Bitmap? = null
+
+            if(updateFavoriteTeam.value != customer.favouriteTeam) {
+                customerFormViewModel.updateFavouriteTeam(updateFavoriteTeam.value)
+                favouriteTeam = updateFavoriteTeam.value
+            }
+
+            if(updatePic.value != customer.profilePic){
+                customerFormViewModel.updateProfilePic(updatePic.value)
+                pic = updatePic.value
+            }
+
+            if(pic != null || favouriteTeam != null)
+                customerViewModel.updateCustomer(
+                    favoriteTeam = favouriteTeam,
+                    pic = pic
+                )
+            else ToastManager.show("Nothing to update")
         }
 
         CustomButton(

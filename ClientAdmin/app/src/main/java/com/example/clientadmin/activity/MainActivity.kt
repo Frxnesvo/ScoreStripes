@@ -57,15 +57,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colorResource(id = R.color.primary)
                 ) {
-                    CompositionLocalProvider(
-                        LocalNavHostLogin provides rememberNavController()
-                    ) {
-                        Navigation(
-                            signInLauncher = signInLauncher,
-                            navController = LocalNavHostLogin.current,
-                            loginViewModel = loginViewModel
-                        )
-                    }
+                    Navigation(
+                        signInLauncher = signInLauncher,
+                        navController = rememberNavController(),
+                        loginViewModel = loginViewModel
+                    )
                 }
             }
         }
@@ -91,7 +87,6 @@ fun Navigation(
                 loginViewModel = loginViewModel
             )
         }
-
         //REGISTER
         composable(route = "register/{token}"){
             it.arguments?.getString("token").let {
@@ -105,14 +100,6 @@ fun Navigation(
                     )
             }
         }
-
-//        //SCAFFOLD
-//        composable(route = "scaffold"){
-//            Scaffold(
-//                loginViewModel = loginViewModel,
-//                navHostController = navController
-//            )
-//        }
     }
 }
 

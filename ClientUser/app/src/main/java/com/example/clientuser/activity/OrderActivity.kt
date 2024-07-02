@@ -27,17 +27,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalProductViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.Order
 import com.example.clientuser.model.enumerator.OrderStatus
-import com.example.clientuser.viewmodel.ProductViewModel
 
 
 @Composable
 fun OrderItem(
     order: Order,
-    navHostController: NavHostController,
-    productViewModel: ProductViewModel
+    navHostController: NavHostController
 ) {
     Column(
         modifier = Modifier
@@ -100,8 +99,7 @@ fun OrderItem(
 
         ProductOrdersList(
             orderItems = order.items,
-            navHostController = navHostController,
-            productViewModel = productViewModel
+            navHostController = navHostController
         )
     }
 }
@@ -109,9 +107,9 @@ fun OrderItem(
 @Composable
 fun ProductOrdersList(
     orderItems: List<Order.OrderItem>,
-    navHostController: NavHostController,
-    productViewModel: ProductViewModel
+    navHostController: NavHostController
 ){
+    val productViewModel = LocalProductViewModel.current
     LazyRow(
         state = rememberLazyListState(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)

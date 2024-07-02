@@ -25,27 +25,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalCustomer
+import com.example.clientuser.LocalLeagueViewModel
+import com.example.clientuser.LocalProductViewModel
+import com.example.clientuser.LocalProductsViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.League
 import com.example.clientuser.model.Product
-import com.example.clientuser.viewmodel.LeagueViewModel
-import com.example.clientuser.viewmodel.ProductViewModel
-import com.example.clientuser.viewmodel.ProductsViewModel
-import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 
 @Composable
 fun Home(
-    customerFormViewModel: CustomerFormViewModel,
-    leagueViewModel: LeagueViewModel,
     navHostController: NavHostController,
-    productsViewModel: ProductsViewModel,
-    productViewModel: ProductViewModel
 ){
-    val customer by customerFormViewModel.customer.collectAsState()
-    val leagues = leagueViewModel.leagues.collectAsState(initial = emptyList())
+    val leagues = LocalLeagueViewModel.current.leagues.collectAsState(initial = emptyList())
 
-    val bestSellerJersey by productsViewModel.moreSoldJersey.collectAsState(initial = emptyList())
-    val bestSellerShorts by productsViewModel.moreSoldShorts.collectAsState(initial = emptyList())
+    val bestSellerJersey by LocalProductsViewModel.current.moreSoldJersey.collectAsState(initial = emptyList())
+    val bestSellerShorts by LocalProductsViewModel.current.moreSoldShorts.collectAsState(initial = emptyList())
 
     Column(
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -59,15 +54,25 @@ fun Home(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
+            LocalCustomer.current?.let {
+                Text(
+                    text = stringResource(id = R.string.greetings),
+                    style = TextStyle(fontSize = 20.sp, color = colorResource(id = R.color.black)),
+                    fontWeight = FontWeight.Normal
+                )
+                Text(
+                    text = it.username,
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = colorResource(id = R.color.secondary)
+                    ),
+                    fontWeight = FontWeight.Bold
+                )
+            } ?:
             Text(
-                text = stringResource(id = R.string.greetings),
+                text = stringResource(id = R.string.sign_in),
                 style = TextStyle(fontSize = 20.sp, color = colorResource(id = R.color.black)),
                 fontWeight = FontWeight.Normal
-            )
-            Text(
-                text = customer.username,
-                style = TextStyle(fontSize = 20.sp, color = colorResource(id = R.color.secondary)),
-                fontWeight = FontWeight.Bold
             )
         }
 
@@ -80,22 +85,19 @@ fun Home(
         Section(
             name = stringResource(id = R.string.best_seller_jersey),
             items = bestSellerJersey,
-            navHostController = navHostController,
-            productViewModel = productViewModel
+            navHostController = navHostController
         )
 
         Section(
             name = stringResource(id = R.string.best_seller_shorts),
             items = bestSellerShorts,
-            navHostController = navHostController,
-            productViewModel = productViewModel
+            navHostController = navHostController
         )
 
         Section(
             name = stringResource(id = R.string.buy_by_league),
             items = leagues.value,
-            navHostController = navHostController,
-            productViewModel = productViewModel
+            navHostController = navHostController
         )
     }
 }
@@ -105,9 +107,9 @@ fun Section(
     name: String,
     items: List<Any>,
     navHostController: NavHostController,
-    productViewModel: ProductViewModel
 ){
-    val scope = rememberCoroutineScope()
+    val productsViewModel = LocalProductsViewModel.current
+    val productViewModel = LocalProductViewModel.current
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -133,11 +135,16 @@ fun Section(
                 items(items){
                     when (it) {
                         is Product -> key(it.id) {
-                            productViewModel.getProduct(it.id)
-                            ProductItem(it){ navHostController.navigate("product/${it.id}") }
+                            ProductItem(it){
+                                productViewModel.getProduct(it.id)
+                                navHostController.navigate("product/${it.id}")
+                            }
                         }
                         is League -> key(it.id) {
-                            LeagueItem(it){ navHostController.navigate("list/league/${it.name}") }
+                            LeagueItem(it){
+                                productsViewModel.setFilter(mapOf("league" to it.name))
+                                navHostController.navigate("list/league/${it.name}")
+                            }
                         }
                     }
                 }

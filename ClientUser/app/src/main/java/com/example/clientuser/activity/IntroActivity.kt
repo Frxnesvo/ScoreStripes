@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -25,17 +26,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalLoginViewModel
 import com.example.clientuser.R
 import com.example.clientuser.authentication.GoogleAuth
-import com.example.clientuser.viewmodel.LoginViewModel
 
 @Composable
 fun IndexPage(
     navController: NavHostController,
-    loginViewModel: LoginViewModel,
     signInLauncher: ActivityResultLauncher<Intent>
 ) {
+    val loginViewModel = LocalLoginViewModel.current
     val context = LocalContext.current
+
     val isLoggedIn = loginViewModel.isLoggedIn
 
     Box(
@@ -75,13 +77,21 @@ fun IndexPage(
                     }
                 }
 
-                if(isLoggedIn.value) navController.navigate("scaffold")
-                else if(loginViewModel.goToRegister.value)navController.navigate("register/${loginViewModel.token.value}")
-                else println("invalid id token") //TODO
+                if(isLoggedIn.value){
+                    LocalLoginViewModel.current.user.collectAsState().value?.let {
+                        val intent = Intent(context, MainActivity2::class.java)
+                        intent.putExtra("customer", it.serializeCustomer())
+                        context.startActivity(intent)
+                    }
+                } else if(loginViewModel.goToRegister.value)
+                    navController.navigate("register/${loginViewModel.token.value}")
+                else
+                    println("invalid id token") //TODO
 
                 TextButton(
                     onClick = {
-                        navController.navigate("scaffold")
+                        val intent = Intent(context, MainActivity2::class.java)
+                        context.startActivity(intent)
                     }
                 ) {
                     Text(

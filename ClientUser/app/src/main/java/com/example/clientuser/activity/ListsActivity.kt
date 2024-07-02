@@ -3,7 +3,6 @@ package com.example.clientuser.activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,65 +31,70 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalLeagueViewModel
+import com.example.clientuser.LocalProductViewModel
+import com.example.clientuser.LocalProductsViewModel
+import com.example.clientuser.LocalWishListViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.Wishlist
-import com.example.clientuser.viewmodel.LeagueViewModel
-import com.example.clientuser.viewmodel.ProductViewModel
-import com.example.clientuser.viewmodel.ProductsViewModel
-import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.FilterFormViewModel
 
 @Composable
 fun WishlistProducts(
-    name: String,
-    items: Wishlist,
-    navHostController: NavHostController,
-    productViewModel: ProductViewModel
+    wishlist: Wishlist,
+    navHostController: NavHostController
 ){
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(25.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    val productViewModel = LocalProductViewModel.current
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(25.dp),
+        verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start,
-        ) {
-            BoxIcon(
-                iconColor = colorResource(id = R.color.secondary),
-                content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
-            ) { navHostController.popBackStack() }
+        item(span = { GridItemSpan(2) }) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                BoxIcon(
+                    iconColor = colorResource(id = R.color.secondary),
+                    content = Icons.AutoMirrored.Rounded.KeyboardArrowLeft
+                ) { navHostController.popBackStack() }
+            }
         }
 
+        item(span = { GridItemSpan(2) }) {
+            Text(
+                text = wishlist.ownerUsername,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
-        Text(
-            text = name,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(25.dp)
-        ) {
-            items(items.items){
+        if (wishlist.items.isNotEmpty()) {
+            items(wishlist.items){
                 key(it.product.id) {
                     ProductItem(it.product){
-                        productViewModel.getProduct(it.product.id)
-                        navHostController.navigate("product/${it.product.id}")
+                        productViewModel.getProduct(it.id)
+                        navHostController.navigate("product/${it.id}")
                     }
                 }
             }
+        } else
+        item(span = { GridItemSpan(2) }) {
+            Text(
+                text = stringResource(id = R.string.list_empty),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
 
 @Composable
 fun WishlistDiscover(
-    wishListViewModel: WishListViewModel,
     navHostController: NavHostController
 ){
-    val publicWishLists = wishListViewModel.publicWishLists.collectAsState(initial = emptyList())
+    val publicWishLists = LocalWishListViewModel.current.publicWishLists.collectAsState(initial = emptyList())
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -99,8 +103,7 @@ fun WishlistDiscover(
     ) {
         item {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
             ) {
                 BoxIcon(
@@ -114,7 +117,7 @@ fun WishlistDiscover(
         item {
             Text(
                 text = stringResource(id = R.string.discover_wishlists),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -130,16 +133,15 @@ fun WishlistDiscover(
 @Composable
 fun ListDiscover(
     name: String,
-    productsViewModel: ProductsViewModel,
-    leagueViewModel: LeagueViewModel,
-    navHostController: NavHostController,
-    productViewModel: ProductViewModel
+    navHostController: NavHostController
 ){
-    val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
-    val products by productsViewModel.products.collectAsState()
+    val productsViewModel = LocalProductsViewModel.current
+    val productViewModel = LocalProductViewModel.current
 
+    val products by productsViewModel.products.collectAsState()
     val page by productsViewModel.page.collectAsState()
 
+    val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -156,7 +158,7 @@ fun ListDiscover(
         item(span = { GridItemSpan(2) }) {
             Text(
                 text = name,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -174,8 +176,10 @@ fun ListDiscover(
         else
             items(products){
                 key(it.id) {
-                    productViewModel.getProduct(it.id)
-                    ProductItem(it){ navHostController.navigate("product/${it.id}") }
+                    ProductItem(it){
+                        productViewModel.getProduct(it.id)
+                        navHostController.navigate("product/${it.id}")
+                    }
                 }
             }
 
@@ -191,7 +195,7 @@ fun ListDiscover(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
-                        ){ productsViewModel.incrementPage() }
+                        ) { productsViewModel.incrementPage() }
                 )
             }
     }
@@ -200,7 +204,7 @@ fun ListDiscover(
         SearchPanelProducts(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
-            leagues = leagueViewModel.leagues.collectAsState(initial = emptyList()).value.map { it.name },
+            leagues = LocalLeagueViewModel.current.leagues.collectAsState(initial = emptyList()).value.map { it.name },
             filterFormViewModel = FilterFormViewModel(),
             onSearch = { productsViewModel.setFilter(it) }
         )

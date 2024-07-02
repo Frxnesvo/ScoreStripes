@@ -40,6 +40,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.clientuser.LocalCartViewModel
+import com.example.clientuser.LocalCustomerViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.CustomerSummary
 import com.example.clientuser.model.Personalization
@@ -49,8 +51,6 @@ import com.example.clientuser.model.dto.AddressCreateRequestDto
 import com.example.clientuser.model.dto.AddressDto
 import com.example.clientuser.model.enumerator.ProductCategory
 import com.example.clientuser.model.enumerator.WishListVisibility
-import com.example.clientuser.viewmodel.CustomerViewModel
-import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 import com.example.clientuser.viewmodel.formviewmodel.FilterFormViewModel
@@ -135,13 +135,12 @@ fun SharedWithUserRow(guest: CustomerSummary){
 fun ChooseAddress(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
-    customerViewModel: CustomerViewModel,
     onClick: (String) -> Unit
 ){
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
-    val addresses by customerViewModel.addresses.collectAsState()
+    val addresses by LocalCustomerViewModel.current.addresses.collectAsState()
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(
@@ -189,9 +188,10 @@ fun ChooseAddress(
 fun AddAddress(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
-    customerViewModel: CustomerViewModel,
     addressFormViewModel: AddressFormViewModel
 ){
+    val customerViewModel = LocalCustomerViewModel.current
+
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
@@ -365,12 +365,12 @@ fun AddItemToCart(
     onDismissRequest: () -> Unit,
     setBottomSheet: (Boolean) -> Unit,
     product: Product,
-    cartViewModel: CartViewModel,
     productFormViewModel: ProductFormViewModel
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
+    val cartViewModel = LocalCartViewModel.current
     val productState = productFormViewModel.productState.collectAsState()
 
 

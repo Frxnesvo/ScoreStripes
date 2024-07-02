@@ -65,6 +65,9 @@ dependencies {
     implementation (libs.converter.moshi)
 
     implementation (libs.moshi)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
     ksp(libs.moshi.kotlin.codegen.v1130)
 
     implementation (libs.coil.compose)

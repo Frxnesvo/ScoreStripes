@@ -22,17 +22,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalCustomerViewModel
 import com.example.clientuser.R
-import com.example.clientuser.viewmodel.CustomerViewModel
-import com.example.clientuser.viewmodel.ProductViewModel
 
 @Composable
 fun Orders(
-    customerViewModel: CustomerViewModel,
-    navHostController: NavHostController,
-    productViewModel: ProductViewModel
+    navHostController: NavHostController
 ){
-    val orders by customerViewModel.getCustomerOrders().collectAsState(initial = emptyList())
+    val orders by LocalCustomerViewModel.current.orders.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -75,7 +72,7 @@ fun Orders(
             items(orders) {
                 order ->
                 key(order.id) {
-                    OrderItem(order = order, navHostController = navHostController, productViewModel = productViewModel)
+                    OrderItem(order = order, navHostController = navHostController)
                 }
             }
     }

@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -68,7 +69,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.authentication.LogoutManager
 import kotlinx.coroutines.delay
 
 import java.time.LocalDate
@@ -102,8 +102,6 @@ fun Title(colorStripes: Color = colorResource(id = R.color.black)){
 
 @Composable
 fun IconButtonBar(
-    iconColor:  Color = colorResource(id = R.color.white),
-    background: Color = colorResource(id = R.color.secondary),
     imageVector: ImageVector?,
     navHostController: NavHostController,
     onClick: () -> Unit
@@ -150,14 +148,27 @@ fun BoxIcon(
                 Icon(
                     imageVector = content,
                     contentDescription = null,
-                    tint = iconColor
+                    tint = iconColor,
+                    modifier = Modifier.size(when(size){
+                        30.dp -> 20.dp
+                        40.dp -> 24.dp
+                        else -> 16.dp
+                    })
                 )
             }
             is String -> {
                 Text(
                     text = content,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontWeight = when(size){
+                        30.dp -> FontWeight.Normal
+                        40.dp -> FontWeight.Bold
+                        else -> FontWeight.Light
+                    },
+                    fontSize = when(size){
+                        30.dp -> 16.sp
+                        40.dp -> 20.sp
+                        else -> 12.sp
+                    },
                     color = iconColor
                 )
             }
@@ -167,7 +178,7 @@ fun BoxIcon(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(size)
                         .clip(CircleShape)
                         .border(2.dp, iconColor, CircleShape)
                 )
@@ -176,27 +187,25 @@ fun BoxIcon(
     }
 }
 
-
-//TODO da rimuovere il navController
 @Composable
-fun GoToLoginSnackBar(navController: NavHostController, onDismiss : () -> Unit){
+fun GoToLoginSnackBar(onDismiss : () -> Unit){
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
-    // Show the snackbar when needed
     LaunchedEffect(Unit) {
         val result = snackbarHostState.showSnackbar(
-            message = "Feature restricted, please log in to access it.",
-            actionLabel = "Login"
+            message = "Feature restricted, please sign-in.",
+            actionLabel = "Sign-In"
         )
         if (result == SnackbarResult.ActionPerformed) {
-            //TODO avviare l'activity del login
-            navController.navigate("home")
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
             onDismiss()
         }
     }
 
     LaunchedEffect(snackbarHostState) {
-        delay(5000)
+        delay(3000)
         snackbarHostState.currentSnackbarData?.dismiss()
         onDismiss()
     }
@@ -266,7 +275,8 @@ fun CustomComboBox(
             }
         ) {
             OutlinedTextField(
-                enabled = !readOnly,
+                enabled = expandable,
+                readOnly = readOnly,
                 value = selectedOption,
                 onValueChange = {},
                 label = {
@@ -277,21 +287,21 @@ fun CustomComboBox(
                     )
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
-                readOnly = readOnly,
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth(),
                 shape = RoundedCornerShape(30.dp),
                 textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = colorResource(id = R.color.white),
-                    unfocusedTextColor = colorResource(id = R.color.black),
+                    focusedTextColor = colorResource(id = R.color.black),
+                    unfocusedTextColor = colorResource(id = R.color.black50),
                     focusedBorderColor = colorResource(id = R.color.secondary),
-                    unfocusedBorderColor = colorResource(id = R.color.white),
+                    unfocusedBorderColor = colorResource(id = R.color.black50),
                     focusedLabelColor = colorResource(id = R.color.secondary),
                     unfocusedLabelColor = colorResource(id = R.color.black),
                     cursorColor = Color.Transparent
-                )
+                ),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
             )
             DropdownMenu(
                 expanded = expanded,
@@ -301,7 +311,6 @@ fun CustomComboBox(
                     .height(200.dp)
                     .background(colorResource(id = R.color.white))
             ) {
-
                 if (options.isNotEmpty())
                     options.forEach { option ->
                         DropdownMenuItem(
@@ -432,7 +441,7 @@ fun CustomTextField(
         focusedTextColor = colorResource(id = R.color.black),
         unfocusedTextColor = colorResource(id = R.color.black50),
         focusedBorderColor = colorResource(id = R.color.secondary),
-        unfocusedBorderColor = colorResource(id = R.color.white),
+        unfocusedBorderColor = colorResource(id = R.color.black50),
         focusedLabelColor = colorResource(id = R.color.secondary),
         unfocusedLabelColor = colorResource(id = R.color.black),
         errorBorderColor = colorResource(id = R.color.red),

@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
@@ -18,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.clientuser.LocalLoginViewModel
 import com.example.clientuser.R
 import com.example.clientuser.authentication.GoogleAuth
 import com.example.clientuser.authentication.LogoutManager
@@ -26,7 +28,6 @@ import com.example.clientuser.ui.theme.ClientUserTheme
 import com.example.clientuser.utils.RetrofitHandler
 import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.utils.TokenStoreUtils
-import com.example.clientuser.viewmodel.ClubViewModel
 import com.example.clientuser.viewmodel.LoginViewModel
 import com.example.clientuser.viewmodel.LogoutViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
@@ -43,8 +44,7 @@ class MainActivity : ComponentActivity() {
 
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val token = GoogleAuth.manageLoginResult(result)
-            if (token != null)
-                loginViewModel.login(token, this.applicationContext)
+            if (token != null) loginViewModel.login(token)
         }
 
         super.onCreate(savedInstanceState)
@@ -55,13 +55,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colorResource(id = R.color.primary)
                 ) {
-                    Navigation(
-                        navController = rememberNavController(),
-                        loginViewModel = loginViewModel,
-                        loginFormViewModel = LoginFormViewModel(),
-                        signInLauncher = signInLauncher,
-                        clubViewModel = ClubViewModel()
-                    )
+                    CompositionLocalProvider(
+                        LocalLoginViewModel provides loginViewModel
+                    ) {
+                        Navigation(
+                            navController = rememberNavController(),
+                            loginFormViewModel = LoginFormViewModel(),
+                            signInLauncher = signInLauncher,
+                        )
+                    }
                 }
             }
         }
@@ -71,10 +73,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Navigation(
     navController: NavHostController,
-    loginViewModel: LoginViewModel,
     loginFormViewModel: LoginFormViewModel,
     signInLauncher: ActivityResultLauncher<Intent>,
-    clubViewModel: ClubViewModel
 ){
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -87,7 +87,6 @@ fun Navigation(
         ){
             IndexPage(
                 navController = navController,
-                loginViewModel = loginViewModel,
                 signInLauncher = signInLauncher
             )
         }
@@ -103,19 +102,10 @@ fun Navigation(
                     Login(
                         token = token,
                         navController = navController,
-                        loginViewModel = loginViewModel,
                         loginFormViewModel = loginFormViewModel,
-                        clubViewModel = clubViewModel,
                         addressFormViewModel = AddressFormViewModel(null)
                     )
             }
-        }
-
-        //SCAFFOLD
-        composable(
-            route = "scaffold"
-        ){
-            Scaffold(loginViewModel = loginViewModel, navHostController = navController)
         }
     }
 }

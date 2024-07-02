@@ -1,5 +1,6 @@
 package com.example.clientuser.activity
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,11 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,31 +33,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.clientuser.LocalCustomer
+import com.example.clientuser.LocalWishListViewModel
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
-import com.example.clientuser.model.Customer
-import com.example.clientuser.viewmodel.CustomerViewModel
-import com.example.clientuser.viewmodel.CartViewModel
-import com.example.clientuser.viewmodel.ClubViewModel
-import com.example.clientuser.viewmodel.LeagueViewModel
-import com.example.clientuser.viewmodel.LoginViewModel
-import com.example.clientuser.viewmodel.OrderViewModel
-import com.example.clientuser.viewmodel.ProductViewModel
-import com.example.clientuser.viewmodel.ProductsViewModel
-import com.example.clientuser.viewmodel.WishListViewModel
-import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
+import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.viewmodel.formviewmodel.ProductFormViewModel
 
 enum class Screen{ HOME, WISHLIST, CART, SETTINGS }
 
 @Composable
-fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostController) {
+fun Scaffold() {
     val selectedScreen = remember { mutableStateOf(Screen.HOME) }
     val navController = rememberNavController()
-    val customer = loginViewModel.user.collectAsState()
 
     Scaffold(
-        bottomBar = { BottomBar(navController, selectedScreen, customer.value) }
+        bottomBar = { BottomBar(navController, selectedScreen) }
     ) {
         Box(
             modifier = Modifier
@@ -70,18 +62,9 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
                 )
 
         ) {
-            AuthAwareComposable(navController = navHostController) {
+            AuthAwareComposable {
                 NavigationScaffold(
-                    customerFormViewModel = CustomerFormViewModel(if(customer.value != null) customer.value!! else Customer()),
-                    customerViewModel = CustomerViewModel(if(customer.value != null) customer.value!!.id else ""),
-                    clubViewModel = ClubViewModel(),
-                    leagueViewModel = LeagueViewModel(),
-                    productsViewModel = ProductsViewModel(),
-                    orderViewModel = OrderViewModel(),
-                    wishlistViewModel = WishListViewModel(),
-                    cartViewModel = CartViewModel(),
                     navHostController = navController,
-                    productViewModel = ProductViewModel()
                 )
             }
         }
@@ -89,7 +72,7 @@ fun Scaffold(loginViewModel: LoginViewModel, navHostController: NavHostControlle
 }
 
 @Composable
-fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState<Screen>, customer: Customer?) {
+fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState<Screen>) {
     val showSnackBar = remember { mutableStateOf(false) }
 
     Row(
@@ -142,7 +125,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             size = 40.dp,
             background = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.secondary else R.color.transparent),
             iconColor = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.white else R.color.black50),
-            content = customer?.pic ?: Icons.Outlined.Person
+            content = LocalCustomer.current?.pic ?: Icons.Outlined.Person
         ) {
             if(LogoutManager.instance.isLoggedIn.value){
                 selectedScreen.value = Screen.SETTINGS
@@ -150,24 +133,15 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             } else showSnackBar.value = true
         }
     }
-    
+
     if(showSnackBar.value){
-        GoToLoginSnackBar(navController = navHostController, onDismiss = {showSnackBar.value = false})
+        GoToLoginSnackBar{ showSnackBar.value = false }
     }
 }
 
 @Composable
 fun NavigationScaffold(
     navHostController: NavHostController,
-    customerViewModel: CustomerViewModel,
-    leagueViewModel: LeagueViewModel,
-    clubViewModel: ClubViewModel,
-    productsViewModel: ProductsViewModel,
-    orderViewModel: OrderViewModel,
-    wishlistViewModel: WishListViewModel,
-    cartViewModel: CartViewModel,
-    customerFormViewModel: CustomerFormViewModel,
-    productViewModel: ProductViewModel,
 ) {
     NavHost(
         modifier = Modifier.background(colorResource(R.color.primary)),
@@ -179,11 +153,7 @@ fun NavigationScaffold(
             route = "home"
         ) {
             Home(
-                customerFormViewModel = customerFormViewModel,
-                leagueViewModel = leagueViewModel,
-                productsViewModel = productsViewModel,
-                navHostController = navHostController,
-                productViewModel = productViewModel
+                navHostController = navHostController
             )
         }
 
@@ -192,7 +162,6 @@ fun NavigationScaffold(
             route = "wishlist"
         ) {
             Wishlist(
-                wishListViewModel = wishlistViewModel,
                 navHostController = navHostController
             )
         }
@@ -201,7 +170,6 @@ fun NavigationScaffold(
             route = "discoverWishlist",
         ) {
             WishlistDiscover(
-                wishListViewModel = wishlistViewModel,
                 navHostController = navHostController
             )
         }
@@ -209,12 +177,9 @@ fun NavigationScaffold(
         composable(
             route = "myWishlist",
         ) {
-            val myList by wishlistViewModel.myWishList
             WishlistProducts(
-                name = stringResource(id = R.string.my_wishlist),
-                items = myList,
-                navHostController = navHostController,
-                productViewModel = productViewModel
+                wishlist = LocalWishListViewModel.current.myWishList.collectAsState().value,
+                navHostController = navHostController
             )
         }
 
@@ -223,14 +188,16 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("id")?.let { id ->
-                val wishlists by wishlistViewModel.sharedWithMeWishlists
-                val wishlist = wishlists.find { it.id == id }
-                WishlistProducts(
-                    name = wishlist?.ownerUsername ?: "",
-                    items = wishlist!!, //wishlist?.items ?: emptyList(), TODO
-                    navHostController = navHostController,
-                    productViewModel = productViewModel
-                )
+
+                LocalWishListViewModel.current
+                    .sharedWithMeWishlists.collectAsState().value
+                    .find { product -> product.id == id }?.let {
+                        wishlist ->
+                        WishlistProducts(
+                            wishlist = wishlist,
+                            navHostController = navHostController
+                        )
+                    }?: ToastManager.show("Wishlist not found")
             }
         }
 
@@ -239,14 +206,16 @@ fun NavigationScaffold(
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("id")?.let { id ->
-                val wishlists by wishlistViewModel.publicWishLists.collectAsState(initial = emptyList())
-                val wishlist = wishlists.find { it.id == id }
-                WishlistProducts(
-                    name = wishlist?.ownerUsername ?: "", //faccio così per gli aggiornamenti in tempo reale, ma non è il massimo
-                    items = wishlist!!, //TODO come sopra?
-                    navHostController = navHostController,
-                    productViewModel = productViewModel
-                )
+
+                LocalWishListViewModel.current
+                    .publicWishLists.collectAsState(initial = emptyList()).value
+                    .find { product -> product.id == id }?.let {
+                        wishlist ->
+                        WishlistProducts(
+                            wishlist = wishlist,
+                            navHostController = navHostController
+                        )
+                    }?: ToastManager.show("Wishlist not found")
             }
         }
 
@@ -255,9 +224,6 @@ fun NavigationScaffold(
             route = "cart"
         ) {
             Cart(
-                customerViewModel = customerViewModel,
-                orderViewModel = OrderViewModel(),
-                cartViewModel = cartViewModel,
                 navHostController = navHostController
             )
         }
@@ -266,34 +232,29 @@ fun NavigationScaffold(
         composable(
             route = "settings"
         ) {
-            CustomerProfile(customerFormViewModel = customerFormViewModel, navHostController = navHostController)
+            LocalCustomer.current?.let { customer ->
+                CustomerProfile(customer = customer, navHostController = navHostController)
+            } ?: ToastManager.show("Customer not found")
         }
         composable(
             route = "details"
         ) {
-            UserDetails(
-                customerFormViewModel = customerFormViewModel,
-                customerViewModel = customerViewModel,
-                navHostController = navHostController,
-                clubViewModel = clubViewModel
-            )
+            LocalCustomer.current?.let { customer ->
+                CustomerDetails(
+                    customer = customer,
+                    navHostController = navHostController
+                )
+            } ?: ToastManager.show("Customer not found")
         }
         composable(
             route = "orders",
         ) {
-            Orders(
-                customerViewModel = customerViewModel,
-                navHostController = navHostController,
-                productViewModel = productViewModel
-            )
+            Orders(navHostController = navHostController)
         }
         composable(
             route = "addresses",
         ) {
-            Addresses(
-                customerViewModel = customerViewModel,
-                navHostController = navHostController
-            )
+            Addresses(navHostController = navHostController)
         }
 
         //LISTS
@@ -302,15 +263,10 @@ fun NavigationScaffold(
         ) {
             ListDiscover(
                 name = stringResource(id = R.string.discover),
-                productsViewModel = productsViewModel,
-                leagueViewModel = leagueViewModel,
-                navHostController = navHostController,
-                productViewModel = productViewModel
+                navHostController = navHostController
             )
         }
 
-
-        //TODO cambiare senza usare launched effect
         composable(
             route= "product/{id}",
             arguments = listOf(navArgument("id"){ type = NavType.StringType })
@@ -318,15 +274,11 @@ fun NavigationScaffold(
             it.arguments?.getString("id")?.let { id ->
                 ProductDetails(
                     productId = id,
-                    wishListViewModel = wishlistViewModel,
                     navHostController = navHostController,
                     productFormViewModel = ProductFormViewModel(),
-                    cartViewModel = cartViewModel,
-                    productViewModel = productViewModel
                 )
             }
         }
-
 
         composable(
             route = "list/club/{name}",
@@ -334,30 +286,21 @@ fun NavigationScaffold(
         ) {
             it.arguments?.getString("name")?.let {
                 club ->
-                productsViewModel.setFilter(mapOf("club" to club))
                 ListDiscover(
                     name = club,
-                    productsViewModel = productsViewModel,
-                    leagueViewModel = leagueViewModel,
-                    navHostController = navHostController,
-                    productViewModel = productViewModel
+                    navHostController = navHostController
                 )
             }
         }
-
         composable(
             route = "list/league/{name}",
             arguments = listOf(navArgument("name"){ type = NavType.StringType })
         ) {
             it.arguments?.getString("name")?.let {
                 league ->
-                productsViewModel.setFilter(mapOf("league" to league))
                 ListDiscover(
                     name = league,
-                    productsViewModel = productsViewModel,
-                    leagueViewModel = leagueViewModel,
                     navHostController = navHostController,
-                    productViewModel = productViewModel
                 )
             }
         }
@@ -378,16 +321,15 @@ fun NavigationScaffold(
 
 @Composable
 fun AuthAwareComposable(
-    navController: NavHostController,
     content: @Composable () -> Unit
 ){
     val logoutManager = remember { LogoutManager.instance }
+    val context = LocalContext.current
 
     LaunchedEffect(logoutManager) {
         logoutManager.logoutEvent.collect {
-            navController.navigate("index") {
-                popUpTo(navController.graph.startDestinationId) { inclusive = true }
-            }
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
         }
     }
 

@@ -18,8 +18,6 @@ import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,15 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
-import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
+import com.example.clientuser.model.Customer
 
 @Composable
 fun CustomerProfile(
-    navHostController: NavHostController,
-    customerFormViewModel: CustomerFormViewModel
+    customer: Customer,
+    navHostController: NavHostController
 ){
-    val customer by customerFormViewModel.customer.collectAsState()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,12 +58,10 @@ fun CustomerProfile(
         }
 
         //TODO
-        customer.profilePic?.let {
-            BoxProfilePic(
-                name = customer.username,
-                pic = it
-            )
-        }
+        BoxProfilePic(
+            name = customer.username,
+            pic = customer.pic
+        )
 
         Text(
             text = customer.username,

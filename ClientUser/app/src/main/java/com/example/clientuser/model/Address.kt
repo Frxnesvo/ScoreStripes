@@ -1,5 +1,7 @@
 package com.example.clientuser.model
 
+import java.io.Serializable
+
 class Address(
     val street: String = "",
     val city: String = "",
@@ -7,7 +9,7 @@ class Address(
     val zipCode: String = "",
     val state: String = "",
     val defaultAddress: Boolean = false
-) {
+): Serializable {
     init {
         require(validateStreet(street)) { "Invalid street" }
         require(validateCity(city)) { "Invalid city" }

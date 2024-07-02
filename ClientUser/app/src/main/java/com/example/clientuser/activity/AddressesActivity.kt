@@ -21,16 +21,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalCustomerViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.dto.AddressDto
-import com.example.clientuser.viewmodel.CustomerViewModel
 import com.example.clientuser.viewmodel.formviewmodel.AddressFormViewModel
 
 @Composable
 fun Addresses(
-    customerViewModel: CustomerViewModel,
     navHostController: NavHostController
 ){
+    val customerViewModel = LocalCustomerViewModel.current
+
     val (isOpenSheetAdd, setBottomSheetAdd) = remember { mutableStateOf(false) }
     val (isOpenSheetRemove, setBottomSheetRemove) = remember { mutableStateOf(false)}
 
@@ -86,7 +87,6 @@ fun Addresses(
             onDismissRequest = { setBottomSheetAdd(false) },
             setBottomSheet = setBottomSheetAdd,
             addressFormViewModel = AddressFormViewModel(addressToShow),
-            customerViewModel = customerViewModel
         )
 
     if(isOpenSheetRemove)

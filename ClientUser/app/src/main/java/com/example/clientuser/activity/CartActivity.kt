@@ -37,25 +37,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.clientuser.LocalCartViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.CartItem
 import com.example.clientuser.model.dto.OrderInfoDto
 import com.example.clientuser.model.dto.UpdateCartItemDto
 import com.example.clientuser.utils.ToastManager
-import com.example.clientuser.viewmodel.CustomerViewModel
-import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.OrderViewModel
 
 @Composable
-fun Cart(
-    orderViewModel: OrderViewModel,
-    customerViewModel: CustomerViewModel,
-    navHostController: NavHostController,
-    cartViewModel: CartViewModel
-){
+fun Cart( navHostController: NavHostController ){
+    val orderViewModel = OrderViewModel()
+    val cartViewModel = LocalCartViewModel.current
+
     val (isOpenSheet, setBottomSheet) = remember { mutableStateOf(false) }
     val selectedAddress = remember { mutableStateOf("") }
+
     val showWebView = remember { mutableStateOf(false) }
+
     val webViewLink by orderViewModel.createdOrderWebViewLink
 
     val myCart = cartViewModel.cart.collectAsState()
@@ -80,7 +79,7 @@ fun Cart(
             item {
                 Text(
                     text = stringResource(id = R.string.cart),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -95,12 +94,20 @@ fun Cart(
                     }
                 }
             }
-
+            else {
+                item {
+                    Text(
+                        text = stringResource(id = R.string.cart_empty),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = colorResource(id = R.color.black50)
+                    )
+                }
+            }
 
             items(myCart.value.values.toList()){
                 key(it.id) {
                     SwipeToDismissItem(
-                        content = { ItemCart(cartItem = it, cartViewModel = cartViewModel) },
+                        content = { ItemCart(cartItem = it) },
                     ) {
                         cartViewModel.deleteItem(itemId = it.id)
                     }
@@ -113,7 +120,6 @@ fun Cart(
         ChooseAddress(
             onDismissRequest = { setBottomSheet(false) },
             setBottomSheet = setBottomSheet,
-            customerViewModel = customerViewModel
         ) {
             selectedAddress.value = it
             if (selectedAddress.value != "") {
@@ -125,7 +131,9 @@ fun Cart(
 }
 
 @Composable
-fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
+fun ItemCart(cartItem: CartItem) {
+    val cartViewModel = LocalCartViewModel.current
+
     val item = remember { mutableStateOf(cartItem) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -159,7 +167,6 @@ fun ItemCart(cartItem: CartItem, cartViewModel: CartViewModel) {
                 )
                 BoxIcon(
                     iconColor = colorResource(id = R.color.secondary),
-                    size = 30.dp,
                     content = item.value.productWithVariant.size.name
                 ) {}
             }
