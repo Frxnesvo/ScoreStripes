@@ -68,6 +68,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.R
+import com.example.clientuser.authentication.LogoutManager
+import kotlinx.coroutines.delay
 
 import java.time.LocalDate
 
@@ -174,8 +176,10 @@ fun BoxIcon(
     }
 }
 
+
+//TODO da rimuovere il navController
 @Composable
-fun GoToLoginSnackBar(navController: NavHostController){
+fun GoToLoginSnackBar(navController: NavHostController, onDismiss : () -> Unit){
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Show the snackbar when needed
@@ -187,7 +191,14 @@ fun GoToLoginSnackBar(navController: NavHostController){
         if (result == SnackbarResult.ActionPerformed) {
             //TODO avviare l'activity del login
             navController.navigate("home")
+            onDismiss()
         }
+    }
+
+    LaunchedEffect(snackbarHostState) {
+        delay(5000)
+        snackbarHostState.currentSnackbarData?.dismiss()
+        onDismiss()
     }
 
     SnackbarHost(hostState = snackbarHostState)
