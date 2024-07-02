@@ -1,6 +1,7 @@
-package com.example.springbootapp.security;
+package com.example.springbootapp.security.filter;
 
 import com.example.springbootapp.handler.JwtHandler;
+import com.example.springbootapp.security.CustomUserDetails;
 import com.example.springbootapp.service.impl.UserDetailsServiceImpl;
 import com.example.springbootapp.service.interfaces.AccessTokenBlacklistService;
 import jakarta.servlet.FilterChain;
@@ -8,7 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -2,7 +2,7 @@ package com.example.springbootapp.config;
 
 
 import com.example.springbootapp.security.JwtAuthenticationEntryPoint;
-import com.example.springbootapp.security.JwtAuthenticationFilter;
+import com.example.springbootapp.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

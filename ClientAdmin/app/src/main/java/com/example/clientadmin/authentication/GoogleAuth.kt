@@ -8,11 +8,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.example.clientadmin.BuildConfig
 
 class GoogleAuth{
     companion object {
         //prendo l'id client dal file gradle.properties
-        private val WEB_SERVER_CLIENT_ID= "774497332630-engaqhas88dv6rpmrpjfnad09i6jloef.apps.googleusercontent.com"
+        private val WEB_SERVER_CLIENT_ID= BuildConfig.WEB_SERVER_CLIENT_ID
 
         fun getClient(context: Context): GoogleSignInClient{
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
