@@ -107,6 +107,7 @@ public class WishlistServiceImpl implements WishlistService {
         Customer customer = (Customer) userDetailsService.getCurrentUser();
         Wishlist wishlist = wishlistDao.findById(customer.getWishlist().getId()).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
         //cerca nella wishlist un item che ha un prodotto con l'id passato`usando gli stream e se lo trova lo rimuove
+        Hibernate.initialize(wishlist.getItems());
         WishlistItem item = wishlist.getItems().stream()
                 .filter(wishlistItem -> wishlistItem.getProduct().getId().equals(productId))
                 .findFirst()
