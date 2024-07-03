@@ -1,6 +1,5 @@
 package com.example.clientuser.model
 
-import com.example.clientuser.model.dto.BasicProductDto
 import com.example.clientuser.model.dto.PageResponseDto
 
 class Page(
@@ -15,7 +14,7 @@ class Page(
 ) {
     constructor() : this(0, 0, 1, 0, 0, true, false, false)
     companion object {
-        fun fromDto(pageResponseDto: PageResponseDto<BasicProductDto>): Page {
+        fun <T> fromDto(pageResponseDto: PageResponseDto<T>): Page {
             return Page(
                 totalPages = pageResponseDto.totalPages,
                 totalElements = pageResponseDto.totalElements,
