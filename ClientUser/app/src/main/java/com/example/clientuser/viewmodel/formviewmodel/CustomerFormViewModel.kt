@@ -19,8 +19,8 @@ class CustomerFormViewModel(customer: Customer) {
             username = customer.username,
             birthdate = customer.birthDate,
             gender = customer.gender,
-            profilePic = customer.pic,
-            favouriteTeam = customer.favoriteTeam
+            profilePic = customer.getPic(),
+            favouriteTeam = customer.getFavoriteTeam()
         )
     }
 

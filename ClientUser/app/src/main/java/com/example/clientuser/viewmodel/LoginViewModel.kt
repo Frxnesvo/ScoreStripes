@@ -58,7 +58,9 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                         _goToRegister.value = true
                         _token.value = idToken
                     }
-                    else println("Error customer login: ${response.message()}")
+                    else if(response.code() == 500) {
+                        ToastManager.show("This account is registered as admin")
+                    } else println("Error customer login: ${response.message()}")
                 }
             }
         }catch (e: Exception){

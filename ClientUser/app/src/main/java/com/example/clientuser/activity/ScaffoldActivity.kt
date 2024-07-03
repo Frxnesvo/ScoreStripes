@@ -125,7 +125,7 @@ fun BottomBar(navHostController: NavHostController, selectedScreen: MutableState
             size = 40.dp,
             background = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.secondary else R.color.transparent),
             iconColor = colorResource(id = if (Screen.SETTINGS == selectedScreen.value) R.color.white else R.color.black50),
-            content = LocalCustomer.current?.pic ?: Icons.Outlined.Person
+            content = LocalCustomer.current?.getPic() ?: Icons.Outlined.Person
         ) {
             if(LogoutManager.instance.isLoggedIn.value){
                 selectedScreen.value = Screen.SETTINGS

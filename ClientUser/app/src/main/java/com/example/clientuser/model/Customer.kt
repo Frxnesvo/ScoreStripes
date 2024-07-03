@@ -4,10 +4,9 @@ import android.graphics.Bitmap
 import com.example.clientuser.model.dto.AuthResponseDto
 import com.example.clientuser.utils.S3ImageDownloader
 import com.example.clientuser.model.enumerator.Gender
-import java.io.Serializable
 
 import java.time.LocalDate
-class Customer(
+data class Customer(
     val id: String = "",
     val username: String = "",
     val firstName: String = "",
@@ -15,8 +14,8 @@ class Customer(
     val email: String = "",
     val birthDate: LocalDate = LocalDate.now(),
     val gender: Gender = Gender.MALE,
-    val pic: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
-    val favoriteTeam: String = "",
+    private var pic: Bitmap? = null,
+    private var favoriteTeam: String = "",
     val addresses: List<Address> = emptyList()
 ) {
 
@@ -59,4 +58,10 @@ class Customer(
             return favouriteTeam.isEmpty()
         }
     }
+
+    fun getPic(): Bitmap?{ return this.pic }
+    fun setPic(pic: Bitmap?){ this.pic = pic}
+
+    fun getFavoriteTeam(): String { return this.favoriteTeam }
+    fun setFavoriteTeam(favoriteTeam: String) {this.favoriteTeam = favoriteTeam}
 }

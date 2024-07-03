@@ -138,7 +138,10 @@ fun BoxIcon(
 {
     Box(
         modifier = Modifier
-            .clickable { onclick() }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ){ onclick() }
             .size(size)
             .background(background, RoundedCornerShape(20.dp)),
         contentAlignment = Alignment.Center

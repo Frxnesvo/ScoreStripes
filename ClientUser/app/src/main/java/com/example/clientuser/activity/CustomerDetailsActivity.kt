@@ -1,6 +1,5 @@
 package com.example.clientuser.activity
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,11 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.clientuser.LocalClubViewModel
+import com.example.clientuser.LocalCustomer
 import com.example.clientuser.LocalCustomerViewModel
 import com.example.clientuser.R
 import com.example.clientuser.authentication.LogoutManager
 import com.example.clientuser.model.Customer
-import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.viewmodel.formviewmodel.CustomerFormViewModel
 
 
@@ -64,9 +63,7 @@ fun Details(
 ){
     val customerViewModel = LocalCustomerViewModel.current
     val customer by customerFormViewModel.customer.collectAsState()
-
-    val updateFavoriteTeam = remember { mutableStateOf(customer.favouriteTeam) }
-    val updatePic = remember { mutableStateOf(customer.profilePic) }
+    val customerUpdated = remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -78,10 +75,10 @@ fun Details(
             horizontalArrangement = Arrangement.Center
         ) {
             ImagePicker(
-                image = updatePic.value,
+                image = customer.profilePic,
                 size = 100.dp
             ) {
-                updatePic.value = it
+                customerFormViewModel.updateProfilePic(it)
             }
         }
 
@@ -113,9 +110,9 @@ fun Details(
         CustomComboBox(
             options = LocalClubViewModel.current.clubNames.collectAsState(initial = emptyList()).value,
             text = stringResource(id = R.string.club),
-            selectedOption = updateFavoriteTeam.value,
+            selectedOption = customer.favouriteTeam,
         ){
-            updateFavoriteTeam.value = it
+            customerFormViewModel.updateFavouriteTeam(it)
         }
 
         CustomTextField(
@@ -135,25 +132,7 @@ fun Details(
             text = stringResource(id = R.string.update),
             background = R.color.secondary
         ) {
-            var favouriteTeam: String? = null
-            var pic: Bitmap? = null
-
-            if(updateFavoriteTeam.value != customer.favouriteTeam) {
-                customerFormViewModel.updateFavouriteTeam(updateFavoriteTeam.value)
-                favouriteTeam = updateFavoriteTeam.value
-            }
-
-            if(updatePic.value != customer.profilePic){
-                customerFormViewModel.updateProfilePic(updatePic.value)
-                pic = updatePic.value
-            }
-
-            if(pic != null || favouriteTeam != null)
-                customerViewModel.updateCustomer(
-                    favoriteTeam = favouriteTeam,
-                    pic = pic
-                )
-            else ToastManager.show("Nothing to update")
+            if(customerViewModel.updateCustomer(customer.profilePic, customer.favouriteTeam)) customerUpdated.value = true
         }
 
         CustomButton(
@@ -162,6 +141,13 @@ fun Details(
             background = R.color.black50
         ) {
             LogoutManager.instance.logout()
+        }
+    }
+
+    if(customerUpdated.value) {
+        LocalCustomer.current?.let {
+            it.setPic(customer.profilePic)
+            it.setFavoriteTeam(customer.favouriteTeam)
         }
     }
 }

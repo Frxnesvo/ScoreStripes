@@ -109,8 +109,8 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
         }
     }
 
-    fun updateCustomer(pic: Bitmap?, favoriteTeam: String?){
-        try{
+    fun updateCustomer(pic: Bitmap?, favoriteTeam: String?): Boolean{
+        return try {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.customerApi.updateCustomer(
                     profilePic = if(pic != null) ConverterBitmap.convert(pic, "profilePic") else null,
@@ -123,8 +123,10 @@ class CustomerViewModel(private val customerId: String): ViewModel() {
                     ToastManager.show("Error updating customer")
                 }
             }
+            true
         }catch (e: Exception){
             println("Exception updating customer")
+            false
         }
     }
 }

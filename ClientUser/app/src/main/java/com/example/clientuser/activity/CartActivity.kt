@@ -124,9 +124,10 @@ fun Cart( navHostController: NavHostController ){
         ) {
             selectedAddress.value = it
             if (selectedAddress.value != "") {
-                orderViewModel.createCartOrder(OrderInfoDto(selectedAddress.value))
-                cartViewModel.clearCart()
-                showWebView.value = true
+                if(orderViewModel.createCartOrder(OrderInfoDto(selectedAddress.value))) {
+                    cartViewModel.clearCart()
+                    showWebView.value = true
+                }else ToastManager.show("Error crating order")
             }
         }
 }

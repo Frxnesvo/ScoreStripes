@@ -59,7 +59,7 @@ fun CustomerProfile(
 
         BoxProfilePic(
             name = customer.username,
-            pic = customer.pic
+            pic = customer.getPic()
         )
 
         Text(
@@ -87,12 +87,12 @@ fun CustomerProfile(
 }
 
 @Composable
-fun BoxProfilePic(name: String, pic: Bitmap){
+fun BoxProfilePic(name: String, pic: Bitmap?){
     val modifier = Modifier
         .clip(RoundedCornerShape(75.dp))
         .size(150.dp)
 
-    if (pic == Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888))
+    if (pic == null)
         Box(
             modifier = modifier
                 .background(color = colorResource(id = R.color.secondary)),

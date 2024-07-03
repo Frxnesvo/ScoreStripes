@@ -60,6 +60,7 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                             _goToRegister.value = true
                             _token.value = idToken
                         }
+                        else if(response.code() == 500) ToastManager.show("This account is registered as customer")
                         else println("Error login: ${response.message()}")
                     }
                 }

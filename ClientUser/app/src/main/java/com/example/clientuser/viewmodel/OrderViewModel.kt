@@ -8,10 +8,8 @@ import com.example.clientuser.model.enumerator.OrderStatus
 import com.example.clientuser.utils.RetrofitHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 class OrderViewModel: ViewModel() {
@@ -21,8 +19,8 @@ class OrderViewModel: ViewModel() {
     private val _createdOrderWebViewLink = mutableStateOf("")
     val createdOrderWebViewLink: State<String> = _createdOrderWebViewLink
 
-    fun createCartOrder(orderInfoDto: OrderInfoDto) {
-        try{
+    fun createCartOrder(orderInfoDto: OrderInfoDto): Boolean {
+        return try{
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.orderApi.createCartOrder(orderInfoDto).awaitResponse()
                 if(response.isSuccessful) {
@@ -33,9 +31,11 @@ class OrderViewModel: ViewModel() {
                     println("Error during the order creation: ${response.message()}")
                 }
             }
+            true
         }
         catch (e : Exception){
             println("Exception during the order creation: ${e.message}")
+            false
         }
     }
 
@@ -56,18 +56,4 @@ class OrderViewModel: ViewModel() {
             }
         }
     }
-
-//    fun validateTransaction(sessionId: String): Flow<String> = flow {
-//        try{
-//            val response = RetrofitHandler.orderApi.validateTransaction(sessionId).awaitResponse()
-//            if(response.isSuccessful) response.body()?.let {
-//                if(it["orderStatus"] == OrderStatus.COMPLETED.name) emit("payment_success")
-//                else emit("payment_failure")
-//            }
-//            else println("Error during the transaction verification: ${response.message()}")
-//        }
-//        catch (e : Exception){
-//            println("Exception during the transaction verification: ${e.message}")
-//        }
-//    }.flowOn(Dispatchers.IO)
 }
