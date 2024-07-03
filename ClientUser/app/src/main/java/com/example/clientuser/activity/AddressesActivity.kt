@@ -57,8 +57,9 @@ fun Addresses(
         item {
             Text(
                 text = stringResource(id = R.string.addresses),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 

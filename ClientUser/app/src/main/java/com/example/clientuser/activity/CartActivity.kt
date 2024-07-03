@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -72,9 +73,7 @@ fun Cart( navHostController: NavHostController ){
             verticalArrangement = Arrangement.spacedBy(25.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            item {
-                Title()
-            }
+            item { Title() }
 
             item {
                 Text(
@@ -99,7 +98,9 @@ fun Cart( navHostController: NavHostController ){
                     Text(
                         text = stringResource(id = R.string.cart_empty),
                         style = MaterialTheme.typography.labelMedium,
-                        color = colorResource(id = R.color.black50)
+                        color = colorResource(id = R.color.black50),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -145,8 +146,10 @@ fun ItemCart(cartItem: CartItem) {
         Image(
             bitmap = item.value.productWithVariant.product.pic.asImageBitmap(),
             contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.size(100.dp)
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(100.dp)
+                .clip(RoundedCornerShape(10.dp))
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,

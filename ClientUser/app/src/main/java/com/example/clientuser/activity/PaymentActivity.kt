@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,12 +21,10 @@ import androidx.navigation.NavHostController
 import com.example.clientuser.R
 import com.example.clientuser.utils.ToastManager
 import com.example.clientuser.viewmodel.OrderViewModel
-import kotlinx.coroutines.launch
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun WebViewScreen(orderViewModel: OrderViewModel, paymentUrl: String, navController: NavHostController, onFinish: () -> Unit) {
-    val scope = rememberCoroutineScope()
     AndroidView(
         factory = { context ->
             WebView(context).apply {

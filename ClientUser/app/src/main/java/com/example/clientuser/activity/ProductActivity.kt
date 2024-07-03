@@ -60,7 +60,6 @@ fun Carousel(product: Product){
             1 -> product.pic1
             else -> product.pic2
         }
-
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -132,16 +131,13 @@ fun ProductDetails(
             imageVector = if (inWishlist.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
             navHostController = navHostController
         ) {
-            println(inWishlist.value)
             if(inWishlist.value){
                     wishListViewModel.deleteItem(product.id)
-                    println("delete item from wishlist")
                     inWishlist.value = false
             }
             else {
                 if(LogoutManager.instance.isLoggedIn.value) {
                     wishListViewModel.addItemToWishlist(AddToWishListRequestDto(product.id))
-                    println("added item to wishlist")
                     inWishlist.value = true
                 } else showSnackBar.value = true
             }

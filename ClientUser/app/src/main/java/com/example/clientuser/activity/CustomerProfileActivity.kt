@@ -66,7 +66,8 @@ fun CustomerProfile(
         Text(
             text = customer.username,
             color = colorResource(id = R.color.black),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
         )
 
         BoxImage(
