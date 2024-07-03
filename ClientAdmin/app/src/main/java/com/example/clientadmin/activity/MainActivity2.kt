@@ -15,18 +15,30 @@ import com.example.clientadmin.LocalLeagueViewModel
 import com.example.clientadmin.LocalProductsViewModel
 import com.example.clientadmin.R
 import com.example.clientadmin.model.Admin
+import com.example.clientadmin.model.dto.AuthResponseDto
 import com.example.clientadmin.ui.theme.ClientAdminTheme
+import com.example.clientadmin.utils.ToastManager
 import com.example.clientadmin.viewmodels.ClubViewModel
 import com.example.clientadmin.viewmodels.CustomersViewModel
 import com.example.clientadmin.viewmodels.HomeViewModel
 import com.example.clientadmin.viewmodels.LeagueViewModel
 import com.example.clientadmin.viewmodels.ProductsViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val admin = intent.getSerializableExtra("admin") as Admin
+        var admin: Admin? = null
+
+        runBlocking {
+            launch{
+                if (intent.hasExtra("admin")) {
+                    admin = Admin.fromDto(intent.getSerializableExtra("admin") as AuthResponseDto)
+                }
+            }
+        }
 
         setContent{
             ClientAdminTheme {
@@ -34,15 +46,15 @@ class MainActivity2 : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colorResource(id = R.color.primary)
                 ) {
-                    CompositionLocalProvider(
-                        LocalCustomersViewModel provides CustomersViewModel(),
-                        LocalProductsViewModel provides ProductsViewModel(),
-                        LocalClubViewModel provides ClubViewModel(),
-                        LocalLeagueViewModel provides LeagueViewModel(),
-                        LocalHomeViewModel provides HomeViewModel()
-                    ) {
-                        Scaffold(admin = admin)
-                    }
+                    admin?.let {
+                        CompositionLocalProvider(
+                            LocalCustomersViewModel provides CustomersViewModel(),
+                            LocalProductsViewModel provides ProductsViewModel(),
+                            LocalClubViewModel provides ClubViewModel(),
+                            LocalLeagueViewModel provides LeagueViewModel(),
+                            LocalHomeViewModel provides HomeViewModel()
+                        ) { Scaffold(admin = it) }
+                    } ?: ToastManager.show("Admin not found")
                 }
             }
         }

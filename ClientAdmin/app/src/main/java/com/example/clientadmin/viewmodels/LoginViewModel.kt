@@ -5,7 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientadmin.authentication.UserSession
-import com.example.clientadmin.model.Admin
 import com.example.clientadmin.model.dto.AdminCreateRequestDto
 import com.example.clientadmin.utils.ConverterBitmap
 import com.example.clientadmin.utils.RetrofitHandler
@@ -21,7 +20,6 @@ import retrofit2.awaitResponse
 import java.time.format.DateTimeFormatter
 
 class LoginViewModel(userSession: UserSession): ViewModel() {
-
     private val _user = userSession.user
     val user = _user.asStateFlow()
 
@@ -37,7 +35,6 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
     private val _token = mutableStateOf("")
     val token = _token
 
-
     fun login(idToken: String?){
         if(idToken != null) {
             try {
@@ -47,7 +44,7 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                     ).awaitResponse()
                     if (response.isSuccessful) {
                         response.body()?.let { authResponseDto ->
-                            _user.value = Admin.fromDto(authResponseDto)
+                            _user.value = authResponseDto
                             _isLoggedIn.value = true
                             _token.value = ""
 
@@ -76,13 +73,11 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
         }
     }
 
-    fun goToLogin(){        //TODO cambiare nome
+    fun goToLogin(){
         _isLoggedIn.value = false
         _goToRegister.value = false
     }
 
-
-    //TODO controllare perchè non naviga indietro alla login una volta completata la registrazione
     fun register(token: String, adminCreateRequestDto: AdminCreateRequestDto, pic: Bitmap){
         try {
             CoroutineScope(Dispatchers.IO).launch {
