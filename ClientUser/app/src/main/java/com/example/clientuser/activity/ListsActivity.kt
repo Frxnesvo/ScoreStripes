@@ -49,7 +49,8 @@ fun WishlistProducts(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(25.dp),
-        verticalArrangement = Arrangement.spacedBy(25.dp)
+        verticalArrangement = Arrangement.spacedBy(25.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
         item(span = { GridItemSpan(2) }) {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -72,8 +73,8 @@ fun WishlistProducts(
             items(wishlist.items){
                 key(it.product.id) {
                     ProductItem(it.product){
-                        productViewModel.getProduct(it.id)
-                        navHostController.navigate("product/${it.id}")
+                        productViewModel.getProduct(it.product.id)
+                        navHostController.navigate("product/${it.product.id}")
                     }
                 }
             }

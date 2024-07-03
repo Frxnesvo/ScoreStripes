@@ -139,10 +139,15 @@ fun Wishlist(
             }
         }
 
-        if(myWishlist.items.isNotEmpty()) {
-            item {
+
+        item {
+            if(myWishlist.items.isNotEmpty())
                 WishListItem(myWishlist) { navHostController.navigate("myWishlist") }
-            }
+            else
+                Text(
+                    text = stringResource(id = R.string.nothing_to_show),
+                    style = MaterialTheme.typography.bodyMedium
+                )
         }
 
         item {
@@ -209,7 +214,6 @@ fun Wishlist(
     if(isShareWishlistOpenSheet){
         SharedWithPanel(
             onDismissRequest = { setShareBottomSheet(false) },
-            setBottomSheet = setShareBottomSheet,
             wishListViewModel = wishListViewModel,
             onClick = {
                 wishListViewModel.createSharedToken()

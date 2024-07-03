@@ -62,7 +62,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun SharedWithPanel(
     onDismissRequest: () -> Unit,
-    setBottomSheet: (Boolean) -> Unit,
     wishListViewModel: WishListViewModel,
     onClick: () -> Unit
 ){
@@ -72,6 +71,7 @@ fun SharedWithPanel(
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
+        containerColor = colorResource(id = R.color.white),
         sheetState = sheetState
     ){
         LazyColumn(
@@ -142,7 +142,11 @@ fun ChooseAddress(
 
     val addresses by LocalCustomerViewModel.current.addresses.collectAsState()
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        containerColor = colorResource(id = R.color.white),
+        sheetState = sheetState
+    ) {
         Column(
             modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -374,7 +378,11 @@ fun AddItemToCart(
     val productState = productFormViewModel.productState.collectAsState()
 
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        containerColor = colorResource(id = R.color.white),
+        sheetState = sheetState
+    ) {
         Column(
             modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -465,7 +473,11 @@ fun InsertWishlistTokenPanel(
 ){
     val sheetState = rememberModalBottomSheetState()
 
-    ModalBottomSheet(onDismissRequest = { onDismissRequest() }, sheetState = sheetState) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        containerColor = colorResource(id = R.color.white),
+        sheetState = sheetState
+    ) {
         Column(
             modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -496,7 +508,11 @@ fun WishlistVisibilityPanel(
     val sheetState = rememberModalBottomSheetState()
 
 
-    ModalBottomSheet(onDismissRequest = { onDismissRequest() }, sheetState = sheetState) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        containerColor = colorResource(id = R.color.white),
+        sheetState = sheetState
+    ) {
         Column(
             modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)

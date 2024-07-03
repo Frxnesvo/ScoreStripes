@@ -19,7 +19,7 @@
             <li> <h4>Auditing</h4> </li>
             <li> <h4>Custom Rate limiting usando il paradigma AOP</h4> </li>
             <li> <h4>Custom Validators</h4> </li>
-            <li> <h4><a href="Documentazione API con Swagger">Documentazione API con Swagger</a></h4> </li>
+            <li> <h4>Documentazione API con Swagger    &nbsp&nbsp&nbsp&nbsp  <a href="https://github.com/Frxnesvo/Progetto-Enterprise-Application/blob/main/API%20Documentation.txt">txt</a> &nbsp&nbsp&nbsp&nbsp    <a href="https://localhost:8443/swagger-ui/index.html">html</a> </h4> </li>
             <li> <h4>Uso di HTTPS</h4> </li>
             <li> <h4>Uso di AWS S3 e presigned URL per lo storage delle immagini</h4> </li>
             <li> <h4>Auto DB cleaning per i token scaduti</h4> </li>
