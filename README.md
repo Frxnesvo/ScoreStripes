@@ -12,7 +12,7 @@
     <li> 
         <h3>Francesco Gallo</h3>
         Responsabile di tutto il server utilizzando il framework Spring Boot.<br>
-        Fix di bug, testing e supporto nei client Android.<br>
+        Fix di bug, testing e aggiunte nei client Android (es. token storage).<br>
         (Nel progetto si trova anche una cartella che contiene funzionalità tramite programmazione reattiva con Spring WebFlux e MongoDB, non completata e implementata con il resto per mancanza di tempo).<br>
         Tra le varie cose, si sottolineano:
         <ul>
