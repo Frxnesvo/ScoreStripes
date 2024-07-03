@@ -361,7 +361,7 @@ fun CustomButton(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 letterSpacing = 5.sp,
-                color = textColor               //TODO vedere se va bene
+                color = textColor
             )
         )
     }
@@ -480,7 +480,7 @@ fun CustomTextField(
 }
 
 @Composable
-fun CustomDatePicker( //TODO da migliorare esteticamente
+fun CustomDatePicker(
     date: LocalDate,
     isError: Boolean,
     errorMessage: String,

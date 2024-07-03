@@ -125,7 +125,7 @@ fun Cart( navHostController: NavHostController ){
             selectedAddress.value = it
             if (selectedAddress.value != "") {
                 orderViewModel.createCartOrder(OrderInfoDto(selectedAddress.value))
-                cartViewModel.clearCart()       //TODO non so se va bene con gli errori
+                cartViewModel.clearCart()
                 showWebView.value = true
             }
         }
@@ -186,8 +186,6 @@ fun ItemCart(cartItem: CartItem) {
                     horizontalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
 
-
-                    //TODO centrare il testo "-". non ho trovato una icona con -
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
