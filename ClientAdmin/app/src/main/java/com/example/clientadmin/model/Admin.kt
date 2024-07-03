@@ -3,6 +3,7 @@ package com.example.clientadmin.model
 import android.graphics.Bitmap
 import com.example.clientadmin.model.dto.AuthResponseDto
 import com.example.clientadmin.model.enumerator.Gender
+import com.example.clientadmin.utils.S3ImageDownloader
 import java.io.Serializable
 import java.time.LocalDate
 
@@ -13,7 +14,7 @@ class Admin(
     val email: String = "",
     val birthDate: LocalDate ,
     val gender: Gender,
-    //val pic: Bitmap
+    val pic: Bitmap
 ): Serializable {
     companion object {
         fun validateProfilePic(pic: Bitmap?): Boolean {
@@ -27,7 +28,7 @@ class Admin(
             return birthdate.isBefore(LocalDate.now())
         }
 
-        fun fromDto(adminDto: AuthResponseDto): Admin{
+        suspend fun fromDto(adminDto: AuthResponseDto): Admin{
             return Admin(
                 username = adminDto.username,
                 firstName = adminDto.firstName,
@@ -35,7 +36,7 @@ class Admin(
                 email = adminDto.email,
                 birthDate = adminDto.birthDate,
                 gender = adminDto.gender,
-                //pic = S3ImageDownloader.getImageFromBucket(adminDto.profilePicUrl)
+                pic = S3ImageDownloader.getImageFromBucket(adminDto.profilePicUrl)
             )
         }
     }

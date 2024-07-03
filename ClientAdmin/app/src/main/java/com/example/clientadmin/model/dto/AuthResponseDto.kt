@@ -2,6 +2,7 @@ package com.example.clientadmin.model.dto
 
 import com.example.clientadmin.model.enumerator.Gender
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 import java.time.LocalDate
 
 @JsonClass(generateAdapter = true)
@@ -14,4 +15,4 @@ data class AuthResponseDto(
     val email: String,
     val gender: Gender,
     val profilePicUrl: String
-)
+): Serializable
