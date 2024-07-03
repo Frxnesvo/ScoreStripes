@@ -3,11 +3,10 @@
 </div>
 
 <p> ScoreStripes è un'applicazione enterprise per la vendita di prodotti sportivi, al momento disponibile come app android.</p>
-<h5> Link al figma: <a href="https://www.figma.com">Figma</a> </h5>
-
+<h4> Link al figma: <a href="https://www.figma.com/design/1WAcUT4OLB5ZNfsRNZ1b6V/Untitled?node-id=0-1&t=aiDi0i26RPZYNtDe-1">Figma</a> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Password:EA</h4>
 <h2> Divisione del lavoro </h2>
 <div style="text-align: center;">
-    <img src="./readmeImages/Heatmap divisione lavoro.png" alt="Heatmap divisione lavoro" width="450">
+    <img src="./readmeImages/Heatmap divisione lavoro.png" alt="Heatmap divisione lavoro" width="600">
 </div>
 <ul>
     <li> 
@@ -26,7 +25,7 @@
             <li> <h4>Auto DB cleaning per i token scaduti</h4> </li>
             <li> 
                 <h4>Pagamenti tramite <a href="https://stripe.com/">Stripe</a></h4>
-                <img src="./readmeImages/Stripe.jpeg" alt="Stripe" width="200">
+                <img src="./readmeImages/Stripe.jpeg" alt="Stripe" width="250">
             </li>
             <li> <h4>Invio mail con template</h4> </li>
         </ul>
@@ -38,14 +37,14 @@
         Sviluppato alcuni endpoint REST.<br> 
         Tra le varie cose, si sottolineano:
         <ul>
-            <li> <h4>Gestione delle wishlist, carrello e viewmodels</h4> </li>
+            <li> <h4>Gestione delle wishlist, carrello e viewmodels del client Admin</h4> </li>
         </ul>
     </li>
     <br>
     <li> 
         <h3>Aldo Gioia</h3>
-        Responsabile del design di ogni schermata per entrambi i client (UI/UX).<br>
-        Gestione di quasi tutti i FormViewModels e di molti ViewModels.<br>
+        Responsabile del design e implementazione di ogni schermata per entrambi i client (UI/UX).<br>
+        Gestione di quasi tutti i FormViewModels e di molti ViewModels nel client Admin.<br>
         Tra le varie cose si sottolineano:
         <ul>
             <li> <h4>Configurazione di Retrofit per le chiamate REST</h4> </li>
