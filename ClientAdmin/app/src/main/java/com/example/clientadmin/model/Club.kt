@@ -30,7 +30,7 @@ class Club(
             return Club(
                 name = clubDto.name,
                 pic = S3ImageDownloader.getImageFromBucket(clubDto.picUrl),
-                league = "clubDto.league" //todo non mi viene mandata anche la lega
+                league = clubDto.leagueName
             )
         }
         fun fromQueryString(queryString: String): Club {

@@ -61,8 +61,8 @@ fun Users(navHostController: NavHostController, filterFormViewModel: FilterFormV
                 }
             }
 
-            item {
-                if (page.number < page.totalPages)
+            if (!page.last)
+                item {
                     Text(
                         text = stringResource(id = R.string.more),
                         color = colorResource(id = R.color.black50),
@@ -75,7 +75,7 @@ fun Users(navHostController: NavHostController, filterFormViewModel: FilterFormV
                                 indication = null
                             ){ customersViewModel.incrementPage() }
                     )
-            }
+                }
         }
     }
 

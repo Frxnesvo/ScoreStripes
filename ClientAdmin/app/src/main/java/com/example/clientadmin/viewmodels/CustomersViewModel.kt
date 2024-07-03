@@ -14,7 +14,7 @@ import retrofit2.awaitResponse
 
 class CustomersViewModel : ViewModel() {
     private val _page = MutableStateFlow(Page())
-    val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
+    val page: StateFlow<Page> = _page
 
     private var _filters: Map<String, String> = mapOf()
 
@@ -41,6 +41,7 @@ class CustomersViewModel : ViewModel() {
             getCustomerSummaries(numberPage).collect {
                 val newSummaries = it.content.map { summary -> CustomerSummary.fromDto(summary) }
                 _customerSummaries.value += newSummaries
+                _page.value = Page.fromDto(it)
             }
         }
     }

@@ -80,7 +80,6 @@ fun IndexPage(
                     }
                 }
                 else if(loginViewModel.goToRegister.value)navController.navigate("register/${loginViewModel.token.value}")
-                else println("invalid id token") //TODO
             }
         }
     }

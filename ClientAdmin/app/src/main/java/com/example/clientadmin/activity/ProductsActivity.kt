@@ -1,5 +1,6 @@
 package com.example.clientadmin.activity
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -166,21 +167,24 @@ fun Products(
                 }
             }
 
-            if (FilterType.PRODUCTS == filterType && page.number < page.totalPages)
-            item {
-                Text(
-                    text = stringResource(id = R.string.more),
-                    color = colorResource(id = R.color.black50),
-                    style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ){productsViewModel.incrementPage() }
-                )
-            }
+            if (FilterType.PRODUCTS == filterType && !page.last)
+                item {
+                    Text(
+                        text = stringResource(id = R.string.more),
+                        color = colorResource(id = R.color.black50),
+                        style = TextStyle(fontSize = 16.sp, letterSpacing = 5.sp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                println("more")
+                                productsViewModel.incrementPage()
+                            }
+                    )
+                }
         }
     }
 

@@ -30,13 +30,15 @@ class MainActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var admin: Admin? = null
 
+        var admin: Admin? = null
         runBlocking {
             launch{
-                if (intent.hasExtra("admin")) {
+                val intent = intent
+                if(intent.hasExtra("admin")){
                     admin = Admin.fromDto(intent.getSerializableExtra("admin") as AuthResponseDto)
                 }
+
             }
         }
 

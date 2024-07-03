@@ -184,7 +184,7 @@ fun ListDiscover(
                 }
             }
 
-        if (page.number < page.totalPages)
+        if (!page.last)
             item(span = { GridItemSpan(2) }) {
                 Text(
                     text = stringResource(id = R.string.more),

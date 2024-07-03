@@ -23,9 +23,6 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
     private val _user = userSession.user
     val user = _user.asStateFlow()
 
-    private val _addError = mutableStateOf("")
-    val addError = _addError
-
     private val _isLoggedIn = userSession.isLoggedIn
     val isLoggedIn: State<Boolean> = _isLoggedIn
 
@@ -100,7 +97,6 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
             }
         }
         catch (e: IllegalArgumentException) {
-            _addError.value = e.message ?: "Unknown error"
             goToLogin()
             _token.value = ""
         }
