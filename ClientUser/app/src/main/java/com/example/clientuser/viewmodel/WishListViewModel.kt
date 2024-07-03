@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
 class WishListViewModel : ViewModel() {
-    //TODO va bene o devo usare MutableStateFlow?
     private val _sharedWithMeWishlists = MutableStateFlow<List<Wishlist>>(emptyList())
     val sharedWithMeWishlists = _sharedWithMeWishlists.asStateFlow()
 
@@ -75,7 +74,6 @@ class WishListViewModel : ViewModel() {
         }
     }
 
-    //TODO fare la paginazione
     private fun fetchPublicWishlist() {
         try{
             CoroutineScope(Dispatchers.IO).launch {

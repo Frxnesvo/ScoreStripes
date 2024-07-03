@@ -37,8 +37,8 @@ fun WebViewScreen(orderViewModel: OrderViewModel, paymentUrl: String, navControl
                         request?.url?.let { uri ->
                             println("URL: ${uri.host}")
                             when (uri.host) {
-                                "192.168.1.9" -> {   //TODO ci va l'ip
-                                    when (uri.path) {   //TODO: rifattorizzare i 2 case
+                                "192.168.1.9" -> {
+                                    when (uri.path) {
                                         "/stripe_success" -> {
                                             val sessionId = uri.getQueryParameter("session_id")
                                             if (sessionId != null)
@@ -122,7 +122,7 @@ fun PaymentFailureScreen(navHostController: NavHostController) {
         CustomButton(
             text = "go back to shopping",
             background = R.color.secondary
-        ) { navHostController.navigate("home") } //TODO da vedere
+        ) { navHostController.navigate("home") }
     }
 }
 

@@ -122,8 +122,11 @@ fun Wishlist(
                                 horizontalArrangement = Arrangement.spacedBy((-20).dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                //TODO inserirne massimo 3 o 4
-                                for (people in myWishlistAccesses)
+
+                                var count = 0
+                                for (people in myWishlistAccesses) {
+                                    if (count > 3) break
+                                    count++
                                     BoxIcon(
                                         iconColor = colorResource(id = R.color.transparent),
                                         content = people.profilePic
@@ -132,6 +135,7 @@ fun Wishlist(
                                         setVisibilityBottomSheet(false)
                                         setTokenBottomSheet(false)
                                     }
+                                }
                             }
                         }
                     }

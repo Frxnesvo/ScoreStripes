@@ -30,7 +30,7 @@ class ProductsViewModel: ViewModel() {
     val moreSoldShorts = _moreSoldShorts.asStateFlow()
 
     private val _page = MutableStateFlow(Page())
-    val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
+    val page: StateFlow<Page> = _page
 
 
     private var _filters: Map<String, String> = mapOf()
