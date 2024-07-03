@@ -253,7 +253,7 @@ fun CustomComboBox(
 }
 
 @Composable
-fun CustomButton(textColor: Color = colorResource(id = R.color.white), text: String, background: Int, onClick: () -> Unit) {
+fun CustomButton(text: String, background: Int, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = Modifier
@@ -393,7 +393,7 @@ fun CustomTextField(
 }
 
 @Composable
-fun CustomDatePicker( //TODO da migliorare esteticamente
+fun CustomDatePicker(
     date: LocalDate,
     isError: Boolean,
     errorMessage: String,

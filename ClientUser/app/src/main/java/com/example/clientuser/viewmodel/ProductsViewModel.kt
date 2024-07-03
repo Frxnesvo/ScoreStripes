@@ -30,7 +30,7 @@ class ProductsViewModel: ViewModel() {
     val moreSoldShorts = _moreSoldShorts.asStateFlow()
 
     private val _page = MutableStateFlow(Page())
-    val page: StateFlow<Page> = _page //TODO vedere se esporre solo il lastpage
+    val page: StateFlow<Page> = _page
 
 
     private var _filters: Map<String, String> = mapOf()
@@ -56,9 +56,10 @@ class ProductsViewModel: ViewModel() {
 
     private fun loadMoreProductSummaries(numberPage: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            getProductSummaries(numberPage).collect { products ->
-                val newProducts = products.content.map { dto ->  BasicProduct.fromDto(dto) }
+            getProductSummaries(numberPage).collect { page ->
+                val newProducts = page.content.map { dto ->  BasicProduct.fromDto(dto) }
                 _products.value += newProducts
+                _page.value = Page.fromDto(page)
             }
         }
     }

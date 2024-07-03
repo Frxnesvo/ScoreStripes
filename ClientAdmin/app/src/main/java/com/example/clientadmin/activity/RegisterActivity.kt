@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,7 +31,6 @@ fun Register(
 ) {
 
     val adminState by loginFormViewModel.adminState.collectAsState()
-    val error by loginViewModel.addError
     val registered by loginViewModel.goToRegister
 
     Column(
@@ -85,13 +83,6 @@ fun Register(
                 selectedOption = "${adminState.gender}"
             ) {
                 loginFormViewModel.updateGender(Gender.valueOf(it))
-            }
-
-            if (error.isNotEmpty()) {
-                Text(
-                    text = error,
-                    color = colorResource(id = R.color.red)
-                )
             }
 
             CustomButton(
