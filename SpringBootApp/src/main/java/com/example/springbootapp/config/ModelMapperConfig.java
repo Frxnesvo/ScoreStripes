@@ -94,6 +94,7 @@ public class ModelMapperConfig {
             protected void configure() {
                 using(profilePicUrlConverter)
                         .map(source.getPicUrl(), destination.getPicUrl());
+                map().setLeagueName(source.getLeague().getName());
             }
         };
         // Convert Customer to CustomerSummaryDto

@@ -7,11 +7,13 @@ import com.example.springbootapp.data.dao.LeagueDao;
 import com.example.springbootapp.data.entities.Club;
 import com.example.springbootapp.data.entities.League;
 import com.example.springbootapp.data.specification.ClubSpecification;
+import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ClubService;
 import com.example.springbootapp.utils.Constants;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class ClubServiceImpl implements ClubService {
         club.setPicUrl(url);
         League league = leagueDao.findByName(clubRequestDto.getLeagueName());
         if(league == null){
-            throw new EntityNotFoundException("League not found");
+            throw new RequestValidationException("League not found");
         }
         club.setLeague(league);
         clubDao.save(club);
@@ -57,6 +59,7 @@ public class ClubServiceImpl implements ClubService {
             spec = spec.and(ClubSpecification.leagueNameEquals(leagueName));
         }
         List<Club> clubs = clubDao.findAll(spec);
+        clubs.forEach(club -> Hibernate.initialize(club.getLeague()));
         return clubs.stream()
                 .map(club -> modelMapper.map(club, ClubDto.class))
                 .toList();

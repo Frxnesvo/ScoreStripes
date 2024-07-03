@@ -9,4 +9,5 @@ public class ClubDto {
     private String id;
     private String name;
     private String picUrl;
+    private String leagueName;
 }
