@@ -47,7 +47,7 @@ fun Wishlist(
     val sharedLists = wishListViewModel.sharedWithMeWishlists
     val myWishlistAccesses by wishListViewModel.myWishlistAccesses.collectAsState()
     val myWishlist by wishListViewModel.myWishList.collectAsState()
-    val myWishlistVisibility = remember { mutableStateOf(WishListVisibility.valueOf(myWishlist.visibility.name)) }
+    val myWishlistVisibility = remember { mutableStateOf(myWishlist.visibility) }
     val wishlistShareToken by wishListViewModel.wishlistSharedToken
 
     val (isOpenTokenSheet, setTokenBottomSheet) = remember { mutableStateOf(false) }
@@ -197,8 +197,11 @@ fun Wishlist(
 
     if(isOpenVisibilitySheet){
         WishlistVisibilityPanel(
-            currentVisibility = myWishlist.visibility,
-            onDismissRequest = { setVisibilityBottomSheet(false) },
+            currentVisibility = myWishlistVisibility.value,
+            onDismissRequest = {
+                if(myWishlist.visibility != myWishlistVisibility.value) myWishlistVisibility.value = myWishlist.visibility
+                setVisibilityBottomSheet(false)
+            },
             onClick = {
                 if(myWishlistVisibility.value != myWishlist.visibility)
                     wishListViewModel.changeWishlistVisibility(WishlistVisibilityDto(myWishlistVisibility.value))

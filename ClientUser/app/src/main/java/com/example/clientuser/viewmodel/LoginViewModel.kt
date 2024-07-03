@@ -6,8 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.clientuser.authentication.UserSession
 import com.example.clientuser.model.Address
-import com.example.clientuser.model.Customer
-import com.example.clientuser.model.dto.CustomerDto
 import com.example.clientuser.model.enumerator.Gender
 import com.example.clientuser.utils.ConverterBitmap
 import com.example.clientuser.utils.RetrofitHandler
@@ -42,15 +40,14 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
             CoroutineScope(Dispatchers.IO).launch {
                 val response = RetrofitHandler.loginApi.login(mapOf(Pair("idToken", idToken))).awaitResponse()
                 if(response.isSuccessful){
-                    //TODO verificare che l'utente loggato sia un admin
 
-                    response.body()?.let { customerDto ->
-                        _user.value = Customer.fromDto(customerDto)
+                    response.body()?.let { authResponseDto ->
+                        _user.value = authResponseDto
                         _isLoggedIn.value = true
                         _token.value = ""
 
                         withContext(Dispatchers.Main) {
-                            TokenStoreUtils.storeToken(customerDto.jwt)
+                            TokenStoreUtils.storeToken(authResponseDto.jwt)
                         }
                         ToastManager.show("Login successful")
                     }
@@ -71,11 +68,8 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
     }
 
 
-    //TODO controllare perchè non naviga indietro alla login una volta completata la registrazione
     fun register(token: String, username: String, birthDate: LocalDate, gender: Gender, address: Address, favouriteTeam: String, pic: Bitmap){
         try{
-            println("TOKEN GOOGLE register: $token")
-
             CoroutineScope(Dispatchers.IO).launch {
 
                 val response = RetrofitHandler.loginApi.customerRegister(
@@ -111,9 +105,5 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
     fun goToLogin(){
         _isLoggedIn.value = false
         _goToRegister.value = false
-    }
-
-    fun updateCustomer(customerDto: CustomerDto){
-        TODO("manca controller per l'update")
     }
 }

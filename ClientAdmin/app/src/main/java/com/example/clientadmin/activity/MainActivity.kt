@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val token = GoogleAuth.manageLoginResult(result)
             if (token != null)
-                loginViewModel.login(token /* , this.applicationContext */ )
+                loginViewModel.login(token)
             else println("Token is null")
             GoogleAuth.signOut(this)
         }

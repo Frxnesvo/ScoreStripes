@@ -80,7 +80,7 @@ fun IndexPage(
                 if(isLoggedIn.value){
                     LocalLoginViewModel.current.user.collectAsState().value?.let {
                         val intent = Intent(context, MainActivity2::class.java)
-                        intent.putExtra("customer", it.serializeCustomer())
+                        intent.putExtra("customer", it)
                         context.startActivity(intent)
                     }
                 } else if(loginViewModel.goToRegister.value)

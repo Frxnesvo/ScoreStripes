@@ -57,7 +57,6 @@ fun CustomerProfile(
             ) { navHostController.popBackStack() }
         }
 
-        //TODO
         BoxProfilePic(
             name = customer.username,
             pic = customer.pic
