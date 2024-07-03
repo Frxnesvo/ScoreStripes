@@ -3,8 +3,7 @@
 </div>
 
 <p> ScoreStripes è un'applicazione enterprise per la vendita di prodotti sportivi, al momento disponibile come app android.</p>
-<h4> Link al figma: <a href="
-https://www.figma.com/design/1WAcUT4OLB5ZNfsRNZ1b6V/Untitled?node-id=0-1&t=aiDi0i26RPZYNtDe-1">Figma</a></h4>
+<h4> Link al figma: <a href="https://www.figma.com/design/1WAcUT4OLB5ZNfsRNZ1b6V/Untitled?node-id=0-1&t=aiDi0i26RPZYNtDe-1">Figma</a>       Password:EA</h4>
 <h2> Divisione del lavoro </h2>
 <div style="text-align: center;">
     <img src="./readmeImages/Heatmap divisione lavoro.png" alt="Heatmap divisione lavoro" width="600">
