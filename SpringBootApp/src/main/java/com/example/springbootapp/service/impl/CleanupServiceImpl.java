@@ -26,7 +26,7 @@ public class CleanupServiceImpl implements CleanupService {
     }
 
     @Override
-    @Scheduled(fixedRateString = "3600000")
+    @Scheduled(fixedRateString = "${cleanup.rate}")
     @Transactional
     public void cleanupExpiredAccessTokens() {
         accessTokenBlacklistDao.deleteByExpirationDateBefore(new Date());

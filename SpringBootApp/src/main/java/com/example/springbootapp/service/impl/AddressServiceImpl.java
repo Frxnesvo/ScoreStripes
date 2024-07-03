@@ -23,7 +23,6 @@ public class AddressServiceImpl implements AddressService {
     private final AddressDao addressDao;
     private final ModelMapper modelMapper;
     private final UserDetailsServiceImpl userDetailsService;
-    private final CustomerDao customerDao;
 
     @Override
     public List<AddressDto> getAddressesByCustomerId(String customerId){
@@ -51,7 +50,7 @@ public class AddressServiceImpl implements AddressService {
     public void deleteAddress(String id) {
         Address address = addressDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Address not found"));
         if(address.getDefaultAddress()){
-            throw new UnsupportedOperationException("Cannot delete default address"); //TODO: DA CAMBIARE IN CUSTOM EXCEPTION
+            throw new UnsupportedOperationException("Cannot delete default address");
         }
         if(userDetailsService.getCurrentUser().getRole().equals(Role.ADMIN)){
             addressDao.deleteById(id);

@@ -53,7 +53,7 @@ object RetrofitHandler {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl("https://192.168.1.9:8443") // Ensure you're using HTTPS
+            .baseUrl("https://192.168.1.55:8443") // Ensure you're using HTTPS
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

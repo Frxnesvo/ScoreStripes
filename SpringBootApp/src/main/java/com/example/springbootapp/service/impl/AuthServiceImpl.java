@@ -1,6 +1,5 @@
 package com.example.springbootapp.service.impl;
 
-import com.example.springbootapp.data.dao.AccessTokenBlacklistDao;
 import com.example.springbootapp.data.dao.AdminDao;
 import com.example.springbootapp.data.dao.CustomerDao;
 import com.example.springbootapp.data.dao.UserDao;
@@ -15,12 +14,11 @@ import com.example.springbootapp.exceptions.VerificationException;
 import com.example.springbootapp.service.interfaces.AccessTokenBlacklistService;
 import com.example.springbootapp.service.interfaces.AuthService;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
+import com.example.springbootapp.utils.Constants;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.auth.oauth2.TokenVerifier;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -28,7 +26,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.example.springbootapp.handler.JwtHandler;
-import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,7 +38,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private final ModelMapper modelMapper;    //TODO: RIFATTORIZZARE LE 2 REGISTER
+    private final ModelMapper modelMapper;
 
     @Value("${google.clientId}")
     private String googleClientId;
@@ -131,11 +128,11 @@ public class AuthServiceImpl implements AuthService {
             admin.setRole(Role.ADMIN);
             if(adminRegisterDto.getProfilePic()==null) {
                 byte [] defaultPic = downloadImageFromUrl(payload.get("picture").toString());
-                String url = awsS3Service.uploadFile(defaultPic, "users", adminRegisterDto.getUsername());
+                String url = awsS3Service.uploadFile(defaultPic, Constants.USER_FOLDER, adminRegisterDto.getUsername());
                 admin.setProfilePicUrl(url);
             }
             else {
-                String url = awsS3Service.uploadFile(adminRegisterDto.getProfilePic(), "users", adminRegisterDto.getUsername());
+                String url = awsS3Service.uploadFile(adminRegisterDto.getProfilePic(), Constants.USER_FOLDER, adminRegisterDto.getUsername());
                 admin.setProfilePicUrl(url);
             }
             adminDao.save(admin);
@@ -167,8 +164,6 @@ public class AuthServiceImpl implements AuthService {
             if (userDao.existsByUsername(customerRegisterDto.getUsername())) {
                 throw new UserAlreadyExistsException("Username already exists");
             }
-
-
             Customer customer = new Customer();
             customer.setUsername(customerRegisterDto.getUsername());
             customer.setFirstName(payload.get("given_name").toString());
@@ -177,8 +172,6 @@ public class AuthServiceImpl implements AuthService {
             customer.setBirthDate(customerRegisterDto.getBirthDate());
             customer.setGender(customerRegisterDto.getGender());
             customer.setRole(Role.CUSTOMER);
-
-
             if (customerRegisterDto.getProfilePic() == null) {
                 byte[] defaultPic = downloadImageFromUrl(payload.get("picture").toString());
                 String url = awsS3Service.uploadFile(defaultPic, "users", customerRegisterDto.getUsername());
@@ -187,8 +180,6 @@ public class AuthServiceImpl implements AuthService {
                 String url = awsS3Service.uploadFile(customerRegisterDto.getProfilePic(), "users", customerRegisterDto.getUsername());
                 customer.setProfilePicUrl(url);
             }
-
-
             customer.setFavouriteTeam(customerRegisterDto.getFavoriteTeam());
             customer.setCart(new Cart());
             Wishlist wishlist = new Wishlist();

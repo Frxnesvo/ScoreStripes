@@ -9,6 +9,8 @@ import com.example.springbootapp.data.entities.League;
 import com.example.springbootapp.data.specification.ClubSpecification;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ClubService;
+import com.example.springbootapp.utils.Constants;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,11 +34,11 @@ public class ClubServiceImpl implements ClubService {
         }
         Club club = new Club();
         club.setName(clubRequestDto.getName());
-        String url = awsS3Service.uploadFile(clubRequestDto.getPic(), "clubs", clubRequestDto.getName());   //FIXME: NON MI PIACE PASSARE IL FOLDER COSI', METTERE COSTANTE
+        String url = awsS3Service.uploadFile(clubRequestDto.getPic(), Constants.CLUB_FOLDER, clubRequestDto.getName());
         club.setPicUrl(url);
         League league = leagueDao.findByName(clubRequestDto.getLeagueName());
         if(league == null){
-            throw new RuntimeException("League not found");   //TODO: DA CAMBIARE IN CUSTOM EXCEPTION
+            throw new EntityNotFoundException("League not found");
         }
         club.setLeague(league);
         clubDao.save(club);

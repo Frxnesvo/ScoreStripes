@@ -6,6 +6,7 @@ import com.example.springbootapp.data.dao.LeagueDao;
 import com.example.springbootapp.data.entities.League;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.LeagueService;
+import com.example.springbootapp.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -23,11 +24,11 @@ public class LeagueServiceImpl implements LeagueService {
     @Override
     public LeagueDto createLeague(LeagueRequestDto leagueRequestDto) {
         if(leagueDao.existsByName(leagueRequestDto.getName())){
-            throw new RuntimeException("League already exists");   //TODO: DA CAMBIARE IN CUSTOM EXCEPTION
+            throw new RuntimeException("League already exists");
         }
         League league = new League();
         league.setName(leagueRequestDto.getName());
-        String url = awsS3Service.uploadFile(leagueRequestDto.getPic(), "leagues", leagueRequestDto.getName());   //FIXME: NON MI PIACE PASSARE IL FOLDER COSI'
+        String url = awsS3Service.uploadFile(leagueRequestDto.getPic(), Constants.LEAGUE_FOLDER, leagueRequestDto.getName());
         league.setPicUrl(url);
         leagueDao.save(league);
         return modelMapper.map(league, LeagueDto.class);

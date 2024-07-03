@@ -2,21 +2,17 @@ package com.example.springbootapp.service.impl;
 
 import com.example.springbootapp.data.dao.CartDao;
 import com.example.springbootapp.data.dao.CartItemDao;
-import com.example.springbootapp.data.dao.CustomerDao;
 import com.example.springbootapp.data.dao.ProductDao;
 import com.example.springbootapp.data.dto.AddToCartRequestDto;
 import com.example.springbootapp.data.dto.CartItemDto;
 import com.example.springbootapp.data.dto.CartItemUpdateDto;
 import com.example.springbootapp.data.entities.*;
+import com.example.springbootapp.exceptions.OutOfStockException;
 import com.example.springbootapp.exceptions.RequestValidationException;
-import com.example.springbootapp.security.CustomUserDetails;
 import com.example.springbootapp.service.interfaces.CartService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,13 +32,12 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartItemDto addProductToCart(AddToCartRequestDto requestDto) {
-        System.out.println("personalizzazione "+requestDto.getPersonalization().toString());
         Product product = productDao.findById(requestDto.getProductId())
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
         ProductWithVariant variant = product.getVariants().stream().filter(p -> p.getSize()
                 .equals(requestDto.getSize())).findFirst().orElseThrow(() -> new EntityNotFoundException("Variant not found"));
         if(variant.getAvailability() <= 0){
-            throw new RequestValidationException("Product out of stock"); //TODO: cambiare eccezione
+            throw new OutOfStockException("Product out of stock");
         }
         Optional<Cart> cart = cartDao.findById(((Customer) userDetailsService.getCurrentUser()).getCart().getId());
         if(cart.isEmpty()){
@@ -59,7 +54,7 @@ public class CartServiceImpl implements CartService {
         if(existingItem.isPresent()){
             existingItem.get().setQuantity(existingItem.get().getQuantity() + 1);
             if(variant.getAvailability() < existingItem.get().getQuantity()){
-                throw new RequestValidationException("Product out of stock");  //TODO: cambiare eccezione
+                throw new OutOfStockException("Product out of stock");
             }
             newItem=cartItemDao.save(existingItem.get());
         }
@@ -85,7 +80,7 @@ public class CartServiceImpl implements CartService {
         CartItem item = items.stream()
                 .filter(cartItem -> cartItem.getId().equals(itemId))
                 .findFirst()
-                .orElseThrow(() -> new RequestValidationException("Item not found in cart"));
+                .orElseThrow(() -> new EntityNotFoundException("Item not found in cart"));
         cartItemDao.delete(item);
     }
 
@@ -98,7 +93,7 @@ public class CartServiceImpl implements CartService {
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("Item not found in cart"));
         if(item.getProduct().getAvailability() < updateDto.getQuantity()){
-            throw new RequestValidationException("Product stock not sufficient");  //TODO: cambiare eccezione
+            throw new OutOfStockException("Product stock not sufficient");
         }
         item.setQuantity(updateDto.getQuantity());
         cartDao.save(customer.getCart());

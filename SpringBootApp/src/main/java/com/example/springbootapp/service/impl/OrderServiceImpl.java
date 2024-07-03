@@ -8,6 +8,7 @@ import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Embdeddables.OrderInformations;
 import com.example.springbootapp.data.entities.Enums.OrderStatus;
 import com.example.springbootapp.exceptions.EmailMessagingException;
+import com.example.springbootapp.exceptions.OutOfStockException;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.exceptions.StripeSessionException;
 import com.example.springbootapp.handler.PaymentHandler;
@@ -65,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
         Address address = addresses.stream()
                 .filter(a -> a.getId().equals(orderInfos.getAddressId()))
                 .findFirst()
-                .orElseThrow(() -> new RequestValidationException("Address not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
         Cart cart = cartDao.findById(loggedCustomer.getCart().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
         if(cart.getCartItems().isEmpty()) {
@@ -73,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
         }
         cart.getCartItems().forEach(cartItem -> {
             if(cartItem.getProduct().getAvailability() < cartItem.getQuantity()) {
-                throw new RequestValidationException("One or more products are out of stock"); //TODO: cambiare eccezione
+                throw new OutOfStockException("One or more products are out of stock");
             }
         });
         OrderInformations resilientInfos = modelMapper.map(address, OrderInformations.class);
@@ -85,15 +86,15 @@ public class OrderServiceImpl implements OrderService {
         order.setCustomer(loggedCustomer);
         order.setDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
-        order= orderDao.save(order);  //salvo l'ordine per avere l'id
-        Order finalOrder = order;  //finalOrder è usata solo per la lambda (non può essere modificata)
+        order= orderDao.save(order);        //salvo l'ordine per avere l'id
+        Order finalOrder = order;           //finalOrder è usata solo per la lambda (non può essere modificata)
         List<OrderItem> items= cart.getCartItems().stream()
                 .map(cartItem -> modelMapper.map(cartItem, OrderItem.class))
                 .peek(orderItem -> orderItem.setOrder(finalOrder))
                 .collect(Collectors.toList());
         order.setItems(items);
-        order= orderDao.save(order);  //salvo l'ordine con gli item
-        cart.getCartItems().clear();  //elimino tutti gli item dal carrello
+        order= orderDao.save(order);
+        cart.getCartItems().clear();
         cartDao.save(cart);
         try{
             return paymentHandler.startCheckoutProcess(order);
@@ -115,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
                 if(orderItem.getProduct().getAvailability() < orderItem.getQuantity()) {
                     order.setStatus(OrderStatus.CANCELLED);
                     orderDao.save(order);
-                    throw new RequestValidationException("One or more products are out of stock"); //TODO: andrebbe gestito un possibile rimborso
+                    throw new OutOfStockException("One or more products are out of stock"); //TODO: andrebbe gestito un possibile rimborso
                 }
             });
             if (paymentHandler.checkTransactionStatus(sessionId)) {
@@ -159,7 +160,6 @@ public class OrderServiceImpl implements OrderService {
         try {
             emailService.sendOrderConfirmationEmail(emailInfos);
         } catch (MessagingException e) {
-            System.out.println("Error sending email");
             throw new EmailMessagingException("Error sending email");
         }
         return CompletableFuture.completedFuture(null);

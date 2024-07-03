@@ -8,6 +8,7 @@ import com.example.springbootapp.data.entities.Customer;
 import com.example.springbootapp.data.specification.CustomerSpecification;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.CustomerService;
+import com.example.springbootapp.utils.Constants;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -58,19 +59,19 @@ public class CustomerServiceImpl implements CustomerService {
         if(customerUpdateDto.getFavoriteTeam() != null)
             customer.setFavouriteTeam(customerUpdateDto.getFavoriteTeam());
         if(customerUpdateDto.getProfilePic() != null){
-            String profilePicUrl = awsS3Service.uploadFile(customerUpdateDto.getProfilePic(),"users", customer.getUsername());
+            String profilePicUrl = awsS3Service.uploadFile(customerUpdateDto.getProfilePic(), Constants.USER_FOLDER, customer.getUsername());
             customer.setProfilePicUrl(profilePicUrl);
         }
         customerDao.save(customer);
     }
 
     @Override
-    public void updateCustomer2(CustomerUpdateDto customerUpdateDto) {
+    public void updateCustomer2(CustomerUpdateDto customerUpdateDto) {  //Metodo solo perchè richiesto dal frontend
         Customer customer = (Customer) userDetailsService.getCurrentUser();
         if(customerUpdateDto.getFavoriteTeam() != null)
             customer.setFavouriteTeam(customerUpdateDto.getFavoriteTeam());
         if(customerUpdateDto.getProfilePic() != null){
-            String profilePicUrl = awsS3Service.uploadFile(customerUpdateDto.getProfilePic(),"users", customer.getUsername());
+            String profilePicUrl = awsS3Service.uploadFile(customerUpdateDto.getProfilePic(),Constants.USER_FOLDER, customer.getUsername());
             customer.setProfilePicUrl(profilePicUrl);
         }
         customerDao.save(customer);

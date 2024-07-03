@@ -43,7 +43,7 @@ public class OrderControllerReactive {
         System.out.println("E STATA CHIAMATA INITIAL");
         Long orderCount = orderServiceReactive.countOrders().block();
         Double totalEarnings = orderServiceReactive.totalEarnings().block();
-        System.out.println("INIZIALIIII orderCount: " + orderCount + " totalEarnings: " + totalEarnings);
+        System.out.println("INIZIALI orderCount: " + orderCount + " totalEarnings: " + totalEarnings);
         return Mono.just(new SummaryData(orderCount, totalEarnings));
     }
 

@@ -8,11 +8,8 @@ import com.example.springbootapp.data.dto.*;
 import com.example.springbootapp.data.entities.*;
 import com.example.springbootapp.data.entities.Enums.WishlistVisibility;
 import com.example.springbootapp.exceptions.IllegalWishlistVisibility;
-import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.WishlistService;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
@@ -63,7 +60,7 @@ public class WishlistServiceImpl implements WishlistService {
     public WishlistDto getMyWishlist() {
         Wishlist wishlist= wishlistDao.findById(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId()).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
         Hibernate.initialize(wishlist.getItems());
-        Hibernate.initialize(wishlist.getOwner());  //TODO: TEST
+        Hibernate.initialize(wishlist.getOwner());
         return modelMapper.map(wishlist, WishlistDto.class);
     }
 
@@ -71,7 +68,7 @@ public class WishlistServiceImpl implements WishlistService {
     public List<WishlistDto> getPublicWishlists() {
         List<Wishlist> wishlists = wishlistDao.findAllByVisibility(WishlistVisibility.PUBLIC);
 
-        wishlists.forEach(wishlist -> Hibernate.initialize(wishlist.getOwner())); //TODO: TEST
+        wishlists.forEach(wishlist -> Hibernate.initialize(wishlist.getOwner()));
 
         return wishlists.stream()
                 .map(wishlist -> modelMapper.map(wishlist, WishlistDto.class))
@@ -81,7 +78,7 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public List<WishlistDto> getSharedWithMeWishlists() {
         List<WishlistAccess> wishlistAccesses = wishlistAccessDao.findAllByGuestId(userDetailsService.getCurrentUser().getId());
-        wishlistAccesses.forEach(wishlistAccess -> Hibernate.initialize(wishlistAccess.getWishlist().getOwner()));  //TODO: TEST
+        wishlistAccesses.forEach(wishlistAccess -> Hibernate.initialize(wishlistAccess.getWishlist().getOwner()));
         return wishlistAccesses.stream()
                 .map(wishlistAccess -> modelMapper.map(wishlistAccess.getWishlist(), WishlistDto.class))
                 .toList();
@@ -110,7 +107,7 @@ public class WishlistServiceImpl implements WishlistService {
         WishlistItem item = items.stream()
                 .filter(wishlistItem -> wishlistItem.getProduct().getId().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> new RequestValidationException("product not found in wishlist"));
+                .orElseThrow(() -> new EntityNotFoundException("product not found in wishlist"));
         wishlistItemDao.delete(item);
     }
 }

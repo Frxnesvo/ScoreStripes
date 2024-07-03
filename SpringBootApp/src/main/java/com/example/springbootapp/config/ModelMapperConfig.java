@@ -6,8 +6,6 @@ import com.example.springbootapp.data.entities.Enums.Size;
 import com.example.springbootapp.service.impl.AwsS3ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.*;
-import org.modelmapper.spi.Mapping;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
@@ -182,14 +179,12 @@ public class ModelMapperConfig {
         modelMapper.addMappings(productSummaryMap);
         modelMapper.addMappings(productPicMap);
         modelMapper.addMappings(productDtoMap);
-        //modelMapper.addMappings(wishlistMap);
         modelMapper.addMappings(cartItemMap);
         modelMapper.addMappings(customerLoginMap);
         modelMapper.addMappings(adminLoginMap);
         modelMapper.addMappings(orderMap);
 
         modelMapper.addConverter(productPicUrlConverter);
-
 
         return modelMapper;
     }

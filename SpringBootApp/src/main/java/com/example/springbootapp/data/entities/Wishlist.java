@@ -22,7 +22,7 @@ public class Wishlist {
     @Enumerated(EnumType.STRING)
     private WishlistVisibility visibility;
 
-    @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY) // Mantengo la bidirezionalità al momento perchè potrebbe servire
+    @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY)
     private Customer owner;
 
     @ToString.Exclude
