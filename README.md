@@ -38,14 +38,14 @@
         Sviluppato alcuni endpoint REST.<br> 
         Tra le varie cose, si sottolineano:
         <ul>
-            <li> <h4>Gestione delle wishlist, carrello e viewmodels</h4> </li>
+            <li> <h4>Gestione delle wishlist, carrello e viewmodels del client Admin</h4> </li>
         </ul>
     </li>
     <br>
     <li> 
         <h3>Aldo Gioia</h3>
-        Responsabile del design di ogni schermata per entrambi i client (UI/UX).<br>
-        Gestione di quasi tutti i FormViewModels e di molti ViewModels.<br>
+        Responsabile del design e implementazione di ogni schermata per entrambi i client (UI/UX).<br>
+        Gestione di quasi tutti i FormViewModels e di molti ViewModels nel client Admin.<br>
         Tra le varie cose si sottolineano:
         <ul>
             <li> <h4>Configurazione di Retrofit per le chiamate REST</h4> </li>
