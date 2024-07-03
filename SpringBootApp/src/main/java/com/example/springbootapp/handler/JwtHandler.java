@@ -46,7 +46,7 @@ public class JwtHandler {
             signedJWT.sign(signer);
             return signedJWT.serialize();
         } catch (JOSEException e) {
-            throw new RuntimeException("Error while generating JWT token");  //TODO: da fare custom e gestire nel global exception handler
+            throw new RuntimeException("Error while generating JWT token");  //TODO: da fare custom
         }
     }
 

@@ -12,6 +12,7 @@ import com.example.springbootapp.data.specification.ProductSpecification;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.service.interfaces.AwsS3Service;
 import com.example.springbootapp.service.interfaces.ProductService;
+import com.example.springbootapp.utils.Constants;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -83,11 +84,11 @@ public class ProductServiceImpl implements ProductService {
         }
         modelMapper.map(productCreateRequestDto, product);
         product.setClub(club);
-        String principalPicUrl = awsS3Service.uploadFile(productCreateRequestDto.getPicPrincipal(), "products", productCreateRequestDto.getName() + "_principal");
+        String principalPicUrl = awsS3Service.uploadFile(productCreateRequestDto.getPicPrincipal(), Constants.PRODUCT_FOLDER, productCreateRequestDto.getName() + "_principal");
         ProductPic principalPic = new ProductPic(principalPicUrl, true, product);
 
         String pic2Url = productCreateRequestDto.getPic2() != null
-                ? awsS3Service.uploadFile(productCreateRequestDto.getPic2(), "products", productCreateRequestDto.getName() + "_2")
+                ? awsS3Service.uploadFile(productCreateRequestDto.getPic2(), Constants.PRODUCT_FOLDER, productCreateRequestDto.getName() + "_2")
                 : null;
         ProductPic pic2 = pic2Url != null ? new ProductPic(pic2Url, false, product) : null;
 
@@ -127,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
                     .filter(ProductPic::getPrincipal)
                     .findFirst()
                     .orElseThrow(() -> new EntityNotFoundException("Principal picture not found"));
-            String newPrincipalPicUrl = awsS3Service.uploadFile(productUpdateDto.getPicPrincipal(), "products", product.getName() + "_principal");
+            String newPrincipalPicUrl = awsS3Service.uploadFile(productUpdateDto.getPicPrincipal(), Constants.PRODUCT_FOLDER, product.getName() + "_principal");
             principalPic.setPicUrl(newPrincipalPicUrl);
         }
         if(productUpdateDto.getPic2() != null) {
@@ -135,11 +136,11 @@ public class ProductServiceImpl implements ProductService {
                     .filter(pic -> !pic.getPrincipal())
                     .findFirst().orElse(null);
             if (pic2 == null) {
-                String pic2Url = awsS3Service.uploadFile(productUpdateDto.getPic2(), "products", product.getName() + "_2");
+                String pic2Url = awsS3Service.uploadFile(productUpdateDto.getPic2(), Constants.PRODUCT_FOLDER, product.getName() + "_2");
                 ProductPic newPic2 = new ProductPic(pic2Url, false, product);
                 product.getPics().add(newPic2);
             } else {
-                String newPic2Url = awsS3Service.uploadFile(productUpdateDto.getPic2(), "products", product.getName() + "_2");
+                String newPic2Url = awsS3Service.uploadFile(productUpdateDto.getPic2(), Constants.PRODUCT_FOLDER, product.getName() + "_2");
                 pic2.setPicUrl(newPic2Url);
             }
         }

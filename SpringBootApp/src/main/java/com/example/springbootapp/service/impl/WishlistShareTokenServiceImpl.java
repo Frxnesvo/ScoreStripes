@@ -33,7 +33,7 @@ public class WishlistShareTokenServiceImpl implements WishlistShareTokenService 
     private final UserDetailsServiceImpl userDetailsService;
     private final ModelMapper modelMapper;
 
-    @Override  //TODO: proteggere da admin
+    @Override
     public WishlistShareTokenDto createShareToken() {
         Wishlist wishlist = wishlistDao.findById(((Customer) userDetailsService.getCurrentUser()).getWishlist().getId()).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
         if(wishlist.getVisibility()== WishlistVisibility.PRIVATE){
@@ -43,13 +43,12 @@ public class WishlistShareTokenServiceImpl implements WishlistShareTokenService 
         wishlistShareToken.setToken(UUID.randomUUID().toString());
         wishlistShareToken.setExpirationDate(LocalDateTime.now().plusHours(24));
         wishlistShareToken.setWishlist(wishlist);
-        //salvo e returno il map dall'entità al dto WishlistShareTokenDto
         wishlistShareToken= wishlistShareTokenDao.save(wishlistShareToken);
         return modelMapper.map(wishlistShareToken, WishlistShareTokenDto.class);
     }
 
 
-    @Override    //TODO: proteggere da admin
+    @Override
     @Transactional
     public WishlistDto validateShareAccess(String token) {
         System.out.println("Token: "+token);

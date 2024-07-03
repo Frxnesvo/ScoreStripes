@@ -1,13 +1,10 @@
 package com.example.springbootapp.handler;
 
-import com.example.springbootapp.data.dto.ProductDto;
 import com.example.springbootapp.data.entities.Order;
 import com.example.springbootapp.data.entities.OrderItem;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Product;
 import com.stripe.model.checkout.Session;
-import com.stripe.param.ProductCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -44,8 +40,8 @@ public class PaymentHandler {
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.PAYPAL)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://192.168.1.9:8080/stripe_success?session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl("http://192.168.1.9:8080/stripe_cancel?session_id={CHECKOUT_SESSION_ID}")
+                .setSuccessUrl("http://192.168.1.55:8080/stripe_success?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl("http://192.168.1.55:8080/stripe_cancel?session_id={CHECKOUT_SESSION_ID}")
                 .putMetadata("orderId", order.getId())
                 .build();
         try {
@@ -69,18 +65,17 @@ public class PaymentHandler {
 
 
     private SessionCreateParams.LineItem createLineItem(OrderItem item) {
-        // Crea il LineItem con nome e descrizione senza immagini
-        return SessionCreateParams.LineItem.builder()
-                .setQuantity(item.getQuantity().longValue())  // Imposta la quantità dell'item
+        return SessionCreateParams.LineItem.builder()     // Crea il LineItem con nome e descrizione senza immagini
+                .setQuantity(item.getQuantity().longValue())
                 .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                        .setCurrency("eur")  // Imposta la valuta
-                        .setUnitAmount(Math.round(item.getPrice() * 100)/ item.getQuantity().longValue())  // Calcola l'importo in centesimi
+                        .setCurrency("eur")
+                        .setUnitAmount(Math.round(item.getPrice() * 100)/ item.getQuantity().longValue())
                         .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                .setName(item.getProduct().getProduct().getName())  // Imposta il nome del prodotto
-                                .setDescription(item.getProduct().getProduct().getDescription())  // Imposta la descrizione del prodotto
-                                .build())  // Costruisce l'oggetto ProductData
-                        .build())  // Costruisce l'oggetto PriceData
-                .build();  // Costruisce l'oggetto LineItem
+                                .setName(item.getProduct().getProduct().getName())
+                                .setDescription(item.getProduct().getProduct().getDescription())
+                                .build())
+                        .build())
+                .build();
     }
 
 

@@ -1,8 +1,6 @@
 package com.example.springbootapp.controller;
 
 import com.example.springbootapp.data.dto.*;
-import com.example.springbootapp.data.entities.Customer;
-import com.example.springbootapp.data.specification.CustomerSpecification;
 import com.example.springbootapp.exceptions.RequestValidationException;
 import com.example.springbootapp.security.RateLimited;
 import com.example.springbootapp.service.interfaces.AddressService;
@@ -13,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
