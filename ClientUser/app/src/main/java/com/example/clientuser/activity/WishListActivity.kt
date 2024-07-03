@@ -58,6 +58,7 @@ fun Wishlist(
 
     val context = LocalContext.current
 
+
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(25.dp)
@@ -70,7 +71,7 @@ fun Wishlist(
         item {
             BoxImage(
                 boxTitle = stringResource(id = R.string.discover_wishlists),
-                painter = painterResource(id = R.drawable.collection) //TODO trovare un'immagine più adatta
+                painter = painterResource(id = R.drawable.collection)
             ) { navHostController.navigate("discoverWishlist") }
         }
 
@@ -90,7 +91,7 @@ fun Wishlist(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
 
-                ) {                                   //TODO non è la cosa migliore fare row dentro row
+                ) {
 
                     Text(
                         modifier = Modifier
@@ -98,7 +99,7 @@ fun Wishlist(
                                 setVisibilityBottomSheet(true)
                                 setTokenBottomSheet(false)
                             },
-                        text = myWishlist.visibility.name,        //TODO
+                        text = myWishlist.visibility.name,
                         style = MaterialTheme.typography.titleMedium,
                         color = colorResource(id = R.color.secondary),
                     )
@@ -191,7 +192,7 @@ fun Wishlist(
 
     if(isOpenVisibilitySheet){
         WishlistVisibilityPanel(
-            currentVisibility = myWishlistVisibility.value,
+            currentVisibility = myWishlist.visibility,
             onDismissRequest = { setVisibilityBottomSheet(false) },
             onClick = {
                 if(myWishlistVisibility.value != myWishlist.visibility)
