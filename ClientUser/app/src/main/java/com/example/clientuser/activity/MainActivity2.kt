@@ -18,7 +18,7 @@ import com.example.clientuser.LocalProductsViewModel
 import com.example.clientuser.LocalWishListViewModel
 import com.example.clientuser.R
 import com.example.clientuser.model.Customer
-import com.example.clientuser.model.CustomerSerializable
+import com.example.clientuser.model.dto.AuthResponseDto
 import com.example.clientuser.ui.theme.ClientUserTheme
 import com.example.clientuser.viewmodel.CartViewModel
 import com.example.clientuser.viewmodel.ClubViewModel
@@ -27,14 +27,21 @@ import com.example.clientuser.viewmodel.LeagueViewModel
 import com.example.clientuser.viewmodel.ProductViewModel
 import com.example.clientuser.viewmodel.ProductsViewModel
 import com.example.clientuser.viewmodel.WishListViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val customer = Customer.fromSerializable(
-            intent.getSerializableExtra("customer") as CustomerSerializable?
-        )
+        var customer: Customer? = null
+        runBlocking {
+            launch {
+                customer = Customer.fromDto(
+                    intent.getSerializableExtra("customer") as AuthResponseDto?
+                )
+            }
+        }
 
         setContent {
             ClientUserTheme {

@@ -25,24 +25,25 @@ class LogoutViewModel(userSession: UserSession){
     val logoutEvent = _logoutEvent.asSharedFlow()
 
     fun logout(){
-        try {
-            CoroutineScope(Dispatchers.Default).launch {
-                val response = RetrofitHandler.logoutApi.logout().awaitResponse()
-                if(response.isSuccessful){
-                    TokenStoreUtils.clearToken()
-                    _logoutEvent.emit(Unit)
-                    _user.value = null
-                    _isLoggedIn.value = false
-                    ToastManager.show("Logout success")
+        if(_isLoggedIn.value){
+            try {
+                CoroutineScope(Dispatchers.Default).launch {
+                    val response = RetrofitHandler.logoutApi.logout().awaitResponse()
+                    if (response.isSuccessful) {
+                        TokenStoreUtils.clearToken()
+                        _logoutEvent.emit(Unit)
+                        _user.value = null
+                        _isLoggedIn.value = false
+                        ToastManager.show("Logout success")
+                    } else {
+                        println("Error logout: ${response.message()}")
+                        ToastManager.show("Error logout")
+                    }
                 }
-                else {
-                    println("Error logout: ${response.message()}")
-                    ToastManager.show("Error logout")
-                }
-            }
 
-        }catch (e: Exception){
-            println("Exception logout: ${e.message}")
+            } catch (e: Exception) {
+                println("Exception logout: ${e.message}")
+            }
         }
     }
 }
