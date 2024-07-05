@@ -41,7 +41,9 @@ class LoginViewModel(userSession: UserSession): ViewModel() {
                     ).awaitResponse()
                     if (response.isSuccessful) {
                         response.body()?.let { authResponseDto ->
-                            _user.value = authResponseDto
+                            _user.value = authResponseDto.copy(
+                                jwt = ""
+                            )
                             _isLoggedIn.value = true
                             _token.value = ""
 
